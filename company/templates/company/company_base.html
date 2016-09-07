@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Company Home{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'company/style.css' %}"/>
+    {% block styles %}{% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    {% block scripts %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#homenav">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'home:index' %}">Jobin</a>
+            </div>
+            <div class="collapse navbar-collapse" id="homenav">
+                <ul class="nav navbar-nav">
+                    <li class="{% block homeactive %}{% endblock %}"><a href="{% url 'company:index' %}">Home</a></li>
+                    <li class="{% block postactive %}{% endblock %}"><a href="{% url 'post:companyposts' %}">Posts</a></li>
+                    <li class="{% block eventactive %}{% endblock %}"><a href="{% url 'event:companyevents' %}">Events</a></li>
+                    <li class="{% block profileactive %}{% endblock %}"><a href="{% url 'company:profile' %}">Profile</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{% url 'home:logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

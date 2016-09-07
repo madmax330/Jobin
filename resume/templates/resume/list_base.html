@@ -1,0 +1,19 @@
+{% extends 'student/student_base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block resumesactive %}active{% endblock %}
+
+{% block content %}
+    {% block noresult %}
+    {% endblock %}
+    <table class="w3-table w3-bordered w3-white">
+        {% block list %}
+        {% endblock %}
+    </table>
+    {% if rkey %}
+        <div class="w3-padding-16">
+            <a class="w3-btn w3-white" href="{% url 'resume:details' pk=rkey %}">Back to overview</a>
+        </div>
+    {% endif %}
+{% endblock %}

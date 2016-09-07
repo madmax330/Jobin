@@ -1,0 +1,57 @@
+{% extends 'resume/list_base.html' %}
+
+{% block title %}Language List{% endblock %}
+
+{% block list %}
+    <tr class="w3-blue">
+        <th>Name</th>
+        <th>Level</th>
+        <th></th>
+        <th><a class="w3-btn w3-teal w3-border w3-border-white" href="{% url 'resume:newlanguage' rk=rkey%}">New Language</a></th>
+    </tr>
+    {% for x in list %}
+        <tr>
+            <td>{{ x.name }}</td>
+            <td>{{ x.level }}</td>
+            <td><a href="{% url 'resume:updatelanguage' pk=x.pk %}">Edit</a></td>
+            <td><a href="{% url 'resume:deletelanguage' pk=x.pk rk=rkey%}">Delete</a></td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block noresult %}
+        <div class="w3-dropdown-hover info-div">
+            <div class="w3-container">
+                <i class="fa fa-info-circle w3-text-blue w3-xlarge"></i>
+                <div class="w3-dropdown-content" style="width:600px">
+                    <div class="w3-card">
+                        <header class="w3-container w3-blue">
+                            <h4>Language information</h4>
+                        </header>
+                        <div class="w3-container">
+                            <p>
+                                Language objects represent the languages that you are familiar with.<br/>
+                                <strong>Steps to creating a new language object:</strong>
+                                <ul>
+                                    <li>Click create a new language</li>
+                                    <li>Enter the name of the language</li>
+                                    <li>Enter your level of proficiency in the language</li>
+                                    <li>Save your new language</li>
+                                </ul>
+                            </p>
+                        </div>
+                        <footer class="w3-container w3-light-grey">
+                            Any fictive or false information attached to your profile will result in a termination of your account.
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% if list.count == 0 %}
+        <div class="w3-container w3-orange">
+            <p>
+                No languages found for this resume. <a href="{% url 'resume:newlanguage' rk=rkey%}">Click Here</a> to add languages.
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

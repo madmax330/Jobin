@@ -1,0 +1,161 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}Post Applicants{% endblock %}
+
+{% block postactive %}active{% endblock %}
+
+{% block content %}
+    <form id="hiddenform" style="display:none;" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input id="keep" type="text" name="keep" value="True"/>
+        <input type="number" name="appid" value="{{ app.pk }}"/>
+        <input id="page" type="number" name="page" value="{{ page }}"/>
+        <input id="cover" type="text" name="cover" value="False"/>
+    </form>
+    <div style="margin: 10px 0 10px 0;overflow:hidden">
+        <a href="{% url 'post:applicants' pk=app.post.pk %}" class="btn btn-default col-md-12">Multiple Applicants View</a>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-10">
+                    <h4>Student Information:</h4>
+                </div>
+                <div class="col-md-1">
+                    <button id="prevBtn" type="button" class="btn btn-default">Previous</button>
+                </div>
+                <div class="col-md-1">
+                    <button id="nBtn" class="btn btn-default">Next</button>
+                </div>
+            </div>
+
+            <hr/>
+            <label>Name:</label><span> {{ app.fname }} {{ app.lname }}</span><br/>
+            <label>Email:</label><span> {{ app.email }}</span><br/>
+            <label>Phone:</label><span> {{ app.phone }}</span><br/>
+            <label>Address:</label><span> {{ app.address }}</span><br/>
+            <label>School:</label><span> {{ app.school }}</span><br/>
+            <label>Program:</label><span> {{ app.program }}</span><br/>
+            <hr/>
+            <h4>Student Resume:</h4>
+            <hr/>
+            {% if resume.file_resume %}
+                {{ resume.file_resume }}
+            {% else %}
+                {% if exp.count > 0 %}
+                    <h5>Experience:</h5>
+                    {% for x in exp %}
+                        <div class="row">
+                            <div class="col-md-2"><label>Title:</label></div>
+                            <div class="col-md-2">{{ x.title }}</div>
+                            <div class="col-md-2">Duration:</div>
+                            <div class="col-md-3">{{ x.start }} to {{ x.end }}</div>
+                            <div class="col-md-1">Type:</div>
+                            <div class="col-md-2">{{ x.experience_type }}</div>
+                        </div>
+                        <label>Description:</label>
+                        <p>{{ x.description }}</p><hr/>
+                    {% endfor %}
+                {% endif %}
+                {% if schools.count > 0 %}
+                    <h5>Education:</h5>
+                    <table class="table">
+                        <tr>
+                            <th>School Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Level</th>
+                            <th>Program</th>
+                        </tr>
+                    {% for x in schools %}
+                        <tr>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.start }}</td>
+                            <td>{{ x.end }}</td>
+                            <td>{{ x.level }}</td>
+                            <td>{{ x.program }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                {% endif %}
+                {% if aws.count > 0 %}
+                    <h5>Awards:</h5>
+                    {% for x in aws %}
+                        <div class="row">
+                            <div class="col-md-2"><label>Title:</label></div>
+                            <div class="col-md-2">{{ x.title }}</div>
+                            <div class="col-md-2">Date Received:</div>
+                            <div class="col-md-2">{{ x.date }}</div>
+                            <div class="col-md-2">Type:</div>
+                            <div class="col-md-2">{{ x.award_type }}</div>
+                        </div>
+                        <label>Description:</label>
+                        <p>{{ x.description }}</p><hr/>
+                    {% endfor %}
+                {% endif %}
+                {% if lan.count > 0 %}
+                    <h5>Languages:</h5>
+                    <table class="table">
+                        <tr>
+                            <th>Language</th>
+                            <th>Proficiency</th>
+                        </tr>
+                    {% for x in lan %}
+                        <tr>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.level }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                {% endif %}
+                {% if skills.count > 0 %}
+                    <h5>Skills:</h5>
+                    <table class="table">
+                        <tr>
+                            <th>Skill</th>
+                            <th>Proficiency</th>
+                        </tr>
+                    {% for x in skills %}
+                        <tr>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.level }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                {% endif %}
+            {% endif %}
+            <hr/>
+            <div class="row">
+                <div class="col-md-offset-7 col-md-3">
+                    <button id="clBtn" type="button"  class="btn btn-default">Request Cover Letter</button>
+                </div>
+                <div class="col-md-2">
+                    <button id="dBtn" type="button" class="btn btn-danger">Discard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(function(){
+        $("#prevBtn").click(function(){
+            var page = $("#page");
+            page.val(parseInt(page.val()) - 1);
+            $("#hiddenform").submit();
+        });
+        $("#nBtn").click(function(){
+            var page = $("#page");
+            page.val(parseInt(page.val()) + 1);
+            $("#hiddenform").submit();
+        });
+        $("#dBtn").click(function(){
+            $("#keep").val("False");
+            $("#hiddenform").submit();
+        });
+        $("#clBtn").click(function(){
+            $("#cover").val("True");
+            $("#hiddenform").submit();
+        });
+    });
+    </script>
+{% endblock %}

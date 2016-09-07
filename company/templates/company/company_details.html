@@ -1,0 +1,27 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}Company Details{% endblock %}
+
+{% block profileactive %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3>Company Information</h3>
+            </div>
+            <div class="panel-body">
+                {{ company.logo }}
+                <label>Company Name: </label><label> {{ company.name }}</label><br/>
+                <label>Company Phone: </label><label> {{ company.phone }}</label><br/>
+                <label>Company Email: </label><label> {{ company.email }}</label><br/>
+                <label>Company Address: </label><label> {{ company.address }}</label><br/>
+                <label>Company City: </label><label> {{ company.city }}</label><br/>
+                <label>Company State: </label><label> {{ company.state }}</label><br/>
+                <label>Company Zipcode: </label><label> {{ company.zipcode }}</label><br/>
+                <label>Company Country: </label><label> {{ company.country }}</label><br/>
+                <label>Company Website: </label><label> {{ company.website }}</label>
+            </div>
+        </div>
+    </div>
+{% endblock %}

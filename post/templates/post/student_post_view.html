@@ -1,0 +1,55 @@
+{% for x in list%}
+    <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px">
+        <div class="row">
+            <div class="w3-col s4">
+                <div class="w3-container w3-padding-16 w3-grey">
+                    <h4 class="w3-text-white w3-center">Company</h4>
+                </div>
+                <div class="w3-container">
+                    {{ x.logo }}
+                    <h5 class="w3-center">{{ x.name }}</h5>
+                    <label>Address:</label><span> {{ x.address }}</span><br/>
+                    <label>Website:</label><span> {{ x.website }}</span>
+                </div>
+                <div class="w3-container w3-padding-4 w3-grey">
+                    <h6 class="w3-text-white w3-center">Resumes</h6>
+                </div>
+                <table class="w3-table w3-bordered">
+                    {% for x in resumes %}
+                        <tr>
+                            {% if x.is_active %}
+                                <td class="w3-light-blue">
+                                    <strong>{{ x.name }}</strong>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a href="{% url 'resume:makeactive' pk=x.pk %}">{{ x.name }}</a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="w3-col s8 w3-border-left w3-border-dark-grey">
+                <div class="w3-container w3-padding-16 w3-grey">
+                    <h4 class="w3-text-white w3-center">Post Information</h4>
+                </div>
+                <div class="w3-container scrollable">
+                    <h5 class="w3-center">{{ x.title }}</h5>
+                    <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
+                    <label>End Date:</label><span> {{ x.end_date }}</span><br/>
+                    <label>Wage:</label><span> {{ x.wage }}$/hr</span><br/>
+                    <label>Openings:</label><span> {{ x.openings }}</span><br/>
+                    <label>Application Deadline:</label><span> {{ x.deadline }}</span><br/>
+                    <label>Description:</label><br/>
+                    <span>{{ x.description }}</span><br/>
+                    <label>Requirements:</label><br/>
+                    <span>{{ x.requirements }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="w3-display-topright w3-medium w3-container w3-padding-16">
+            <a class="w3-btn w3-green" href="{% url 'post:apply' pk=x.pk rk=rkey%}">Apply</a>
+        </div>
+    </div>
+{% endfor %}

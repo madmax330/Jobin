@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Company Home{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'student/style.css' %}">
+    {% block styles %}{% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
+<body>
+    <ul class="w3-navbar w3-blue w3-large">
+        <li class="w3-hide-medium w3-hide-large w3-black w3-opennav w3-right">
+            <a href="javascript:void(0);" onclick="myFunction()">☰</a>
+        </li>
+        <li class="w3-xlarge"><a href="#">Jobin</a></li>
+        <li class="{% block homeactive %}{% endblock %} w3-hide-small"><a href="{% url 'student:index' %}">Home</a></li>
+        <li class="{% block postsactive %}{% endblock %} w3-hide-small"><a href="{% url 'post:studentposts' %}">Posts</a></li>
+        <li class="{% block eventsactive %}{% endblock %} w3-hide-small"><a href="{% url 'event:studentevents' %}">Events</a></li>
+        <li class="{% block resumesactive %}{% endblock %} w3-hide-small"><a href="{% url 'resume:index' %}">Resumes</a></li>
+        <li class="{% block profileactive %}{% endblock %} w3-hide-small"><a href="{% url 'student:profile' %}">Profile</a></li>
+        <li class="w3-right w3-hide-small"><a href="{% url 'home:logout' %}"><i class="fa fa-sign-out"></i>Logout</a></li>
+    </ul>
+
+    <div id="demo" class="w3-hide w3-hide-large w3-hide-medium">
+        <ul class="w3-navbar w3-left-align w3-large w3-black">
+            <li><a href="{% url 'student:index' %}">Home</a></li>
+            <li><a href="{% url 'post:studentposts' %}">Posts</a></li>
+            <li><a href="{% url 'event:studentevents' %}">Events</a></li>
+            <li><a href="{% url 'resume:index' %}">Resumes</a></li>
+            <li><a href="{% url 'student:profile' %}">Profile</a></li>
+            <li><a href="{% url 'home:logout' %}">Logout</a></li>
+        </ul>
+    </div>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("demo");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+            }
+        }
+    </script>
+
+    <div class="w3-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

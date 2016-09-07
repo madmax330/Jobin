@@ -1,0 +1,30 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}Event List{% endblock %}
+
+{% block eventactive %}active{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 style="text-align:center">My Events</h4>
+                </div>
+                <div class="panel-body">
+                    {% if list.count == 0 %}
+                        <div class="alert alert-warning">
+                            <p>
+                                You currently don't have any events.
+                                <a href="{% url 'event:new' %}"><strong>Create a event</strong></a>
+                                 to get started.
+                            </p>
+                        </div>
+                    {% else %}
+                        {% include 'event/event_list.html' %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}New event{% endblock %}
+
+{% block eventactive %}active{% endblock %}
+
+{% block content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Create a New Event
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include 'event/form_template.html' %}
+                <div class="col-md-2">
+                    <a href="{% url 'event:companyevents' %}" class="btn btn-default">Cancel</a>
+                </div>
+                <div class="col-md-10">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

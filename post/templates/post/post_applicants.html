@@ -1,0 +1,63 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}Post Applicants{% endblock %}
+
+{% block postactive %}active{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 style="text-align: center;">Filters</h4>
+                </div>
+                <div class="panel-body">
+                    <form class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input class="form-control" type="text" name="school" placeholder="By School"/>
+                        <input style="margin-top:10px;" class="form-control" type="text" name="program" placeholder="By Program"/>
+                        <input style="margin-top:10px;" type="checkbox" name="keep" checked/>
+                        <label>Keep applications that are not in filtered values.</label>
+                        <button class="btn btn-default" type="submit">Filter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <a href="{% url 'post:applicant' pk=post.pk%}" class="btn btn-default col-md-12" style="margin-bottom:20px;">Single Applicant View</a>
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>School</th>
+                    <th>Program</th>
+                    <th>Date Applied</th>
+                    <th></th>
+                </tr>
+                {% for x in list %}
+                    <tr>
+                        <td><a href="{% url 'post:applicant' pk=post.pk%}">{{ x.fname }} {{ x.lname }}</a></td>
+                        <td>{{ x.school }}</td>
+                        <td>{{ x.program }}</td>
+                        <td>{{ x.date_applied }}</td>
+                        <td><a href="#">Discard</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 style="text-align: center;">Post Information</h4>
+                </div>
+                <div class="panel-body">
+                    <label>Title</label><span> {{ post.title }}</span><br/>
+                    <label>Start Date</label><span> {{ post.start_date }}</span><br/>
+                    <label>End Date</label><span> {{ post.end_date }}</span><br/>
+                    <label>Openings</label><span> {{ post.openings }}</span><br/>
+                    <label>Wage</label><span> {{ post.wage }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'post:companypost' pk=post.pk %}" class="btn btn-default">Back to post</a>
+{% endblock %}

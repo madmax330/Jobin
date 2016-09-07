@@ -1,0 +1,85 @@
+{% extends 'resume/list_base.html' %}
+
+{% block title %}Resume List{% endblock %}
+
+{% block list %}
+    <tr class="w3-blue">
+        <th>Name</th>
+        <th>Last Updated</th>
+        <th>Is Active</th>
+        <th></th>
+        <th></th>
+        <th><a class="w3-btn w3-teal w3-border w3-border-white" href="{% url 'resume:newresume' %}">New Resume</a></th>
+    </tr>
+    {% for x in list %}
+        <tr>
+            <td>{{ x.name }}</td>
+            <td>{{ x.last_updated }}</td>
+            <td>{{ x.is_active }}</td>
+            <td>
+                <div class="w3-dropdown-hover">
+                    <button class="w3-btn w3-indigo">Manage</button>
+                    <div class="w3-dropdown-content w3-border">
+                        <a href="{% url 'resume:experiencelist' rk=x.pk %}">Experience</a>
+                        <a href="{% url 'resume:awardlist' rk=x.pk %}">Awards</a>
+                        <a href="{% url 'resume:languagelist' rk=x.pk %}">Languages</a>
+                        <a href="{% url 'resume:schoollist' rk=x.pk %}">Schools</a>
+                        <a href="{% url 'resume:skilllist' rk=x.pk %}">Skills</a>
+                    </div>
+                </div>
+            </td>
+            <td><a href="{% url 'resume:details' pk=x.pk%}">Overview</a></td>
+            <td>
+                <div class="w3-half">
+                    <a href="{% url 'resume:updateresume' pk=x.pk%}">Edit</a>
+                </div>
+                <div class="w3-half">
+                    <a href="{% url 'resume:deleteresume' pk=x.pk%}">Delete</a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+
+{% block noresult %}
+        <div class="w3-dropdown-hover info-div">
+            <div class="w3-container">
+                <i class="fa fa-info-circle w3-text-blue w3-xlarge"></i>
+                <div class="w3-dropdown-content" style="width:600px">
+                    <div class="w3-card">
+                        <header class="w3-container w3-blue">
+                            <h4>Resume information</h4>
+                        </header>
+                        <div class="w3-container">
+                            <p>
+                                Resumes will be attached to each of your applications to let the employer see your
+                                qualifications. You can either attach a file resume to this object or use the fields
+                                we provide if you do not want to deal with the hassle of designing a resume or are unsure
+                                of what to put on a resume.<br/>
+                                <i>Note: you will  not be able to apply for posts unless you have at least one resume</i><br/>
+                                <strong>Steps to creating a new resume object:</strong>
+                                <ul>
+                                    <li>Click create a new resume</li>
+                                    <li>Enter the name you would like to give the resume</li>
+                                    <li>Optionally upload a resume file</li>
+                                    <li>Save you resume</li>
+                                    <li>Optionally use the manage button to add information to your resume</li>
+                                </ul>
+                            </p>
+                        </div>
+                        <footer class="w3-container w3-light-grey">
+                            Any fictive or false information attached to your profile will result in a termination of your account.
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% if list.count == 0 %}
+        <div class="w3-container w3-orange">
+            <p>
+                No resumes found. <a href="{% url 'resume:newresume' %}">Click Here</a> to add a resume.
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

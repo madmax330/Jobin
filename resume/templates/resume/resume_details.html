@@ -1,0 +1,144 @@
+{% extends 'student/student_base.html' %}
+
+{% block title %}Resume Details{% endblock %}
+
+{% block resumesactive %}active{% endblock %}
+
+{% block content %}
+    <style>
+        h4{
+            margin: 0;
+        }
+    </style>
+    <div class="w3-container w3-padding-32">
+        <div class="w3-center w3-dark-grey w3-padding-8">
+            <h3>Resume Overview</h3>
+        </div>
+        <label>Name:</label><span> {{ resume.name }}</span><br/>
+        <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
+        <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
+        <label>File:</label><span> {{ resume.file_resume }}</span><br/>
+        <div class="w3-center w3-dark-grey">
+            <h4>Experience</h4>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>
+                        <a class="w3-btn w3-indigo w3-right" href="{% url 'resume:experiencelist' rk=resume.pk %}">Manage</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in experience %}
+                    <tr>
+                        <td>{{ x.title }}</td>
+                        <td>{{ x.start }}</td>
+                        <td>{{ x.end }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="w3-center w3-dark-grey">
+            <h4>Education</h4>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Level</th>
+                    <th>Program</th>
+                    <th>
+                        <a class="w3-btn w3-indigo w3-right" href="{% url 'resume:schoollist' rk=resume.pk %}">Manage</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in schools %}
+                    <tr>
+                        <td>{{ x.name }}</td>
+                        <td>{{ x.start }}</td>
+                        <td>{{ x.end }}</td>
+                        <td>{{ x.level }}</td>
+                        <td>{{ x.program }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="w3-center w3-dark-grey">
+            <h4>Awards</h4>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date Received</th>
+                    <th>
+                        <a class="w3-btn w3-indigo w3-right" href="{% url 'resume:awardlist' rk=resume.pk %}">Manage</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in awards %}
+                    <tr>
+                        <td>{{ x.title }}</td>
+                        <td>{{ x.date }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="w3-center w3-dark-grey">
+            <h4>Languages</h4>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>
+                        <a class="w3-btn w3-indigo w3-right" href="{% url 'resume:languagelist' rk=resume.pk %}">Manage</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in languages %}
+                    <tr>
+                        <td>{{ x.name }}</td>
+                        <td>{{ x.level }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="w3-center w3-dark-grey">
+            <h4>Skills</h4>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Proficiency</th>
+                    <th>
+                        <a class="w3-btn w3-indigo w3-right" href="{% url 'resume:skilllist' rk=resume.pk %}">Manage</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in skills %}
+                    <tr>
+                        <td>{{ x.name }}</td>
+                        <td>{{ x.level }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="w3-padding-16">
+            <a class="w3-btn w3-grey w3-text-white" href="{% url 'resume:index' %}">Back to list</a>
+        </div>
+    </div>
+
+{% endblock %}

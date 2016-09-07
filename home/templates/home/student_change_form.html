@@ -1,0 +1,31 @@
+{% extends 'student/student_base.html' %}
+
+{% block title %}User Info Update{% endblock %}
+
+{% block profileactive %}active{% endblock %}
+
+{% block content %}
+    <div class="w3-card-8 w3-half" style="margin-top:30px;">
+        <div class="w3-blue w3-container">
+            <h4 class="w3-center">Change User Info</h4>
+        </div>
+        <div class="w3-container w3-leftbar w3-border-yellow w3-pale-yellow">
+            <p>
+                Changing the email attached to this account will result in
+                your account being blocked until you verifiy the new email
+                you have entered.
+            </p>
+        </div>
+        <div class="w3-container">
+            <form method="post" class="w3-form" enctype="multipart/form-data" action="">
+                {% include 'resume/form_template.html' %}
+                <div class="w3-third">
+                    <a href="{% url 'student:profile' %}" class="w3-btn w3-grey">Cancel</a>
+                </div>
+                <div class="w3-rest">
+                    <button type="submit" class="w3-btn w3-blue">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

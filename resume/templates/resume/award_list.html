@@ -1,0 +1,63 @@
+{% extends 'resume/list_base.html' %}
+
+{% block title %}Award List{% endblock %}
+
+{% block list %}
+    <tr class="w3-blue">
+        <th>Title</th>
+        <th>Date</th>
+        <th>Type</th>
+        <th></th>
+        <th><a class="w3-btn w3-teal w3-border w3-border-white" href="{% url 'resume:newaward' rk=rkey%}">New Award</a></th>
+    </tr>
+    {% for x in list %}
+        <tr>
+            <td>{{ x.title }}</td>
+            <td>{{ x.date }}</td>
+            <td>{{ x.type }}</td>
+            <td><a href="{% url 'resume:updateaward' pk=x.pk %}">Edit</a></td>
+            <td><a href="{% url 'resume:deleteaward' pk=x.pk rk=rkey%}">Delete</a></td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block noresult %}
+        <div class="w3-dropdown-hover info-div">
+            <div class="w3-container">
+                <i class="fa fa-info-circle w3-text-blue w3-xlarge"></i>
+                <div class="w3-dropdown-content" style="width:600px">
+                    <div class="w3-card">
+                        <header class="w3-container w3-blue">
+                            <h4>Award information</h4>
+                        </header>
+                        <div class="w3-container">
+                            <p>
+                                Awards represent awards or certificates that you may have earned, ranging from scholarly
+                                awards (i.e honor roll) to professional certifications. (i.e CPR certification,
+                                Networking certification)<br/>
+                                <strong>Steps to creating a new award object:</strong>
+                                <ul>
+                                    <li>Click create a new award</li>
+                                    <li>Enter the name/title of the award</li>
+                                    <li>Enter a short description of the award</li>
+                                    <li>Enter the date the award was received</li>
+                                    <li>Enter the type of the award</li>
+                                    <li>Save your new award</li>
+                                </ul>
+                            </p>
+                        </div>
+                        <footer class="w3-container w3-light-grey">
+                            Any fictive or false information attached to your profile will result in a termination of your account.
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% if list.count == 0 %}
+        <div class="w3-container w3-orange">
+            <p>
+                No awards found for this resume. <a href="{% url 'resume:newaward' rk=rkey%}">Click Here</a> to add awards.
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

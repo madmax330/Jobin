@@ -1,0 +1,55 @@
+{% extends 'student/student_base.html' %}
+
+{% block title %}Student Home{% endblock %}
+
+{% block homeactive %}active{% endblock %}
+
+{% block content %}
+    <div class="w3-row">
+        <div class="w3-col s4">
+            <div class="w3-container w3-padding-16">
+                <div class="w3-card-4 w3-white">
+                    <header class="w3-container w3-dark-grey">
+                        <h3 class="w3-center">Student Information</h3>
+                    </header>
+                    <div class="w3-container">
+                        <label>First Name:</label><span> {{ student.firstname }}</span><br/>
+                        <label>Last Name:</label><span> {{ student.lastname }}</span><br/>
+                        <label>Date of Birth:</label><span> {{ student.dob }}</span><br/>
+                        <label>Gender:</label><span>{{ student.gender }}</span><br/>
+                        <label>School:</label><span>{{ student.school }}</span><br/>
+                        <label>Program:</label><span>{{ student.program }}</span><br/>
+                        <label>Phone:</label><span>{{ student.phone }}</span><br/>
+                        <label>Email:</label><span>{{ student.email }}</span><br/>
+                        <label>Address:</label>
+                        <p>{{ student.address }}, {{ student.city }},
+                            {{ student.state }}, {{ student.zipcode }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w3-col s8">
+            <div class="w3-container w3-padding-16">
+                <h4 style="margin:0;" class="w3-dark-grey w3-center w3-padding-8">Active Applications</h4>
+                {% if apps.count == 0 %}
+                    <div class="w3-container w3-orange">
+                        You currently have no active applications. <a href="{% url 'post:studentposts' %}">Browse the posts</a> to apply.
+                    </div>
+                {% else %}
+                    <table class="w3-table w3-bordered w3-white">
+                        <tr>
+                            <th>Post Title</th>
+                            <th>Status</th>
+                        </tr>
+                        {% for x in apps %}
+                            <tr>
+                                <td><a href="{% url 'post:studentdetails' pk=x.post.pk %}">{{ x.post.title }}</a></td>
+                                <td>{{ x.status }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

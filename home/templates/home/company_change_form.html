@@ -1,0 +1,31 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block profileactive %}active{% endblock %}
+
+{% block content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Change User Info</h4>
+        </div>
+        <div class="panel-body">
+            <div class="alert alert-warning">
+                <p>
+                    Changing the email attached to this account will result in
+                    your account being blocked until you verifiy the new email
+                    you have entered.
+                </p>
+            </div>
+            <form class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
+                {% include 'home/form-template.html' %}
+                <div class="col-md-2">
+                    <a href="{% url 'company:profile' %}" class="btn btn-default">Cancel</a>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}Post List{% endblock %}
+
+{% block postactive %}active{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 style="text-align:center">My Posts</h4>
+                </div>
+                <div class="panel-body">
+                    {% if posts.count == 0 %}
+                        <div class="alert alert-warning">
+                            <p>
+                                You currently don't have any posts.
+                                <a href="{% url 'post:new' %}"><strong>Create a post</strong></a>
+                                 to get started.
+                            </p>
+                        </div>
+                    {% else %}
+                        {% include 'post/post_list.html' %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'resume/list_base.html' %}
+
+{% block title %}Experience List{% endblock %}
+
+{% block list %}
+    <tr class="w3-blue">
+        <th>Title</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Type</th>
+        <th></th>
+        <th><a class="w3-btn w3-teal w3-border w3-border-white" href="{% url 'resume:newexperience' rk=rkey%}">New Experience</a></th>
+    </tr>
+    {% for x in list %}
+        <tr>
+            <td>{{ x.title }}</td>
+            <td>{{ x.start }}</td>
+            <td>{{ x.end }}</td>
+            <td>{{ x.experience_type }}</td>
+            <td><a href="{% url 'resume:updateexperience' pk=x.pk %}">Edit</a></td>
+            <td><a href="{% url 'resume:deleteexperience' pk=x.pk rk=rkey%}">Delete</a></td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block noresult %}
+        <div class="w3-dropdown-hover info-div">
+            <div class="w3-container">
+                <i class="fa fa-info-circle w3-text-blue w3-xlarge"></i>
+                <div class="w3-dropdown-content" style="width:600px">
+                    <div class="w3-card">
+                        <header class="w3-container w3-blue">
+                            <h4>Experience information</h4>
+                        </header>
+                        <div class="w3-container">
+                            <p>
+                                Experience represents professional or any related that you may have had, ranging from community
+                                service to professional experience.<br/>
+                                <strong>Steps to creating a new experience object:</strong>
+                                <ul>
+                                    <li>Click create new experience</li>
+                                    <li>Enter the title that you held</li>
+                                    <li>Enter the start date</li>
+                                    <li>Enter the end date</li>
+                                    <li>Enter a short description of the experience</li>
+                                    <li>Enter the type of the experience</li>
+                                    <li>Save your new experience</li>
+                                </ul>
+                            </p>
+                        </div>
+                        <footer class="w3-container w3-light-grey">
+                            Any fictive or false information attached to your profile will result in a termination of your account.
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% if list.count == 0 %}
+        <div class="w3-container w3-orange">
+            <p>
+                No experiences found for this resume. <a href="{% url 'resume:newexperience' rk=rkey%}">Click Here</a> to add experiences.
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

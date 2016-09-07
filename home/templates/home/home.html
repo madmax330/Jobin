@@ -1,0 +1,48 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Jobin Home{% endblock %}
+{% block homeactive %}active{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default col-md-4">
+        <div class="panel-body">
+            <h2>Login Here:</h2>
+            <hr/>
+            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if msg %}
+                    <div class="{{ cl }}">
+                        <p>{{ msg }}</p>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input class="form-control" type="text" name="username" placeholder="Username"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input class="form-control" type="password" name="password" placeholder="Password"/>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Login</button>
+
+            </form>
+
+            <hr/>
+            <h4>Don't have an account?</h4>
+            <div class="signup-div col-sm-12">
+                <a href="{% url 'home:register' 'student'%}" class="btn btn-default col-sm-12">New Student Account</a>
+            </div>
+            <div class="signup-div col-sm-12">
+                <a href="{% url 'home:register' 'company' %}" class="btn btn-default col-sm-12">New Company Account</a>
+            </div>
+
+
+        </div>
+
+    </div>
+    <div class="col-md-8">
+        <p>This is the content that is displayed on the home page.</p>
+    </div>
+{% endblock %}

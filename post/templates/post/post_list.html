@@ -1,0 +1,26 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Wage</th>
+            <th>Openings</th>
+            <th>Start Date</th>
+            <th>Application Deadline</th>
+            <th></th>
+            <th><a href="{% url 'post:new' %}"><button class="btn btn-success">New Post</button></a></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in posts %}
+        <tr>
+            <td>{{ p.title }}</td>
+            <td>{{ p.wage }}</td>
+            <td>{{ p.openings }}</td>
+            <td>{{ p.start_date }}</td>
+            <td>{{ p.deadline }}</td>
+            <td><a href="{% url 'post:companypost' p.pk %}">Details</a></td>
+            <td><a href="{% url 'post:update' p.pk %}">Edit</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

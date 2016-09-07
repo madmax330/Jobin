@@ -1,0 +1,33 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}New Company{% endblock %}
+
+{% block profileactive %}active{% endblock %}
+
+{% block content %}
+    <div class="alert alert-info">
+        <h4>Welcome to Jobin!</h4>
+        <hr/>
+        <ul>
+            <li>Please fill out your company info, as it will be displayed
+            to other candidates when viewing your posts.</li>
+            <li><strong>Note:</strong>Your email and phone number will remain
+            confidential to ensure that you do not receive any spam.</li>
+            <li>Thank you, and have fun using Jobin!</li>
+        </ul>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Company Information Form
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include 'company/form_template.html' %}
+                <div class="col-md-offset-2 col-md-10">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
