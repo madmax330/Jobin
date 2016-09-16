@@ -37,6 +37,7 @@ class Experience(models.Model):
     start = models.DateField()
     end = models.DateField()
     description = models.TextField()
+    company = models.CharField(max_length=100, null=True)
     experience_type = models.CharField(max_length=50)
 
     def get_absolute_url(self):

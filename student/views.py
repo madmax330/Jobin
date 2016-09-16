@@ -3,6 +3,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Student
 from post.models import Application
+from home.models import Message, Notification
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,7 +16,17 @@ class IndexView(View):
         res = Student.objects.filter(user=request.user)
         if res.count() > 0:
             apps = Application.objects.filter(student=res.first())
-            return render(request, self.template_name, {'student': res.first(), 'apps': apps})
+            msgs = Message.objects.filter(student=res.first())
+            notifications = Notification.objects.filter(student=res.first())
+            context = {
+                'student': res.first(),
+                'apps': apps,
+                'msgs': msgs,
+                'notifications': notifications,
+            }
+            for x in msgs:
+                x.delete()
+            return render(request, self.template_name, context)
         else:
             return redirect('student:new')
 
@@ -28,12 +39,29 @@ class NewStudentView(CreateView):
         student = form.save(commit=False)
         student.user = self.request.user
         student.email = self.request.user.email
+        x = Message()
+        x.code = 'info'
+        x.message = 'Your profile was created successfully. Welcome to Jobin!'
+        x.student = student
         return super(NewStudentView, self).form_valid(form)
 
 
 class UpdateStudentView(UpdateView):
     model = Student
     form_class = NewStudentForm
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateStudentView, self).get_context_data(**kwargs)
+        context['update'] = 'True'
+        return context
+
+    def form_valid(self, form):
+        student = Student.objects.get(user=self.request.user)
+        x = Message()
+        x.code = 'info'
+        x.message = 'Your profile was successfully updated.'
+        x.student = student
+        return super(UpdateStudentView, self).form_valid(form)
 
 
 class DetailsView(generic.DetailView):

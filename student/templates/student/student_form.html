@@ -1,18 +1,32 @@
 {% extends 'student/student_base.html' %}
 
-{% block title %}New Student{% endblock %}
+{% block title %}{% if update %}Update{% else %}New{% endif %} Student Form{% endblock %}
 
 {% block homeactive %}active{% endblock %}
 
 {% block content %}
     <div class="w3-container w3-padding-32">
         <div class="w3-container w3-dark-grey w3-center">
-            <h3>New Student Form:</h3>
+            {% if update %}
+                <h3>Update Student Form:</h3>
+            {% else %}
+                <h3>New Student Form:</h3>
+            {% endif %}
+
         </div>
         <form class="w3-container w3-border-left w3-border-right w3-border-bottom w3-white" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% include 'student/form_template.html' %}
-            <button type="submit" class="w3-btn w3-blue">Submit</button>
+            {% if update %}
+                <div class="w3-third">
+                    <a href="javascript:history.back()" class="w3-btn w3-grey">Cancel</a>
+                </div>
+                <div class="w3-rest">
+                    <button type="submit" class="w3-btn w3-blue">Save</button>
+                </div>
+            {% else %}
+                <button type="submit" class="w3-btn w3-blue">Submit</button>
+            {% endif %}
         </form>
     </div>
 {% endblock %}

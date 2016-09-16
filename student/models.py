@@ -20,6 +20,7 @@ class Student(models.Model):
     gender = models.CharField(max_length=20, null=True)
     email = models.CharField(max_length=100, null=True)
     phone = models.CharField(max_length=30, null=True)
+    linkedin = models.CharField(max_length=200, null=True)
 
     def get_absolute_url(self):
         return reverse('student:details', kwargs={'pk': self.pk})

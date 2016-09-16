@@ -19,6 +19,7 @@
                         <input style="margin-top:10px;" type="checkbox" name="keep" checked/>
                         <label>Keep applications that are not in filtered values.</label>
                         <button class="btn btn-default" type="submit">Filter</button>
+                        <a href="{% url 'post:applicants' pk=post.pk %}" class="btn btn-default">Remove Filter</a>
                     </form>
                 </div>
             </div>
@@ -39,7 +40,7 @@
                         <td>{{ x.school }}</td>
                         <td>{{ x.program }}</td>
                         <td>{{ x.date_applied }}</td>
-                        <td><a href="#">Discard</a></td>
+                        <td><a href="{% url 'post:discard' pk=post.pk ak=x.pk %}">Discard</a></td>
                     </tr>
                 {% endfor %}
             </table>

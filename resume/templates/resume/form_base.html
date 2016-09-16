@@ -12,7 +12,12 @@
         <form class="w3-container w3-border-left w3-border-right w3-border-bottom w3-white" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% include 'resume/form_template.html' %}
-            <button type="submit" class="w3-btn w3-blue">Save</button>
+            <div class="w3-third">
+                <a href="javascript:history.back()" class="w3-btn w3-grey">Cancel</a>
+            </div>
+            <div class="w3-rest">
+                <button type="submit" class="w3-btn w3-blue">Save</button>
+            </div>
         </form>
     </div>
 {% endblock %}

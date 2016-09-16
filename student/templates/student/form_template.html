@@ -4,7 +4,7 @@
     </div>
     <div class="w3-row">
         <p class="w3-col s2">
-            <label>{{ field.label_tag }}</label>
+            <label>{{ field.label_tag }}{% if field.field.required %} * {% endif %}</label>
         </p>
         <div class="w3-col s12">
             {{ field }}

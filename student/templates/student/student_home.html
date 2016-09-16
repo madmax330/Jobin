@@ -8,6 +8,18 @@
     <div class="w3-row">
         <div class="w3-col s4">
             <div class="w3-container w3-padding-16">
+            {% if notifications %}
+                <div class="w3-card-4 w3-sand">
+                    <header>
+                        <h5>Notifications ({{ notifications.count }})</h5>
+                    </header>
+                {% for x in notifications %}
+                    <p>{{ x.message }}</p>
+                    <a href="#" class="w3-btn w3-grey">Close</a>
+                    <hr/>
+                {% endfor %}
+                </div>
+            {% endif %}
                 <div class="w3-card-4 w3-white">
                     <header class="w3-container w3-dark-grey">
                         <h3 class="w3-center">Student Information</h3>

@@ -13,8 +13,8 @@ class ResumeForm(forms.ModelForm):
             'gpa': forms.TextInput(attrs={'class': 'w3-input w3-half'}),
             'is_active': forms.Select(attrs={'class': 'w3-input w3-half'},
                                       choices=(
+                                          ('false', 'False'),
                                           ('true', 'True'),
-                                          ('true', 'False'),
                                       )),
         }
 
@@ -41,12 +41,13 @@ class ExperienceForm(forms.ModelForm):
 
     class Meta:
         model = Experience
-        fields = ['title', 'start', 'end', 'description', 'experience_type']
+        fields = ['title', 'start', 'end', 'company', 'description', 'experience_type']
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'w3-input'}),
-            'start': forms.DateInput(attrs={'class': 'w3-input', 'type': 'date'}),
-            'end': forms.DateInput(attrs={'class': 'w3-input', 'type': 'date'}),
+            'start': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
+            'end': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
+            'company': forms.TextInput(attrs={'class': 'w3-input'}),
             'description': forms.Textarea(attrs={'class': 'w3-input'}),
             'experience_type': forms.Select(attrs={'class': 'w3-input w3-half'},
                                             choices=(
@@ -68,7 +69,7 @@ class AwardForm(forms.ModelForm):
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'w3-input'}),
-            'date': forms.DateInput(attrs={'class': 'w3-input', 'type': 'date'}),
+            'date': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
             'description': forms.Textarea(attrs={'class': 'w3-input'}),
             'award_type': forms.TextInput(attrs={'class': 'w3-input'})
         }
@@ -83,8 +84,8 @@ class SchoolForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w3-input'}),
             'program': forms.TextInput(attrs={'class': 'w3-input'}),
-            'start': forms.DateInput(attrs={'class': 'w3-input', 'type': 'date'}),
-            'end': forms.DateInput(attrs={'class': 'w3-input', 'type': 'date'}),
+            'start': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
+            'end': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
             'level': forms.Select(attrs={'class': 'w3-input w3-half'},
                                   choices=(
                                       ('university', 'University'),

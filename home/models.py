@@ -6,6 +6,7 @@ from company.models import Company
 class JobinSchool(models.Model):
     name = models.CharField(max_length=100)
     country = models.CharField(max_length=50)
+    email = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -26,12 +27,35 @@ class JobinMajor(models.Model):
         return self.name
 
 
-class Notification(models.Model):
-    priority = models.CharField(max_length=50)
-    message = models.CharField(max_length=250)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    date = models.DateTimeField(null=True)
+class JobinTerritory(models.Model):
+    name = models.CharField(max_length=50)
+    type = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.date
+        return self.name
+
+
+class Notification(models.Model):
+    code = models.IntegerField()
+    priority = models.CharField(max_length=50)
+    message = models.CharField(max_length=250)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+    date = models.DateTimeField(null=True)
+    opened = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.message
+
+
+class Message(models.Model):
+    code = models.CharField(max_length=30)
+    message = models.CharField(max_length=250)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+    opened = models.BooleanField(default=False)
+    internal = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.message

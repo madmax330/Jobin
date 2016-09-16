@@ -21,7 +21,7 @@ class NewPostForm(forms.ModelForm):
                                       ('internship', 'Internship'),
                                       ('part time', 'Part-Time'),
                                   )),
-            'wage': forms.NumberInput(attrs={'class': 'form-control'}),
+            'wage': forms.TextInput(attrs={'class': 'form-control'}),
             'openings': forms.NumberInput(attrs={'class': 'form-control'}),
             'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),

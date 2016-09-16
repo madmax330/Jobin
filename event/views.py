@@ -1,6 +1,7 @@
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import generic
 from .models import Event
+from home.models import Message
 from .forms import NewEventForm
 from company.models import Company
 
@@ -12,6 +13,11 @@ class CompanyEvents(generic.ListView):
     def get_queryset(self):
         return Event.objects.filter(company=Company.objects.get(user=self.request.user))
 
+    def get_context_data(self, **kwargs):
+        context = super(CompanyEvents, self).get_context_data(**kwargs)
+        context['msgs'] = Message.objects.filter(company=Company.objects.get(user=self.request.user))
+        return context
+
 
 class NewEventView(CreateView):
     model = Event
@@ -20,12 +26,26 @@ class NewEventView(CreateView):
     def form_valid(self, form):
         event = form.save(commit=False)
         event.company = Company.objects.get(user=self.request.user)
+        x = Message()
+        x.code = 'info'
+        x.message = 'Your event was created successfully.'
+        x.company = event.company
+        x.save()
         return super(NewEventView, self).form_valid(form)
 
 
 class EventUpdateView(UpdateView):
     model = Event
     form_class = NewEventForm
+
+    def form_valid(self, form):
+        event = form.save(commit=False)
+        x = Message()
+        x.code = 'info'
+        x.message = 'Your event was created successfully.'
+        x.company = event.company
+        x.save()
+        return super(EventUpdateView, self).form_valid(form)
 
 
 class CompanyEvent(generic.DetailView):

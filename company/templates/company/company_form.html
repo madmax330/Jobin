@@ -1,6 +1,6 @@
 {% extends 'company/company_base.html' %}
 
-{% block title %}New Company{% endblock %}
+{% block title %}{% if update %}Update{% else %}New{% endif %} Company{% endblock %}
 
 {% block profileactive %}active{% endblock %}
 
@@ -24,9 +24,18 @@
             <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include 'company/form_template.html' %}
-                <div class="col-md-offset-2 col-md-10">
-                    <button class="btn btn-primary" type="submit">Submit</button>
-                </div>
+                {% if update %}
+                    <div class="col-md-2">
+                        <a href="javascript:history.back()" class="btn btn-default">Cancel</a>
+                    </div>
+                    <div class="col-md-10">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                {% else %}
+                    <div class="col-md-offset-2 col-md-10">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                {% endif %}
             </form>
         </div>
     </div>

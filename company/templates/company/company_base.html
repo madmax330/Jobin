@@ -36,6 +36,27 @@
         </div>
     </nav>
     <div class="container">
+        {% for x in msgs %}
+            {% if x.code == 'danger' %}
+                <div class="alert alert-danger">
+                    <p>
+                        {{ x.message }}
+                    </p>
+                </div>
+            {% elif x.code == 'warning' %}
+                <div class="alert alert-warning">
+                    <p>
+                        {{ x.message }}
+                    </p>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <p>
+                        {{ x.message }}
+                    </p>
+                </div>
+            {% endif %}
+        {% endfor %}
         {% block content %}
         {% endblock %}
     </div>

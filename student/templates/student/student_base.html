@@ -47,6 +47,21 @@
     </script>
 
     <div class="w3-container">
+        {% for x in msgs %}
+            {% if x.code == 'danger' %}
+                <div class="w3-pale-red  w3-leftbar w3-border-red">
+                    <span class="w3-text-red">{{ x.message }}</span>
+                </div>
+            {% elif x.code == 'warning' %}
+                <div class="w3-pale-yellow  w3-leftbar w3-border-yellow">
+                    <span class="w3-text-yellow">{{ x.message }}</span>
+                </div>
+            {% else %}
+                <div class="w3-pale-blue  w3-leftbar w3-border-blue">
+                    <span class="w3-text-blue">{{ x.message }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
         {% block content %}
         {% endblock %}
     </div>

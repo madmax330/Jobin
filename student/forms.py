@@ -9,7 +9,7 @@ class NewStudentForm(forms.ModelForm):
         model = Student
         fields = [
             'firstname', 'lastname', 'dob', 'gender', 'phone',
-            'school', 'program', 'major', 'graduate', 'address', 'city', 'state', 'zipcode', 'country'
+            'school', 'program', 'major', 'graduate', 'address', 'city', 'state', 'zipcode', 'country', 'linkedin'
         ]
 
         widgets = {
@@ -27,4 +27,5 @@ class NewStudentForm(forms.ModelForm):
             'major': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=JobinMajor.objects.values_list('name', 'name')),
             'graduate': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=(('TRUE', 'True'), ('FALSE', 'False'))),
             'dob': forms.DateInput(attrs={'class': 'w3-input w3-quarter', 'type': 'date'}),
+            'linkedin': forms.TextInput(attrs={'class': 'w3-input'}),
         }
