@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
+from .models import JobinSchool
 
 
 class NewUserForm(forms.ModelForm):
@@ -18,6 +19,11 @@ class NewUserForm(forms.ModelForm):
         clean_data = super(NewUserForm, self).clean()
         if not clean_data.get("username") == clean_data.get("email"):
             raise forms.ValidationError("Username and Email don't match")
+        email = clean_data.get("email")
+        ext = email.split('@', 1)
+        school = JobinSchool.objects.filter(email=ext[1].lower())
+        if school is None:
+            raise forms.ValidationError("The service is not yet open for this school.")
 
 
 class LoginForm(AuthenticationForm):

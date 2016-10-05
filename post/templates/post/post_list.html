@@ -7,17 +7,19 @@
             <th>Start Date</th>
             <th>Application Deadline</th>
             <th></th>
+            <th></th>
             <th><a href="{% url 'post:new' %}"><button class="btn btn-success">New Post</button></a></th>
         </tr>
     </thead>
     <tbody>
     {% for p in posts %}
-        <tr>
+        <tr {% if x.notified %}style="background-color: #c2f9ce"{% endif %}>
             <td>{{ p.title }}</td>
             <td>{{ p.wage }}</td>
             <td>{{ p.openings }}</td>
             <td>{{ p.start_date }}</td>
             <td>{{ p.deadline }}</td>
+            <td><a href="{% url 'post:applicants' p.pk %}">Applicants</a></td>
             <td><a href="{% url 'post:companypost' p.pk %}">Details</a></td>
             <td><a href="{% url 'post:update' p.pk %}">Edit</a></td>
         </tr>

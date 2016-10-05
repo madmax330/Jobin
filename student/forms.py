@@ -8,14 +8,13 @@ class NewStudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = [
-            'firstname', 'lastname', 'dob', 'gender', 'phone',
-            'school', 'program', 'major', 'graduate', 'address', 'city', 'state', 'zipcode', 'country', 'linkedin'
+            'firstname', 'lastname', 'dob', 'phone', 'school', 'program', 'major',
+            'graduate', 'address', 'city', 'state', 'zipcode', 'country', 'linkedin', 'work_eligible'
         ]
 
         widgets = {
             'firstname': forms.TextInput(attrs={'class': 'w3-input'}),
             'lastname': forms.TextInput(attrs={'class': 'w3-input'}),
-            'gender': forms.TextInput(attrs={'class': 'w3-input'}),
             'phone': forms.TextInput(attrs={'class': 'w3-input'}),
             'address': forms.TextInput(attrs={'class': 'w3-input'}),
             'city': forms.TextInput(attrs={'class': 'w3-input'}),
@@ -28,4 +27,6 @@ class NewStudentForm(forms.ModelForm):
             'graduate': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=(('TRUE', 'True'), ('FALSE', 'False'))),
             'dob': forms.DateInput(attrs={'class': 'w3-input w3-quarter', 'type': 'date'}),
             'linkedin': forms.TextInput(attrs={'class': 'w3-input'}),
+            'work_eligible': forms.Select(attrs={'class': 'w3-input w3-half'},
+                                     choices=(('TRUE', 'True'), ('FALSE', 'False'))),
         }

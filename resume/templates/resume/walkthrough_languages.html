@@ -1,0 +1,18 @@
+{% extends 'resume/walkthrough_base.html' %}
+
+{% block title %}New Language{% endblock %}
+
+{% block form_title %}New Language Form:{% endblock %}
+
+{% block info %}
+    It is required for you to enter at least one language for this resume before you can continue.
+{% endblock %}
+
+{% block buttons %}
+    <div class="w3-third">
+        <button type="submit" class="w3-btn w3-blue">Submit</button>
+    </div>
+    <div class="w3-rest">
+        <a href="{% url 'resume:nav' rk=rkey rq='language_done' %}" class="w3-btn w3-green">Done</a>
+    </div>
+{% endblock %}

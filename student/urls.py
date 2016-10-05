@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^new/$', views.NewStudentView.as_view(), name='new'),
     url(r'^details/(?P<pk>[0-9]+)/$', views.DetailsView.as_view(), name='details'),
     url(r'^profile/$', views.ProfileView.as_view(), name='profile'),
+    url(r'^activity/$', views.ActivityView.as_view(), name='activity'),
     url(r'^update/(?P<pk>[0-9]+)/$', views.UpdateStudentView.as_view(), name='update'),
 ]
 

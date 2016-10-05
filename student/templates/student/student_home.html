@@ -15,9 +15,10 @@
                     </header>
                 {% for x in notifications %}
                     <p>{{ x.message }}</p>
-                    <a href="#" class="w3-btn w3-grey">Close</a>
+                    <a href="{% url 'home:closenote' u='student' pk=x.pk %}" class="w3-btn w3-grey">Close</a>
                     <hr/>
                 {% endfor %}
+                <a href="{% url 'home:closeallnotes' u='student' %}" class="w3-btn w3-pale-red w3-rest">Close all</a>
                 </div>
             {% endif %}
                 <div class="w3-card-4 w3-white">
@@ -54,8 +55,8 @@
                             <th>Status</th>
                         </tr>
                         {% for x in apps %}
-                            <tr>
-                                <td><a href="{% url 'post:studentdetails' pk=x.post.pk %}">{{ x.post.title }}</a></td>
+                            <tr {% if x.cover_requested %}class="w3-border-green w3-pale-green"{% endif %}>
+                                <td><a href="{% url 'post:studentdetails' pk=x.post.pk ak=x.pk%}">{{ x.post_title }}</a></td>
                                 <td>{{ x.status }}</td>
                             </tr>
                         {% endfor %}

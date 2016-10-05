@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from .forms import NewUserForm, StudentInfoForm, CompanyInfoForm
+from .models import JobinSchool, Notification
+from student.models import Student
+from company.models import Company
 from django.views.generic import View
 
 
@@ -26,7 +29,7 @@ class IndexView(View):
                     return redirect('student:index')
                 else:
                     return redirect('home:index')
-        return render(request, self.template_name)
+        return render(request, self.template_name, {'error': 'Username or password is incorrect.'})
 
 
 class RegisterView(View):
@@ -121,5 +124,38 @@ class VerifyView(View):
 class LogoutView(View):
 
     def get(self, request):
+        logout(request)
+        return redirect('home:index')
+
+
+class CloseNotification(View):
+
+    def get(self, request, u, pk):
+        n = Notification.objects.get(pk=pk)
+        n.opened = True
+        n.save()
+        if u == 'company':
+            return redirect('company:index')
+        elif u == 'student':
+            return redirect('student:index')
+        logout(request)
+        return redirect('home:index')
+
+
+class CloseAllNotifications(View):
+
+    def get(self, request, u):
+        if u == 'company':
+            ns = Notification.objects.filter(company=Company.objects.filter(user=self.request.user).first())
+            for x in ns:
+                x.opened = True
+                x.save()
+            return redirect('company:index')
+        elif u == 'student':
+            ns = Notification.objects.filter(student=Student.objects.filter(user=self.request.user).first())
+            for x in ns:
+                x.opened = True
+                x.save()
+            return redirect('student:index')
         logout(request)
         return redirect('home:index')

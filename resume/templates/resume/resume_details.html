@@ -27,6 +27,7 @@
                     <th>Title</th>
                     <th>Start</th>
                     <th>End</th>
+                    <th>Company</th>
                     <th>
                         <a class="w3-btn w3-indigo w3-right" href="{% url 'resume:experiencelist' rk=resume.pk %}">Manage</a>
                     </th>
@@ -38,6 +39,7 @@
                         <td>{{ x.title }}</td>
                         <td>{{ x.start }}</td>
                         <td>{{ x.end }}</td>
+                        <td>{{ x.company }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

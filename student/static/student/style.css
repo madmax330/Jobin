@@ -1,5 +1,5 @@
 .active{
-    background-color: #004E69;
+    background-color: grey;
 }
 
 body{
@@ -17,4 +17,20 @@ body{
 .mySlides{
     display: block;
     overflow: hidden;
+}
+
+.message{
+    margin: 5px 0px 10px 0px;
+}
+
+.message span{
+    padding: 10px;
+}
+
+.presentbtn{
+    margin-left: 10px;
+}
+
+.scrollable{
+    overflow: scroll;
 }

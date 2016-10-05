@@ -12,14 +12,28 @@
                     <h4 style="text-align: center;">Filters</h4>
                 </div>
                 <div class="panel-body">
-                    <form class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    <form id="filter-form" class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input class="form-control" type="text" name="school" placeholder="By School"/>
-                        <input style="margin-top:10px;" class="form-control" type="text" name="program" placeholder="By Program"/>
+                        <h5>Schools:</h5>
+                        <div class="sdiv">
+                            {% for x in schools %}
+                                <input class="school-val" type="checkbox" name="{{ x.name }}" value="{{ x.name }}">
+                                <span> - {{ x.name }}</span><br/>
+                            {% endfor %}
+                        </div>
+                        <h5>Majors:</h5>
+                        <div class="mdiv">
+                            {% for x in majors %}
+                                <input class="major-val" type="checkbox" name="{{ x.name }}" value="{{ x.name }}">
+                                <span> - {{ x.name }}</span><br/>
+                            {% endfor %}
+                        </div>
+                        <input id="school-input" style="display: none;" name="schools" value="">
+                        <input id="major-input" style="display: none;" name="majors" value="">
                         <input style="margin-top:10px;" type="checkbox" name="keep" checked/>
-                        <label>Keep applications that are not in filtered values.</label>
-                        <button class="btn btn-default" type="submit">Filter</button>
+                        <span>Keep applications that are not in filtered values.</span><br/>
                         <a href="{% url 'post:applicants' pk=post.pk %}" class="btn btn-default">Remove Filter</a>
+                        <button class="btn btn-default" type="submit">Filter</button>
                     </form>
                 </div>
             </div>
@@ -35,8 +49,8 @@
                     <th></th>
                 </tr>
                 {% for x in list %}
-                    <tr>
-                        <td><a href="{% url 'post:applicant' pk=post.pk%}">{{ x.fname }} {{ x.lname }}</a></td>
+                    <tr {% if x.cover_submitted %}style="background-color: #c2f9ce"{% endif %}>
+                        <td><a href="{% url 'post:applicantdetails' pk=x.pk%}">{{ x.fname }} {{ x.lname }}</a></td>
                         <td>{{ x.school }}</td>
                         <td>{{ x.program }}</td>
                         <td>{{ x.date_applied }}</td>
@@ -61,4 +75,21 @@
         </div>
     </div>
     <a href="{% url 'post:companypost' pk=post.pk %}" class="btn btn-default">Back to post</a>
+
+    <script>
+        $(function(){
+           $("#filter-form").submit(function(){
+               var schools = "";
+               var majors = "";
+               $(".sdiv").children("input:checked").each(function(){
+                  schools = schools + this.value + ",";
+               });
+               $(".mdiv").children("input:checked").each(function(){
+                  majors = majors + this.value + ",";
+               });
+               $("#school-input").val(schools.substring(0,schools.length-1));
+               $("#major-input").val(majors.substring(0,majors.length-1));
+           });
+        });
+    </script>
 {% endblock %}

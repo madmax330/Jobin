@@ -3,7 +3,7 @@ from django.views import generic
 from django.views.generic import View
 from django.shortcuts import render, redirect
 from .models import Post, Application
-from home.models import Message, Notification
+from home.models import Message, Notification, JobinSchool, JobinProgram, JobinMajor
 from .forms import NewPostForm
 from company.models import Company
 from student.models import Student
@@ -21,7 +21,10 @@ class CompanyPosts(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CompanyPosts, self).get_context_data(**kwargs)
-        context['msgs'] = Message.objects.filter(company=Company.objects.get(user=self.request.user))
+        msgs = Message.objects.filter(company=Company.objects.get(user=self.request.user))
+        context['msgs'] = msgs
+        for x in msgs:
+            x.delete()
         return context
 
 
@@ -61,13 +64,20 @@ class CompanyPost(View):
 
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
-        apps = Application.objects.filter(post=post)
+        apps = Application.objects.filter(post=post).filter(status='active')
         l = []
         for x in apps:
             xx = Applicant(x, x.student)
             l.append(xx)
         msgs = Message.objects.filter(company=post.company)
-        return render(request, self.template_name, {'post': post, 'applicants': l, 'msgs': msgs})
+        context = {
+            'post': post,
+            'applicants': l,
+            'msgs': msgs
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
 
 
 class StudentPosts(View):
@@ -95,6 +105,8 @@ class StudentPosts(View):
                 'rkey': rkey,
                 'msgs': msgs,
             }
+            for x in msgs:
+                x.delete()
             return render(request, self.template_name, context)
         except ObjectDoesNotExist:
             return redirect('student:new')
@@ -114,9 +126,54 @@ class StudentPosts(View):
 class StudentDetailsView(View):
     template_name = 'post/student_post_details.html'
 
-    def get(self, request, pk):
+    def get(self, request, pk, ak):
         post = Post.objects.get(pk=pk)
-        return render(request, self.template_name, {'x': post})
+        app = Application.objects.get(pk=ak)
+        msgs = Message.objects.filter(student=app.student)
+        context = {
+            'post': post,
+            'app': app,
+            'msgs': msgs,
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk, ak):
+        cover = request.POST.get('cover')
+        post = Post.objects.get(pk=pk)
+        app = Application.objects.get(pk=ak)
+        if cover is not None:
+            app.cover = cover
+            app.cover_submitted = True
+            app.save()
+            post.notified = True
+            post.save()
+            x = Message()
+            x.student = app.student
+            x.message = 'Cover letter successfully submitted for post: ' + app.post_title
+            x.code = 'info'
+            x.save()
+            xx = Notification()
+            xx.code = 100
+            xx.message = 'Cover letter submitted by applicant (' + app.student_name + ') for post ' + app.post_title
+            xx.company = post.company
+            xx.save()
+            return redirect('student:index')
+        xx = Message()
+        xx.student = app.student
+        xx.message = 'Cover letter cannot be left blank.'
+        xx.code = 'danger'
+        xx.save()
+        msgs = Message.objects.filter(student=app.student)
+        context = {
+            'post': post,
+            'app': app,
+            'msgs': msgs,
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
 
 
 class ApplyView(View):
@@ -128,6 +185,7 @@ class ApplyView(View):
         if resume is not None:
             app = Application()
             app.post_title = post.title
+            app.student_name = student.firstname + ' ' + student.lastname
             app.post = post
             app.student = student
             app.resume = resume
@@ -155,38 +213,54 @@ class PostApplicantsView(View):
             xx = Applicant(x, x.student)
             l.append(xx)
         msgs = Message.objects.filter(company=post.company)
-        return render(request, self.template_name, {'post': post, 'list': l, 'msgs': msgs})
+        program = JobinProgram.objects.filter(name=post.programs)
+        context = {
+            'post': post,
+            'list': l,
+            'msgs': msgs,
+            'schools': JobinSchool.objects.all(),
+            'majors': JobinMajor.objects.filter(program=program)
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
 
     def post(self, request, pk):
         post = Post.objects.get(pk=pk)
-        school_filter = request.POST.get('school')
-        program_filter = request.POST.get('program')
+        school_filter = request.POST.get('schools')
+        major_filter = request.POST.get('majors')
+        schools = school_filter.split(',')
+        majors = major_filter.split(',')
+        x = Message()
+        x.company = post.company
+        x.message = 'Current filters. Schools: ' + school_filter + 'Majors: ' + major_filter
+        x.save()
         keep = request.POST.get('keep')
         apps = Application.objects.filter(post=post).filter(status='active')
         l = []
         for x in apps:
             xx = Applicant(x, x.student)
-            if school_filter and program_filter:
-                if xx.school in school_filter and xx.program in program_filter:
+            if schools and majors:
+                if xx.school in schools and xx.program in majors:
                     l.append(xx)
-            elif school_filter:
-                if xx.school in school_filter:
+            elif schools:
+                if xx.school in schools:
                     l.append(xx)
-            elif program_filter:
-                if xx.program in program_filter and xx not in l:
+            elif majors:
+                if xx.program in majors:
                     l.append(xx)
         if not keep:
             d = []
             for x in apps:
                 xx = Applicant(x, x.student)
-                if school_filter and program_filter:
-                    if xx.school not in school_filter and xx.program not in program_filter:
+                if schools and majors:
+                    if xx.school not in schools and xx.program not in majors:
                         d.append(x)
-                elif program_filter:
-                    if xx.program not in program_filter:
+                elif majors:
+                    if xx.program not in majors:
                         d.append(x)
-                elif school_filter:
-                    if xx.school not in school_filter:
+                elif schools:
+                    if xx.school not in schools:
                         d.append(x)
             for x in d:
                 x.status = 'closed'
@@ -209,8 +283,14 @@ class SingleApplicantView(View):
         if apps.count() > 0:
             xx = Application.objects.filter(post=post).filter(status='active')[0]
         else:
-            return redirect('post:applicants', pk=post.pk)  # msg
+            x = Message()
+            x.company = post.company
+            x.message = 'There are no more active applicants for this post'
+            x.code = 'warning'
+            x.save()
+            return redirect('post:applicants', pk=post.pk)
         app = Applicant(xx, xx.student)
+        msgs = Message.objects.filter(company=post.company)
         context = {
             'app': app,
             'page': 0,
@@ -220,8 +300,10 @@ class SingleApplicantView(View):
             'aws': Award.objects.filter(resume=app.resume),
             'schools': School.objects.filter(resume=app.resume),
             'skills': Skill.objects.filter(resume=app.resume),
-            'msgs': Message.objects.filter(company=post.company),
+            'msgs': msgs,
         }
+        for m in msgs:
+            m.delete()
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
@@ -234,17 +316,22 @@ class SingleApplicantView(View):
             x = Application.objects.get(pk=appid)
             x.status = 'closed'
             x.save()
-            x = Message()
-            x.code = 'info'
-            x.message = 'The applicant was successfully removed.'
-            x.company = post.company
-            x.save()
+            xx = Message()
+            xx.code = 'info'
+            xx.message = 'The applicant was successfully removed.'
+            xx.company = post.company
+            xx.save()
+            n = Notification()
+            n.student = x.student
+            n.message = 'Your application for the ' + x.post.title + ' opportunity was discontinued.'
+            n.save()
             apps = Application.objects.filter(post=post).filter(status='active')
             if apps.count() > 0:
                 if page >= apps.count():
                     page = 0
                 xx = apps[page]
                 app = Applicant(xx, xx.student)
+                msgs = Message.objects.filter(company=post.company)
                 context = {
                     'app': app,
                     'page': page,
@@ -254,23 +341,37 @@ class SingleApplicantView(View):
                     'aws': Award.objects.filter(resume=app.resume),
                     'schools': School.objects.filter(resume=app.resume),
                     'skills': Skill.objects.filter(resume=app.resume),
-                    'msgs': Message.objects.filter(company=post.company),
+                    'msgs': msgs,
                 }
+                for m in msgs:
+                    m.delete()
                 return render(request, self.template_name, context)
             else:
                 return redirect('post:applicants', pk=pk)
         else:
             if cover == 'True':
-                x = Message()
-                x.code = 'info'
-                x.message = 'Cover letter requested successfully!'
-                x.company = post.company
-                x.save()
-                xx = Notification()
-                xx.message = post.company.name + ' requests a cover for your application to the ' \
-                    + post.title + ' position. Go to the application details to submit your cover letter'
-                xx.student = Application.objects.get(pk=appid).student
-                xx.save()
+                a = Application.objects.get(pk=appid)
+                if not a.cover_requested:
+                    x = Message()
+                    x.code = 'info'
+                    x.message = 'Cover letter requested successfully!'
+                    x.company = post.company
+                    x.save()
+                    xx = Notification()
+                    xx.code = 100
+                    xx.message = post.company.name + ' requests a cover letter for your application to the ' \
+                        + post.title + ' position. Go to the application details to submit your cover letter'
+                    xx.student = Student.objects.get(pk=a.student.pk)
+                    xx.save()
+                    a.cover_requested = True
+                    a.save()
+                else:
+                    m = Message()
+                    m.code = 'warning'
+                    m.company = post.company
+                    m.message = 'A cover letter was already sent to the applicant; you will be' \
+                                ' notified when a cover letter is received'
+                    m.save()
             apps = Application.objects.filter(post=post).filter(status='active')
             if page >= apps.count():
                 page = 0
@@ -278,6 +379,7 @@ class SingleApplicantView(View):
                 page = apps.count() - 1
             xx = apps[page]
             app = Applicant(xx, xx.student)
+            msgs = Message.objects.filter(company=post.company)
             context = {
                 'app': app,
                 'page': page,
@@ -287,8 +389,10 @@ class SingleApplicantView(View):
                 'aws': Award.objects.filter(resume=app.resume),
                 'schools': School.objects.filter(resume=app.resume),
                 'skills': Skill.objects.filter(resume=app.resume),
-                'msgs': Message.objects.filter(company=post.company),
+                'msgs': msgs,
             }
+            for m in msgs:
+                m.delete()
             return render(request, self.template_name, context)
 
 
@@ -321,6 +425,39 @@ class DiscardApplicant(View):
         xx.message = 'Applicant successfully removed.'
         xx.company = x.post.company
         xx.save()
+        n = Notification()
+        n.student = x.student
+        n.message = 'Your application for the ' + x.post.title + ' opportunity was discontinued.'
+        n.save()
+        return redirect('post:applicants', pk=pk)
+
+
+class RequestCover(View):
+
+    def get(self, request, pk, ak):
+        x = Application.objects.get(pk=ak)
+        post = x.post
+        if not x.cover_requested:
+            x.cover_requested = True
+            x.save()
+            xx = Message()
+            xx.code = 'info'
+            xx.message = 'Cover letter successfully requested.'
+            xx.company = post.company
+            xx.save()
+            xxx = Notification()
+            xxx.student = x.student
+            xxx.code = 100
+            xxx.message = post.company.name + ' requests a cover letter for your application to the ' \
+                        + post.title + ' position. Go to the application details to submit your cover letter'
+            xxx.save()
+        else:
+            m = Message()
+            m.code = 'warning'
+            m.company = post.company
+            m.message = 'A cover letter was already sent to the applicant; you will be notified when a cover letter ' \
+                        'is received.'
+            m.save()
         return redirect('post:applicants', pk=pk)
 
 
@@ -356,4 +493,5 @@ class Applicant:
         self.resume = app.resume
         self.post = app.post
         self.cover = app.cover
+        self.cover_submitted = app.cover_submitted
         self.date_applied = app.date

@@ -1,7 +1,7 @@
 {% for x in list%}
-    <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px">
+    <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px;">
         <div class="row">
-            <div class="w3-col s4">
+            <div class="w3-col s4 w3-border-right w3-border-dark-grey" style="min-height:500px">
                 <div class="w3-container w3-padding-16 w3-grey">
                     <h4 class="w3-text-white w3-center">Company</h4>
                 </div>
@@ -9,7 +9,7 @@
                     {{ x.logo }}
                     <h5 class="w3-center">{{ x.name }}</h5>
                     <label>Address:</label><span> {{ x.address }}</span><br/>
-                    <label>Website:</label><span> {{ x.website }}</span>
+                    <label>Website:</label><a href="{{ x.website }}"> {{ x.website }}</a>
                 </div>
                 <div class="w3-container w3-padding-4 w3-grey">
                     <h6 class="w3-text-white w3-center">Resumes</h6>
@@ -30,11 +30,11 @@
                     {% endfor %}
                 </table>
             </div>
-            <div class="w3-col s8 w3-border-left w3-border-dark-grey">
+            <div class="w3-col s8">
                 <div class="w3-container w3-padding-16 w3-grey">
                     <h4 class="w3-text-white w3-center">Post Information</h4>
                 </div>
-                <div class="w3-container scrollable">
+                <div class="w3-container scrollable" style="max-height: 400px;">
                     <h5 class="w3-center">{{ x.title }}</h5>
                     <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
                     <label>End Date:</label><span> {{ x.end_date }}</span><br/>

@@ -8,9 +8,8 @@ class NewPostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = [
-            'title', 'type', 'wage', 'openings', 'start_date',
-            'end_date', 'deadline', 'description', 'requirements',
-            'programs'
+            'title','programs', 'type', 'wage', 'openings', 'start_date',
+            'end_date', 'deadline', 'description', 'requirements'
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -31,5 +30,6 @@ class NewPostForm(forms.ModelForm):
             'programs': forms.Select(attrs={'class': 'form-control'}, choices=JobinProgram.objects.values_list('name', 'name')),
         }
         labels = {
-            'deadline': 'Application Deadline'
+            'deadline': 'Application Deadline',
+            'wage': 'Wage $/hr'
         }

@@ -8,6 +8,7 @@
         <th>Start Date</th>
         <th>End Date</th>
         <th>Type</th>
+        <th>Company</th>
         <th></th>
         <th><a class="w3-btn w3-teal w3-border w3-border-white" href="{% url 'resume:newexperience' rk=rkey%}">New Experience</a></th>
     </tr>
@@ -16,6 +17,7 @@
             <td>{{ x.title }}</td>
             <td>{{ x.start }}</td>
             <td>{{ x.end }}</td>
+            <td>{{ x.company }}</td>
             <td>{{ x.experience_type }}</td>
             <td><a href="{% url 'resume:updateexperience' pk=x.pk %}">Edit</a></td>
             <td><a href="{% url 'resume:deleteexperience' pk=x.pk rk=rkey%}">Delete</a></td>

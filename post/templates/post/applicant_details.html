@@ -23,6 +23,11 @@
             <label>School:</label><span> {{ app.school }}</span><br/>
             <label>Program:</label><span> {{ app.program }}</span><br/>
             <hr/>
+            {% if app.cover_submitted %}
+                <h4>Cover Letter:</h4>
+                <p>{{ app.cover }}</p>
+                <hr/>
+            {% endif %}
             <h4>Student Resume:</h4>
             <hr/>
             {% if resume.file_resume %}
@@ -110,6 +115,9 @@
                     </table>
                 {% endif %}
             {% endif %}
+            <a href="{% url 'post:coverrequest' pk=app.post.pk ak=app.pk %}" class="btn btn-info">
+                Request Cover Letter
+            </a>
         </div>
     </div>
     <a href="{% url 'post:applicants' pk=app.post.pk %}" class="btn btn-default">Back to list</a>

@@ -20,7 +20,7 @@ class IndexView(View):
                 'company': res.first(),
                 'posts': posts,
                 'msgs': msgs,
-                'notifications': Notification.objects.filter(company=res.first()),
+                'notifications': Notification.objects.filter(company=res.first()).filter(opened=False),
             }
             for x in msgs:
                 x.delete()

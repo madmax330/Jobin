@@ -1,0 +1,55 @@
+{% extends 'student/student_base.html' %}
+
+{% block title %}User Activity{% endblock %}
+
+{% block activityactive %}active{% endblock %}
+
+{% block content %}
+    <div class="w3-row">
+        <div class="w3-col w3-s5">
+            <div class="w3-card-4 w3-sand">
+                <header>
+                    <h5>Notifications ({{ notifications.count }})</h5>
+                </header>
+                {% for x in notifications %}
+                    <p>{{ x.message }}</p>
+                    <a href="{% url 'home:closenote' u='student' pk=x.pk %}" class="w3-btn w3-grey">Close</a>
+                    <hr/>
+                {% endfor %}
+                <a href="{% url 'home:closeallnotes' u='student' %}" class="w3-btn w3-pale-red" style="width:100%">Close all</a>
+            </div>
+        </div>
+        <div class="w3-col w3-s7">
+            <div class="w3-card-4 w3-white">
+                <header>
+                    <h4 class="w3-center">Posts Activity</h4>
+                </header>
+                {% if applications.count > 0 %}
+                    <table class="w3-table">
+                        <thead>
+                            <tr>
+                                <th>Post</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for x in applications %}
+                            <tr>
+                                <td>{{ x.post_title }}</td>
+                                <td>{{ x.date }}</td>
+                                <td>{{ x.status }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="w3-pale-yellow">
+                        <p>You currently don't have any posts <a href="{% url 'post:studentposts' %}">Click Here</a>
+                            to apply for jobs of your choice.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

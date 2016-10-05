@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Company Home{% endblock %}</title>
     {% load staticfiles %}
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
@@ -9,61 +10,72 @@
     <link rel="stylesheet" type="text/css" href="{% static 'student/style.css' %}">
     {% block styles %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{% static 'student/genscript.js' %}"></script>
 </head>
 <body>
-    <ul class="w3-navbar w3-blue w3-large">
-        <li class="w3-hide-medium w3-hide-large w3-black w3-opennav w3-right">
-            <a href="javascript:void(0);" onclick="myFunction()">☰</a>
-        </li>
-        <li class="w3-xlarge"><a href="#">Jobin</a></li>
-        <li class="{% block homeactive %}{% endblock %} w3-hide-small"><a href="{% url 'student:index' %}">Home</a></li>
-        <li class="{% block postsactive %}{% endblock %} w3-hide-small"><a href="{% url 'post:studentposts' %}">Posts</a></li>
-        <li class="{% block eventsactive %}{% endblock %} w3-hide-small"><a href="{% url 'event:studentevents' %}">Events</a></li>
-        <li class="{% block resumesactive %}{% endblock %} w3-hide-small"><a href="{% url 'resume:index' %}">Resumes</a></li>
-        <li class="{% block profileactive %}{% endblock %} w3-hide-small"><a href="{% url 'student:profile' %}">Profile</a></li>
-        <li class="w3-right w3-hide-small"><a href="{% url 'home:logout' %}"><i class="fa fa-sign-out"></i>Logout</a></li>
-    </ul>
+    <nav class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:300px;" id="mySidenav">
+        <header class="w3-container w3-blue">
+            <h1>Menu</h1>
+        </header>
+        <a href="javascript:void(0)" onclick="w3_close()"
+        class="w3-closenav w3-large w3-hide-large">Close &times;</a>
+        <a class="{% block homeactive %}{% endblock %}" href="{% url 'student:index' %}">Home</a>
+        <a class="{% block postsactive %}{% endblock %}" href="{% url 'post:studentposts' %}">Posts</a>
+        <a class="{% block eventsactive %}{% endblock %}" href="{% url 'event:studentevents' %}">Events</a>
+        <a class="{% block resumesactive %}{% endblock %}" href="{% url 'resume:index' %}">Resumes</a>
+        <a class="{% block activityactive %}{% endblock %}" href="{% url 'student:activity' %}">Activity</a>
+        <a class="{% block profileactive %}{% endblock %}" href="{% url 'student:profile' %}">Profile</a>
 
-    <div id="demo" class="w3-hide w3-hide-large w3-hide-medium">
-        <ul class="w3-navbar w3-left-align w3-large w3-black">
-            <li><a href="{% url 'student:index' %}">Home</a></li>
-            <li><a href="{% url 'post:studentposts' %}">Posts</a></li>
-            <li><a href="{% url 'event:studentevents' %}">Events</a></li>
-            <li><a href="{% url 'resume:index' %}">Resumes</a></li>
-            <li><a href="{% url 'student:profile' %}">Profile</a></li>
-            <li><a href="{% url 'home:logout' %}">Logout</a></li>
-        </ul>
+    </nav>
+
+    <div class="w3-main" style="margin-left:300px">
+        <header class="w3-container w3-blue">
+            <div class="w3-row">
+                <div class="w3-col s10">
+                    <span class="w3-opennav w3-xlarge w3-hide-large" onclick="w3_open()">&#9776;</span>
+                    <h1 class="w3-center">Jobin</h1>
+                </div>
+                <div class="w3-col s2 w3-center">
+                    <a style="text-decoration: none;" href="{% url 'home:logout' %}">
+                        <h4><i class="fa fa-sign-out"></i>Logout</h4>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div class="w3-container" style="position:relative">
+            {% for x in msgs %}
+                {% if x.code == 'danger' %}
+                    <div class="w3-pale-red  w3-leftbar w3-border-red message">
+                        <span class="w3-text-red">{{ x.message }}</span>
+                    </div>
+                {% elif x.code == 'warning' %}
+                    <div class="w3-pale-yellow  w3-leftbar w3-border-yellow message">
+                        <span class="w3-text-yellow">{{ x.message }}</span>
+                    </div>
+                {% else %}
+                    <div class="w3-pale-blue  w3-leftbar w3-border-blue message">
+                        <span class="w3-text-blue">{{ x.message }}</span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% block content %}
+            {% endblock %}
+        </div>
+        <footer class="w3-container w3-blue">
+            <h5>Footer</h5>
+            <p>This platform is brought to you by Jobin Solutions. Your use of the platform confirms your consent to
+            our <a href="">Terms and Conditions</a> and our <a href="">Privacy Policy</a></p>
+        </footer>
     </div>
 
-    <script>
-        function myFunction() {
-            var x = document.getElementById("demo");
-            if (x.className.indexOf("w3-show") == -1) {
-                x.className += " w3-show";
-            } else {
-                x.className = x.className.replace(" w3-show", "");
-            }
-        }
-    </script>
+<script>
+function w3_open() {
+    document.getElementById("mySidenav").style.display = "block";
+}
+function w3_close() {
+    document.getElementById("mySidenav").style.display = "none";
+}
+</script>
 
-    <div class="w3-container">
-        {% for x in msgs %}
-            {% if x.code == 'danger' %}
-                <div class="w3-pale-red  w3-leftbar w3-border-red">
-                    <span class="w3-text-red">{{ x.message }}</span>
-                </div>
-            {% elif x.code == 'warning' %}
-                <div class="w3-pale-yellow  w3-leftbar w3-border-yellow">
-                    <span class="w3-text-yellow">{{ x.message }}</span>
-                </div>
-            {% else %}
-                <div class="w3-pale-blue  w3-leftbar w3-border-blue">
-                    <span class="w3-text-blue">{{ x.message }}</span>
-                </div>
-            {% endif %}
-        {% endfor %}
-        {% block content %}
-        {% endblock %}
-    </div>
 </body>
 </html>

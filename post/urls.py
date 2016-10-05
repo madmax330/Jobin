@@ -12,8 +12,10 @@ urlpatterns = [
     url(r'^apply/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.ApplyView.as_view(), name='apply'),
     url(r'^applicants/(?P<pk>[0-9]+)/$', views.PostApplicantsView.as_view(), name='applicants'),
     url(r'^applicant/(?P<pk>[0-9]+)/$', views.SingleApplicantView.as_view(), name='applicant'),
+    url(r'^applicant/details/(?P<pk>[0-9]+)/$', views.ApplicantDetailsView.as_view(), name='applicantdetails'),
     url(r'^discard/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.DiscardApplicant.as_view(), name='discard'),
-    url(r'^student/details/(?P<pk>[0-9]+)/$', views.StudentDetailsView.as_view(), name='studentdetails'),
+    url(r'^cover/request/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.RequestCover.as_view(), name='coverrequest'),
+    url(r'^student/details/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.StudentDetailsView.as_view(), name='studentdetails'),
 ]
 
 

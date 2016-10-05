@@ -15,7 +15,10 @@ class CompanyEvents(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CompanyEvents, self).get_context_data(**kwargs)
-        context['msgs'] = Message.objects.filter(company=Company.objects.get(user=self.request.user))
+        msgs = Message.objects.filter(company=Company.objects.get(user=self.request.user))
+        context['msgs'] = msgs
+        for x in msgs:
+            x.delete()
         return context
 
 

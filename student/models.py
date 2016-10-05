@@ -17,10 +17,10 @@ class Student(models.Model):
     program = models.CharField(max_length=100, null=True)
     major = models.CharField(max_length=100, null=True)
     graduate = models.BooleanField(default=False)
-    gender = models.CharField(max_length=20, null=True)
     email = models.CharField(max_length=100, null=True)
     phone = models.CharField(max_length=30, null=True)
     linkedin = models.CharField(max_length=200, null=True)
+    work_eligible = models.BooleanField(default=True)
 
     def get_absolute_url(self):
         return reverse('student:details', kwargs={'pk': self.pk})

@@ -37,12 +37,11 @@ class JobinTerritory(models.Model):
 
 
 class Notification(models.Model):
-    code = models.IntegerField()
-    priority = models.CharField(max_length=50)
+    code = models.IntegerField(default=0)
     message = models.CharField(max_length=250)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
-    date = models.DateTimeField(null=True)
+    date = models.DateTimeField(null=True, auto_now_add=True)
     opened = models.BooleanField(default=False)
 
     def __str__(self):
@@ -54,7 +53,6 @@ class Message(models.Model):
     message = models.CharField(max_length=250)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
-    opened = models.BooleanField(default=False)
     internal = models.BooleanField(default=True)
 
     def __str__(self):

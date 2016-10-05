@@ -5,18 +5,41 @@
 {% block postsactive %}active{% endblock %}
 
 {% block content %}
+    {% if app.cover_requested and not app.cover_submitted %}
+        <div class="w3-green message">
+            <p>
+                A cover letter was requested for this application! Upload your cover letter using the form below.
+                Good luck!
+            </p>
+        </div>
+        <div class="w3-container w3-card-8 w3-pale-green">
+            <header>
+                <h4>Insert your cover letter here</h4>
+            </header>
+            <form class="w3-container w3-white" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <textarea class="w3-input" name="cover" placeholder="Cover Letter Here..."></textarea>
+                <button class="w3-btn w3-green" type="submit">Submit Cover Letter</button>
+            </form>
+        </div>
+    {% endif %}
+    {% if app.cover_submitted %}
+        <div class="w3-pale-green  w3-leftbar w3-border-green message">
+            <span class="w3-text-green">Your cover letter for this post was successfully submitted.</span>
+        </div>
+    {% endif %}
     <div class="w3-container w3-card-8 w3-white">
-        <h4 class="w3-center w3-dark-grey w3-padding-8">{{ x.title }}</h4>
+        <h4 class="w3-center w3-dark-grey w3-padding-8">{{ post.title }}</h4>
         <div class="w3-container">
-            <label><u>Start Date</u>:</label><span> {{ x.start_date }}</span><br/>
-            <label><u>End Date</u>:</label><span> {{ x.end_date }}</span><br/>
-            <label><u>Wage</u>:</label><span> {{ x.wage }}$/hr</span><br/>
-            <label><u>Openings</u>:</label><span> {{ x.openings }}</span><br/>
-            <label><u>Appliation Deadline</u>:</label><span> {{ x.deadline }}</span><br/>
+            <label><u>Start Date</u>:</label><span> {{ post.start_date }}</span><br/>
+            <label><u>End Date</u>:</label><span> {{ post.end_date }}</span><br/>
+            <label><u>Wage</u>:</label><span> {{ post.wage }}$/hr</span><br/>
+            <label><u>Openings</u>:</label><span> {{ post.openings }}</span><br/>
+            <label><u>Appliation Deadline</u>:</label><span> {{ post.deadline }}</span><br/>
             <label><u>Description</u>:</label><br/>
-            <span>{{ x.description }}</span><br/>
+            <span>{{ post.description }}</span><br/>
             <label><u>Requirements</u>:</label><br/>
-            <span>{{ x.requirements }}</span>
+            <span>{{ post.requirements }}</span>
         </div>
     </div>
 {% endblock %}

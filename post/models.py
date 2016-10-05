@@ -11,7 +11,7 @@ class Post(models.Model):
     wage = models.IntegerField(null=True)
     openings = models.IntegerField(null=True)
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(null=True, blank=True)
     deadline = models.DateField()
     description = models.TextField()
     requirements = models.TextField()
@@ -20,6 +20,7 @@ class Post(models.Model):
     type = models.CharField(max_length=100, null=True)
     status = models.CharField(max_length=50,  null=True)
     supplied_by_jobin = models.BooleanField(default=True)
+    notified = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('post:companypost', kwargs={'pk': self.pk})
@@ -35,7 +36,11 @@ class Application(models.Model):
     date = models.DateField()
     status = models.CharField(max_length=25)
     cover = models.TextField(null=True, blank=True)
+    cover_requested = models.BooleanField(default=False)
+    cover_submitted = models.BooleanField(default=False)
+    cover_opened = models.BooleanField(default=False)
     post_title = models.CharField(max_length=100, null=True)
+    student_name = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return self.status

@@ -1,0 +1,19 @@
+{% extends 'resume/walkthrough_base.html' %}
+
+{% block title %}New Experience{% endblock %}
+
+{% block form_title %}New Experience Form:{% endblock %}
+
+{% block info %}
+    It isn't required for you to add experience records now, but we <h4>Strongly</h4> recommend that you enter some
+    experience before you apply for any jobs with this resume.
+{% endblock %}
+
+{% block buttons %}
+    <div class="w3-third">
+        <button type="submit" class="w3-btn w3-blue">Submit</button>
+    </div>
+    <div class="w3-rest">
+        <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn w3-green">Skip</a>
+    </div>
+{% endblock %}

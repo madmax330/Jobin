@@ -11,9 +11,13 @@ class Resume(models.Model):
     file_resume = models.FileField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
     gpa = models.DecimalField(null=True, blank=True, max_digits=4, decimal_places=2)
+    is_complete = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('resume:index')
+        if self.is_complete:
+            return reverse('resume:index')
+        else:
+            return reverse('resume:schoolwalk', kwargs={'rk': self.pk})
 
     def __str__(self):
         return self.name
@@ -25,7 +29,10 @@ class Language(models.Model):
     level = models.CharField(max_length=50)
 
     def get_absolute_url(self):
-        return reverse('resume:languagelist', kwargs={'rk': self.resume.pk})
+        if self.resume.is_complete:
+            return reverse('resume:languagelist', kwargs={'rk': self.resume.pk})
+        else:
+            return reverse('resume:languagewalk', kwargs={'rk': self.resume.pk})
 
     def __str__(self):
         return self.name
@@ -41,7 +48,10 @@ class Experience(models.Model):
     experience_type = models.CharField(max_length=50)
 
     def get_absolute_url(self):
-        return reverse('resume:experiencelist', kwargs={'rk': self.resume.pk})
+        if self.resume.is_complete:
+            return reverse('resume:experiencelist', kwargs={'rk': self.resume.pk})
+        else:
+            return reverse('resume:experiencewalk', kwargs={'rk': self.resume.pk})
 
     def __str__(self):
         return self.title
@@ -70,7 +80,10 @@ class School(models.Model):
     end = models.DateField()
 
     def get_absolute_url(self):
-        return reverse('resume:schoollist', kwargs={'rk': self.resume.pk})
+        if self.resume.is_complete:
+            return reverse('resume:schoollist', kwargs={'rk': self.resume.pk})
+        else:
+            return reverse('resume:schoolwalk', kwargs={'rk': self.resume.pk})
 
     def __str__(self):
         return self.name

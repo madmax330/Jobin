@@ -8,6 +8,11 @@
         <div class="panel-body">
             <h2>Login Here:</h2>
             <hr/>
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+            {% endif %}
             <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% if msg %}
