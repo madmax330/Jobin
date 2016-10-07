@@ -47,7 +47,7 @@ class RegisterView(View):
 
     # process form data
     def post(self, request, utype):
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, utype=utype)
 
         if form.is_valid():
             user = form.save(commit=False)

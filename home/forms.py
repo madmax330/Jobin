@@ -15,15 +15,20 @@ class NewUserForm(forms.ModelForm):
             'password': forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        self.utype = kwargs.pop('utype', None)
+        super(NewUserForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         clean_data = super(NewUserForm, self).clean()
         if not clean_data.get("username") == clean_data.get("email"):
             raise forms.ValidationError("Username and Email don't match")
-        email = clean_data.get("email")
-        ext = email.split('@', 1)
-        school = JobinSchool.objects.filter(email=ext[1].lower())
-        if not school.count() == 1:
-            raise forms.ValidationError("The service is not yet open for this school." + ext[1].lower())
+        if self.utype == 'student':
+            email = clean_data.get("email")
+            ext = email.split('@', 1)
+            school = JobinSchool.objects.filter(email=ext[1].lower())
+            if not school.count() == 1:
+                raise forms.ValidationError("The service is not yet open for this school." + ext[1].lower())
 
 
 class LoginForm(AuthenticationForm):
