@@ -19,7 +19,7 @@ class Student(models.Model):
     graduate = models.BooleanField(default=False)
     email = models.CharField(max_length=100, null=True)
     phone = models.CharField(max_length=30, null=True)
-    linkedin = models.CharField(max_length=200, null=True)
+    linkedin = models.CharField(max_length=200, null=True, blank=True)
     work_eligible = models.BooleanField(default=True)
 
     def get_absolute_url(self):

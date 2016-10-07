@@ -22,8 +22,8 @@ class NewUserForm(forms.ModelForm):
         email = clean_data.get("email")
         ext = email.split('@', 1)
         school = JobinSchool.objects.filter(email=ext[1].lower())
-        if school is None:
-            raise forms.ValidationError("The service is not yet open for this school.")
+        if not school.count() == 1:
+            raise forms.ValidationError("The service is not yet open for this school." + ext[1].lower())
 
 
 class LoginForm(AuthenticationForm):
