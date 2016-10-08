@@ -23,7 +23,7 @@ class Student(models.Model):
     work_eligible = models.BooleanField(default=True)
 
     def get_absolute_url(self):
-        return reverse('student:details', kwargs={'pk': self.pk})
+        return reverse('resume:newresume')
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname

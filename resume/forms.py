@@ -112,6 +112,10 @@ class SchoolForm(forms.ModelForm):
                                   )),
         }
 
+        labels = {
+            'name': 'School Name'
+        }
+
 
 class SkillForm(forms.ModelForm):
 

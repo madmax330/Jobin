@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from .forms import NewUserForm, StudentInfoForm, CompanyInfoForm
-from .models import JobinSchool, Notification
+from .models import JobinSchool, Notification, JobinRequestedEmail
 from student.models import Student
 from company.models import Company
 from django.views.generic import View
@@ -63,6 +63,12 @@ class RegisterView(View):
                 g.user_set.add(user)
             else:
                 return redirect('home:index')
+            ext = user.email.split('@', 1)[1]
+            ems = JobinSchool.objects.filter(email=ext)
+            if ems.count() == 0:
+                x = JobinRequestedEmail()
+                x.extension = ext
+                x.save()
             return redirect('home:verify')
         return render(request, self.template_name, {'form': form})
 

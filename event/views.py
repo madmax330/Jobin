@@ -68,6 +68,11 @@ class StudentEvents(generic.ListView):
             l.append(xx)
         return l
 
+    def get_context_data(self, **kwargs):
+        context = super(StudentEvents, self).get_context_data(**kwargs)
+        context['count'] = Event.objects.count()
+        return context
+
 
 class CustomEvent:
 

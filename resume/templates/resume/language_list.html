@@ -7,14 +7,14 @@
         <th>Name</th>
         <th>Level</th>
         <th></th>
-        <th><a class="w3-btn w3-teal w3-border w3-border-white" href="{% url 'resume:newlanguage' rk=rkey%}">New Language</a></th>
+        <th><a class="w3-btn w3-teal w3-border w3-border-white" href="{% url 'resume:newlanguage' rk=rkey %}">New Language</a></th>
     </tr>
     {% for x in list %}
         <tr>
             <td>{{ x.name }}</td>
             <td>{{ x.level }}</td>
             <td><a href="{% url 'resume:updatelanguage' pk=x.pk %}">Edit</a></td>
-            <td><a href="{% url 'resume:deletelanguage' pk=x.pk rk=rkey%}">Delete</a></td>
+            <td><a href="{% url 'resume:deletelanguage' pk=x.pk rk=rkey %}">Delete</a></td>
         </tr>
     {% endfor %}
 {% endblock %}
@@ -50,7 +50,7 @@
     {% if list.count == 0 %}
         <div class="w3-container w3-orange">
             <p>
-                No languages found for this resume. <a href="{% url 'resume:newlanguage' rk=rkey%}">Click Here</a> to add languages.
+                No languages found for this resume. <a href="{% url 'resume:newlanguage' rk=rkey %}">Click Here</a> to add languages.
             </p>
         </div>
     {% endif %}
