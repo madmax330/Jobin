@@ -9,16 +9,17 @@
         <div class="w3-col s4">
             <div class="w3-container w3-padding-16">
             {% if notifications %}
-                <div class="w3-card-4 w3-sand">
+                <div class="w3-card-4 w3-pale-blue">
                     <header>
                         <h5>Notifications ({{ notifications.count }})</h5>
                     </header>
                 {% for x in notifications %}
-                    <p>{{ x.message }}</p>
-                    <a href="{% url 'home:closenote' u='student' pk=x.pk %}" class="w3-btn w3-grey">Close</a>
-                    <hr/>
+                    <div class="w3-pale-blue w3-text-blue w3-border-blue w3-border-top w3-container">
+                        <a href="{% url 'home:closenote' u='student' pk=x.pk %}" class="w3-text-blue">x</a>
+                        <p>{{ x.message }}</p>
+                    </div>
                 {% endfor %}
-                <a href="{% url 'home:closeallnotes' u='student' %}" class="w3-btn w3-pale-red w3-rest">Close all</a>
+                <a href="{% url 'home:closeallnotes' u='student' %}" class="w3-btn w3-red w3-text-white" style="width:100%;">Close all</a>
                 </div>
             {% endif %}
                 <div class="w3-card-4 w3-white">

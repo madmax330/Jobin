@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
-from .models import JobinSchool
+from .models import JobinBlockedEmail
 
 
 class NewUserForm(forms.ModelForm):
@@ -26,9 +26,9 @@ class NewUserForm(forms.ModelForm):
         if self.utype == 'student':
             email = clean_data.get("email")
             ext = email.split('@', 1)
-            school = JobinSchool.objects.filter(email=ext[1].lower())
-            if not school.count() == 1:
-                raise forms.ValidationError("The service is not yet open for this school." + ext[1].lower())
+            ems = JobinBlockedEmail.objects.filter(email=ext[1].lower())
+            if ems.count() > 1:
+                raise forms.ValidationError("The school email extension '" + ext[1].lower() + "' is not recognized")
 
 
 class LoginForm(AuthenticationForm):

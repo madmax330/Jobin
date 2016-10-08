@@ -106,7 +106,8 @@ class LanguageList(View):
         msgs = Message.objects.filter(student=resume.student)
         context = {
             'list': languages,
-            'msgs': msgs
+            'msgs': msgs,
+            'rkey': rk
         }
         for x in msgs:
             x.delete()
