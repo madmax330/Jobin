@@ -9,7 +9,7 @@ class NewPostForm(forms.ModelForm):
         model = Post
         fields = [
             'title','programs', 'type', 'wage', 'openings', 'start_date',
-            'end_date', 'deadline', 'description', 'requirements'
+            'end_date', 'deadline', 'description', 'requirements', 'cover_instructions'
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -28,8 +28,10 @@ class NewPostForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control'}),
             'requirements': forms.Textarea(attrs={'class': 'form-control'}),
             'programs': forms.Select(attrs={'class': 'form-control'}, choices=JobinProgram.objects.values_list('name', 'name')),
+            'cover_instructions': forms.Textarea(attrs={'class': 'form-control'})
         }
         labels = {
             'deadline': 'Application Deadline',
-            'wage': 'Wage $/hr'
+            'wage': 'Wage $/hr',
+            'cover_instructions': 'Enter some instructions for the cover letter here'
         }
