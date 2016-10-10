@@ -53,6 +53,23 @@ class NewResumeView(CreateView):
     model = Resume
     form_class = NewResumeForm
 
+    def get_context_data(self, **kwargs):
+        context = super(NewResumeView, self).get_context_data(**kwargs)
+        s = Student.objects.get(user=self.request.user)
+        if s.is_new:
+            x = Message()
+            x.code = 'info'
+            x.student = s
+            x.message = 'Your profile was successfully created. Welcome to Jobin!'
+            x.save()
+            s.is_new = False
+            s.save()
+        msgs = Message.objects.filter(student=s)
+        context['msgs'] = msgs
+        for x in msgs:
+            x.delete()
+        return context
+
     def form_valid(self, form):
         resume = form.save(commit=False)
         resume.student = Student.objects.filter(user=self.request.user).first()
@@ -61,6 +78,9 @@ class NewResumeView(CreateView):
         x.message = 'Your resume was created successfully.'
         x.student = resume.student
         x.save()
+        s = resume.student
+        s.is_new = False
+        s.save()
         return super(NewResumeView, self).form_valid(form)
 
 

@@ -14,8 +14,16 @@
         </div>
         <div class="w3-container w3-card-8 w3-pale-green">
             <header>
-                <h4>Insert your cover letter here</h4>
+                <h4>Insert your cover letter here:</h4>
             </header>
+            {% if post.cover_instructions %}
+                <div class="w3-pale-yellow w3-container message">
+                    <h5>Cover letter instructions:</h5>
+                    <p>
+                        {{ post.cover_instructions }}
+                    </p>
+                </div>
+            {% endif %}
             <form class="w3-container w3-white" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <textarea class="w3-input" name="cover" placeholder="Cover Letter Here..."></textarea>

@@ -12,7 +12,7 @@
     </thead>
     <tbody>
     {% for p in posts %}
-        <tr {% if x.notified %}style="background-color: #c2f9ce"{% endif %}>
+        <tr {% if p.notified %}style="background-color: #c2f9ce"{% endif %}>
             <td><a href="{% url 'post:companypost' p.pk %}">{{ p.title }}</a></td>
             <td>{{ p.wage }}</td>
             <td>{{ p.openings }}</td>

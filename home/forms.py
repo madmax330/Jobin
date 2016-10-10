@@ -26,7 +26,7 @@ class NewUserForm(forms.ModelForm):
         if self.utype == 'student':
             email = clean_data.get("email")
             ext = email.split('@', 1)
-            ems = JobinBlockedEmail.objects.filter(email=ext[1].lower())
+            ems = JobinBlockedEmail.objects.filter(extension=ext[1].lower())
             if ems.count() > 1:
                 raise forms.ValidationError("The school email extension '" + ext[1].lower() + "' is not recognized")
 

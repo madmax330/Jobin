@@ -38,11 +38,6 @@ class NewCompanyView(CreateView):
         company.user = self.request.user
         company.points = 0
         company.email = self.request.user.email
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your profile was created successfully. Welcome to Jobin!'
-        x.company = company
-        x.save()
         return super(NewCompanyView, self).form_valid(form)
 
 
@@ -67,6 +62,15 @@ class UpdateCompanyView(UpdateView):
 class DetailsView(generic.DetailView):
     model = Company
     template_name = 'company/company_details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailsView, self).get_context_data(**kwargs)
+        x = Message()
+        x.code = 'info'
+        x.company = Company.objects.get(user=self.request.user)
+        x.message = 'Your profile was successfully created. Welcome to Jobin!'
+        x.save()
+        return context
 
 
 class ProfileView(View):
