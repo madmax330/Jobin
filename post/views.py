@@ -413,6 +413,9 @@ class ApplicantDetailsView(View):
             'schools': School.objects.filter(resume=xx.resume),
             'skills': Skill.objects.filter(resume=xx.resume),
         }
+        post = x.post
+        post.notified = False
+        post.save()
         return render(request, self.template_name, context)
 
 

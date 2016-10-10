@@ -40,11 +40,8 @@ class NewStudentView(CreateView):
         student.user = self.request.user
         student.email = self.request.user.email
         ext = student.email.split('@', 1)
-        student.school = JobinSchool.objects.filter(email=ext[1].lower())
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your profile was created successfully. Welcome to Jobin!'
-        x.student = student
+        school = JobinSchool.objects.filter(email=ext[1].lower()).first()
+        student.school = school.name
         return super(NewStudentView, self).form_valid(form)
 
 
