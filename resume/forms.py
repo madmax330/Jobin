@@ -34,6 +34,9 @@ class NewResumeForm(forms.ModelForm):
                                           ('true', 'True'),
                                       )),
         }
+        labels = {
+            'is_active': 'Make Active Resume'
+        }
 
 
 class LanguageForm(forms.ModelForm):

@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'^walkthrough/language/(?P<rk>[0-9]+)/$', views.LanguageWalkthrough.as_view(), name='languagewalk'),
     url(r'^walkthrough/experience/(?P<rk>[0-9]+)/$', views.ExperienceWalkthrough.as_view(), name='experiencewalk'),
 
-    url(r'^activate/(?P<pk>[0-9]+)/$', views.MakeActive.as_view(), name='makeactive'),
+    url(r'^activate/(?P<pk>[0-9]+)/(?P<rq>\w+)/$', views.MakeActive.as_view(), name='makeactive'),
     url(r'^details/(?P<pk>[0-9]+)/$', views.ResumeDetailView.as_view(), name='details'),
     url(r'^nav/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.WalkthrougNav.as_view(), name='nav')
 ]

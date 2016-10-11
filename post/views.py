@@ -179,11 +179,12 @@ class StudentDetailsView(View):
 
 class ApplyView(View):
 
-    def get(self, request, pk, rk):
+    def get(self, request, pk):
         post = Post.objects.get(pk=pk)
-        resume = Resume.objects.get(pk=rk)
         student = Student.objects.get(user=self.request.user)
-        if resume is not None:
+        r = Resume.objects.filter(student=student).filter(is_active=True)
+        if r.count() > 0:
+            resume = r.first()
             app = Application()
             app.post_title = post.title
             app.student_name = student.firstname + ' ' + student.lastname
@@ -200,7 +201,12 @@ class ApplyView(View):
             x.save()
             return redirect('post:studentposts')
         else:
-            return redirect('post:studentposts')
+            x = Message()
+            x.code = 'warning'
+            x.message = 'You need to have at least one active resume to apply for posts. Activate one and try again.'
+            x.student = student
+            x.save()
+            return redirect('resume:index')
 
 
 class PostApplicantsView(View):
