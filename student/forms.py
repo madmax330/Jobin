@@ -1,6 +1,6 @@
 from django import forms
 from .models import Student
-from home.models import JobinSchool, JobinMajor, JobinProgram
+from home.models import JobinSchool, JobinMajor, JobinProgram, JobinTerritory
 
 
 class NewStudentForm(forms.ModelForm):
@@ -18,9 +18,9 @@ class NewStudentForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'w3-input'}),
             'address': forms.TextInput(attrs={'class': 'w3-input'}),
             'city': forms.TextInput(attrs={'class': 'w3-input'}),
-            'state': forms.TextInput(attrs={'class': 'w3-input'}),
+            'state': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=JobinTerritory.objects.values_list('name', 'name')),
             'zipcode': forms.TextInput(attrs={'class': 'w3-input'}),
-            'country': forms.TextInput(attrs={'class': 'w3-input'}),
+            'country': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=JobinTerritory.objects.values_list('country', 'country').distinct()),
             'school': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=JobinSchool.objects.values_list('name', 'name')),
             'program': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=JobinProgram.objects.values_list('name', 'name')),
             'major': forms.Select(attrs={'class': 'w3-input w3-half'}, choices=JobinMajor.objects.values_list('name', 'name')),
