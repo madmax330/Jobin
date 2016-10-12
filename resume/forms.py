@@ -34,6 +34,9 @@ class NewResumeForm(forms.ModelForm):
                                           ('true', 'True'),
                                       )),
         }
+        labels = {
+            'is_active': 'Make Active Resume'
+        }
 
 
 class LanguageForm(forms.ModelForm):
@@ -58,7 +61,7 @@ class ExperienceForm(forms.ModelForm):
 
     class Meta:
         model = Experience
-        fields = ['title', 'start', 'end', 'company', 'description', 'experience_type']
+        fields = ['title', 'start', 'end', 'company', 'description', 'experience_type', 'is_current']
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'w3-input'}),
@@ -75,6 +78,11 @@ class ExperienceForm(forms.ModelForm):
                                                   ('entrepreneurial', 'Entrepreneurial'),
                                                   ('other', 'Other'),
                                             )),
+            'is_current': forms.TextInput(attrs={'id': 'curr-in', 'value': 'False'}),
+        }
+
+        labels = {
+            'is_current': 'hide',
         }
 
 
@@ -96,7 +104,7 @@ class SchoolForm(forms.ModelForm):
 
     class Meta:
         model = School
-        fields = ['name', 'program', 'start', 'end', 'level']
+        fields = ['name', 'program', 'start', 'end', 'level', 'is_current']
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w3-input'}),
@@ -110,10 +118,12 @@ class SchoolForm(forms.ModelForm):
                                       ('high school', 'High School'),
                                       ('other', 'Other')
                                   )),
+            'is_current': forms.TextInput(attrs={'id': 'curr-in', 'value': 'False'}),
         }
 
         labels = {
-            'name': 'School Name'
+            'name': 'School Name',
+            'is_current': 'hide'
         }
 
 
