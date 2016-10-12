@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
-from .forms import NewUserForm, StudentInfoForm, CompanyInfoForm
-from .models import JobinSchool, Notification, JobinRequestedEmail
+from .forms import NewUserForm
+from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail
 from student.models import Student
 from company.models import Company
 from django.views.generic import View
@@ -64,10 +64,10 @@ class RegisterView(View):
             else:
                 return redirect('home:index')
             ext = user.email.split('@', 1)[1]
-            ems = JobinSchool.objects.filter(email=ext)
+            ems = JobinSchool.objects.filter(email=ext.lower())
             if ems.count() == 0:
                 x = JobinRequestedEmail()
-                x.extension = ext
+                x.extension = ext.lower()
                 x.save()
             return redirect('home:verify')
         return render(request, self.template_name, {'form': form})
@@ -75,8 +75,6 @@ class RegisterView(View):
 
 class ChangeUserInfo(View):
     template_name = 'home/user_info_change.html'
-    student_form = StudentInfoForm
-    company_form = CompanyInfoForm
 
     def get(self, request, utype):
         if utype == 'company':
@@ -84,40 +82,95 @@ class ChangeUserInfo(View):
                           {
                               'user': self.request.user,
                               'type': utype,
-                              'form': self.company_form
                           })
         elif utype == 'student':
             return render(request, self.template_name,
                           {
                               'user': self.request.user,
                               'type': utype,
-                              'form': self.student_form
                           })
         else:
             return redirect('home:index')
 
     def post(self, request, utype):
-        form = None
-        if utype == 'company':
-            form = self.company_form(request.POST)
-        elif utype == 'student':
-            form = self.student_form(request.POST)
-        if form.is_valid():
-            user = self.request.user
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            if email:
-                user.email = email
-                user.save()
-            elif password:
-                user.set_password(password)
-                user.save()
-                return redirect('home:verify')
+        user = self.request.user
+        email = request.POST.get('email')
+        cemail = request.POST.get('cemail')
+        password = request.POST.get('pass')
+        cpassword = request.POST.get('cpass')
+        context = {
+            'user': user,
+            'type': utype
+        }
+        if email and password:
+            context['error'] = 'You cannot change email and password at the same time.'
+            return render(request, self.template_name, context)
+        if email:
+            if not email == cemail:
+                context['error'] = 'Email fields do not match.'
+                return render(request, self.template_name, context)
+            if utype == 'company':
+                company = Company.objects.get(user=user)
+                company.email = email
+                company.save()
             if utype == 'student':
-                return redirect('student:index')
-            elif utype == 'company':
-                return redirect('company:index')
-        return render(request, self.template_name, {'user': self.request.user, 'type': utype, 'form': form})
+                ext = email.split('@', 1)[1]
+                ems = JobinBlockedEmail.objects.filter(extension=ext.lower())
+                if ems.count() > 0:
+                    context['error'] = 'This email is not a valid email.'
+                    return render(request, self.template_name, context)
+                student = Student.objects.get(user=user)
+                es = JobinSchool.objects.filter(email=ext.lower())
+                if es.count() == 0:
+                    jre = JobinRequestedEmail()
+                    jre.extension = ext.lower()
+                    jre.save()
+                elif es.count > 0:
+                    school = es.first().name
+                    student.school = school
+                student.email = email
+                student.save()
+            user.email = email
+            user.username = email
+            user.save()
+            logout(request)
+            return redirect('home:verify')
+        if password:
+            if not password == cpassword:
+                context['error'] = 'Password fields do not match.'
+                return render(request, self.template_name, context)
+            user.set_password(password)
+            user.save()
+            x = Message()
+            x.code = 'info'
+            x.message = 'Your password was successfully changed.'
+            xx = Notification()
+            xx.code = 0
+            xx.message = 'You password was successfully changed.'
+            if utype == 'company':
+                company = Company.objects.get(user=user)
+                x.company = company
+                xx.company = company
+                x.save()
+                xx.save()
+                logout(request)
+                new_user = authenticate(username=user.username, password=password)
+                if user is not None:
+                    login(request, new_user)
+                    return redirect('company:index')
+            elif utype == 'student':
+                student = Student.objects.get(user=user)
+                x.student = student
+                xx.student = student
+                x.save()
+                xx.save()
+                logout(request)
+                new_user = authenticate(username=user.username, password=password)
+                if user is not None:
+                    login(request, new_user)
+                    return redirect('student:index')
+        context['error'] = 'Fields cannot be left blank.'
+        return render(request, self.template_name, context)
 
 
 class VerifyView(View):
