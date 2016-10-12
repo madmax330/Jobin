@@ -1,13 +1,19 @@
 {% for field in form %}
-    <div class="w3-pale-red  w3-leftbar w3-border-red">
-            <span class="w3-text-red">{{ field.errors }}</span>
-    </div>
-    <div class="w3-row">
-        <p class="w3-col s2">
-            <label>{{ field.label_tag }}{% if field.field.required %} * {% endif %}</label>
-        </p>
-        <div class="w3-col s12">
+    {% if field.label == 'hide' %}
+        <div class="hide">
             {{ field }}
         </div>
-    </div>
+    {% else %}
+        <div class="w3-pale-red  w3-leftbar w3-border-red">
+                <span class="w3-text-red">{{ field.errors }}</span>
+        </div>
+        <div class="w3-row">
+            <p class="w3-col s2">
+                <label>{{ field.label_tag }}{% if field.field.required %} * {% endif %}</label>
+            </p>
+            <div class="w3-col s12">
+                {{ field }}
+            </div>
+        </div>
+    {% endif %}
 {% endfor %}

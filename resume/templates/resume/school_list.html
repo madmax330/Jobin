@@ -18,7 +18,7 @@
             <td>{{ x.program }}</td>
             <td>{{ x.level }}</td>
             <td>{{ x.start }}</td>
-            <td>{{ x.end }}</td>
+            <td>{% if x.is_current %}Current School{% else %}{{ x.end }}{% endif %}</td>
             <td><a href="{% url 'resume:updateschool' pk=x.pk %}">Edit</a></td>
             <td><a href="{% url 'resume:deleteschool' pk=x.pk rk=rkey%}">Delete</a></td>
         </tr>
