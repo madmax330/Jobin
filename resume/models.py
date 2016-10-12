@@ -42,10 +42,11 @@ class Experience(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     start = models.DateField()
-    end = models.DateField()
+    end = models.DateField(null=True, blank=True)
     description = models.TextField()
     company = models.CharField(max_length=100, null=True)
     experience_type = models.CharField(max_length=50)
+    is_current = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         if self.resume.is_complete:
@@ -77,7 +78,8 @@ class School(models.Model):
     program = models.CharField(max_length=100)
     level = models.CharField(max_length=100)
     start = models.DateField()
-    end = models.DateField()
+    end = models.DateField(null=True, blank=True)
+    is_current = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         if self.resume.is_complete:

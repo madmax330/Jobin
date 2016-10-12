@@ -7,6 +7,18 @@
 {% block content %}
     <div class="row">
         <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 style="text-align: center;">Post Information</h4>
+                </div>
+                <div class="panel-body">
+                    <label>Title</label><span> {{ post.title }}</span><br/>
+                    <label>Start Date</label><span> {{ post.start_date }}</span><br/>
+                    <label>End Date</label><span> {{ post.end_date }}</span><br/>
+                    <label>Openings</label><span> {{ post.openings }}</span><br/>
+                    <label>Wage</label><span> {{ post.wage }}</span>
+                </div>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 style="text-align: center;">Filters</h4>
@@ -38,40 +50,33 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-9">
             <a href="{% url 'post:applicant' pk=post.pk%}" class="btn btn-default col-md-12" style="margin-bottom:20px;">Single Applicant View</a>
+            <h3 style="text-align: center;">Post Applicants ({{ count }}):</h3>
             <table class="table">
                 <tr>
                     <th>Name</th>
                     <th>School</th>
                     <th>Program</th>
+                    <th>Major</th>
                     <th>Date Applied</th>
                     <th></th>
                 </tr>
                 {% for x in list %}
-                    <tr {% if x.cover_submitted %}style="background-color: #c2f9ce"{% endif %}>
+                    <tr {% if x.cover_submitted %}
+                            style="background-color: #c2f9ce;"
+                        {% elif x.cover_requested %}
+                            style="background-color: #fdffb2;"
+                        {% endif %}>
                         <td><a href="{% url 'post:applicantdetails' pk=x.pk%}">{{ x.fname }} {{ x.lname }}</a></td>
                         <td>{{ x.school }}</td>
                         <td>{{ x.program }}</td>
+                        <td>{{ x.major }}</td>
                         <td>{{ x.date_applied }}</td>
                         <td><a href="{% url 'post:discard' pk=post.pk ak=x.pk %}">Discard</a></td>
                     </tr>
                 {% endfor %}
             </table>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h4 style="text-align: center;">Post Information</h4>
-                </div>
-                <div class="panel-body">
-                    <label>Title</label><span> {{ post.title }}</span><br/>
-                    <label>Start Date</label><span> {{ post.start_date }}</span><br/>
-                    <label>End Date</label><span> {{ post.end_date }}</span><br/>
-                    <label>Openings</label><span> {{ post.openings }}</span><br/>
-                    <label>Wage</label><span> {{ post.wage }}</span>
-                </div>
-            </div>
         </div>
     </div>
     <a href="{% url 'post:companypost' pk=post.pk %}" class="btn btn-default">Back to post</a>

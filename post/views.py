@@ -73,7 +73,8 @@ class CompanyPost(View):
         context = {
             'post': post,
             'applicants': l,
-            'msgs': msgs
+            'msgs': msgs,
+            'count': len(l)
         }
         for x in msgs:
             x.delete()
@@ -219,7 +220,8 @@ class PostApplicantsView(View):
             'list': l,
             'msgs': msgs,
             'schools': JobinSchool.objects.all(),
-            'majors': JobinMajor.objects.filter(program=program)
+            'majors': JobinMajor.objects.filter(program=program),
+            'count': len(l)
         }
         for x in msgs:
             x.delete()
@@ -411,6 +413,9 @@ class ApplicantDetailsView(View):
             'schools': School.objects.filter(resume=xx.resume),
             'skills': Skill.objects.filter(resume=xx.resume),
         }
+        post = x.post
+        post.notified = False
+        post.save()
         return render(request, self.template_name, context)
 
 
@@ -493,5 +498,6 @@ class Applicant:
         self.resume = app.resume
         self.post = app.post
         self.cover = app.cover
+        self.cover_requested = app.cover_requested
         self.cover_submitted = app.cover_submitted
         self.date_applied = app.date

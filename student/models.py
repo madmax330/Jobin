@@ -21,9 +21,13 @@ class Student(models.Model):
     phone = models.CharField(max_length=30, null=True)
     linkedin = models.CharField(max_length=200, null=True, blank=True)
     work_eligible = models.BooleanField(default=True)
+    is_new = models.BooleanField(default=True)
 
     def get_absolute_url(self):
-        return reverse('student:details', kwargs={'pk': self.pk})
+        if self.is_new:
+            return reverse('resume:newresume')
+        else:
+            return reverse('student:index')
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname

@@ -36,6 +36,14 @@ class JobinTerritory(models.Model):
         return self.name
 
 
+class JobinBlockedEmail(models.Model):
+    extension = models.CharField(max_length=50)
+
+
+class JobinRequestedEmail(models.Model):
+    extension = models.CharField(max_length=50)
+
+
 class Notification(models.Model):
     code = models.IntegerField(default=0)
     message = models.CharField(max_length=250)

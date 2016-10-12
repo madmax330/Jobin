@@ -1,8 +1,10 @@
 from django.contrib import admin
-from .models import JobinProgram, JobinMajor, JobinSchool, JobinTerritory
+from .models import JobinProgram, JobinMajor, JobinSchool, JobinTerritory, JobinBlockedEmail, JobinRequestedEmail
 
 # Register your models here.
 admin.site.register(JobinMajor)
 admin.site.register(JobinSchool)
 admin.site.register(JobinProgram)
 admin.site.register(JobinTerritory)
+admin.site.register(JobinBlockedEmail)
+admin.site.register(JobinRequestedEmail)
