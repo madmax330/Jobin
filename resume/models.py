@@ -75,7 +75,7 @@ class Award(models.Model):
 class School(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    program = models.CharField(max_length=100)
+    program = models.CharField(max_length=100, null=True, blank=True)
     level = models.CharField(max_length=100)
     start = models.DateField()
     end = models.DateField(null=True, blank=True)

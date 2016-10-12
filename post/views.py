@@ -179,11 +179,12 @@ class StudentDetailsView(View):
 
 class ApplyView(View):
 
-    def get(self, request, pk, rk):
+    def get(self, request, pk):
         post = Post.objects.get(pk=pk)
-        resume = Resume.objects.get(pk=rk)
         student = Student.objects.get(user=self.request.user)
-        if resume is not None:
+        r = Resume.objects.filter(student=student).filter(is_active=True)
+        if r.count() > 0:
+            resume = r.first()
             app = Application()
             app.post_title = post.title
             app.student_name = student.firstname + ' ' + student.lastname
@@ -200,7 +201,12 @@ class ApplyView(View):
             x.save()
             return redirect('post:studentposts')
         else:
-            return redirect('post:studentposts')
+            x = Message()
+            x.code = 'warning'
+            x.message = 'You need to have at least one active resume to apply for posts. Activate one and try again.'
+            x.student = student
+            x.save()
+            return redirect('resume:index')
 
 
 class PostApplicantsView(View):
@@ -229,13 +235,29 @@ class PostApplicantsView(View):
 
     def post(self, request, pk):
         post = Post.objects.get(pk=pk)
+        program = JobinProgram.objects.filter(name=post.programs)
         school_filter = request.POST.get('schools')
         major_filter = request.POST.get('majors')
-        schools = school_filter.split(',')
-        majors = major_filter.split(',')
+        schools = []
+        majors = []
+        if school_filter and major_filter:
+            schools = school_filter.split(',')
+            majors = major_filter.split(',')
+        elif school_filter:
+            schools = school_filter.split(',')
+        elif major_filter:
+            majors = major_filter.split(',')
         x = Message()
         x.company = post.company
-        x.message = 'Current filters. Schools: ' + school_filter + 'Majors: ' + major_filter
+        x.message = 'Current filters. Schools: '
+        if school_filter:
+            x.message += school_filter
+        else:
+            x.message += 'None'
+        if major_filter:
+            x.message += ' ' + major_filter
+        else:
+            x.message += ' Majors: None'
         x.save()
         keep = request.POST.get('keep')
         apps = Application.objects.filter(post=post).filter(status='active')
@@ -269,11 +291,21 @@ class PostApplicantsView(View):
                 x.save()
             xx = Message()
             xx.code = 'info'
-            xx.message = 'The applicants outside the filter were removed successfully.'
+            xx.message = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
             xx.company = post.company
             xx.save()
         msgs = Message.objects.filter(company=post.company)
-        return render(request, self.template_name, {'post': post, 'list': l, 'msgs': msgs})
+        context = {
+            'post': post,
+            'list': l,
+            'msgs': msgs,
+            'schools': JobinSchool.objects.all(),
+            'majors': JobinMajor.objects.filter(program=program),
+            'count': len(l)
+        }
+        for m in msgs:
+            m.delete()
+        return render(request, self.template_name, context)
 
 
 class SingleApplicantView(View):

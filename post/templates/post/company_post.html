@@ -35,7 +35,7 @@
                             <th>Date Applied</th>
                         </tr>
                         {% for x in applicants %}
-                            <tr>
+                            <tr {% if x.cover_submitted %}style="background-color: #c2f9ce"{% endif %}>
                                 <td>{{ x.fname }} {{ x.lname }}</td>
                                 <td>{{ x.school }}</td>
                                 <td>{{ x.date_applied }}</td>
@@ -46,5 +46,12 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-default" href="{% url 'post:companyposts' %}">Back to list</a>
+    <div class="row">
+        <div class="col-md-3">
+            <a class="btn btn-default" href="{% url 'post:update' pk=post.pk %}">Edit</a>
+        </div>
+        <div class="col-md-9">
+            <a class="btn btn-default" href="{% url 'post:companyposts' %}">Back to list</a>
+        </div>
+    </div>
 {% endblock %}
