@@ -2,11 +2,12 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Company
-from home.models import Message, Notification
+from home.models import Message, Notification,JobinTerritory
 from .forms import NewCompanyForm
 from post.models import Post
 from django.views.generic import View
-
+import simplejson
+from django.http import HttpResponse
 
 class IndexView(View):
     template_name = 'company/company_home.html'
@@ -80,3 +81,10 @@ class ProfileView(View):
         user = self.request.user
         company = Company.objects.filter(user=user).first()
         return render(request, self.template_name, {'company': company, 'user': user})
+
+def get_states(request, country_name):
+    states = JobinTerritory.objects.filter(country=country_name)
+    state_dic = {}
+    for state in states:
+        state_dic[state.id] = state.name
+    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
