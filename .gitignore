@@ -38,4 +38,8 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-.idea
+*.swp
+.idea/*
+
+*.xml
+*/migrations/*

@@ -42,10 +42,12 @@ class NewStudentView(CreateView):
         student.user = self.request.user
         student.email = self.request.user.email
         ext = student.email.split('@', 1)
-        school = JobinSchool.objects.filter(email=ext[1].lower()).first()
-        student.school = school.name
+        school = JobinSchool.objects.filter(email=ext[1].lower())
+        if school.count() == 0:
+            pass
+        elif school.count() > 0:
+            student.school = school.first().name
         return super(NewStudentView, self).form_valid(form)
-
 
 
 class UpdateStudentView(UpdateView):

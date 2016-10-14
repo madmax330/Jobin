@@ -505,4 +505,10 @@ class WalkthrougNav(View):
             xx.student = x.student
             xx.message = 'You can upload a file resume as well by going to edit resume.'
             xx.save()
+            xxx = Message()
+            xxx.code = 'info'
+            xxx.student = x.student
+            xxx.message = 'Fill in the rest of your resume information (Schools, Languages, Skills, Awards and Work' \
+                          'Experience) with the manage button or on the overview screen.'
+            xxx.save()
         return redirect('resume:index')
