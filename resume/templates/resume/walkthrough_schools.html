@@ -10,10 +10,7 @@
 {% endblock %}
 
 {% block buttons %}
-    <div class="w3-third">
-        <button type="submit" class="w3-btn w3-blue">Add School</button>
-    </div>
     <div class="w3-rest">
-        <a href="{% url 'resume:nav' rk=rkey rq='school_done' %}" class="w3-btn w3-green">Continue</a>
+        <a href="{% url 'resume:nav' rk=rkey rq='school_done' %}" class="w3-btn w3-green">Save & Continue</a>
     </div>
 {% endblock %}

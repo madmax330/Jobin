@@ -79,14 +79,30 @@ class NewResumeView(CreateView):
         x.student = resume.student
         x.save()
         s = resume.student
-        s.is_new = False
-        s.save()
+        if s.is_new:
+            s.is_new = False
+            s.save()
+        if resume.is_active:
+            rs = Resume.objects.filter(student=s)
+            for r in rs:
+                r.is_active = False
+                r.save()
         return super(NewResumeView, self).form_valid(form)
 
 
 class ResumeUpdateView(UpdateView):
     model = Resume
     form_class = ResumeForm
+
+    def form_valid(self, form):
+        resume = form.save(commit=False)
+        s = resume.student
+        if resume.is_active:
+            rs = Resume.objects.filter(student=s)
+            for r in rs:
+                r.is_active = False
+                r.save()
+        return super(ResumeUpdateView, self).form_valid(form)
 
 
 class DeleteResume(DeleteView):
@@ -354,7 +370,7 @@ class DeleteSkill(DeleteView):
 
 class MakeActive(View):
 
-    def get(self, request, pk):
+    def get(self, request, pk, rq):
         student = Student.objects.get(user=self.request.user)
         resumes = Resume.objects.filter(student=student)
         for x in resumes:
@@ -368,7 +384,10 @@ class MakeActive(View):
         xx.message = 'Resume ' + r.name + ' set to active resume.'
         xx.student = r.student
         xx.save()
-        return redirect('post:studentposts')
+        if rq == 'post':
+            return redirect('post:studentposts')
+        else:
+            return redirect('resume:index')
 
 
 # Walkthrough Views
@@ -486,4 +505,10 @@ class WalkthrougNav(View):
             xx.student = x.student
             xx.message = 'You can upload a file resume as well by going to edit resume.'
             xx.save()
+            xxx = Message()
+            xxx.code = 'info'
+            xxx.student = x.student
+            xxx.message = 'Fill in the rest of your resume information (Schools, Languages, Skills, Awards and Work' \
+                          'Experience) with the manage button or on the overview screen.'
+            xxx.save()
         return redirect('resume:index')

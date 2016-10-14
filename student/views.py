@@ -3,10 +3,12 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Student
 from post.models import Application
-from home.models import Message, Notification, JobinSchool
+from home.models import Message, Notification, JobinSchool,JobinTerritory
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
+import simplejson
+from django.http import HttpResponse
 
 
 class IndexView(View):
@@ -40,8 +42,11 @@ class NewStudentView(CreateView):
         student.user = self.request.user
         student.email = self.request.user.email
         ext = student.email.split('@', 1)
-        school = JobinSchool.objects.filter(email=ext[1].lower()).first()
-        student.school = school.name
+        school = JobinSchool.objects.filter(email=ext[1].lower())
+        if school.count() == 0:
+            pass
+        elif school.count() > 0:
+            student.school = school.first().name
         return super(NewStudentView, self).form_valid(form)
 
 
@@ -95,3 +100,9 @@ class ProfileView(View):
         except ObjectDoesNotExist:
             return redirect('student:new')
 
+def get_states(request, country_name):
+    states = JobinTerritory.objects.filter(country=country_name)
+    state_dic = {}
+    for state in states:
+        state_dic[state.id] = state.name
+    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')

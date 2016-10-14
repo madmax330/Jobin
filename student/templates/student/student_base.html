@@ -11,6 +11,7 @@
     {% block styles %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{% static 'student/genscript.js' %}"></script>
+    <script type="text/javascript" src="{% static 'student/DynamicHtmlScript.js' %}"></script>
 </head>
 <body>
     <nav class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:300px;" id="mySidenav">
@@ -71,6 +72,9 @@
 <script>
 function w3_open() {
     document.getElementById("mySidenav").style.display = "block";
+}
+function w3_close() {
+    document.getElementById("mySidenav").style.display = "none";
 }
 function w3_close() {
     document.getElementById("mySidenav").style.display = "none";

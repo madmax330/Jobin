@@ -1,13 +1,40 @@
-{% for field in form %}
+{% if error %}
     <div class="w3-pale-red  w3-leftbar w3-border-red">
-            <span class="w3-text-red">{{ field.errors }}</span>
+        <span class="w3-text-red">{{ field.errors }}</span>
     </div>
-    <div class="w3-row">
-        <p class="w3-col s2">
-            <label>{{ field.label_tag }}{% if field.field.required %} * {% endif %}</label>
-        </p>
-        <div class="w3-col s12">
-            {{ field }}
-        </div>
+{% endif %}
+
+<h4 class="w3-grey w3-container w3-padding-8">Change Email/Username:</h4>
+<div class="w3-row">
+    <p>
+        <label>Email: *</label>
+    </p>
+    <div class="w3-col s12">
+        <input class="w3-input" type="email" name="email" value="" placeholder="New Email"/>
     </div>
-{% endfor %}
+</div>
+<div class="w3-row">
+    <p>
+        <label>Confirm Email: *</label>
+    </p>
+    <div class="w3-col s12">
+        <input class="w3-input" type="email" name="cemail" value="" placeholder="Confirm New Email"/>
+    </div>
+</div>
+<h4 class="w3-grey w3-container w3-padding-8">Change Password:</h4>
+<div class="w3-row">
+    <p>
+        <label>New Password: *</label>
+    </p>
+    <div class="w3-col s12">
+        <input class="w3-input" type="password" name="pass" value="" placeholder="New Password"/>
+    </div>
+</div>
+<div class="w3-row">
+    <p>
+        <label>Confirm Password: *</label>
+    </p>
+    <div class="w3-col s12">
+        <input class="w3-input" type="password" name="cpass" value="" placeholder="Confirm New Password"/>
+    </div>
+</div>
