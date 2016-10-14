@@ -32,7 +32,7 @@ class Language(models.Model):
         if self.resume.is_complete:
             return reverse('resume:languagelist', kwargs={'rk': self.resume.pk})
         else:
-            return reverse('resume:languagewalk', kwargs={'rk': self.resume.pk})
+            return reverse('resume:nav', kwargs={'rk': self.resume.pk, 'rq': 'language_done'})
 
     def __str__(self):
         return self.name
@@ -85,7 +85,7 @@ class School(models.Model):
         if self.resume.is_complete:
             return reverse('resume:schoollist', kwargs={'rk': self.resume.pk})
         else:
-            return reverse('resume:schoolwalk', kwargs={'rk': self.resume.pk})
+            return reverse('resume:nav', kwargs={'rk': self.resume.pk, 'rq': 'school_done'})
 
     def __str__(self):
         return self.name
