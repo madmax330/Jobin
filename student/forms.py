@@ -30,3 +30,8 @@ class NewStudentForm(forms.ModelForm):
             'work_eligible': forms.Select(attrs={'class': 'w3-input w3-half'},
                                      choices=(('TRUE', 'True'), ('FALSE', 'False'))),
         }
+
+        labels = {
+            'firstname': 'First Name',
+            'lastname': 'Last Name',
+        }

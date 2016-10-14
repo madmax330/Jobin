@@ -527,6 +527,7 @@ class Applicant:
         self.address = stu.address + ' ' + stu.city + ' ' + stu.state + ' ' + stu.zipcode
         self.school = stu.school
         self.program = stu.program
+        self.major = stu.major
         self.resume = app.resume
         self.post = app.post
         self.cover = app.cover
