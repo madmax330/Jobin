@@ -14,7 +14,26 @@ $(document).ready(function(){
             },
             
         })
-    } 
+    }
+	
+	ChangeSelectMajor = function(){
+		
+        program_name= $('select[name=program]').val();
+        request_url = 'get_majors/' + program_name + '/';
+        $.ajax({
+            url: request_url,
+            success: function(data){
+				$('select[name=major]').empty();
+                $.each(data, function(key, value){
+                    $('select[name=major]').append('<option value="' + key + '">' + value +'</option>');
+                });
+            },
+            
+        })
+    }
+
+	ChangeSelectMajor();	
 	ChangeSelectState();
+	$('select[name=program]').change(ChangeSelectMajor)
     $('select[name=country]').change(ChangeSelectState)
 });

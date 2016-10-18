@@ -3,7 +3,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Student
 from post.models import Application
-from home.models import Message, Notification, JobinSchool,JobinTerritory
+from home.models import Message, Notification, JobinSchool,JobinTerritory,JobinProgram,JobinMajor
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -104,3 +104,11 @@ def get_states(request, country_name):
     for state in states:
         state_dic[state.id] = state.name
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
+
+def get_majors(request, program_id):
+    program = JobinProgram.objects.get(name=program_id)
+    majors = JobinMajor.objects.filter(program=program)
+    major_dic = {}
+    for major in majors:
+        major_dic[major.id] = major.name
+    return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
