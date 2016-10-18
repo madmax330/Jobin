@@ -17,8 +17,8 @@
             <td>{{ x.title }}</td>
             <td>{{ x.start }}</td>
             <td>{% if x.is_current %}Current Job{% else %}{{ x.end }}{% endif %}</td>
-            <td>{{ x.company }}</td>
             <td>{{ x.experience_type }}</td>
+            <td>{{ x.company }}</td>
             <td><a href="{% url 'resume:updateexperience' pk=x.pk %}">Edit</a></td>
             <td><a href="{% url 'resume:deleteexperience' pk=x.pk rk=rkey%}">Delete</a></td>
         </tr>

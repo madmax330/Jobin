@@ -5,9 +5,23 @@
 {% block postsactive %}active{% endblock %}
 
 {% block content %}
-    <div class="w3-container w3-padding-32">
+    <div class="w3-container w3-padding-8">
         <div class="container">
-            <h3 class="w3-center">{{ count }} Job Posts</h3>
+            <h3 class="w3-center">({{ count }}) {{ ptype }} Job Posts</h3>
+        </div>
+        <div class="w3-btn-group w3-light-grey w3-border w3-border-black" style="margin-bottom: 20px;">
+            <a href="{% url 'post:studentposts' pk=0 pt='volunteer' %}" class="w3-btn {{ vact }}" style="width:25%;">
+                ({{ vcount }}) Volunteer Jobs
+            </a>
+            <a href="{% url 'post:studentposts' pk=0 pt='internship' %}" class="w3-btn {{ iact }}" style="width:25%;">
+                ({{ icount }}) Internships
+            </a>
+            <a href="{% url 'post:studentposts' pk=0 pt='parttime' %}" class="w3-btn {{ pact }}" style="width:25%;">
+                ({{ ptcount }}) Part-Time Jobs
+            </a>
+            <a href="{% url 'post:studentposts' pk=0 pt='newgrad' %}" class="w3-btn {{ nact }}" style="width:25%;">
+                ({{ ngcount }}) New Grad Jobs
+            </a>
         </div>
         <div class="w3-content w3-container" style="position:relative">
             {% include 'post/student_post_view.html' %}
@@ -35,4 +49,15 @@
           x[slideIndex-1].style.display = "block";
         }
     </script>
+
+    <script>
+        $(function(){
+            $(".w3-btn-group a").each(function(){
+                $(this).css({"background-color": "lightgrey", "color": "black"});
+            });
+
+            $(".w3-btn-group .active").css({"background-color": "grey", "color": "white"});
+        });
+    </script>
+
 {% endblock %}
