@@ -84,27 +84,66 @@ class CompanyPost(View):
 class StudentPosts(View):
     template_name = 'post/student_posts.html'
 
-    def get(self, request):
+    def get(self, request, pk, pt):
         try:
             student = Student.objects.get(user=self.request.user)
             resumes = Resume.objects.filter(student=student)
-            posts = Post.objects.all()
+            posts = Post.objects.filter(type=pt)
             l = []
+            templ = []
+            flag = False
             for x in posts:
+                if int(x.pk) == int(pk) > 0:
+                    flag = True
                 xx = x.company
                 xxx = CustomPost(x, xx)
-                l.append(xxx)
+                if flag:
+                    l.append(xxx)
+                else:
+                    templ.append(xxx)
+            l.extend(templ)
             rkey = 0
             for r in resumes:
                 if r.is_active:
                     rkey = r.pk
             msgs = Message.objects.filter(student=student)
+            vcount = Post.objects.filter(type='volunteer').count()
+            icount = Post.objects.filter(type='internship').count()
+            ptcount = Post.objects.filter(type='parttime').count()
+            ngcount = Post.objects.filter(type='newgrad').count()
+            vact = ''
+            iact = ''
+            pact = ''
+            nact = ''
+            temp = pt
+            if pt == 'volunteer':
+                vact = 'active'
+                pt = 'Volunteer'
+            elif pt == 'internship':
+                iact = 'active'
+                pt = 'Internship'
+            elif pt == 'parttime':
+                pact = 'active'
+                pt = 'Part-Time'
+            elif pt == 'newgrad':
+                nact = 'active'
+                pt = 'New Grad'
             context = {
                 'list': l,
                 'count': len(l),
                 'resumes': resumes,
                 'rkey': rkey,
                 'msgs': msgs,
+                'ptype': pt,
+                'pt': temp,
+                'vcount': vcount,
+                'icount': icount,
+                'ptcount': ptcount,
+                'ngcount': ngcount,
+                'vact': vact,
+                'iact': iact,
+                'pact': pact,
+                'nact': nact,
             }
             for x in msgs:
                 x.delete()
@@ -112,7 +151,7 @@ class StudentPosts(View):
         except ObjectDoesNotExist:
             return redirect('student:new')
 
-    def post(self, request):
+    def post(self, request, pk, pt):
         r = request.POST.get('rk')
         student = Student.objects.get(user=self.request.user)
         resumes = Resume.objects.filter(student=student)
@@ -121,7 +160,7 @@ class StudentPosts(View):
             if x.pk == r:
                 x.is_active = True
             x.save()
-        return self.get(request)
+        return self.get(request, pk=pk, pt=pt)
 
 
 class StudentDetailsView(View):
@@ -179,10 +218,18 @@ class StudentDetailsView(View):
 
 class ApplyView(View):
 
-    def get(self, request, pk):
+    def get(self, request, pk, pt):
         post = Post.objects.get(pk=pk)
         student = Student.objects.get(user=self.request.user)
         r = Resume.objects.filter(student=student).filter(is_active=True)
+        test = Application.objects.filter(student=student, post=post)
+        if test.count() > 0:
+            x = Message()
+            x.code = 'warning'
+            x.message = 'You have already applied for this post'
+            x.student = student
+            x.save()
+            return redirect('post:studentposts', pk=pk, pt=pt)
         if r.count() > 0:
             resume = r.first()
             app = Application()
@@ -199,7 +246,7 @@ class ApplyView(View):
             x.message = 'You successfully applied for the post: ' + post.title
             x.student = student
             x.save()
-            return redirect('post:studentposts')
+            return redirect('post:studentposts', pk=pk, pt=pt)
         else:
             x = Message()
             x.code = 'warning'
@@ -255,7 +302,7 @@ class PostApplicantsView(View):
         else:
             x.message += 'None'
         if major_filter:
-            x.message += ' ' + major_filter
+            x.message += ' ; Majors: ' + major_filter
         else:
             x.message += ' Majors: None'
         x.save()
@@ -289,6 +336,11 @@ class PostApplicantsView(View):
             for x in d:
                 x.status = 'closed'
                 x.save()
+                n = Notification()
+                n.code = 100
+                n.student = x.student
+                n.message = "Your application for the job " + x.post_title + " was discontinued."
+                n.save()
             xx = Message()
             xx.code = 'info'
             xx.message = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
@@ -356,8 +408,9 @@ class SingleApplicantView(View):
             xx.company = post.company
             xx.save()
             n = Notification()
+            n.code = 100
             n.student = x.student
-            n.message = 'Your application for the ' + x.post.title + ' opportunity was discontinued.'
+            n.message = 'Your application for the ' + x.post_title + ' opportunity was discontinued.'
             n.save()
             apps = Application.objects.filter(post=post).filter(status='active')
             if apps.count() > 0:

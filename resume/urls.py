@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'^delete/skill/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteSkill.as_view(), name='deleteskill'),
 
     # Walkthrough
-    url(r'^walkthrough/school/(?P<rk>[0-9]+)/$', views.SchoolWalkthrough.as_view(), name='schoolwalk'),
+    url(r'^walkthrough/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.SchoolWalkthrough.as_view(), name='schoolwalk'),
     url(r'^walkthrough/language/(?P<rk>[0-9]+)/$', views.LanguageWalkthrough.as_view(), name='languagewalk'),
     url(r'^walkthrough/experience/(?P<rk>[0-9]+)/$', views.ExperienceWalkthrough.as_view(), name='experiencewalk'),
 

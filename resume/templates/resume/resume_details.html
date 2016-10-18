@@ -38,7 +38,7 @@
                     <tr>
                         <td>{{ x.title }}</td>
                         <td>{{ x.start }}</td>
-                        <td>{{ x.end }}</td>
+                        <td>{% if x.is_current %}Current Job{% else %}{{ x.end }}{% endif %}</td>
                         <td>{{ x.company }}</td>
                     </tr>
                 {% endfor %}
@@ -65,7 +65,7 @@
                     <tr>
                         <td>{{ x.name }}</td>
                         <td>{{ x.start }}</td>
-                        <td>{{ x.end }}</td>
+                        <td>{% if x.is_current %}Current School{% else %}{{ x.end }}{% endif %}</td>
                         <td>{{ x.level }}</td>
                         <td>{{ x.program }}</td>
                     </tr>

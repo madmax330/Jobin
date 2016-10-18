@@ -15,10 +15,10 @@ class NewPostForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'},
                                  choices=(
-                                      ('new grad', 'New Grad'),
+                                      ('newgrad', 'New Grad'),
                                       ('volunteer', 'Volunteer'),
                                       ('internship', 'Internship'),
-                                      ('part time', 'Part-Time'),
+                                      ('parttime', 'Part-Time'),
                                   )),
             'wage': forms.TextInput(attrs={'class': 'form-control'}),
             'openings': forms.NumberInput(attrs={'class': 'form-control'}),
