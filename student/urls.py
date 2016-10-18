@@ -12,5 +12,11 @@ urlpatterns = [
     url(r'^activity/$', views.ActivityView.as_view(), name='activity'),
     url(r'^update/(?P<pk>[0-9]+)/$', views.UpdateStudentView.as_view(), name='update'),
     url(r'^new/get_states/(?P<country_name>[a-zA-Z_ ]+)/$', views.get_states, name='get_states'),
+    url(r'^update/(?P<pk>[0-9]+)/get_states/(?P<country_name>[a-zA-Z_ ]+)/$', views.get_states, name='get_states'),
+
+    url(r'^new/get_majors/(?P<program_id>[a-zA-Z_& ]+)/$', views.get_majors, name='get_majors'),
+    url(r'^update/(?P<pk>[0-9]+)/get_majors/(?P<program_id>[a-zA-Z_& ]+)/$', views.get_majors, name='get_majors'),
+
+
 ]
 
