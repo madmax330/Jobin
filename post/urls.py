@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^company/posts/$', views.CompanyPosts.as_view(), name='companyposts'),
     url(r'^new/$', views.NewPostView.as_view(), name='new'),
     url(r'^update/(?P<pk>[0-9]+)/$', views.PostUpdateView.as_view(), name='update'),
+    url(r'^close/(?P<pk>[0-9]+)/$', views.ClosePostView.as_view(), name='close'),
     url(r'^details/(?P<pk>[0-9]+)/$', views.CompanyPost.as_view(), name='companypost'),
     url(r'^student/posts/(?P<pk>[0-9]+)/(?P<pt>\w+)/$', views.StudentPosts.as_view(), name='studentposts'),
     url(r'^apply/(?P<pk>[0-9]+)/(?P<pt>\w+)/$', views.ApplyView.as_view(), name='apply'),

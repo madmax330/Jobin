@@ -9,13 +9,14 @@ from django.views.generic import View
 import simplejson
 from django.http import HttpResponse
 
+
 class IndexView(View):
     template_name = 'company/company_home.html'
 
     def get(self, request):
         res = Company.objects.filter(user=request.user)
         if res.count() > 0:
-            posts = Post.objects.filter(company=res.first())
+            posts = Post.objects.filter(company=res.first(), status='open')
             msgs = Message.objects.filter(company=res.first())
             context = {
                 'company': res.first(),

@@ -17,7 +17,7 @@ class CompanyPosts(generic.ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Post.objects.filter(company=Company.objects.filter(user=self.request.user).first())
+        return Post.objects.filter(company=Company.objects.filter(user=self.request.user).first(), status='open')
 
     def get_context_data(self, **kwargs):
         context = super(CompanyPosts, self).get_context_data(**kwargs)
@@ -59,12 +59,40 @@ class PostUpdateView(UpdateView):
         return super(PostUpdateView, self).form_valid(form)
 
 
+class ClosePostView(View):
+
+    def get(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        post.status = 'closed'
+        post.save()
+        m = Message()
+        m.code = 'info'
+        m.company = post.company
+        m.message = 'Post ' + post.title + ' closed successfully'
+        m.save()
+        cn = Notification()
+        cn.company = post.company
+        cn.code = 0
+        cn.message = 'Post ' + post.title + ' closed on ' + str(datetime.datetime.now()) + '.'
+        cn.save()
+        apps = Application.objects.filter(post=post)
+        for x in apps:
+            x.status = 'closed'
+            x.save()
+            n = Notification()
+            n.code = 100
+            n.student = x.student
+            n.message = 'The position ' + post.title + ' has been closed.'
+            n.save()
+        return redirect('post:companyposts')
+
+
 class CompanyPost(View):
     template_name = 'post/company_post.html'
 
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
-        apps = Application.objects.filter(post=post).filter(status='active')
+        apps = Application.objects.filter(post=post, status='active')
         l = []
         for x in apps:
             xx = Applicant(x, x.student)
@@ -88,7 +116,7 @@ class StudentPosts(View):
         try:
             student = Student.objects.get(user=self.request.user)
             resumes = Resume.objects.filter(student=student)
-            posts = Post.objects.filter(type=pt)
+            posts = Post.objects.filter(type=pt, status='open')
             l = []
             templ = []
             flag = False
@@ -261,7 +289,7 @@ class PostApplicantsView(View):
 
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
-        apps = Application.objects.filter(post=post).filter(status='active')
+        apps = Application.objects.filter(post=post, status='active')
         l = []
         for x in apps:
             xx = Applicant(x, x.student)
@@ -307,7 +335,7 @@ class PostApplicantsView(View):
             x.message += ' Majors: None'
         x.save()
         keep = request.POST.get('keep')
-        apps = Application.objects.filter(post=post).filter(status='active')
+        apps = Application.objects.filter(post=post, status='active')
         l = []
         for x in apps:
             xx = Applicant(x, x.student)
@@ -365,9 +393,9 @@ class SingleApplicantView(View):
 
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
-        apps = Application.objects.filter(post=post).filter(status='active')
+        apps = Application.objects.filter(post=post, status='active')
         if apps.count() > 0:
-            xx = Application.objects.filter(post=post).filter(status='active')[0]
+            xx = apps[0]
         else:
             x = Message()
             x.company = post.company
@@ -412,7 +440,7 @@ class SingleApplicantView(View):
             n.student = x.student
             n.message = 'Your application for the ' + x.post_title + ' opportunity was discontinued.'
             n.save()
-            apps = Application.objects.filter(post=post).filter(status='active')
+            apps = Application.objects.filter(post=post, status='active')
             if apps.count() > 0:
                 if page >= apps.count():
                     page = 0
@@ -459,7 +487,7 @@ class SingleApplicantView(View):
                     m.message = 'A cover letter was already sent to the applicant; you will be' \
                                 ' notified when a cover letter is received'
                     m.save()
-            apps = Application.objects.filter(post=post).filter(status='active')
+            apps = Application.objects.filter(post=post, status='active')
             if page >= apps.count():
                 page = 0
             elif page < 0:
