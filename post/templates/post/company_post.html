@@ -9,6 +9,9 @@
         <div class="col-md-7">
             <h3>{{ post.title }}</h3>
             <hr/>
+            <label>Post Status:</label><span> {{ post.status }}</span>
+            <a style="color: red;" href="{% url 'post:close' post.pk %}">Close Post</a>
+            <br/>
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
             <label>End Date: </label><span> {{ post.end_date }}</span><br/>
             <label>Application Deadline: </label><span> {{ post.deadline }}</span><br/>
