@@ -330,9 +330,9 @@ class PostApplicantsView(View):
         else:
             x.message += 'None'
         if major_filter:
-            x.message += ' ; Majors: ' + major_filter
+            x.message += '; Majors: ' + major_filter
         else:
-            x.message += ' Majors: None'
+            x.message += '; Majors: None'
         x.save()
         keep = request.POST.get('keep')
         apps = Application.objects.filter(post=post, status='active')
@@ -340,23 +340,23 @@ class PostApplicantsView(View):
         for x in apps:
             xx = Applicant(x, x.student)
             if schools and majors:
-                if xx.school in schools and xx.program in majors:
+                if xx.school in schools and xx.major in majors:
                     l.append(xx)
             elif schools:
                 if xx.school in schools:
                     l.append(xx)
             elif majors:
-                if xx.program in majors:
+                if xx.major in majors:
                     l.append(xx)
         if not keep:
             d = []
             for x in apps:
                 xx = Applicant(x, x.student)
                 if schools and majors:
-                    if xx.school not in schools and xx.program not in majors:
+                    if xx.school not in schools and xx.major not in majors:
                         d.append(x)
                 elif majors:
-                    if xx.program not in majors:
+                    if xx.major not in majors:
                         d.append(x)
                 elif schools:
                     if xx.school not in schools:
