@@ -17,7 +17,7 @@ class Resume(models.Model):
         if self.is_complete:
             return reverse('resume:index')
         else:
-            return reverse('resume:schoolwalk', kwargs={'rk': self.pk})
+            return reverse('resume:nav', kwargs={'rk': self.pk, 'rq': 'resume_done'})
 
     def __str__(self):
         return self.name

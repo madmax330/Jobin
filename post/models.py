@@ -18,7 +18,7 @@ class Post(models.Model):
     schools = models.CharField(max_length=200, null=True, default='ALL')
     programs = models.CharField(max_length=200, null=True, default='ALL')
     type = models.CharField(max_length=100, null=True)
-    status = models.CharField(max_length=50,  null=True)
+    status = models.CharField(max_length=50,  null=True, default='open')
     supplied_by_jobin = models.BooleanField(default=True)
     notified = models.BooleanField(default=False)
     cover_instructions = models.TextField(null=True, blank=True)

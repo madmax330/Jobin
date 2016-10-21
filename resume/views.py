@@ -7,6 +7,7 @@ from .models import Resume, Language, Experience, Award, School, Skill
 from home.models import Message
 from .forms import ResumeForm, LanguageForm, ExperienceForm, AwardForm, SchoolForm, SkillForm, NewResumeForm
 from django.core.exceptions import ObjectDoesNotExist
+import datetime
 
 
 class IndexView(View):
@@ -391,7 +392,7 @@ class MakeActive(View):
 
 
 # Walkthrough Views
-class SchoolWalkthrough(CreateView):
+class SchoolWalkthrough(UpdateView):
     template_name = 'resume/walkthrough_schools.html'
     model = School
     form_class = SchoolForm
@@ -470,6 +471,17 @@ class WalkthrougNav(View):
 
     def get(self, request, rk, rq):
         resume = Resume.objects.get(pk=rk)
+        student = resume.student
+        if rq == 'resume_done':
+            s = School()
+            s.resume = resume
+            s.name = student.school
+            s.program = student.program
+            s.start = datetime.datetime.now()
+            s.level = 'university'
+            s.is_current = True
+            s.save()
+            return redirect('resume:schoolwalk', pk=s.pk, rk=rk)
         if rq == 'school_done':
             sch = School.objects.filter(resume=resume)
             if sch.count() > 0:

@@ -28,5 +28,11 @@ class NewStudentForm(forms.ModelForm):
             'dob': forms.DateInput(attrs={'class': 'w3-input w3-quarter', 'type': 'date'}),
             'linkedin': forms.TextInput(attrs={'class': 'w3-input'}),
             'work_eligible': forms.Select(attrs={'class': 'w3-input w3-half'},
-                                     choices=(('TRUE', 'True'), ('FALSE', 'False'))),
+                                     choices=(('TRUE', 'Yes'), ('FALSE', 'No'))),
+        }
+
+        labels = {
+            'firstname': 'First Name',
+            'lastname': 'Last Name',
+            'work_eligible': 'Are you legally eligible to work?'
         }
