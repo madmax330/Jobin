@@ -39,12 +39,22 @@ urlpatterns = [
     url(r'^delete/skill/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteSkill.as_view(), name='deleteskill'),
 
     # Walkthrough
-    url(r'^walkthrough/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.SchoolWalkthrough.as_view(), name='schoolwalk'),
-    url(r'^walkthrough/language/(?P<rk>[0-9]+)/$', views.LanguageWalkthrough.as_view(), name='languagewalk'),
+    url(r'^walkthrough/first/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.FirstSchoolWalkthrough.as_view(), name='firstschoolwalk'),
+    url(r'^walkthrough/school/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.SchoolWalkthrough.as_view(), name='schoolwalk'),
+    url(r'^walkthrough/language/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.LanguageWalkthrough.as_view(), name='languagewalk'),
     url(r'^walkthrough/experience/(?P<rk>[0-9]+)/$', views.ExperienceWalkthrough.as_view(), name='experiencewalk'),
 
+    # Links
+    url(r'^link/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkschool, name='linkschool'),
+    url(r'^link/skill/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkskill, name='linkskill'),
+    url(r'^link/language/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linklanguage, name='linklanguage'),
+    url(r'^link/experience/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkexperience, name='linkexperience'),
+    url(r'^link/award/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkaward, name='linkaward'),
+
+    # Misc
     url(r'^activate/(?P<pk>[0-9]+)/(?P<rq>\w+)/$', views.MakeActive.as_view(), name='makeactive'),
     url(r'^details/(?P<pk>[0-9]+)/$', views.ResumeDetailView.as_view(), name='details'),
-    url(r'^nav/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.WalkthrougNav.as_view(), name='nav')
+    url(r'^nav/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.WalkthrougNav.as_view(), name='nav'),
+    url(r'^copy/resume/(?P<rk>[0-9]+)/$', views.copyresume, name='copy'),
 ]
 

@@ -115,9 +115,16 @@
                     </table>
                 {% endif %}
             {% endif %}
-            <a href="{% url 'post:coverrequest' pk=app.post.pk ak=app.pk %}" class="btn btn-info">
-                Request Cover Letter
-            </a>
+            {% if app.cover_requested %}
+                <div class="alert alert-success">
+                    A cover letter request was already sent to this applicant.
+                </div>
+            {% else %}
+                <a href="{% url 'post:coverrequest' pk=app.post.pk ak=app.pk %}" class="btn btn-info">
+                    Request Cover Letter
+                </a>
+            {% endif %}
+
         </div>
     </div>
     <a href="{% url 'post:applicants' pk=app.post.pk %}" class="btn btn-default">Back to list</a>

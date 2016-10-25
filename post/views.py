@@ -35,7 +35,6 @@ class NewPostView(CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.schools = 'ALL'
-        post.programs = 'ALL'
         post.company = Company.objects.filter(user=self.request.user).first()
         x = Message()
         x.code = 'info'
@@ -200,6 +199,7 @@ class StudentDetailsView(View):
         msgs = Message.objects.filter(student=app.student)
         context = {
             'post': post,
+            'comp': post.company,
             'app': app,
             'msgs': msgs,
         }
