@@ -53,3 +53,10 @@
         </div>
     </div>
 {% endfor %}
+{% if count == 0 %}
+    <div class="w3-card-16">
+        <h3 class="w3-center">
+            There are currently no {{ pt }} opportunities listed. Check back again later.
+        </h3>
+    </div>
+{% endif %}

@@ -61,14 +61,14 @@ class RegisterView(View):
             elif utype == 'student':
                 g = Group.objects.get(name='student_user')
                 g.user_set.add(user)
+                ext = user.email.split('@', 1)[1]
+                ems = JobinSchool.objects.filter(email=ext.lower())
+                if ems.count() == 0:
+                    x = JobinRequestedEmail()
+                    x.extension = ext.lower()
+                    x.save()
             else:
                 return redirect('home:index')
-            ext = user.email.split('@', 1)[1]
-            ems = JobinSchool.objects.filter(email=ext.lower())
-            if ems.count() == 0:
-                x = JobinRequestedEmail()
-                x.extension = ext.lower()
-                x.save()
             return redirect('home:verify')
         return render(request, self.template_name, {'form': form})
 

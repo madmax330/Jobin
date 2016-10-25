@@ -36,6 +36,7 @@
             <label>Address:</label><span> {{ app.address }}</span><br/>
             <label>School:</label><span> {{ app.school }}</span><br/>
             <label>Program:</label><span> {{ app.program }}</span><br/>
+            <label>Major:</label><span> {{ app.major }}</span><br/>
             <hr/>
             <h4>Student Resume:</h4>
             <hr/>
@@ -127,7 +128,13 @@
             <hr/>
             <div class="row">
                 <div class="col-md-offset-7 col-md-3">
-                    <button id="clBtn" type="button"  class="btn btn-default">Request Cover Letter</button>
+                    {% if app.cover_requested %}
+                        <div class="alert alert-success">
+                            A cover letter request was already sent to this applicant.
+                        </div>
+                    {% else %}
+                        <button id="clBtn" type="button"  class="btn btn-default">Request Cover Letter</button>
+                    {% endif %}
                 </div>
                 <div class="col-md-2">
                     <button id="dBtn" type="button" class="btn btn-danger">Discard</button>
