@@ -134,10 +134,10 @@ class StudentPosts(View):
                 if r.is_active:
                     rkey = r.pk
             msgs = Message.objects.filter(student=student)
-            vcount = Post.objects.filter(type='volunteer').count()
-            icount = Post.objects.filter(type='internship').count()
-            ptcount = Post.objects.filter(type='parttime').count()
-            ngcount = Post.objects.filter(type='newgrad').count()
+            vcount = Post.objects.filter(type='volunteer', status='open').count()
+            icount = Post.objects.filter(type='internship', status='open').count()
+            ptcount = Post.objects.filter(type='parttime', status='open').count()
+            ngcount = Post.objects.filter(type='newgrad', status='open').count()
             vact = ''
             iact = ''
             pact = ''
