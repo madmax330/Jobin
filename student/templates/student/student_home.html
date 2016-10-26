@@ -47,17 +47,19 @@
                 <h4 style="margin:0;" class="w3-dark-grey w3-center w3-padding-8">Active Applications</h4>
                 {% if apps.count == 0 %}
                     <div class="w3-container w3-orange">
-                        You currently have no active applications. <a href="{% url 'post:studentposts' %}">Browse the posts</a> to apply.
+                        You currently have no active applications. <a href="{% url 'post:studentposts' pk=0 pt='internship'%}">Browse the posts</a> to apply.
                     </div>
                 {% else %}
                     <table class="w3-table w3-bordered w3-white">
                         <tr>
                             <th>Post Title</th>
+                            <th>Resume</th>
                             <th>Status</th>
                         </tr>
                         {% for x in apps %}
                             <tr {% if x.cover_requested %}class="w3-border-green w3-pale-green"{% endif %}>
                                 <td><a href="{% url 'post:studentdetails' pk=x.post.pk ak=x.pk%}">{{ x.post_title }}</a></td>
+                                <td>{{ x.resume.name }}</td>
                                 <td>{{ x.status }}</td>
                             </tr>
                         {% endfor %}

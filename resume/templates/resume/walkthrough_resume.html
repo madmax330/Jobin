@@ -4,6 +4,17 @@
 
 {% block form_title %}New Resume Form:{% endblock %}
 
+{% block before_content %}
+    {% if rcount > 0 %}
+        <div class="w3-container">
+        <h3>Create your new resume based off of an existing resume:</h3>
+        {% for x in rs %}
+            <a class="w3-btn w3-grey" href="{% url 'resume:copy' rk=x.pk %}">New resume like {{ x.name }}</a>
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block buttons %}
     <div class="w3-third">
         <button type="submit" class="w3-btn w3-blue">Save & Continue</button>

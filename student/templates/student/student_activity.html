@@ -45,7 +45,7 @@
                     </table>
                 {% else %}
                     <div class="w3-pale-yellow">
-                        <p>You currently don't have any posts <a href="{% url 'post:studentposts' %}">Click Here</a>
+                        <p>You currently don't have any posts <a href="{% url 'post:studentposts' pk=0 pt='internship'%}">Click Here</a>
                             to apply for jobs of your choice.</p>
                     </div>
                 {% endif %}
