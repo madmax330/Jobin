@@ -53,3 +53,15 @@
         </div>
     </div>
 {% endfor %}
+{% if count == 0 %}
+    <div class="w3-display-container mySlides w3-white" style="margin: 0 30px 0 30px;">
+        <div class="w3-card-16" style="padding: 100px;">
+            <h3 class="w3-center">
+                There are currently no {{ ptype }} opportunities listed.
+            </h3>
+            <h4 class="w3-center">
+                Check back again later.
+            </h4>
+        </div>
+    </div>
+{% endif %}

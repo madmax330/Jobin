@@ -5,13 +5,14 @@ from django.core.urlresolvers import reverse
 
 
 class Resume(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, default=0)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     last_updated = models.DateTimeField(default=django.utils.timezone.now)
     file_resume = models.FileField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
     gpa = models.DecimalField(null=True, blank=True, max_digits=4, decimal_places=2)
     is_complete = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, default="open")
 
     def get_absolute_url(self):
         if self.is_complete:
@@ -24,22 +25,20 @@ class Resume(models.Model):
 
 
 class Language(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     level = models.CharField(max_length=50)
+    rkey = models.CharField(max_length=20)
 
     def get_absolute_url(self):
-        if self.resume.is_complete:
-            return reverse('resume:languagelist', kwargs={'rk': self.resume.pk})
-        else:
-            return reverse('resume:nav', kwargs={'rk': self.resume.pk, 'rq': 'language_done'})
+        return reverse('resume:linklanguage', kwargs={'pk': self.pk, 'rk': self.rkey})
 
     def __str__(self):
         return self.name
 
 
 class Experience(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     start = models.DateField()
     end = models.DateField(null=True, blank=True)
@@ -47,57 +46,96 @@ class Experience(models.Model):
     company = models.CharField(max_length=100, null=True)
     experience_type = models.CharField(max_length=50)
     is_current = models.BooleanField(default=False)
+    rkey = models.CharField(max_length=20)
 
     def get_absolute_url(self):
-        if self.resume.is_complete:
-            return reverse('resume:experiencelist', kwargs={'rk': self.resume.pk})
-        else:
-            return reverse('resume:experiencewalk', kwargs={'rk': self.resume.pk})
+        return reverse('resume:linkexperience', kwargs={'pk': self.pk, 'rk': self.rkey})
 
     def __str__(self):
         return self.title
 
 
 class Award(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     date = models.DateField()
     description = models.TextField()
     award_type = models.CharField(max_length=50)
+    rkey = models.CharField(max_length=20)
 
     def get_absolute_url(self):
-        return reverse('resume:awardlist', kwargs={'rk': self.resume.pk})
+        return reverse('resume:linkaward', kwargs={'pk': self.pk, 'rk': self.rkey})
 
     def __str__(self):
         return self.title
 
 
 class School(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='stu')
     name = models.CharField(max_length=100)
     program = models.CharField(max_length=100, null=True, blank=True)
     level = models.CharField(max_length=100)
     start = models.DateField()
     end = models.DateField(null=True, blank=True)
     is_current = models.BooleanField(default=False)
+    rkey = models.CharField(max_length=20)
 
     def get_absolute_url(self):
-        if self.resume.is_complete:
-            return reverse('resume:schoollist', kwargs={'rk': self.resume.pk})
-        else:
-            return reverse('resume:nav', kwargs={'rk': self.resume.pk, 'rq': 'school_done'})
+        return reverse('resume:linkschool', kwargs={'pk': self.pk, 'rk': self.rkey})
 
     def __str__(self):
         return self.name
 
 
 class Skill(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     level = models.CharField(max_length=50)
+    rkey = models.CharField(max_length=20)
+
+    def get_absolute_url(self):
+        return reverse('resume:linkskill', kwargs={'pk': self.pk, 'rk': self.rkey})
+
+    def __str__(self):
+        return self.name
+
+
+class SchoolLink(models.Model):
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('resume:schoollist', kwargs={'rk': self.resume.pk})
+
+
+class SkillLink(models.Model):
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse('resume:skilllist', kwargs={'rk': self.resume.pk})
 
-    def __str__(self):
-        return self.name
+
+class AwardLink(models.Model):
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    award = models.ForeignKey(Award, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('resume:awardlist', kwargs={'rk': self.resume.pk})
+
+
+class ExperienceLink(models.Model):
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    experience = models.ForeignKey(Experience, on_delete=models.CASCADE)
+    start = models.DateField()
+
+    def get_absolute_url(self):
+        return reverse('resume:experiencelist', kwargs={'rk': self.resume.pk})
+
+
+class LanguageLink(models.Model):
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('resume:languagelist', kwargs={'rk': self.resume.pk})

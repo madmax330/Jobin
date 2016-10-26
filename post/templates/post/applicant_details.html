@@ -33,7 +33,7 @@
             {% if resume.file_resume %}
                 {{ resume.file_resume }}
             {% else %}
-                {% if exp.count > 0 %}
+                {% if ecount > 0 %}
                     <h5>Experience:</h5>
                     {% for x in exp %}
                         <div class="row">
@@ -48,7 +48,7 @@
                         <p>{{ x.description }}</p><hr/>
                     {% endfor %}
                 {% endif %}
-                {% if schools.count > 0 %}
+                {% if scount > 0 %}
                     <h5>Education:</h5>
                     <table class="table">
                         <tr>
@@ -69,7 +69,7 @@
                     {% endfor %}
                     </table>
                 {% endif %}
-                {% if aws.count > 0 %}
+                {% if acount > 0 %}
                     <h5>Awards:</h5>
                     {% for x in aws %}
                         <div class="row">
@@ -84,7 +84,7 @@
                         <p>{{ x.description }}</p><hr/>
                     {% endfor %}
                 {% endif %}
-                {% if lan.count > 0 %}
+                {% if lcount > 0 %}
                     <h5>Languages:</h5>
                     <table class="table">
                         <tr>
@@ -99,7 +99,7 @@
                     {% endfor %}
                     </table>
                 {% endif %}
-                {% if skills.count > 0 %}
+                {% if kcount > 0 %}
                     <h5>Skills:</h5>
                     <table class="table">
                         <tr>
@@ -115,9 +115,16 @@
                     </table>
                 {% endif %}
             {% endif %}
-            <a href="{% url 'post:coverrequest' pk=app.post.pk ak=app.pk %}" class="btn btn-info">
-                Request Cover Letter
-            </a>
+            {% if app.cover_requested %}
+                <div class="alert alert-success">
+                    A cover letter request was already sent to this applicant.
+                </div>
+            {% else %}
+                <a href="{% url 'post:coverrequest' pk=app.post.pk ak=app.pk %}" class="btn btn-info">
+                    Request Cover Letter
+                </a>
+            {% endif %}
+
         </div>
     </div>
     <a href="{% url 'post:applicants' pk=app.post.pk %}" class="btn btn-default">Back to list</a>

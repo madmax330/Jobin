@@ -38,6 +38,14 @@
     {% endif %}
     <div class="w3-container w3-card-8 w3-white">
         <h4 class="w3-center w3-dark-grey w3-padding-8">{{ post.title }}</h4>
+        <hr/>
+        <div class="w3-container">
+            <label><u>Company</u>:</label><span> {{ comp.name }}</span><br/>
+            <label><u>Address</u>:</label>
+            <p> {{ comp.address }}, {{ comp.city }}, {{ comp.state }}</p>
+            <label><u>Website</u>:</label><span> <a href="{{ comp.website }}">{{ comp.website }}</a></span><br/>
+        </div>
+        <hr/>
         <div class="w3-container">
             <label><u>Start Date</u>:</label><span> {{ post.start_date }}</span><br/>
             <label><u>End Date</u>:</label><span> {{ post.end_date }}</span><br/>

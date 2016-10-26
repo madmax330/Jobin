@@ -11,9 +11,10 @@
 
 {% block buttons %}
     <div class="w3-third">
-        <button type="submit" class="w3-btn w3-blue">Save & Add Another Experience</button>
+        <input type="submit" value="Save & Add Another Experience" class="w3-btn w3-light-grey"
+               onclick='this.form.action="{% url 'resume:experiencewalk' rk=rkey %}";'/>
     </div>
     <div class="w3-rest">
-        <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn w3-green">Skip</a>
+        <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn w3-green">Continue</a>
     </div>
 {% endblock %}

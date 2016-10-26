@@ -7,7 +7,7 @@ from home.models import Message, Notification, JobinSchool, JobinProgram, JobinM
 from .forms import NewPostForm
 from company.models import Company
 from student.models import Student
-from resume.models import Resume, Language, Experience, Award, School, Skill
+from resume.models import Resume, Language, Experience, Award, School, Skill, LanguageLink, SchoolLink, ExperienceLink, SkillLink, AwardLink
 import datetime
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -35,7 +35,6 @@ class NewPostView(CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.schools = 'ALL'
-        post.programs = 'ALL'
         post.company = Company.objects.filter(user=self.request.user).first()
         x = Message()
         x.code = 'info'
@@ -135,10 +134,10 @@ class StudentPosts(View):
                 if r.is_active:
                     rkey = r.pk
             msgs = Message.objects.filter(student=student)
-            vcount = Post.objects.filter(type='volunteer').count()
-            icount = Post.objects.filter(type='internship').count()
-            ptcount = Post.objects.filter(type='parttime').count()
-            ngcount = Post.objects.filter(type='newgrad').count()
+            vcount = Post.objects.filter(type='volunteer', status='open').count()
+            icount = Post.objects.filter(type='internship', status='open').count()
+            ptcount = Post.objects.filter(type='parttime', status='open').count()
+            ngcount = Post.objects.filter(type='newgrad', status='open').count()
             vact = ''
             iact = ''
             pact = ''
@@ -200,6 +199,7 @@ class StudentDetailsView(View):
         msgs = Message.objects.filter(student=app.student)
         context = {
             'post': post,
+            'comp': post.company,
             'app': app,
             'msgs': msgs,
         }
@@ -405,15 +405,40 @@ class SingleApplicantView(View):
             return redirect('post:applicants', pk=post.pk)
         app = Applicant(xx, xx.student)
         msgs = Message.objects.filter(company=post.company)
+        ll = LanguageLink.objects.filter(resume=app.resume)
+        al = AwardLink.objects.filter(resume=app.resume)
+        el = ExperienceLink.objects.filter(resume=app.resume)
+        sl = SchoolLink.objects.filter(resume=app.resume)
+        kl = SkillLink.objects.filter(resume=app.resume)
+        lan = []
+        for x in ll:
+            lan.append(x.language)
+        exp = []
+        for x in el:
+            exp.append(x.experience)
+        aws = []
+        for x in al:
+            aws.append(x.award)
+        schs = []
+        for x in sl:
+            schs.append(x.school)
+        sks = []
+        for x in kl:
+            sks.append(x.skill)
         context = {
             'app': app,
             'page': 0,
             'resume': app.resume,
-            'lan': Language.objects.filter(resume=app.resume),
-            'exp': Experience.objects.filter(resume=app.resume),
-            'aws': Award.objects.filter(resume=app.resume),
-            'schools': School.objects.filter(resume=app.resume),
-            'skills': Skill.objects.filter(resume=app.resume),
+            'lan': lan,
+            'exp': exp,
+            'aws': aws,
+            'schools': schs,
+            'skills': sks,
+            'acount': len(aws),
+            'ecount': len(exp),
+            'scount': len(schs),
+            'kcount': len(sks),
+            'lcount': len(lan),
             'msgs': msgs,
         }
         for m in msgs:
@@ -447,16 +472,41 @@ class SingleApplicantView(View):
                 xx = apps[page]
                 app = Applicant(xx, xx.student)
                 msgs = Message.objects.filter(company=post.company)
+                ll = LanguageLink.objects.filter(resume=app.resume)
+                al = AwardLink.objects.filter(resume=app.resume)
+                el = ExperienceLink.objects.filter(resume=app.resume)
+                sl = SchoolLink.objects.filter(resume=app.resume)
+                kl = SkillLink.objects.filter(resume=app.resume)
+                lan = []
+                for x in ll:
+                    lan.append(x.language)
+                exp = []
+                for x in el:
+                    exp.append(x.experience)
+                aws = []
+                for x in al:
+                    aws.append(x.award)
+                schs = []
+                for x in sl:
+                    schs.append(x.school)
+                sks = []
+                for x in kl:
+                    sks.append(x.skill)
                 context = {
                     'app': app,
                     'page': page,
                     'resume': app.resume,
-                    'lan': Language.objects.filter(resume=app.resume),
-                    'exp': Experience.objects.filter(resume=app.resume),
-                    'aws': Award.objects.filter(resume=app.resume),
-                    'schools': School.objects.filter(resume=app.resume),
-                    'skills': Skill.objects.filter(resume=app.resume),
+                    'lan': lan,
+                    'exp': exp,
+                    'aws': aws,
+                    'schools': schs,
+                    'skills': sks,
                     'msgs': msgs,
+                    'acount': len(aws),
+                    'ecount': len(exp),
+                    'scount': len(schs),
+                    'kcount': len(sks),
+                    'lcount': len(lan),
                 }
                 for m in msgs:
                     m.delete()
@@ -495,16 +545,41 @@ class SingleApplicantView(View):
             xx = apps[page]
             app = Applicant(xx, xx.student)
             msgs = Message.objects.filter(company=post.company)
+            ll = LanguageLink.objects.filter(resume=app.resume)
+            al = AwardLink.objects.filter(resume=app.resume)
+            el = ExperienceLink.objects.filter(resume=app.resume)
+            sl = SchoolLink.objects.filter(resume=app.resume)
+            kl = SkillLink.objects.filter(resume=app.resume)
+            lan = []
+            for x in ll:
+                lan.append(x.language)
+            exp = []
+            for x in el:
+                exp.append(x.experience)
+            aws = []
+            for x in al:
+                aws.append(x.award)
+            schs = []
+            for x in sl:
+                schs.append(x.school)
+            sks = []
+            for x in kl:
+                sks.append(x.skill)
             context = {
                 'app': app,
                 'page': page,
                 'resume': app.resume,
-                'lan': Language.objects.filter(resume=app.resume),
-                'exp': Experience.objects.filter(resume=app.resume),
-                'aws': Award.objects.filter(resume=app.resume),
-                'schools': School.objects.filter(resume=app.resume),
-                'skills': Skill.objects.filter(resume=app.resume),
+                'lan': lan,
+                'exp': exp,
+                'aws': aws,
+                'schools': schs,
+                'skills': sks,
                 'msgs': msgs,
+                'acount': len(aws),
+                'ecount': len(exp),
+                'scount': len(schs),
+                'kcount': len(sks),
+                'lcount': len(lan),
             }
             for m in msgs:
                 m.delete()
@@ -515,18 +590,43 @@ class ApplicantDetailsView(View):
     template_name = 'post/applicant_details.html'
 
     def get(self, request, pk):
-        x = Application.objects.get(pk=pk)
-        xx = Applicant(x, x.student)
+        a = Application.objects.get(pk=pk)
+        app = Applicant(a, a.student)
+        ll = LanguageLink.objects.filter(resume=app.resume)
+        al = AwardLink.objects.filter(resume=app.resume)
+        el = ExperienceLink.objects.filter(resume=app.resume)
+        sl = SchoolLink.objects.filter(resume=app.resume)
+        kl = SkillLink.objects.filter(resume=app.resume)
+        lan = []
+        for x in ll:
+            lan.append(x.language)
+        exp = []
+        for x in el:
+            exp.append(x.experience)
+        aws = []
+        for x in al:
+            aws.append(x.award)
+        schs = []
+        for x in sl:
+            schs.append(x.school)
+        sks = []
+        for x in kl:
+            sks.append(x.skill)
         context = {
-            'app': xx,
-            'resume': xx.resume,
-            'lan': Language.objects.filter(resume=xx.resume),
-            'exp': Experience.objects.filter(resume=xx.resume),
-            'aws': Award.objects.filter(resume=xx.resume),
-            'schools': School.objects.filter(resume=xx.resume),
-            'skills': Skill.objects.filter(resume=xx.resume),
+            'app': app,
+            'resume': app.resume,
+            'lan': lan,
+            'exp': exp,
+            'aws': aws,
+            'schools': schs,
+            'skills': sks,
+            'acount': len(aws),
+            'ecount': len(exp),
+            'scount': len(schs),
+            'kcount': len(sks),
+            'lcount': len(lan),
         }
-        post = x.post
+        post = a.post
         post.notified = False
         post.save()
         return render(request, self.template_name, context)
