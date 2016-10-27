@@ -11,6 +11,6 @@ urlpatterns = [
     url(r'^profile/$', views.ProfileView.as_view(), name='profile'),
     url(r'^update/(?P<pk>[0-9]+)/$', views.UpdateCompanyView.as_view(), name='update'),
     url(r'^new/get_states/(?P<country_name>[a-zA-Z_ ]+)/$', views.get_states, name='get_states'),
-    url(r'^update/(?P<pk>[0-9]+)/get_states/(?P<country_name>[a-zA-Z_ ]+)/$', views.get_states, name='get_states'),
+    url(r'^update/(?P<pk>[0-9]+)/get_states/(?P<country_name>[a-zA-Z_ ]+)/$', views.get_states_update,name='get_states_update'),
 ]
 
