@@ -104,14 +104,14 @@ def get_states(request, country_name):
     states = JobinTerritory.objects.filter(country=country_name)
     state_dic = {}
     for state in states:
-        state_dic[state.id] = state.name
+        state_dic[state.name] = state.name
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 def get_states_update(request,pk, country_name):
     states = JobinTerritory.objects.filter(country=country_name)
     state_dic = {}
     for state in states:
-        state_dic[state.id] = state.name
+        state_dic[state.name] = state.name
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
@@ -120,7 +120,7 @@ def get_majors(request, program_id):
     majors = JobinMajor.objects.filter(program=program)
     major_dic = {}
     for major in majors:
-        major_dic[major.id] = major.name
+        major_dic[major.name] = major.name
     return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
 
 
@@ -129,5 +129,5 @@ def get_majors_update(request,pk, program_id):
     majors = JobinMajor.objects.filter(program=program)
     major_dic = {}
     for major in majors:
-        major_dic[major.id] = major.name
+        major_dic[major.name] = major.name
     return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
