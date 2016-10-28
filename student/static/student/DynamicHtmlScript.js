@@ -11,6 +11,13 @@ $(document).ready(function(){
                 $.each(data, function(key, value){
                     $('select[name=state]').append('<option value="' + key + '">' + value +'</option>');
                 });
+				if ($('select[name=country]').val() == "Canada")
+				{					
+                   $("label[for='"+$('select[name=state]').attr('id')+"']").text('Province:');
+                }
+				else{					
+                    $("label[for='"+$('select[name=state]').attr('id')+"']").text('State:');
+                }
             },
             
         })
@@ -27,6 +34,7 @@ $(document).ready(function(){
                 $.each(data, function(key, value){
                     $('select[name=major]').append('<option value="' + key + '">' + value +'</option>');
                 });
+				
             },
             
         })
