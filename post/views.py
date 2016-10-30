@@ -115,7 +115,13 @@ class StudentPosts(View):
         try:
             student = Student.objects.get(user=self.request.user)
             resumes = Resume.objects.filter(student=student)
-            posts = Post.objects.filter(type=pt, status='open')
+            p1 = Post.objects.filter(type=pt, status='open', programs='All Programs')
+            p2 = Post.objects.filter(type=pt, status='open', programs=student.program)
+            posts = []
+            for x in p2:
+                posts.append(x)
+            for x in p1:
+                posts.append(x)
             l = []
             templ = []
             flag = False
@@ -134,10 +140,14 @@ class StudentPosts(View):
                 if r.is_active:
                     rkey = r.pk
             msgs = Message.objects.filter(student=student)
-            vcount = Post.objects.filter(type='volunteer', status='open').count()
-            icount = Post.objects.filter(type='internship', status='open').count()
-            ptcount = Post.objects.filter(type='parttime', status='open').count()
-            ngcount = Post.objects.filter(type='newgrad', status='open').count()
+            vcount = Post.objects.filter(type='volunteer', status='open', programs=student.program).count() + \
+                     Post.objects.filter(type='volunteer', status='open', programs='All Programs').count()
+            icount = Post.objects.filter(type='internship', status='open', programs=student.program).count() + \
+                     Post.objects.filter(type='internship', status='open', programs='All Programs').count()
+            ptcount = Post.objects.filter(type='parttime', status='open', programs=student.program).count() + \
+                     Post.objects.filter(type='parttime', status='open', programs='All Programs').count()
+            ngcount = Post.objects.filter(type='newgrad', status='open', programs=student.program).count() + \
+                     Post.objects.filter(type='newgrad', status='open', programs='All Programs').count()
             vact = ''
             iact = ''
             pact = ''
