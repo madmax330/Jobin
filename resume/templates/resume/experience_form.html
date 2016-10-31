@@ -7,3 +7,22 @@
 {% block hidden_block %}
     <div class="form-script-title">Position</div>
 {% endblock %}
+
+{% block side_content %}
+    {% if icount > 0 %}
+        <div class="w3-container w3-padding-32 w3-col s12 m5">
+            <div class="w3-container w3-indigo">
+                <h5>Add Experience from other resumes:</h5>
+            </div>
+            <div class="w3-container w3-pale-blue">
+                <ul style="margin:0;">
+                    {% for x in items %}
+                        <li style="margin-top:10px;">
+                            <a href="{% url 'resume:linkexperience' pk=x.pk rk=rkey %}">Add {{ x.title }} ({{ x.rname }})</a>
+                        </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
