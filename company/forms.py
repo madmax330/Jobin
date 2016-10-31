@@ -2,6 +2,7 @@ from django import forms
 from .models import Company
 from home.models import JobinTerritory
 
+
 class NewCompanyForm(forms.ModelForm):
 
     class Meta:

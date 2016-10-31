@@ -2,7 +2,8 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Company
-from home.models import Message, Notification,JobinTerritory
+from home.models import Message, Notification, JobinTerritory
+from home.utils import new_message
 from .forms import NewCompanyForm
 from post.models import Post
 from django.views.generic import View
@@ -59,6 +60,7 @@ class UpdateCompanyView(UpdateView):
         x.message = 'Your profile was successfully updated.'
         x.company = company
         x.save()
+        return super(UpdateCompanyView, self).form_valid(form)
 
 
 class DetailsView(generic.DetailView):
@@ -67,11 +69,11 @@ class DetailsView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailsView, self).get_context_data(**kwargs)
-        x = Message()
-        x.code = 'info'
-        x.company = Company.objects.get(user=self.request.user)
-        x.message = 'Your profile was successfully created. Welcome to Jobin!'
-        x.save()
+        company = Company.objects.get(user=self.request.user)
+        company.is_new = False
+        company.save()
+        msg = 'Your profile was successfully created. Welcome to Jobin!'
+        new_message('company', company, 'info', msg)
         return context
 
 
