@@ -613,10 +613,13 @@ class FirstSchoolWalkthrough(View):
     template_name = 'resume/walkthrough_schools.html'
     form_class = SchoolForm
 
-    def get(self, request, pk, rk):
-        sch = School.objects.get(pk=pk)
+    def get(self, request, rk):
+        student = Student.objects.get(user=self.request.user)
+        sch = School()
+        sch.name = student.school
+        sch.program = student.program
         form = self.form_class(instance=sch)
-        msgs = Message.objects.filter(student=Student.objects.get(user=self.request.user))
+        msgs = Message.objects.filter(student=student)
         context = {
             'form': form,
             'rkey': rk,
@@ -626,13 +629,14 @@ class FirstSchoolWalkthrough(View):
             x.delete()
         return render(request, self.template_name, context)
 
-    def post(self, request, pk, rk):
+    def post(self, request, rk):
         form = self.form_class(request.POST)
         student = Student.objects.get(user=self.request.user)
         resume = Resume.objects.get(pk=rk)
         if form.is_valid():
             s = form.save(commit=False)
             s.student = student
+            s.rkey = resume.pk
             s.save()
             l = SchoolLink()
             l.resume = resume
@@ -649,7 +653,7 @@ class FirstSchoolWalkthrough(View):
         x.student = student
         x.message = 'Error creating your record, please try again.'
         x.save()
-        return self.get(request, pk=pk, rk=rk)
+        return self.get(request, rk=rk)
 
 
 class SchoolWalkthrough(View):
@@ -791,20 +795,7 @@ class WalkthrougNav(View):
         resume = Resume.objects.get(pk=rk)
         student = resume.student
         if rq == 'resume_done':
-            s = School()
-            s.student = student
-            s.name = student.school
-            s.program = student.program
-            s.start = datetime.datetime.now()
-            s.level = 'university'
-            s.is_current = True
-            s.rkey = resume.pk
-            s.save()
-            sl = SchoolLink()
-            sl.resume = resume
-            sl.school = s
-            sl.save()
-            return redirect('resume:firstschoolwalk', pk=s.pk, rk=rk)
+            return redirect('resume:firstschoolwalk', rk=rk)
         if rq == 'school_done':
             sch = SchoolLink.objects.filter(resume=resume)
             if sch.count() > 0:
