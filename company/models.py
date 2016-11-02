@@ -17,6 +17,7 @@ class Company(models.Model):
     logo = models.FileField(null=True, blank=True)
     website = models.CharField(max_length=256, null=True)
     is_new = models.BooleanField(default=True)
+    is_startup = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         if self.is_new:

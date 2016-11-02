@@ -22,6 +22,7 @@ class Post(models.Model):
     supplied_by_jobin = models.BooleanField(default=True)
     notified = models.BooleanField(default=False)
     cover_instructions = models.TextField(null=True, blank=True)
+    is_startup_post = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('post:companypost', kwargs={'pk': self.pk})

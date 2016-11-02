@@ -63,7 +63,9 @@
                     <th></th>
                 </tr>
                 {% for x in list %}
-                    <tr {% if x.cover_submitted %}
+                    <tr {% if x.cover_opened %}
+                            style="background-color: #96beff;"
+                        {% elif x.cover_submitted %}
                             style="background-color: #c2f9ce;"
                         {% elif x.cover_requested %}
                             style="background-color: #fdffb2;"

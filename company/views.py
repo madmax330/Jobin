@@ -5,7 +5,7 @@ from .models import Company
 from home.models import Message, Notification, JobinTerritory
 from home.utils import new_message
 from .forms import NewCompanyForm
-from post.models import Post
+from post.models import Post, Application
 from django.views.generic import View
 import simplejson
 from django.http import HttpResponse
@@ -18,6 +18,11 @@ class IndexView(View):
         res = Company.objects.filter(user=request.user)
         if res.count() > 0:
             posts = Post.objects.filter(company=res.first(), status='open')
+            for x in posts:
+                if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False).count() > 0:
+                    x.notified = True
+                else:
+                    x.notified = False
             msgs = Message.objects.filter(company=res.first())
             context = {
                 'company': res.first(),

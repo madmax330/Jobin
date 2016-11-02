@@ -10,16 +10,19 @@
             <h3 class="w3-center">({{ count }}) {{ ptype }} Job Posts</h3>
         </div>
         <div class="w3-btn-group w3-light-grey w3-border w3-border-black" style="margin-bottom: 20px;">
-            <a href="{% url 'post:studentposts' pk=0 pt='volunteer' %}" class="w3-btn {{ vact }}" style="width:25%;">
+            <a href="{% url 'post:studentposts' pk=0 pt='volunteer' %}" class="w3-btn {{ vact }}" style="width:20%;">
                 ({{ vcount }}) Volunteer Jobs
             </a>
-            <a href="{% url 'post:studentposts' pk=0 pt='internship' %}" class="w3-btn {{ iact }}" style="width:25%;">
+            <a href="{% url 'post:studentposts' pk=0 pt='internship' %}" class="w3-btn {{ iact }}" style="width:20%;">
                 ({{ icount }}) Internships
             </a>
-            <a href="{% url 'post:studentposts' pk=0 pt='parttime' %}" class="w3-btn {{ pact }}" style="width:25%;">
+            <a href="{% url 'post:studentposts' pk=0 pt='parttime' %}" class="w3-btn {{ pact }}" style="width:20%;">
                 ({{ ptcount }}) Part-Time Jobs
             </a>
-            <a href="{% url 'post:studentposts' pk=0 pt='newgrad' %}" class="w3-btn {{ nact }}" style="width:25%;">
+            <a href="{% url 'post:studentposts' pk=0 pt='startup' %}" class="w3-btn {{ sact }}" style="width:20%;">
+                ({{ scount }}) Start Up Jobs
+            </a>
+            <a href="{% url 'post:studentposts' pk=0 pt='newgrad' %}" class="w3-btn {{ nact }}" style="width:20%;">
                 ({{ ngcount }}) New Grad Jobs
             </a>
         </div>

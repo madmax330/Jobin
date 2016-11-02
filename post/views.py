@@ -17,7 +17,14 @@ class CompanyPosts(generic.ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Post.objects.filter(company=Company.objects.filter(user=self.request.user).first(), status='open')
+        posts = Post.objects.filter(company=Company.objects.filter(user=self.request.user).first(), status='open')
+        for x in posts:
+            if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False).count() > 0:
+                x.notified = True
+            else:
+                x.notified = False
+            x.save()
+        return posts
 
     def get_context_data(self, **kwargs):
         context = super(CompanyPosts, self).get_context_data(**kwargs)
@@ -35,7 +42,9 @@ class NewPostView(CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.schools = 'ALL'
-        post.company = Company.objects.filter(user=self.request.user).first()
+        company = Company.objects.filter(user=self.request.user).first()
+        post.company = company
+        post.is_startup_post = company.is_startup
         x = Message()
         x.code = 'info'
         x.message = 'Your post was created successfully.'
@@ -115,8 +124,12 @@ class StudentPosts(View):
         try:
             student = Student.objects.get(user=self.request.user)
             resumes = Resume.objects.filter(student=student)
-            p1 = Post.objects.filter(type=pt, status='open', programs='All Programs')
-            p2 = Post.objects.filter(type=pt, status='open', programs=student.program)
+            if pt == 'startup':
+                p1 = Post.objects.filter(is_startup_post=True, status='open', programs='All Programs')
+                p2 = Post.objects.filter(is_startup_post=True, status='open', programs=student.program)
+            else:
+                p1 = Post.objects.filter(type=pt, status='open', programs='All Programs')
+                p2 = Post.objects.filter(type=pt, status='open', programs=student.program)
             posts = []
             for x in p2:
                 posts.append(x)
@@ -129,7 +142,7 @@ class StudentPosts(View):
                 if int(x.pk) == int(pk) > 0:
                     flag = True
                 xx = x.company
-                xxx = CustomPost(x, xx)
+                xxx = CustomPost(x, xx, student)
                 if flag:
                     l.append(xxx)
                 else:
@@ -148,10 +161,13 @@ class StudentPosts(View):
                      Post.objects.filter(type='parttime', status='open', programs='All Programs').count()
             ngcount = Post.objects.filter(type='newgrad', status='open', programs=student.program).count() + \
                      Post.objects.filter(type='newgrad', status='open', programs='All Programs').count()
+            scount = Post.objects.filter(is_startup_post=True, status='open', programs=student.program).count() + \
+                      Post.objects.filter(is_startup_post=True, status='open', programs='All Programs').count()
             vact = ''
             iact = ''
             pact = ''
             nact = ''
+            sact = ''
             temp = pt
             if pt == 'volunteer':
                 vact = 'active'
@@ -165,6 +181,9 @@ class StudentPosts(View):
             elif pt == 'newgrad':
                 nact = 'active'
                 pt = 'New Grad'
+            elif pt == 'startup':
+                sact = 'active'
+                pt = 'Start Up Company'
             context = {
                 'list': l,
                 'count': len(l),
@@ -177,10 +196,12 @@ class StudentPosts(View):
                 'icount': icount,
                 'ptcount': ptcount,
                 'ngcount': ngcount,
+                'scount': scount,
                 'vact': vact,
                 'iact': iact,
                 'pact': pact,
                 'nact': nact,
+                'sact': sact,
             }
             for x in msgs:
                 x.delete()
@@ -601,6 +622,9 @@ class ApplicantDetailsView(View):
 
     def get(self, request, pk):
         a = Application.objects.get(pk=pk)
+        if a.cover_submitted:
+            a.cover_opened = True
+            a.save()
         app = Applicant(a, a.student)
         ll = LanguageLink.objects.filter(resume=app.resume)
         al = AwardLink.objects.filter(resume=app.resume)
@@ -691,7 +715,7 @@ class RequestCover(View):
 
 class CustomPost:
 
-    def __init__(self, post, company):
+    def __init__(self, post, company, student):
         self.pk = post.pk
         self.name = company.name
         self.address = company.address + ', ' + company.city + ', ' + company.state + ', ' + company.zipcode
@@ -705,6 +729,10 @@ class CustomPost:
         self.openings = post.openings
         self.requirements = post.requirements
         self.description = post.description
+        if Application.objects.filter(post=post, student=student).count() > 0:
+            self.applied = True
+        else:
+            self.applied = False
 
 
 class Applicant:
@@ -724,4 +752,5 @@ class Applicant:
         self.cover = app.cover
         self.cover_requested = app.cover_requested
         self.cover_submitted = app.cover_submitted
+        self.cover_opened = app.cover_opened
         self.date_applied = app.date
