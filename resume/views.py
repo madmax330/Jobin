@@ -778,7 +778,7 @@ class WalkthrougNav(View):
         if rq == 'language_done':
             langs = LanguageLink.objects.filter(resume=resume)
             if langs.count() > 0:
-                return redirect('resume:experiencewalk', rk=rk)
+                return redirect('resume:experiencewalk', rk=rk, rq='default', pk=0)
             else:
                 msg = "You must add at least one language entry before continuing."
                 new_message('student', Student.objects.get(user=self.request.user), 'danger', msg)
