@@ -15,14 +15,23 @@ class IndexView(View):
     template_name = 'company/company_home.html'
 
     def get(self, request):
-        res = Company.objects.filter(user=request.user)
+        user = self.request.user
+        res = Company.objects.filter(user=user)
         if res.count() > 0:
             posts = Post.objects.filter(company=res.first(), status='open')
             for x in posts:
-                if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False).count() > 0:
+                if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False, status='active').count() > 0:
                     x.notified = True
                 else:
                     x.notified = False
+                if Application.objects.filter(post=x, opened=False, status='active').count() > 0:
+                    msg = 'There are new applications for the ' + x.title + ' post.'
+                    new_message('company', res.first(), 'info', msg)
+                    x.new_apps = True
+                else:
+                    x.new_apps = False
+                x.save()
+
             msgs = Message.objects.filter(company=res.first())
             context = {
                 'company': res.first(),
@@ -60,11 +69,8 @@ class UpdateCompanyView(UpdateView):
 
     def form_valid(self, form):
         company = Company.objects.get(user=self.request.user)
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your profile was successfully updated.'
-        x.company = company
-        x.save()
+        msg = 'Your profile was successfully updated.'
+        new_message('company', company, 'info', msg)
         return super(UpdateCompanyView, self).form_valid(form)
 
 

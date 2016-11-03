@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from .models import Student
 from post.models import Application
-from home.models import Message, Notification, JobinSchool,JobinTerritory,JobinProgram,JobinMajor
+from home.models import Message, Notification, JobinSchool, JobinTerritory, JobinProgram, JobinMajor
+from home.utils import new_message
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -75,10 +76,8 @@ class UpdateStudentView(UpdateView):
 
     def form_valid(self, form):
         student = Student.objects.get(user=self.request.user)
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your profile was successfully updated.'
-        x.student = student
+        msg = 'Your profile was successfully updated.'
+        new_message('student', student, 'info', msg)
         return super(UpdateStudentView, self).form_valid(form)
 
 
