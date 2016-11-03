@@ -38,7 +38,10 @@
                             <th>Date Applied</th>
                         </tr>
                         {% for x in applicants %}
-                            <tr {% if x.cover_submitted %}style="background-color: #c2f9ce"{% endif %}>
+                            <tr {% if x.cover_opened %} style="background-color: #96beff;"
+                                {% elif x.cover_submitted %} style="background-color: #c2f9ce"
+                                {% elif x.cover_requested %} style="background-color: #fdffb2;"
+                                {% endif %}>
                                 <td>{{ x.fname }} {{ x.lname }}</td>
                                 <td>{{ x.school }}</td>
                                 <td>{{ x.date_applied }}</td>

@@ -13,7 +13,14 @@
     </table>
     {% if rkey %}
         <div class="w3-padding-16">
-            <a class="w3-btn w3-white" href="{% url 'resume:details' pk=rkey %}">Back to overview</a>
+            <div class="w3-row">
+                <div class="w3-col s12 m6">
+                    <a class="w3-btn w3-white" href="{% url 'resume:index' %}">Resume List</a>
+                </div>
+                <div class="w3-col s12 m6">
+                    <a class="w3-btn w3-white" href="{% url 'resume:details' pk=rkey %}">Resume Overview</a>
+                </div>
+            </div>
         </div>
     {% endif %}
 {% endblock %}

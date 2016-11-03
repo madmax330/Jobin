@@ -70,7 +70,11 @@
                         {% elif x.cover_requested %}
                             style="background-color: #fdffb2;"
                         {% endif %}>
-                        <td><a href="{% url 'post:applicantdetails' pk=x.pk%}">{{ x.fname }} {{ x.lname }}</a></td>
+                        <td>
+                            <a href="{% url 'post:applicantdetails' pk=x.pk%}">
+                                {{ x.fname }} {{ x.lname }}{% if not x.app_opened %} (<b>new</b>){% endif %}
+                            </a>
+                        </td>
                         <td>{{ x.school }}</td>
                         <td>{{ x.program }}</td>
                         <td>{{ x.major }}</td>

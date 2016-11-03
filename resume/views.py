@@ -586,7 +586,7 @@ class MakeActive(View):
         msg = 'Resume ' + r.name + ' set to active resume.'
         new_message('student', r.student, 'info', msg)
         if rq == 'post':
-            return redirect('post:studentposts')
+            return redirect('post:studentposts', pk=0, pt='internship')
         else:
             return redirect('resume:index')
 

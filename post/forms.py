@@ -35,3 +35,28 @@ class NewPostForm(forms.ModelForm):
             'wage': 'Wage $/hr',
             'cover_instructions': 'Enter some instructions for the cover letter here'
         }
+
+    def clean(self):
+        clean_data = super(NewPostForm, self).clean()
+        start = clean_data.get('start_date')
+        end = clean_data.get('end_date')
+        dead = clean_data('deadline')
+        if end:
+            if end < start:
+                raise forms.ValidationError({'start_date': 'The start date must be before end date.'})
+            if end < dead:
+                raise forms.ValidationError({'deadline': 'The deadline must be before end date.'})
+        if start < dead:
+            raise forms.ValidationError({'deadline': 'The deadline must be before the start date.'})
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,6 +2,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views import generic
 from .models import Event
 from home.models import Message
+from home.utils import new_message
 from .forms import NewEventForm
 from company.models import Company
 
@@ -29,11 +30,8 @@ class NewEventView(CreateView):
     def form_valid(self, form):
         event = form.save(commit=False)
         event.company = Company.objects.get(user=self.request.user)
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your event was created successfully.'
-        x.company = event.company
-        x.save()
+        msg = 'Your event was created successfully.'
+        new_message('company', event.company, 'info', msg)
         return super(NewEventView, self).form_valid(form)
 
 
@@ -43,11 +41,8 @@ class EventUpdateView(UpdateView):
 
     def form_valid(self, form):
         event = form.save(commit=False)
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your event was created successfully.'
-        x.company = event.company
-        x.save()
+        msg = 'Your event was updated successfully.'
+        new_message('company', event.company, 'info', msg)
         return super(EventUpdateView, self).form_valid(form)
 
 
