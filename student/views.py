@@ -1,9 +1,11 @@
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from .models import Student
 from post.models import Application
-from home.models import Message, Notification, JobinSchool,JobinTerritory,JobinProgram,JobinMajor
+from home.models import Message, Notification, JobinSchool, JobinTerritory, JobinProgram, JobinMajor
+from home.utils import new_message
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -30,12 +32,24 @@ class IndexView(View):
                 x.delete()
             return render(request, self.template_name, context)
         else:
+            ext = self.request.user.email.split('@', 1)
+            s = JobinSchool.objects.filter(email=ext[1].lower())
+            if s.count() == 0:
+                logout(request)
+                return redirect('home:closed')
             return redirect('student:new')
 
 
 class NewStudentView(CreateView):
     model = Student
     form_class = NewStudentForm
+
+    def get_context_data(self, **kwargs):
+        context = super(NewStudentView, self).get_context_data(**kwargs)
+        ext = self.request.user.email.split('@', 1)
+        school = JobinSchool.objects.filter(email=ext[1].lower())
+        context['school'] = school.first()
+        return context
 
     def form_valid(self, form):
         student = form.save(commit=False)
@@ -44,7 +58,8 @@ class NewStudentView(CreateView):
         ext = student.email.split('@', 1)
         school = JobinSchool.objects.filter(email=ext[1].lower())
         if school.count() == 0:
-            pass
+            logout(self.request)
+            return redirect('home:index')
         elif school.count() > 0:
             student.school = school.first().name
         return super(NewStudentView, self).form_valid(form)
@@ -61,10 +76,8 @@ class UpdateStudentView(UpdateView):
 
     def form_valid(self, form):
         student = Student.objects.get(user=self.request.user)
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your profile was successfully updated.'
-        x.student = student
+        msg = 'Your profile was successfully updated.'
+        new_message('student', student, 'info', msg)
         return super(UpdateStudentView, self).form_valid(form)
 
 

@@ -29,6 +29,7 @@ class Language(models.Model):
     name = models.CharField(max_length=100)
     level = models.CharField(max_length=50)
     rkey = models.CharField(max_length=20)
+    rname = models.CharField(max_length=100)
 
     def get_absolute_url(self):
         return reverse('resume:linklanguage', kwargs={'pk': self.pk, 'rk': self.rkey})
@@ -47,6 +48,7 @@ class Experience(models.Model):
     experience_type = models.CharField(max_length=50)
     is_current = models.BooleanField(default=False)
     rkey = models.CharField(max_length=20)
+    rname = models.CharField(max_length=100)
 
     def get_absolute_url(self):
         return reverse('resume:linkexperience', kwargs={'pk': self.pk, 'rk': self.rkey})
@@ -62,6 +64,7 @@ class Award(models.Model):
     description = models.TextField()
     award_type = models.CharField(max_length=50)
     rkey = models.CharField(max_length=20)
+    rname = models.CharField(max_length=100)
 
     def get_absolute_url(self):
         return reverse('resume:linkaward', kwargs={'pk': self.pk, 'rk': self.rkey})
@@ -79,6 +82,7 @@ class School(models.Model):
     end = models.DateField(null=True, blank=True)
     is_current = models.BooleanField(default=False)
     rkey = models.CharField(max_length=20)
+    rname = models.CharField(max_length=100)
 
     def get_absolute_url(self):
         return reverse('resume:linkschool', kwargs={'pk': self.pk, 'rk': self.rkey})
@@ -92,6 +96,7 @@ class Skill(models.Model):
     name = models.CharField(max_length=100)
     level = models.CharField(max_length=50)
     rkey = models.CharField(max_length=20)
+    rname = models.CharField(max_length=100)
 
     def get_absolute_url(self):
         return reverse('resume:linkskill', kwargs={'pk': self.pk, 'rk': self.rkey})

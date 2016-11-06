@@ -42,7 +42,7 @@ urlpatterns = [
     url(r'^walkthrough/first/school/(?P<rk>[0-9]+)/$', views.FirstSchoolWalkthrough.as_view(), name='firstschoolwalk'),
     url(r'^walkthrough/school/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.SchoolWalkthrough.as_view(), name='schoolwalk'),
     url(r'^walkthrough/language/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.LanguageWalkthrough.as_view(), name='languagewalk'),
-    url(r'^walkthrough/experience/(?P<rk>[0-9]+)/$', views.ExperienceWalkthrough.as_view(), name='experiencewalk'),
+    url(r'^walkthrough/experience/(?P<rk>[0-9]+)/(?P<rq>\w+)/(?P<pk>[0-9]+)/$', views.ExperienceWalkthrough.as_view(), name='experiencewalk'),
 
     # Links
     url(r'^link/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkschool, name='linkschool'),

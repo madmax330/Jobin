@@ -12,8 +12,14 @@
     </thead>
     <tbody>
     {% for p in posts %}
-        <tr {% if p.notified %}style="background-color: #c2f9ce"{% endif %}>
-            <td><a href="{% url 'post:companypost' p.pk %}">{{ p.title }}</a></td>
+        <tr {% if p.notified %}style="background-color: #c2f9ce"
+            {% elif p.new_apps %}style="background-color: #c9f3fc;"
+            {% endif %}>
+            <td>
+                <a href="{% url 'post:companypost' p.pk %}">
+                    {{ p.title }}
+                </a>
+            </td>
             <td>{{ p.wage }}</td>
             <td>{{ p.openings }}</td>
             <td>{{ p.start_date }}</td>

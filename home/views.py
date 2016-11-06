@@ -180,6 +180,13 @@ class VerifyView(View):
         return render(request, self.template_name)
 
 
+class NotOpenView(View):
+    template_name = 'home/notopen.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
 class LogoutView(View):
 
     def get(self, request):

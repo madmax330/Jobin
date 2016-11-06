@@ -41,7 +41,14 @@
                         <a href="{% url 'resume:updateresume' pk=x.pk%}">Edit</a>
                     </div>
                     <div class="w3-half">
-                        <a href="{% url 'resume:deleteresume' pk=x.pk%}">Delete</a>
+                        <a href="#" class="warning-open">Delete</a>
+                        <div class="warning w3-pale-yellow w3-text-yellow w3-leftbar w3-border-yellow hide">
+                            <h4>Are you sure you want to delete <u>{{ x.name }}</u> resume?</h4>
+                            <hr/>
+                            <p>This will permanently delete this resume from the resume, to recreate it.</p>
+                            <button class="warning-close w3-btn w3-grey" type="button">Cancel</button>
+                            <a class="w3-btn w3-red" href="{% url 'resume:deleteresume' pk=x.pk%}">Delete</a>
+                        </div>
                     </div>
                 </td>
             {% else %}

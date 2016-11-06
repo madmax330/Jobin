@@ -63,7 +63,9 @@
                         <th></th>
                     </tr>
                     {% for x in posts %}
-                        <tr {% if x.notified %}style="background-color: #c2f9ce"{% endif %}>
+                        <tr {% if x.notified %}style="background-color: #c2f9ce"
+                            {% elif x.new_apps %}style="background-color: #c9f3fc;"
+                            {% endif %}>
                             <td>{{ x.title }}</td>
                             <td>{{ x.openings }}</td>
                             <td>{{ x.start_date }}</td>
