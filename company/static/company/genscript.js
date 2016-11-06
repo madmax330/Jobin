@@ -4,11 +4,11 @@
 $(function(){
 
     $('.warning-open').click(function(){
-       $(this).siblings('.warning').show();
+        $(this).siblings('.warning').removeClass('hidden');
     });
 
     $('.warning-close').click(function(){
-        $(this).parent().hide();
+        $(this).parent().addClass('hidden');
     });
 });
 
