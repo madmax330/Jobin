@@ -38,6 +38,14 @@ $(function(){
         $(".hidden-date").show();
     });
 
+    $('.warning-open').click(function(){
+       $(this).siblings('.warning').show();
+    });
+
+    $('.warning-close').click(function(){
+        $(this).parent().hide();
+    });
+
 });
 
 

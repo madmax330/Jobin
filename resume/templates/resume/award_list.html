@@ -16,7 +16,17 @@
             <td>{{ x.date }}</td>
             <td>{{ x.award_type }}</td>
             <td><a href="{% url 'resume:updateaward' pk=x.pk %}">Edit</a></td>
-            <td><a href="{% url 'resume:deleteaward' pk=x.pk rk=rkey%}">Delete</a></td>
+            <td>
+                <a href="#" class="warning-open">Delete</a>
+                <div class="warning w3-pale-yellow w3-text-yellow w3-leftbar w3-border-yellow hide">
+                    <h4>Are you sure you want to delete <u>{{ x.title }}</u> award?</h4>
+                    <hr/>
+                    <p>This will permanently delete this award from the resume, the only way to get it back would be
+                    to add it from an existing resume or to recreate it.</p>
+                    <button class="warning-close w3-btn w3-grey" type="button">Cancel</button>
+                    <a class="w3-btn w3-red" href="{% url 'resume:deleteaward' pk=x.pk rk=rkey%}">Delete</a>
+                </div>
+            </td>
         </tr>
     {% endfor %}
 {% endblock %}
@@ -60,4 +70,8 @@
             </p>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block warning %}
+
 {% endblock %}
