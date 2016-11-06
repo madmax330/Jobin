@@ -72,7 +72,7 @@ def get_other_experience(r):
 
 
 def get_other_award(r):
-    l = Language.objects.filter(student=r.student)
+    l = Award.objects.filter(student=r.student)
     items = []
     for x in l:
         if AwardLink.objects.filter(resume=r, award=x).count() == 0:
