@@ -1,10 +1,13 @@
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import generic
-from .models import Event
+from django.views.generic import View
+from django.shortcuts import redirect
+from .models import Event, EventInterest
 from home.models import Message
-from home.utils import new_message
+from home.utils import new_message, get_messages
 from .forms import NewEventForm
 from company.models import Company
+from student.models import Student
 
 
 class CompanyEvents(generic.ListView):
@@ -56,22 +59,51 @@ class StudentEvents(generic.ListView):
     context_object_name = 'list'
 
     def get_queryset(self):
+        student = Student.objects.filter(user=self.request.user).first()
+        pk = self.kwargs['pk']
         l = []
-        es = Event.objects.all()
+        es = Event.objects.filter(active=True)
+        templ = []
+        flag = False
         for x in es:
-            xx = CustomEvent(x, x.company)
-            l.append(xx)
+            if int(x.pk) == int(pk) > 0:
+                flag = True
+            xx = x.company
+            xxx = CustomEvent(x, xx, student)
+            if flag:
+                l.append(xxx)
+            else:
+                templ.append(xxx)
+        l.extend(templ)
         return l
 
     def get_context_data(self, **kwargs):
+        student = Student.objects.filter(user=self.request.user)
         context = super(StudentEvents, self).get_context_data(**kwargs)
         context['count'] = Event.objects.count()
+        msgs = get_messages('student', student)
+        context['msgs'] = msgs
         return context
+
+
+class NewInterest(View):
+
+    def get(self, request, pk):
+        student = Student.objects.filter(user=self.request.user).first()
+        event = Event.objects.get(pk=pk)
+        interest = EventInterest()
+        interest.student = student
+        interest.event = event
+        interest.save()
+        msg = 'Your interest in event: ' + event.title + ' noted, you can view this event in your "Interested Events"' \
+                                                         ' in the Home page.'
+        new_message('student', student, 'info', msg)
+        return redirect('event:studentevents', pk=pk)
 
 
 class CustomEvent:
 
-    def __init__(self, e, c):
+    def __init__(self, e, c, s):
         self.pk = e.pk
         self.name = c.name
         self.cweb = c.website
@@ -83,5 +115,9 @@ class CustomEvent:
         self.time = e.time
         self.website = e.website
         self.desc = e.description
+        if EventInterest.objects.filter(student=s, event=e).count() > 0:
+            self.interested = True
+        else:
+            self.interested = False
 
 

@@ -22,7 +22,7 @@
         class="w3-closenav w3-large w3-hide-large">Close &times;</a>
         <a class="{% block homeactive %}{% endblock %}" href="{% url 'student:index' %}">Home</a>
         <a class="{% block postsactive %}{% endblock %}" href="{% url 'post:studentposts' pk=0 pt='internship'%}">Posts</a>
-        <a class="{% block eventsactive %}{% endblock %}" href="{% url 'event:studentevents' %}">Events</a>
+        <a class="{% block eventsactive %}{% endblock %}" href="{% url 'event:studentevents' pk=0%}">Events</a>
         <a class="{% block resumesactive %}{% endblock %}" href="{% url 'resume:index' %}">Resumes</a>
         <a class="{% block activityactive %}{% endblock %}" href="{% url 'student:activity' %}">Activity</a>
         <a class="{% block profileactive %}{% endblock %}" href="{% url 'student:profile' %}">Profile</a>

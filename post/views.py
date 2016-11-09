@@ -19,17 +19,27 @@ class CompanyPosts(generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        posts = Post.objects.filter(company=Company.objects.filter(user=user).first(), status='open')
+        company = Company.objects.filter(user=user).first()
+        posts = Post.objects.filter(company=company, status='open')
+        temp = []
         for x in posts:
-            if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False, status='active').count() > 0:
+            if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False,
+                                          status='active').count() > 0:
                 x.notified = True
             else:
                 x.notified = False
             if Application.objects.filter(post=x, opened=False, status='active').count() > 0:
+                temp.append(x.title)
                 x.new_apps = True
             else:
                 x.new_apps = False
             x.save()
+        if len(temp) > 0:
+            msg = 'There are new applications for the following posts: '
+            for x in temp:
+                msg += x
+                msg += ', '
+            new_message('company', company, 'info', msg[:-2])
         return posts
 
     def get_context_data(self, **kwargs):
