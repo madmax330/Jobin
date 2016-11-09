@@ -40,7 +40,7 @@ class NewPostForm(forms.ModelForm):
         clean_data = super(NewPostForm, self).clean()
         start = clean_data.get('start_date')
         end = clean_data.get('end_date')
-        dead = clean_data('deadline')
+        dead = clean_data.get('deadline')
         if end:
             if end < start:
                 raise forms.ValidationError({'start_date': 'The start date must be before end date.'})

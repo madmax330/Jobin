@@ -19,19 +19,24 @@ class IndexView(View):
         res = Company.objects.filter(user=user)
         if res.count() > 0:
             posts = Post.objects.filter(company=res.first(), status='open')
+            temp = []
             for x in posts:
                 if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False, status='active').count() > 0:
                     x.notified = True
                 else:
                     x.notified = False
                 if Application.objects.filter(post=x, opened=False, status='active').count() > 0:
-                    msg = 'There are new applications for the ' + x.title + ' post.'
-                    new_message('company', res.first(), 'info', msg)
+                    temp.append(x.title)
                     x.new_apps = True
                 else:
                     x.new_apps = False
                 x.save()
-
+            if len(temp) > 0:
+                msg = 'There are new applications for the following posts: '
+                for x in temp:
+                    msg += x
+                    msg += ', '
+                new_message('company', res.first(), 'info', msg[:-2])
             msgs = Message.objects.filter(company=res.first())
             context = {
                 'company': res.first(),

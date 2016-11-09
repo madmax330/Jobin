@@ -19,17 +19,14 @@
                     {% endif %}
                 </p>
             </div>
-            {% if form.errors %}
-                <div class="alert alert-danger">{{ form.errors }}</div>
-            {% endif %}
-            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            <form id="register-form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include 'home/form-template.html' %}
                 <div class="col-md-2">
                     <a href="{% url 'home:index' %}" class="btn btn-default">Cancel</a>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-primary" type="submit">Signup</button>
+                    <button class="btn btn-primary" type="submit">Sign Up</button>
                 </div>
                 <div class="col-md-8"></div>
             </form>
@@ -41,4 +38,20 @@
             </p>
         </div>
     </div>
+
+
+    <script>
+        $(function(){
+            $('#id_username')[0].maxLength = 100;
+
+            $('#register-form').submit(function(){
+                var user_in = $('#id_username');
+                var currval = user_in.val();
+                if( currval.length > 30){
+                    user_in.val(currval.substring(0,30))
+                }
+                return true;
+            });
+        });
+    </script>
 {% endblock %}

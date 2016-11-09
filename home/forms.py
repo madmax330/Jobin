@@ -21,14 +21,18 @@ class NewUserForm(forms.ModelForm):
 
     def clean(self):
         clean_data = super(NewUserForm, self).clean()
-        if not clean_data.get("username") == clean_data.get("email"):
-            raise forms.ValidationError("Username and Email don't match")
+        email = clean_data.get('email')
+        username = clean_data.get('username')
+        if len(email) > 30:
+            if not email[30:] == username:
+                raise forms.ValidationError({'username': "Username and email don't match."})
+        elif not username == email:
+            raise forms.ValidationError({'username': "Username and Email don't match."})
         if self.utype == 'student':
-            email = clean_data.get("email")
             ext = email.split('@', 1)
             ems = JobinBlockedEmail.objects.filter(extension=ext[1].lower())
             if ems.count() > 0:
-                raise forms.ValidationError("The school email extension '" + ext[1].lower() + "' is not recognized")
+                raise forms.ValidationError({'username': "The school email extension '" + ext[1].lower() + "' is not recognized"})
 
 
 class LoginForm(AuthenticationForm):

@@ -1,10 +1,11 @@
 from django.db import models
 from company.models import Company
+from student.models import Student
 from django.core.urlresolvers import reverse
 
 
 class Event(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.PROTECT, default=0)
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
     title = models.CharField(max_length=100, null=True)
     date = models.DateField(null=True)
     time = models.TimeField(null=True)
@@ -24,3 +25,15 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class EventInterest(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
+
+
+
+
+
+

@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from .models import Student
 from post.models import Application
+from event.models import EventInterest
 from home.models import Message, Notification, JobinSchool, JobinTerritory, JobinProgram, JobinMajor
 from home.utils import new_message
 from .forms import NewStudentForm
@@ -19,12 +20,14 @@ class IndexView(View):
     def get(self, request):
         res = Student.objects.filter(user=request.user)
         if res.count() > 0:
+            events = EventInterest.objects.filter(student=res.first(), active=True)
             apps = Application.objects.filter(student=res.first()).filter(status='active')
             msgs = Message.objects.filter(student=res.first())
             notifications = Notification.objects.filter(student=res.first()).filter(opened=False)
             context = {
                 'student': res.first(),
                 'apps': apps,
+                'events': events,
                 'msgs': msgs,
                 'notifications': notifications,
             }
