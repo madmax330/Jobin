@@ -25,6 +25,16 @@
                     <label>Description:</label><br/>
                     <span>{{ x.desc }}</span>
                 </div>
+                <div class="w3-display-topright w3-medium w3-container w3-padding-16">
+                    {% if not x.interested %}
+                        <a class="w3-btn w3-green" href="{% url 'event:interest' pk=x.pk %}">Interested</a>
+                    {% else %}
+                        <div class="w3-container w3-padding-8 w3-pale-green">
+                            Already Saved.
+                        </div>
+                    {% endif %}
+
+                </div>
             </div>
         </div>
     </div>

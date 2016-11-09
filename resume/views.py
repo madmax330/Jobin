@@ -18,8 +18,13 @@ class IndexView(View):
         try:
             student = Student.objects.get(user=self.request.user)
             msgs = Message.objects.filter(student=student)
+            l = Resume.objects.filter(student=student, status='open')
+            for x in l:
+                if SchoolLink.objects.filter(resume=x).count() == 0 or LanguageLink.objects.filter(resume=x).count() == 0:
+                    x.is_complete = False
+                    x.save()
             context = {
-                'list': Resume.objects.filter(student=student, status='open'),
+                'list': l,
                 'msgs': msgs
             }
             for x in msgs:
@@ -203,8 +208,6 @@ class NewLanguageView(CreateView):
         r = Resume.objects.get(pk=self.kwargs['rk'])
         language.rkey = r.pk
         language.rname = r.name
-        msg = 'Your Language record was created successfully.'
-        new_message('student', language.student, 'info', msg)
         update_resume(r)
         return super(NewLanguageView, self).form_valid(form)
 
@@ -277,8 +280,6 @@ class NewExperienceView(CreateView):
         r = Resume.objects.get(pk=self.kwargs['rk'])
         exp.rkey = r.pk
         exp.rname = r.name
-        msg = 'Your Experience was recorded successfully.'
-        new_message('student', exp.student, 'info', msg)
         update_resume(r)
         return super(NewExperienceView, self).form_valid(form)
 
@@ -357,8 +358,6 @@ class NewAwardView(CreateView):
         r = Resume.objects.get(pk=self.kwargs['rk'])
         aw.rkey = r.pk
         aw.rname = r.name
-        msg = 'Your Award was recorded successfully.'
-        new_message('student', aw.student, 'info', msg)
         update_resume(r)
         return super(NewAwardView, self).form_valid(form)
 
@@ -437,8 +436,6 @@ class NewSchoolView(CreateView):
         r = Resume.objects.get(pk=self.kwargs['rk'])
         school.rkey = r.pk
         school.rname = r.name
-        msg = 'Your School record was created successfully.'
-        new_message('student', school.student, 'info', msg)
         update_resume(r)
         return super(NewSchoolView, self).form_valid(form)
 
@@ -517,8 +514,6 @@ class NewSkillView(CreateView):
         r = Resume.objects.get(pk=self.kwargs['rk'])
         skill.rkey = r.pk
         skill.rname = r.name
-        msg = 'Your Skill was recorded successfully.'
-        new_message('student', skill.student, 'info', msg)
         update_resume(r)
         return super(NewSkillView, self).form_valid(form)
 
@@ -756,16 +751,18 @@ class WalkthrougNav(View):
         if rq == 'resume_done':
             rs = Resume.objects.filter(student=student)
             if rs.count() > 1:
-                ss = get_schools(rs.first())
-                for s in ss:
-                    create_school_link(s, resume)
-                ls = get_languages(rs.first())
-                for l in ls:
-                    create_language_link(l, resume)
-                msg = 'Since this is not your first resume, your School and Language records were brought in' \
-                      ' automatically from your first resume.'
-                new_message('student', student, 'warning', msg)
-                return redirect('resume:experiencewalk', rk=rk, rq='default', pk='0')
+                for x in rs:
+                    if x.is_complete:
+                        ss = get_schools(rs.first())
+                        for s in ss:
+                            create_school_link(s, resume)
+                        ls = get_languages(rs.first())
+                        for l in ls:
+                            create_language_link(l, resume)
+                        msg = 'Since this is not your first resume, your School and Language records were brought in' \
+                                ' automatically from your first resume.'
+                        new_message('student', student, 'warning', msg)
+                        return redirect('resume:experiencewalk', rk=rk, rq='default', pk='0')
             return redirect('resume:firstschoolwalk', rk=rk)
         if rq == 'school_done':
             sch = SchoolLink.objects.filter(resume=resume)
@@ -802,6 +799,8 @@ def linkschool(request, pk, rk):
     resume = Resume.objects.get(pk=rk)
     if SchoolLink.objects.filter(school=school, resume=resume).count() == 0:
         create_school_link(school, resume)
+    msg = 'School was successfully added to the resume.'
+    new_message('student', school.student, 'info', msg)
     return redirect('resume:schoollist', rk=rk)
 
 
@@ -810,6 +809,8 @@ def linkaward(request, pk, rk):
     resume = Resume.objects.get(pk=rk)
     if AwardLink.objects.filter(award=award, resume=resume).count() == 0:
         create_award_link(award, resume)
+    msg = 'Award was successfully added to the resume.'
+    new_message('student', award.student, 'info', msg)
     return redirect('resume:awardlist', rk=rk)
 
 
@@ -818,6 +819,8 @@ def linkexperience(request, pk, rk):
     resume = Resume.objects.get(pk=rk)
     if ExperienceLink.objects.filter(experience=experience, resume=resume).count() == 0:
         create_experience_link(experience, resume)
+    msg = 'Experience was successfully added to the resume.'
+    new_message('student', experience.student, 'info', msg)
     return redirect('resume:experiencelist', rk=rk)
 
 
@@ -826,6 +829,8 @@ def linklanguage(request, pk, rk):
     resume = Resume.objects.get(pk=rk)
     if LanguageLink.objects.filter(language=language, resume=resume).count() == 0:
         create_language_link(language, resume)
+    msg = 'Language record was successfully added to the resume.'
+    new_message('student', language.student, 'info', msg)
     return redirect('resume:languagelist', rk=rk)
 
 
@@ -834,4 +839,6 @@ def linkskill(request, pk, rk):
     resume = Resume.objects.get(pk=rk)
     if SkillLink.objects.filter(skill=skill, resume=resume).count() == 0:
         create_skill_link(skill, resume)
+    msg = 'Skill was successfully added to the resume.'
+    new_message('student', skill.student, 'info', msg)
     return redirect('resume:skilllist', rk=rk)

@@ -66,6 +66,30 @@
                     </table>
                 {% endif %}
             </div>
+
+            <div class="w3-container w3-padding-16">
+                <h4 style="margin:0;" class="w3-dark-grey w3-center w3-padding-8">Interested Events</h4>
+                {% if events.count == 0 %}
+                    <div class="w3-container w3-orange">
+                        You currently have shown no interest in any events. <a href="{% url 'event:studentevents' pk=0 %}">Browse the events</a> to see which ones interest you.
+                    </div>
+                {% else %}
+                    <table class="w3-table w3-bordered w3-white">
+                        <tr>
+                            <th>Title</th>
+                            <th>Date & Time</th>
+                            <th>Address</th>
+                        </tr>
+                        {% for x in events %}
+                            <tr {% if x.cover_requested %}class="w3-border-green w3-pale-green"{% endif %}>
+                                <td><a href="{% url 'event:studentevents' pk=x.event.pk %}">{{ x.event.title }}</a></td>
+                                <td>{{ x.event.date }} at {{ x.event.time }}</td>
+                                <td>{{ x.event.address }}, {{ x.event.city }}, {{ x.event.state }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

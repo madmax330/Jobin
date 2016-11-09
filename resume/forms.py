@@ -56,6 +56,10 @@ class LanguageForm(forms.ModelForm):
                                   )),
         }
 
+        labels = {
+            'name': 'Language Name'
+        }
+
 
 class ExperienceForm(forms.ModelForm):
 
