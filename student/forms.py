@@ -34,5 +34,6 @@ class NewStudentForm(forms.ModelForm):
         labels = {
             'firstname': 'First Name',
             'lastname': 'Last Name',
-            'work_eligible': 'Are you legally eligible to work?'
+            'work_eligible': 'Are you legally eligible to work?',
+            'dob': 'Date of birth (mm/dd/yyyy)',
         }

@@ -24,7 +24,7 @@ class NewUserForm(forms.ModelForm):
         email = clean_data.get('email')
         username = clean_data.get('username')
         if len(email) > 30:
-            if not email[30:] == username:
+            if not email[0:30] == username:
                 raise forms.ValidationError({'username': "Username and email don't match."})
         elif not username == email:
             raise forms.ValidationError({'username': "Username and Email don't match."})

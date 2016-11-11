@@ -19,4 +19,26 @@
 
 {% block hiddenblock %}
     <div class="form-script-title">School</div>
+
+    <script>
+        $(function(){
+
+            var sch = $('#id_name');
+            var prog = $('#id_program');
+            if(!(sch.val() == "")){
+                alert(sch.val());
+                sch.hide();
+                sch.parent().siblings('p').html('School Name: ' + sch.val());
+                prog.hide();
+                prog.parent().siblings('p').html('Program: ' + prog.val());
+            }
+
+            $('.form-info-div').html(
+                    'This is your first school record. Please complete the remaining information about your school.' +
+                    ' If you are a graduate enter an end date, else chose "is current". Then save and add the rest of' +
+                    ' your education history (recommended) or save and continue and add the rest later.'
+            );
+
+        });
+    </script>
 {% endblock %}

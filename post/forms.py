@@ -31,9 +31,11 @@ class NewPostForm(forms.ModelForm):
             'cover_instructions': forms.Textarea(attrs={'class': 'form-control'})
         }
         labels = {
-            'deadline': 'Application Deadline',
+            'deadline': 'Application Deadline (mm/dd/yyyy)',
             'wage': 'Wage $/hr',
-            'cover_instructions': 'Enter some instructions for the cover letter here'
+            'cover_instructions': 'Enter some instructions for the cover letter here',
+            'start_date': 'Start Date (mm/dd/yyyy)',
+            'end_date': 'End Date (mm/dd/yyyy)',
         }
 
     def clean(self):
