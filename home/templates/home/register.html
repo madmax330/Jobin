@@ -22,13 +22,26 @@
             <form id="register-form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include 'home/form-template.html' %}
-                <div class="col-md-2">
-                    <a href="{% url 'home:index' %}" class="btn btn-default">Cancel</a>
+                <div id="pass_verify" class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <span id="pass_verify_error" class="text-danger"></span>
+                    </div>
+                    <label class="control-label col-md-2">
+                        Verify Password: *
+                    </label>
+                    <div class="col-md-6">
+                        <input id="pass_verify_val" placeholder="Verify Password" name="passv" class="form-control" type="password"/>
+                    </div>
+                    <div class="col-md-4"></div>
                 </div>
-                <div class="col-md-2">
-                    <button class="btn btn-primary" type="submit">Sign Up</button>
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="{% url 'home:index' %}" class="btn btn-default">Cancel</a>
+                    </div>
+                    <div class="col-md-10">
+                        <button class="btn btn-primary" type="submit">Sign Up</button>
+                    </div>
                 </div>
-                <div class="col-md-8"></div>
             </form>
         </div>
         <div class="panel-footer">
@@ -45,12 +58,28 @@
             $('#id_username')[0].maxLength = 100;
 
             $('#register-form').submit(function(){
-                var user_in = $('#id_username');
-                var currval = user_in.val();
-                if( currval.length > 30){
-                    user_in.val(currval.substring(0,30))
+
+                var p = $('#id_password');
+
+                var pp = $('#pass_verify_val');
+
+                if(p.val() == pp.val()){
+
+                    $('#pass_verify').html("");
+
+                    var user_in = $('#id_username');
+                    var currval = user_in.val();
+                    if( currval.length > 30){
+                        user_in.val(currval.substring(0,30));
+                    }
+
+                    return true;
                 }
-                return true;
+                else{
+                    $('#pass_verify_error').html('Passwords do not match.');
+                    return false;
+                }
+
             });
         });
     </script>

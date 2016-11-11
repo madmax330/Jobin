@@ -35,6 +35,7 @@ class NewResumeForm(forms.ModelForm):
                                       )),
         }
         labels = {
+            'name': 'Resume Name',
             'is_active': 'Make Active Resume'
         }
 
@@ -87,6 +88,8 @@ class ExperienceForm(forms.ModelForm):
 
         labels = {
             'is_current': 'hide',
+            'start': 'Start (mm/dd/yyyy)',
+            'end': 'End (mm/dd/yyyy)',
         }
 
     def clean(self):
@@ -115,6 +118,10 @@ class AwardForm(forms.ModelForm):
             'award_type': forms.TextInput(attrs={'class': 'w3-input'})
         }
 
+        labels = {
+            'date': 'Date Received (mm/dd/yyyy)',
+        }
+
 
 class SchoolForm(forms.ModelForm):
 
@@ -139,7 +146,9 @@ class SchoolForm(forms.ModelForm):
 
         labels = {
             'name': 'School Name',
-            'is_current': 'hide'
+            'is_current': 'hide',
+            'start': 'Start (mm/dd/yyyy)',
+            'end': 'End (mm/dd/yyyy)',
         }
 
     def clean(self):

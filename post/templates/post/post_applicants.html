@@ -54,6 +54,48 @@
                     </form>
                 </div>
             </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h5 style="text-align: center;">Legend</h5>
+                </div>
+                <div class="panel-body" >
+                    <div class="row" style="padding: 0 15px 0 15px;">
+                        <div style="background-color: #96beff; color: #96beff;" class="col-md-2">
+                            xxx
+                        </div>
+                        <div class="col-md-10">
+                            Cover letter received and read
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
+                        <div style="background-color: #c2f9ce; color: #c2f9ce;" class="col-md-2">
+                            xxx
+                        </div>
+                        <div class="col-md-10">
+                            Cover letter received
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
+                        <div style="background-color: #fdffb2; color: #fdffb2;" class="col-md-2">
+                            xxx
+                        </div>
+                        <div class="col-md-10">
+                            Cover letter requested
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
+                        <div style="background-color: white; color: white; border: 1px solid black;" class="col-md-2">
+                            xxx
+                        </div>
+                        <div class="col-md-10">
+                            No activity
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-9">
             <a href="{% url 'post:applicant' pk=post.pk%}" class="btn btn-default col-md-12" style="margin-bottom:20px;">Single Applicant View</a>

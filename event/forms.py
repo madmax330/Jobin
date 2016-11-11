@@ -22,3 +22,8 @@ class NewEventForm(forms.ModelForm):
             'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+        labels = {
+            'date': 'Event Date (mm/dd/yyyy)',
+            'time': 'Event Time (hh - mm AM/PM)',
+        }

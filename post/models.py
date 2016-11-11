@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 class Post(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT, default=0)
     title = models.CharField(max_length=100)
-    wage = models.IntegerField(null=True)
+    wage = models.IntegerField(null=True, blank=True)
     openings = models.IntegerField(null=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
