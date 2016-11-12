@@ -105,12 +105,12 @@ def get_states(request, country_name):
     states = JobinTerritory.objects.filter(country=country_name)
     state_dic = {}
     for state in states:
-        state_dic[state.id] = state.name
+        state_dic[state.name] = state.name
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 def get_states_update(request,pk, country_name):
     states = JobinTerritory.objects.filter(country=country_name)
     state_dic = {}
     for state in states:
-        state_dic[state.id] = state.name
+        state_dic[state.name] = state.name
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
