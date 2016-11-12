@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 class Post(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT, default=0)
     title = models.CharField(max_length=100)
-    wage = models.IntegerField(null=True)
+    wage = models.IntegerField(null=True, blank=True)
     openings = models.IntegerField(null=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
@@ -21,7 +21,9 @@ class Post(models.Model):
     status = models.CharField(max_length=50,  null=True, default='open')
     supplied_by_jobin = models.BooleanField(default=True)
     notified = models.BooleanField(default=False)
+    new_apps = models.BooleanField(default=False)
     cover_instructions = models.TextField(null=True, blank=True)
+    is_startup_post = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('post:companypost', kwargs={'pk': self.pk})
@@ -35,6 +37,7 @@ class Application(models.Model):
     student = models.ForeignKey(Student, on_delete=models.PROTECT)
     resume = models.ForeignKey(Resume, on_delete=models.PROTECT)
     date = models.DateField()
+    opened = models.BooleanField(default=False)
     status = models.CharField(max_length=25)
     cover = models.TextField(null=True, blank=True)
     cover_requested = models.BooleanField(default=False)

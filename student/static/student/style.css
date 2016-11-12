@@ -38,3 +38,9 @@ body{
 .hide{
     display:none;
 }
+
+.warning{
+    padding: 25px 15px 25px 15px;
+    position: absolute;
+    top: 30%;
+}

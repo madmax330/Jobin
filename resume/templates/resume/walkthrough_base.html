@@ -5,23 +5,25 @@
 {% block resumesactive %}active{% endblock %}
 
 {% block content %}
-    <div class="w3-container w3-padding-32">
-        {% block before_content %}{% endblock %}
-        <div class="w3-container w3-dark-grey w3-center">
-            <h3>{% block form_title %}{% endblock %}</h3>
+    <div class="w3-row">
+        <div class="w3-container w3-padding-32 w3-col s12 {% if rcount > 0 %}m7{% endif %}">
+            <div class="w3-container w3-dark-grey w3-center">
+                <h3>{% block form_title %}{% endblock %}</h3>
+            </div>
+            <div class="w3-container w3-pale-blue form-info-div">
+                {% block info %}{% endblock %}
+            </div>
+            <form class="w3-container w3-border-left w3-border-right w3-border-bottom w3-white" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include 'resume/form_template.html' %}
+                {% block buttons %}
+                {% endblock %}
+            </form>
+            <div style="display: none">
+                {% block hiddenblock %}
+                {% endblock %}
+            </div>
         </div>
-        <div class="w3-container w3-pale-orange">
-            {% block info %}{% endblock %}
-        </div>
-        <form class="w3-container w3-border-left w3-border-right w3-border-bottom w3-white" action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% include 'resume/form_template.html' %}
-            {% block buttons %}
-            {% endblock %}
-        </form>
-        <div style="display: none">
-            {% block hiddenblock %}
-            {% endblock %}
-        </div>
+        {% block side_content %}{% endblock %}
     </div>
 {% endblock %}

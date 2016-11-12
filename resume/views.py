@@ -2,12 +2,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import View
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
-from student.models import Student
-from .models import Resume, Language, Experience, Award, School, Skill, SchoolLink, SkillLink, ExperienceLink, AwardLink, LanguageLink
 from home.models import Message
+from home.utils import new_message
 from post.models import Application
 from .forms import ResumeForm, LanguageForm, ExperienceForm, AwardForm, SchoolForm, SkillForm, NewResumeForm
 from django.core.exceptions import ObjectDoesNotExist
+from .utils import *
 import datetime
 
 
@@ -18,8 +18,13 @@ class IndexView(View):
         try:
             student = Student.objects.get(user=self.request.user)
             msgs = Message.objects.filter(student=student)
+            l = Resume.objects.filter(student=student, status='open')
+            for x in l:
+                if SchoolLink.objects.filter(resume=x).count() == 0 or LanguageLink.objects.filter(resume=x).count() == 0:
+                    x.is_complete = False
+                    x.save()
             context = {
-                'list': Resume.objects.filter(student=student, status='open'),
+                'list': l,
                 'msgs': msgs
             }
             for x in msgs:
@@ -34,26 +39,11 @@ class ResumeDetailView(View):
 
     def get(self, request, pk):
         resume = Resume.objects.get(pk=pk)
-        ll = LanguageLink.objects.filter(resume=resume)
-        sl = SchoolLink.objects.filter(resume=resume)
-        el = ExperienceLink.objects.filter(resume=resume).order_by('-start')
-        skl = SkillLink.objects.filter(resume=resume)
-        al = AwardLink.objects.filter(resume=resume)
-        languages = []
-        for x in ll:
-            languages.append(x.language)
-        schools = []
-        for x in sl:
-            schools.append(x.school)
-        experience = []
-        for x in el:
-            experience.append(x.experience)
-        skills = []
-        for x in skl:
-            skills.append(x.skill)
-        awards = []
-        for x in al:
-            awards.append(x.award)
+        languages = get_languages(resume)
+        schools = get_schools(resume)
+        experience = get_experience(resume)
+        skills = get_skills(resume)
+        awards = get_awards(resume)
         context = {
             'resume': resume,
             'languages': languages,
@@ -74,11 +64,8 @@ class NewResumeView(CreateView):
         context = super(NewResumeView, self).get_context_data(**kwargs)
         s = Student.objects.get(user=self.request.user)
         if s.is_new:
-            x = Message()
-            x.code = 'info'
-            x.student = s
-            x.message = 'Your profile was successfully created. Welcome to Jobin!'
-            x.save()
+            msg = 'Your profile was successfully created. Welcome to Jobin!'
+            new_message('student', s, 'info', msg)
             s.is_new = False
             s.save()
         msgs = Message.objects.filter(student=s)
@@ -93,11 +80,8 @@ class NewResumeView(CreateView):
     def form_valid(self, form):
         resume = form.save(commit=False)
         resume.student = Student.objects.get(user=self.request.user)
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your resume was created successfully.'
-        x.student = resume.student
-        x.save()
+        msg = 'Your resume was created successfully.'
+        new_message('student', resume.student, 'info', msg)
         s = resume.student
         if s.is_new:
             s.is_new = False
@@ -124,36 +108,17 @@ def copyresume(request, rk):
     skills = SkillLink.objects.filter(resume=cr)
     aws = AwardLink.objects.filter(resume=cr)
     for x in langs:
-        l = LanguageLink()
-        l.resume = nr
-        l.language = x.language
-        l.save()
+        create_language_link(x.language, nr)
     for x in schs:
-        s = SchoolLink()
-        s.school = x.school
-        s.resume = nr
-        s.save()
+        create_school_link(x.school, nr)
     for x in exps:
-        e = ExperienceLink()
-        e.experience = x.experience
-        e.start = x.experience.start
-        e.resume = nr
-        e.save()
+        create_experience_link(x.experience, nr)
     for x in skills:
-        s = SkillLink()
-        s.skill = x.skill
-        s.resume = nr
-        s.save()
+        create_skill_link(x.skill, nr)
     for x in aws:
-        a = AwardLink()
-        a.award = x.award
-        a.resume = nr
-        a.save()
-    m = Message()
-    m.student = nr.student
-    m.code = 'info'
-    m.message = 'Your new resume was successfully created based on ' + cr.name + '. You can now taylor it to your needs.'
-    m.save()
+        create_award_link(x.award, nr)
+    msg = 'Your new resume was successfully created based on ' + cr.name + '. You can now taylor it to your needs.'
+    new_message('student', nr.student, 'info', msg)
     return redirect('resume:index')
 
 
@@ -163,6 +128,7 @@ class ResumeUpdateView(UpdateView):
 
     def form_valid(self, form):
         resume = form.save(commit=False)
+        resume.last_updated = datetime.datetime.now()
         s = resume.student
         if resume.is_active:
             rs = Resume.objects.filter(student=s)
@@ -213,11 +179,8 @@ class DeleteResume(DeleteView):
             c = SkillLink.objects.filter(skill=t).count()
             if c == 0:
                 t.delete()
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your resume was deleted successfully.'
-        x.student = Student.objects.get(user=self.request.user)
-        x.save()
+        msg = 'Your resume was deleted successfully.'
+        new_message('student', resume.student, 'info', msg)
         apps = Application.objects.filter(resume=resume).count()
         if apps > 0:
             resume.status = 'closed'
@@ -230,16 +193,22 @@ class NewLanguageView(CreateView):
     model = Language
     form_class = LanguageForm
 
+    def get_context_data(self, **kwargs):
+        resume = Resume.objects.get(pk=self.kwargs['rk'])
+        context = super(NewLanguageView, self).get_context_data(**kwargs)
+        items = get_other_language(resume)
+        context['items'] = items
+        context['icount'] = len(items)
+        context['rkey'] = resume.pk
+        return context
+
     def form_valid(self, form):
         language = form.save(commit=False)
         language.student = Student.objects.get(user=self.request.user)
         r = Resume.objects.get(pk=self.kwargs['rk'])
         language.rkey = r.pk
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your Language record was created successfully.'
-        x.student = language.student
-        x.save()
+        language.rname = r.name
+        update_resume(r)
         return super(NewLanguageView, self).form_valid(form)
 
 
@@ -274,11 +243,8 @@ class DeleteLanguage(DeleteView):
 
     def get_success_url(self):
         rk = self.kwargs['rk']
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your language object was deleted successfully.'
-        x.student = Student.objects.get(user=self.request.user)
-        x.save()
+        msg = 'Your language object was deleted successfully.'
+        new_message('student', Student.objects.get(user=self.request.user), 'info', msg)
         return reverse_lazy('resume:languagelist', kwargs={'rk': rk})
 
     def get(self, *args, **kwargs):
@@ -290,28 +256,31 @@ class DeleteLanguage(DeleteView):
         if links.count() == 0:
             return self.post(*args, **kwargs)
         else:
-            m = Message()
-            m.code = 'info'
-            m.message = 'Your language object was deleted successfully.'
-            m.student = resume.student
-            m.save()
-            return redirect('resume:languagelist', kwargs={'rk': resume.pk})
+            msg = 'Your language object was deleted successfully.'
+            new_message('student', resume.student, 'info', msg)
+            return redirect('resume:languagelist', rk=resume.pk)
 
 
 class NewExperienceView(CreateView):
     model = Experience
     form_class = ExperienceForm
 
+    def get_context_data(self, **kwargs):
+        resume = Resume.objects.get(pk=self.kwargs['rk'])
+        context = super(NewExperienceView, self).get_context_data(**kwargs)
+        items = get_other_experience(resume)
+        context['items'] = items
+        context['icount'] = len(items)
+        context['rkey'] = resume.pk
+        return context
+
     def form_valid(self, form):
         exp = form.save(commit=False)
         exp.student = Student.objects.get(user=self.request.user)
         r = Resume.objects.get(pk=self.kwargs['rk'])
         exp.rkey = r.pk
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your Experience was recorded successfully.'
-        x.student = exp.student
-        x.save()
+        exp.rname = r.name
+        update_resume(r)
         return super(NewExperienceView, self).form_valid(form)
 
 
@@ -340,17 +309,20 @@ class ExperienceUpdateView(UpdateView):
     model = Experience
     form_class = ExperienceForm
 
+    def form_valid(self, form):
+        x = form.save(commit=False)
+        msg = 'Your Experience was successfully updated.'
+        new_message('student', x.student, 'info', msg)
+        return super(ExperienceUpdateView, self).form_valid(form)
+
 
 class DeleteExperience(DeleteView):
     model = Experience
 
     def get_success_url(self):
         rk = self.kwargs['rk']
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your experience object was deleted successfully.'
-        x.student = Student.objects.get(user=self.request.user)
-        x.save()
+        msg = 'Your experience object was deleted successfully.'
+        new_message('student', Student.objects.get(user=self.request.user), 'info', msg)
         return reverse_lazy('resume:experiencelist', kwargs={'rk': rk})
 
     def get(self, *args, **kwargs):
@@ -362,28 +334,31 @@ class DeleteExperience(DeleteView):
         if links.count() == 0:
             return self.post(*args, **kwargs)
         else:
-            m = Message()
-            m.code = 'info'
-            m.message = 'Your experience object was deleted successfully.'
-            m.student = resume.student
-            m.save()
-            return redirect('resume:experiencelist', kwargs={'rk': resume.pk})
+            msg = 'Your experience object was deleted successfully.'
+            new_message('student', resume.student, 'info', msg)
+            return redirect('resume:experiencelist', rk=resume.pk)
 
 
 class NewAwardView(CreateView):
     model = Award
     form_class = AwardForm
 
+    def get_context_data(self, **kwargs):
+        resume = Resume.objects.get(pk=self.kwargs['rk'])
+        context = super(NewAwardView, self).get_context_data(**kwargs)
+        items = get_other_award(resume)
+        context['items'] = items
+        context['icount'] = len(items)
+        context['rkey'] = resume.pk
+        return context
+
     def form_valid(self, form):
         aw = form.save(commit=False)
         aw.student = Student.objects.get(user=self.request.user)
         r = Resume.objects.get(pk=self.kwargs['rk'])
         aw.rkey = r.pk
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your Award was recorded successfully.'
-        x.student = aw.student
-        x.save()
+        aw.rname = r.name
+        update_resume(r)
         return super(NewAwardView, self).form_valid(form)
 
 
@@ -412,17 +387,20 @@ class AwardUpdateView(UpdateView):
     model = Award
     form_class = AwardForm
 
+    def form_valid(self, form):
+        x = form.save(commit=False)
+        msg = 'Your Award was successfully updated.'
+        new_message('student', x.student, 'info', msg)
+        return super(AwardUpdateView, self).form_valid(form)
+
 
 class DeleteAward(DeleteView):
     model = Award
 
     def get_success_url(self):
         rk = self.kwargs['rk']
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your award object was deleted successfully.'
-        x.student = Student.objects.get(user=self.request.user)
-        x.save()
+        msg = 'Your award object was deleted successfully.'
+        new_message('student', Student.objects.get(user=self.request.user), 'info', msg)
         return reverse_lazy('resume:awardlist', kwargs={'rk': rk})
 
     def get(self, *args, **kwargs):
@@ -434,28 +412,31 @@ class DeleteAward(DeleteView):
         if links.count() == 0:
             return self.post(*args, **kwargs)
         else:
-            m = Message()
-            m.code = 'info'
-            m.message = 'Your award object was deleted successfully.'
-            m.student = resume.student
-            m.save()
-            return redirect('resume:awardlist', kwargs={'rk': resume.pk})
+            msg = 'Your award object was deleted successfully.'
+            new_message('student', resume.student, 'info', msg)
+            return redirect('resume:awardlist', rk=resume.pk)
 
 
 class NewSchoolView(CreateView):
     model = School
     form_class = SchoolForm
 
+    def get_context_data(self, **kwargs):
+        resume = Resume.objects.get(pk=self.kwargs['rk'])
+        context = super(NewSchoolView, self).get_context_data(**kwargs)
+        items = get_other_school(resume)
+        context['items'] = items
+        context['icount'] = len(items)
+        context['rkey'] = resume.pk
+        return context
+
     def form_valid(self, form):
         school = form.save(commit=False)
         school.student = Student.objects.get(user=self.request.user)
         r = Resume.objects.get(pk=self.kwargs['rk'])
         school.rkey = r.pk
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your School record was created successfully.'
-        x.student = school.student
-        x.save()
+        school.rname = r.name
+        update_resume(r)
         return super(NewSchoolView, self).form_valid(form)
 
 
@@ -484,18 +465,21 @@ class SchoolUpdateView(UpdateView):
     model = School
     form_class = SchoolForm
 
+    def form_valid(self, form):
+        x = form.save(commit=False)
+        msg = 'Your School was successfully updated.'
+        new_message('student', x.student, 'info', msg)
+        return super(SchoolUpdateView, self).form_valid(form)
+
 
 class DeleteSchool(DeleteView):
     model = School
 
     def get_success_url(self):
         rk = self.kwargs['rk']
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your school object was deleted successfully.'
-        x.student = Student.objects.get(user=self.request.user)
-        x.save()
-        return reverse_lazy('resume:schoollist', kwargs={'rk': rk})
+        msg = 'Your school object was deleted successfully.'
+        new_message('student', Student.objects.get(user=self.request.user), 'info', msg)
+        return reverse_lazy('resume:schoollist', rk=rk)
 
     def get(self, *args, **kwargs):
         resume = Resume.objects.get(pk=kwargs['rk'])
@@ -506,28 +490,31 @@ class DeleteSchool(DeleteView):
         if links.count() == 0:
             return self.post(*args, **kwargs)
         else:
-            m = Message()
-            m.code = 'info'
-            m.message = 'Your school object was deleted successfully.'
-            m.student = resume.student
-            m.save()
-            return redirect('resume:schoollist', kwargs={'rk': resume.pk})
+            msg = 'Your school object was deleted successfully.'
+            new_message('student', resume.student, 'info', msg)
+            return redirect('resume:schoollist', rk=resume.pk)
 
 
 class NewSkillView(CreateView):
     model = Skill
     form_class = SkillForm
 
+    def get_context_data(self, **kwargs):
+        resume = Resume.objects.get(pk=self.kwargs['rk'])
+        context = super(NewSkillView, self).get_context_data(**kwargs)
+        items = get_other_skill(resume)
+        context['items'] = items
+        context['icount'] = len(items)
+        context['rkey'] = resume.pk
+        return context
+
     def form_valid(self, form):
         skill = form.save(commit=False)
         skill.student = Student.objects.get(user=self.request.user)
         r = Resume.objects.get(pk=self.kwargs['rk'])
         skill.rkey = r.pk
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your Skill was recorded successfully.'
-        x.student = skill.student
-        x.save()
+        skill.rname = r.name
+        update_resume(r)
         return super(NewSkillView, self).form_valid(form)
 
 
@@ -556,17 +543,20 @@ class SkillUpdateView(UpdateView):
     model = Skill
     form_class = SkillForm
 
+    def form_valid(self, form):
+        x = form.save(commit=False)
+        msg = 'Your Skill was successfully updated.'
+        new_message('student', x.student, 'info', msg)
+        return super(SkillUpdateView, self).form_valid(form)
+
 
 class DeleteSkill(DeleteView):
     model = Skill
 
     def get_success_url(self):
         rk = self.kwargs['rk']
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your skill object was deleted successfully.'
-        x.student = Student.objects.get(user=self.request.user)
-        x.save()
+        msg = 'Your skill object was deleted successfully.'
+        new_message('student', Student.objects.get(user=self.request.user), 'info', msg)
         return reverse_lazy('resume:skilllist', kwargs={'rk': rk})
 
     def get(self, *args, **kwargs):
@@ -578,32 +568,20 @@ class DeleteSkill(DeleteView):
         if links.count() == 0:
             return self.post(*args, **kwargs)
         else:
-            m = Message()
-            m.code = 'info'
-            m.message = 'Your language object was deleted successfully.'
-            m.student = resume.student
-            m.save()
-            return redirect('resume:skilllist', kwargs={'rk': resume.pk})
+            msg = 'Your language object was deleted successfully.'
+            new_message('student', resume.student, 'info', msg)
+            return redirect('resume:skilllist', rk=resume.pk)
 
 
 class MakeActive(View):
 
     def get(self, request, pk, rq):
-        student = Student.objects.get(user=self.request.user)
-        resumes = Resume.objects.filter(student=student)
-        for x in resumes:
-            x.is_active = False
-            x.save()
         r = Resume.objects.get(pk=pk)
-        r.is_active = True
-        r.save()
-        xx = Message()
-        xx.code = 'info'
-        xx.message = 'Resume ' + r.name + ' set to active resume.'
-        xx.student = r.student
-        xx.save()
+        make_active(r.student, r)
+        msg = 'Resume ' + r.name + ' set to active resume.'
+        new_message('student', r.student, 'info', msg)
         if rq == 'post':
-            return redirect('post:studentposts')
+            return redirect('post:studentposts', pk=0, pt='internship')
         else:
             return redirect('resume:index')
 
@@ -637,22 +615,14 @@ class FirstSchoolWalkthrough(View):
             s = form.save(commit=False)
             s.student = student
             s.rkey = resume.pk
+            s.rname = resume.name
             s.save()
-            l = SchoolLink()
-            l.resume = resume
-            l.school = s
-            l.save()
-            m = Message()
-            m.code = 'info'
-            m.student = student
-            m.message = 'Your School record was created successfully.'
-            m.save()
+            create_school_link(s, resume)
+            msg = 'Your School record was created successfully.'
+            new_message('student', student, 'info', msg)
             return redirect('resume:nav', rk=rk, rq='school_done')
-        x = Message()
-        x.code = 'danger'
-        x.student = student
-        x.message = 'Error creating your record, please try again.'
-        x.save()
+        msg = 'Error creating your record, please try again.'
+        new_message('student', student, 'danger', msg)
         return self.get(request, rk=rk)
 
 
@@ -679,24 +649,17 @@ class SchoolWalkthrough(View):
         if form.is_valid():
             s = form.save(commit=False)
             s.student = student
+            s.rkey = resume.pk
+            s.rname = resume.name
             s.save()
-            l = SchoolLink()
-            l.resume = resume
-            l.school = s
-            l.save()
-            m = Message()
-            m.code = 'info'
-            m.student = student
-            m.message = 'Your School record was created successfully.'
-            m.save()
+            create_school_link(s, resume)
+            msg = 'Your School record was created successfully.'
+            new_message('student', student, 'info', msg)
             if rq == 'new':
                 return redirect('resume:schoolwalk', rk=rk, rq='continue')
             return redirect('resume:nav', rk=rk, rq='school_done')
-        x = Message()
-        x.code = 'danger'
-        x.student = student
-        x.message = 'Error creating your record, please try again.'
-        x.save()
+        msg = 'Error creating your record, please try again.'
+        new_message('student', student, 'danger', msg)
         return self.get(request, rk=rk, rq='continue')
 
 
@@ -724,24 +687,17 @@ class LanguageWalkthrough(View):
         if form.is_valid():
             l = form.save(commit=False)
             l.student = student
+            l.rkey = resume.pk
+            l.rname = resume.name
             l.save()
-            link = LanguageLink()
-            link.resume = resume
-            link.language = l
-            link.save()
-            m = Message()
-            m.code = 'info'
-            m.student = student
-            m.message = 'Your Language record was created successfully.'
-            m.save()
+            create_language_link(l, resume)
+            msg = 'Your Language record was created successfully.'
+            new_message('student', student, 'info', msg)
             if rq == 'new':
                 return redirect('resume:languagewalk', rk=rk, rq='continue')
             return redirect('resume:nav', rk=rk, rq='language_done')
-        x = Message()
-        x.code = 'danger'
-        x.student = student
-        x.message = 'Error creating your record, please try again.'
-        x.save()
+        msg = 'Error creating your record, please try again.'
+        new_message('student', student, 'danger', msg)
         return self.get(request, rk=rk, rq='continue')
 
 
@@ -749,19 +705,25 @@ class ExperienceWalkthrough(View):
     template_name = 'resume/walkthrough_experience.html'
     form_class = ExperienceForm
 
-    def get(self, request, rk):
+    def get(self, request, rk, rq, pk):
+        resume = Resume.objects.get(pk=rk)
+        if rq == 'link':
+            create_experience_link(Experience.objects.get(pk=pk), resume)
         form = self.form_class(None)
         msgs = Message.objects.filter(student=Student.objects.get(user=self.request.user))
+        items = get_other_experience(resume)
         context = {
             'form': form,
             'rkey': rk,
             'msgs': msgs,
+            'items': items,
+            'rcount': len(items),
         }
         for x in msgs:
             x.delete()
         return render(request, self.template_name, context)
 
-    def post(self, request, rk):
+    def post(self, request, rk, rq, pk):
         form = self.form_class(request.POST)
         student = Student.objects.get(user=self.request.user)
         resume = Resume.objects.get(pk=rk)
@@ -769,24 +731,16 @@ class ExperienceWalkthrough(View):
         if form.is_valid():
             e = form.save(commit=False)
             e.student = student
+            e.rkey = resume.pk
+            e.rname = resume.name
             e.save()
-            l = ExperienceLink()
-            l.resume = resume
-            l.experience = e
-            l.start = e.start
-            l.save()
-            m = Message()
-            m.code = 'info'
-            m.student = student
-            m.message = 'Your Experience record was created successfully.'
-            m.save()
-            return self.get(request, rk=rk)
-        x = Message()
-        x.code = 'danger'
-        x.student = student
-        x.message = 'Error creating your record, please try again.'
-        x.save()
-        return self.get(request, rk=rk)
+            create_experience_link(e, resume)
+            msg = 'Your Experience record was created successfully.'
+            new_message('student', student, 'info', msg)
+            return self.get(request, rk=rk, rq=rq, pk=pk)
+        msg = 'Error creating your record, please try again.'
+        new_message('student', student, 'danger', msg)
+        return self.get(request, rk=rk, rq=rq, pk=pk)
 
 
 class WalkthrougNav(View):
@@ -795,97 +749,96 @@ class WalkthrougNav(View):
         resume = Resume.objects.get(pk=rk)
         student = resume.student
         if rq == 'resume_done':
+            rs = Resume.objects.filter(student=student)
+            if rs.count() > 1:
+                for x in rs:
+                    if x.is_complete:
+                        ss = get_schools(rs.first())
+                        for s in ss:
+                            create_school_link(s, resume)
+                        ls = get_languages(rs.first())
+                        for l in ls:
+                            create_language_link(l, resume)
+                        msg = 'Since this is not your first resume, your School and Language records were brought in' \
+                                ' automatically from your first resume.'
+                        new_message('student', student, 'warning', msg)
+                        return redirect('resume:experiencewalk', rk=rk, rq='default', pk='0')
             return redirect('resume:firstschoolwalk', rk=rk)
         if rq == 'school_done':
             sch = SchoolLink.objects.filter(resume=resume)
             if sch.count() > 0:
                 return redirect('resume:languagewalk', rk=rk, rq='continue')
             else:
-                x = Message()
-                x.code = 'danger'
-                x.student = Student.objects.get(user=self.request.user)
-                x.message = "You must add at least one school entry before continuing."
-                x.save()
+                msg = "You must add at least one school entry before continuing."
+                new_message('student', Student.objects.get(user=self.request.user), 'danger', msg)
                 return redirect('resume:schoolwalk', rk=rk, rq='continue')
         if rq == 'language_done':
             langs = LanguageLink.objects.filter(resume=resume)
             if langs.count() > 0:
-                return redirect('resume:experiencewalk', rk=rk)
+                return redirect('resume:experiencewalk', rk=rk, rq='default', pk=0)
             else:
-                x = Message()
-                x.code = 'danger'
-                x.student = Student.objects.get(user=self.request.user)
-                x.message = "You must add at least one language entry before continuing."
-                x.save()
+                msg = "You must add at least one language entry before continuing."
+                new_message('student', Student.objects.get(user=self.request.user), 'danger', msg)
                 return redirect('resume:languagewalk', rk=rk, rq='continue')
         if rq == 'experience_done':
             resume.is_complete = True
             resume.save()
-            x = Message()
-            x.code = 'info'
-            x.student = Student.objects.get(user=self.request.user)
-            x.message = 'Your resume was successfully created and is ready to be used in an application.'
-            x.save()
-            xx = Message()
-            xx.code = 'info'
-            xx.student = x.student
-            xx.message = 'You can upload a file resume as well by going to edit resume.'
-            xx.save()
-            xxx = Message()
-            xxx.code = 'info'
-            xxx.student = x.student
-            xxx.message = 'Fill in the rest of your resume information (Schools, Languages, Skills, Awards and Work' \
+            student = Student.objects.get(user=self.request.user)
+            msg = 'Your resume was successfully created and is ready to be used in an application.'
+            new_message('student', student, 'info', msg)
+            msg = 'You can upload a file resume as well by going to edit resume.'
+            new_message('student', student, 'info', msg)
+            msg = 'Fill in the rest of your resume information (Schools, Languages, Skills, Awards and Work' \
                           'Experience) with the manage button or on the overview screen.'
-            xxx.save()
+            new_message('student', student, 'info', msg)
         return redirect('resume:index')
 
 
 def linkschool(request, pk, rk):
     school = School.objects.get(pk=pk)
     resume = Resume.objects.get(pk=rk)
-    l = SchoolLink()
-    l.resume = resume
-    l.school = school
-    l.save()
+    if SchoolLink.objects.filter(school=school, resume=resume).count() == 0:
+        create_school_link(school, resume)
+    msg = 'School was successfully added to the resume.'
+    new_message('student', school.student, 'info', msg)
     return redirect('resume:schoollist', rk=rk)
 
 
 def linkaward(request, pk, rk):
     award = Award.objects.get(pk=pk)
     resume = Resume.objects.get(pk=rk)
-    l = AwardLink()
-    l.resume = resume
-    l.award = award
-    l.save()
+    if AwardLink.objects.filter(award=award, resume=resume).count() == 0:
+        create_award_link(award, resume)
+    msg = 'Award was successfully added to the resume.'
+    new_message('student', award.student, 'info', msg)
     return redirect('resume:awardlist', rk=rk)
 
 
 def linkexperience(request, pk, rk):
     experience = Experience.objects.get(pk=pk)
     resume = Resume.objects.get(pk=rk)
-    l = ExperienceLink()
-    l.resume = resume
-    l.experience = experience
-    l.start = experience.start
-    l.save()
+    if ExperienceLink.objects.filter(experience=experience, resume=resume).count() == 0:
+        create_experience_link(experience, resume)
+    msg = 'Experience was successfully added to the resume.'
+    new_message('student', experience.student, 'info', msg)
     return redirect('resume:experiencelist', rk=rk)
 
 
 def linklanguage(request, pk, rk):
     language = Language.objects.get(pk=pk)
     resume = Resume.objects.get(pk=rk)
-    l = LanguageLink()
-    l.resume = resume
-    l.language = language
-    l.save()
+    if LanguageLink.objects.filter(language=language, resume=resume).count() == 0:
+        create_language_link(language, resume)
+    msg = 'Language record was successfully added to the resume.'
+    new_message('student', language.student, 'info', msg)
     return redirect('resume:languagelist', rk=rk)
 
 
 def linkskill(request, pk, rk):
     skill = Skill.objects.get(pk=pk)
     resume = Resume.objects.get(pk=rk)
-    l = SkillLink()
-    l.resume = resume
-    l.skill = skill
-    l.save()
+    if SkillLink.objects.filter(skill=skill, resume=resume).count() == 0:
+        create_skill_link(skill, resume)
+    msg = 'Skill was successfully added to the resume.'
+    new_message('student', skill.student, 'info', msg)
     return redirect('resume:skilllist', rk=rk)

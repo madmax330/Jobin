@@ -35,6 +35,7 @@ class NewResumeForm(forms.ModelForm):
                                       )),
         }
         labels = {
+            'name': 'Resume Name',
             'is_active': 'Make Active Resume'
         }
 
@@ -54,6 +55,10 @@ class LanguageForm(forms.ModelForm):
                                       ('conversational', 'Conversational'),
                                       ('beginner', 'Beginner'),
                                   )),
+        }
+
+        labels = {
+            'name': 'Language Name'
         }
 
 
@@ -83,7 +88,21 @@ class ExperienceForm(forms.ModelForm):
 
         labels = {
             'is_current': 'hide',
+            'start': 'Start (mm/dd/yyyy)',
+            'end': 'End (mm/dd/yyyy)',
         }
+
+    def clean(self):
+        clean_data = super(ExperienceForm, self).clean()
+        end = clean_data.get('end')
+        curr = clean_data.get('is_current')
+        if curr == 'False':
+            if not end:
+                raise forms.ValidationError({'end': "End date must be specified if this isn't your current position."})
+        if end:
+            start = clean_data.get('start')
+            if end < start:
+                raise forms.ValidationError({'start': 'Start date must be before end date.'})
 
 
 class AwardForm(forms.ModelForm):
@@ -97,6 +116,10 @@ class AwardForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
             'description': forms.Textarea(attrs={'class': 'w3-input'}),
             'award_type': forms.TextInput(attrs={'class': 'w3-input'})
+        }
+
+        labels = {
+            'date': 'Date Received (mm/dd/yyyy)',
         }
 
 
@@ -123,8 +146,22 @@ class SchoolForm(forms.ModelForm):
 
         labels = {
             'name': 'School Name',
-            'is_current': 'hide'
+            'is_current': 'hide',
+            'start': 'Start (mm/dd/yyyy)',
+            'end': 'End (mm/dd/yyyy)',
         }
+
+    def clean(self):
+        clean_data = super(SchoolForm, self).clean()
+        end = clean_data.get('end')
+        curr = clean_data.get('is_current')
+        if curr == 'False':
+            if not end:
+                raise forms.ValidationError({'end': "End date must be specified if this isn't your current position."})
+        if end:
+            start = clean_data.get('start')
+            if end < start:
+                raise forms.ValidationError({'start': 'Start date must be before end date.'})
 
 
 class SkillForm(forms.ModelForm):

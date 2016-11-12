@@ -15,10 +15,15 @@ class Company(models.Model):
     email = models.CharField(max_length=100)
     points = models.IntegerField(null=True)
     logo = models.FileField(null=True, blank=True)
-    website = models.CharField(max_length=256, null=True)
+    website = models.CharField(max_length=256, null=True, blank=True)
+    is_new = models.BooleanField(default=True)
+    is_startup = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('company:details', kwargs={'pk': self.pk})
+        if self.is_new:
+            return reverse('company:details', kwargs={'pk': self.pk})
+        else:
+            return reverse('company:index')
 
     def __str__(self):
         return self.name

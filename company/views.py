@@ -2,9 +2,10 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Company
-from home.models import Message, Notification,JobinTerritory
+from home.models import Message, Notification, JobinTerritory
+from home.utils import new_message
 from .forms import NewCompanyForm
-from post.models import Post
+from post.models import Post, Application
 from django.views.generic import View
 import simplejson
 from django.http import HttpResponse
@@ -14,9 +15,28 @@ class IndexView(View):
     template_name = 'company/company_home.html'
 
     def get(self, request):
-        res = Company.objects.filter(user=request.user)
+        user = self.request.user
+        res = Company.objects.filter(user=user)
         if res.count() > 0:
             posts = Post.objects.filter(company=res.first(), status='open')
+            temp = []
+            for x in posts:
+                if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False, status='active').count() > 0:
+                    x.notified = True
+                else:
+                    x.notified = False
+                if Application.objects.filter(post=x, opened=False, status='active').count() > 0:
+                    temp.append(x.title)
+                    x.new_apps = True
+                else:
+                    x.new_apps = False
+                x.save()
+            if len(temp) > 0:
+                msg = 'There are new applications for the following posts: '
+                for x in temp:
+                    msg += x
+                    msg += ', '
+                new_message('company', res.first(), 'info', msg[:-2])
             msgs = Message.objects.filter(company=res.first())
             context = {
                 'company': res.first(),
@@ -54,11 +74,9 @@ class UpdateCompanyView(UpdateView):
 
     def form_valid(self, form):
         company = Company.objects.get(user=self.request.user)
-        x = Message()
-        x.code = 'info'
-        x.message = 'Your profile was successfully updated.'
-        x.company = company
-        x.save()
+        msg = 'Your profile was successfully updated.'
+        new_message('company', company, 'info', msg)
+        return super(UpdateCompanyView, self).form_valid(form)
 
 
 class DetailsView(generic.DetailView):
@@ -67,11 +85,11 @@ class DetailsView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailsView, self).get_context_data(**kwargs)
-        x = Message()
-        x.code = 'info'
-        x.company = Company.objects.get(user=self.request.user)
-        x.message = 'Your profile was successfully created. Welcome to Jobin!'
-        x.save()
+        company = Company.objects.get(user=self.request.user)
+        company.is_new = False
+        company.save()
+        msg = 'Your profile was successfully created. Welcome to Jobin!'
+        new_message('company', company, 'info', msg)
         return context
 
 

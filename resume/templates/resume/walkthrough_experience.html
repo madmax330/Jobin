@@ -9,12 +9,33 @@
     experience before you apply for any jobs with this resume.
 {% endblock %}
 
+{% block side_content %}
+    {% if rcount > 0 %}
+        <div class="w3-container w3-padding-32 w3-col s12 m5">
+            <div class="w3-container w3-indigo">
+                <h5>Add Experience from other resumes:</h5>
+            </div>
+            <div class="w3-container w3-pale-blue">
+                <ul style="margin:0;">
+                    {% for x in items %}
+                        <li style="margin-top:10px;">
+                            <a href="{% url 'resume:experiencewalk' rk=rkey rq='link' pk=x.pk %}">Add {{ x.title }} ({{ x.rname }})</a>
+                        </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block buttons %}
-    <div class="w3-third">
-        <input type="submit" value="Save & Add Another Experience" class="w3-btn w3-light-grey"
-               onclick='this.form.action="{% url 'resume:experiencewalk' rk=rkey %}";'/>
-    </div>
-    <div class="w3-rest">
-        <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn w3-green">Continue</a>
+    <div class="w3-row">
+        <div class="w3-col s6">
+            <input type="submit" value="Save & Add Another Experience" class="w3-btn w3-light-grey"
+                   onclick='this.form.action="{% url 'resume:experiencewalk' rk=rkey rq='default' pk='0'%}";'/>
+        </div>
+        <div class="w3-col s6">
+            <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn w3-green">Continue</a>
+        </div>
     </div>
 {% endblock %}

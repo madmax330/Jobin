@@ -13,10 +13,8 @@
                 </header>
                 {% for x in notifications %}
                     <p>{{ x.message }}</p>
-                    <a href="{% url 'home:closenote' u='student' pk=x.pk %}" class="w3-btn w3-grey">Close</a>
                     <hr/>
                 {% endfor %}
-                <a href="{% url 'home:closeallnotes' u='student' %}" class="w3-btn w3-pale-red" style="width:100%">Close all</a>
             </div>
         </div>
         <div class="w3-col w3-s7">
