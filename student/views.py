@@ -121,6 +121,7 @@ def get_states(request, country_name):
     state_dic = {}
     for state in states:
         state_dic[state.name] = state.name
+    state_dic = sorted(state_dic)
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 def get_states_update(request,pk, country_name):
@@ -128,6 +129,7 @@ def get_states_update(request,pk, country_name):
     state_dic = {}
     for state in states:
         state_dic[state.name] = state.name
+    state_dic = sorted(state_dic)
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
@@ -137,6 +139,7 @@ def get_majors(request, program_id):
     major_dic = {}
     for major in majors:
         major_dic[major.name] = major.name
+    major_dic = sorted(major_dic)
     return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
 
 
@@ -146,4 +149,5 @@ def get_majors_update(request,pk, program_id):
     major_dic = {}
     for major in majors:
         major_dic[major.name] = major.name
+    major_dic = sorted(major_dic)
     return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
