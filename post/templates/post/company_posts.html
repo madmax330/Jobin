@@ -4,27 +4,46 @@
 
 {% block postactive %}active{% endblock %}
 
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+    {% include 'company/post_legend.html' %}
+{% endblock %}
+
 {% block content %}
-    <div class="container">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h4 style="text-align:center">My Posts</h4>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Active Posts</h4>
+        </div>
+        <div class="panel-body">
+            {% if posts.count == 0 %}
+                <div class="alert warning-message">
+                    You currently don't have any posts.
+                    <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
+                    to get started.
                 </div>
-                <div class="panel-body">
-                    {% if posts.count == 0 %}
-                        <div class="alert alert-warning">
-                            <p>
-                                You currently don't have any posts.
-                                <a href="{% url 'post:new' %}"><strong>Create a post</strong></a>
-                                 to get started.
-                            </p>
-                        </div>
-                    {% else %}
-                        {% include 'post/post_list.html' %}
-                    {% endif %}
+            {% else %}
+                {% include 'post/post_list.html' %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Expired Posts</h4>
+        </div>
+        <div class="panel-body">
+            {% if posts.count == 0 %}
+                <div class="alert warning-message">
+                    You currently don't have any posts.
+                    <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
+                    to get started.
                 </div>
-            </div>
+            {% elif expired_posts.count == 0 %}
+                <div class="alert warning-message">
+                    You don't have any expired posts.
+                </div>
+            {% else %}
+                {% include 'post/expired_post_list.html' %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

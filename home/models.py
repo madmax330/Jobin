@@ -18,6 +18,14 @@ class JobinProgram(models.Model):
     def __str__(self):
         return self.name
 
+class JobinInvalidUser(models.Model):
+    name = models.CharField(max_length=100, default='user')
+    user = models.CharField(max_length=100, null=True)
+    category = models.CharField(max_length=100)
+    date = models.DateTimeField(null=True, auto_now_add=True)
+    def __str__(self):
+        return self.user
+
 
 class JobinMajor(models.Model):
     program = models.ForeignKey(JobinProgram, on_delete=models.CASCADE)

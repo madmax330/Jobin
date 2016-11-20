@@ -1,0 +1,30 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Wage</th>
+            <th>Openings</th>
+            <th>Start Date</th>
+            <th>Application Deadline</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in expired_posts %}
+        <tr {% if p.notified %}style="background-color: #c2f9ce"
+            {% elif p.new_apps %}style="background-color: #c9f3fc;"
+            {% endif %}>
+            <td>
+                <a href="{% url 'post:companypost' p.pk %}">
+                    {{ p.title }}
+                </a>
+            </td>
+            <td>{{ p.wage }}</td>
+            <td>{{ p.openings }}</td>
+            <td>{{ p.start_date }}</td>
+            <td>{{ p.deadline }}</td>
+            <td><a href="{% url 'post:reactivate' p.pk %}">Re-activate</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

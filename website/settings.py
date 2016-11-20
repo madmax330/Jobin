@@ -10,6 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = "jobinproject2016@gmail.com"
+EMAIL_HOST_PASSWORD = "In2016JobIn"
+EMAIL_PORT= 587
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -59,6 +66,7 @@ MIDDLEWARE_CLASSES = [
 ]
 
 ROOT_URLCONF = 'website.urls'
+SECURITY_PASSWORD_SALT = 'my_precious_two'
 
 TEMPLATE = [
     {

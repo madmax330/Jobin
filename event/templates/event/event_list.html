@@ -6,11 +6,11 @@
             <th>Active</th>
             <th>Website</th>
             <th></th>
-            <th><a href="{% url 'event:new' %}"><button class="btn btn-success">New Event</button></a></th>
+            <th><a href="{% url 'event:new' %}"><button class="btn new-btn">New Event</button></a></th>
         </tr>
     </thead>
     <tbody>
-    {% for x in list %}
+    {% for x in events %}
         <tr>
             <td>{{ x.title }}</td>
             <td>{{ x.date }} {{ x.time }}</td>

@@ -1,0 +1,22 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date and Time</th>
+            <th>Active</th>
+            <th>Website</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for x in expired_events %}
+        <tr>
+            <td>{{ x.title }}</td>
+            <td>{{ x.date }} {{ x.time }}</td>
+            <td>{{ x.active }}</td>
+            <td>{{ x.website }}</td>
+            <td><a href="{% url 'event:reactivate' pk=x.pk %}">Re-activate</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

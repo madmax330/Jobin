@@ -35,6 +35,7 @@ class NewResumeForm(forms.ModelForm):
                                       )),
         }
         labels = {
+            'name': 'Resume Name',
             'is_active': 'Make Active Resume'
         }
 
@@ -69,8 +70,8 @@ class ExperienceForm(forms.ModelForm):
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'w3-input'}),
-            'start': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
-            'end': forms.DateInput(attrs={'class': 'w3-input w3-third present', 'type': 'date'}),
+            'start': forms.DateInput(attrs={'class': 'w3-input w3-half', 'type': 'date'}),
+            'end': forms.DateInput(attrs={'class': 'w3-input w3-half present', 'type': 'date'}),
             'company': forms.TextInput(attrs={'class': 'w3-input'}),
             'description': forms.Textarea(attrs={'class': 'w3-input'}),
             'experience_type': forms.Select(attrs={'class': 'w3-input w3-half'},
@@ -87,6 +88,8 @@ class ExperienceForm(forms.ModelForm):
 
         labels = {
             'is_current': 'hide',
+            'start': 'Start (mm/dd/yyyy)',
+            'end': 'End (mm/dd/yyyy)',
         }
 
     def clean(self):
@@ -110,9 +113,13 @@ class AwardForm(forms.ModelForm):
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'w3-input'}),
-            'date': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
+            'date': forms.DateInput(attrs={'class': 'w3-input w3-half', 'type': 'date'}),
             'description': forms.Textarea(attrs={'class': 'w3-input'}),
             'award_type': forms.TextInput(attrs={'class': 'w3-input'})
+        }
+
+        labels = {
+            'date': 'Date Received (mm/dd/yyyy)',
         }
 
 
@@ -125,8 +132,8 @@ class SchoolForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w3-input'}),
             'program': forms.TextInput(attrs={'class': 'w3-input'}),
-            'start': forms.DateInput(attrs={'class': 'w3-input w3-third', 'type': 'date'}),
-            'end': forms.DateInput(attrs={'class': 'w3-input w3-third present', 'type': 'date'}),
+            'start': forms.DateInput(attrs={'class': 'w3-input w3-half', 'type': 'date'}),
+            'end': forms.DateInput(attrs={'class': 'w3-input w3-half present', 'type': 'date'}),
             'level': forms.Select(attrs={'class': 'w3-input w3-half'},
                                   choices=(
                                       ('university', 'University'),
@@ -139,7 +146,9 @@ class SchoolForm(forms.ModelForm):
 
         labels = {
             'name': 'School Name',
-            'is_current': 'hide'
+            'is_current': 'hide',
+            'start': 'Start (mm/dd/yyyy)',
+            'end': 'End (mm/dd/yyyy)',
         }
 
     def clean(self):

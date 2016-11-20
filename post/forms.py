@@ -1,6 +1,7 @@
 from django import forms
 from .models import Post
 from home.models import JobinProgram
+import datetime
 
 
 class NewPostForm(forms.ModelForm):
@@ -31,9 +32,11 @@ class NewPostForm(forms.ModelForm):
             'cover_instructions': forms.Textarea(attrs={'class': 'form-control'})
         }
         labels = {
-            'deadline': 'Application Deadline',
+            'deadline': 'Application Deadline (mm/dd/yyyy)',
             'wage': 'Wage $/hr',
-            'cover_instructions': 'Enter some instructions for the cover letter here'
+            'cover_instructions': 'Enter some instructions for the cover letter here',
+            'start_date': 'Start Date (mm/dd/yyyy)',
+            'end_date': 'End Date (mm/dd/yyyy)',
         }
 
     def clean(self):
@@ -41,6 +44,9 @@ class NewPostForm(forms.ModelForm):
         start = clean_data.get('start_date')
         end = clean_data.get('end_date')
         dead = clean_data.get('deadline')
+        today = datetime.datetime.now().date()
+        if (start < today) or (dead < today):
+            raise forms.ValidationError({'start_date': "The start and deadline date cannot be before today's date."})
         if end:
             if end < start:
                 raise forms.ValidationError({'start_date': 'The start date must be before end date.'})

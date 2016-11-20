@@ -2,8 +2,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import View
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
-from home.models import Message
-from home.utils import new_message
+from home.utils import new_message, get_notifications, get_messages
 from post.models import Application
 from .forms import ResumeForm, LanguageForm, ExperienceForm, AwardForm, SchoolForm, SkillForm, NewResumeForm
 from django.core.exceptions import ObjectDoesNotExist
@@ -17,15 +16,18 @@ class IndexView(View):
     def get(self, request):
         try:
             student = Student.objects.get(user=self.request.user)
-            msgs = Message.objects.filter(student=student)
+            msgs = get_messages('student', student)
+            notes = get_notifications('student', student)
             l = Resume.objects.filter(student=student, status='open')
             for x in l:
                 if SchoolLink.objects.filter(resume=x).count() == 0 or LanguageLink.objects.filter(resume=x).count() == 0:
                     x.is_complete = False
                     x.save()
             context = {
+                'nav_student': student,
+                'notifications': notes,
                 'list': l,
-                'msgs': msgs
+                'msgs': msgs,
             }
             for x in msgs:
                 x.delete()
@@ -45,6 +47,7 @@ class ResumeDetailView(View):
         skills = get_skills(resume)
         awards = get_awards(resume)
         context = {
+            'nav_student': resume.student,
             'resume': resume,
             'languages': languages,
             'schools': schools,
@@ -68,11 +71,12 @@ class NewResumeView(CreateView):
             new_message('student', s, 'info', msg)
             s.is_new = False
             s.save()
-        msgs = Message.objects.filter(student=s)
+        msgs = get_messages('student', s)
         rs = Resume.objects.filter(student=s)
         context['msgs'] = msgs
         context['rs'] = rs
         context['rcount'] = rs.count()
+        context['nav_student'] = s
         for x in msgs:
             x.delete()
         return context
@@ -125,6 +129,12 @@ def copyresume(request, rk):
 class ResumeUpdateView(UpdateView):
     model = Resume
     form_class = ResumeForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ResumeUpdateView, self).get_context_data(**kwargs)
+        student = Student.objects.get(user=self.request.user)
+        context['nav_student'] = student
+        return context
 
     def form_valid(self, form):
         resume = form.save(commit=False)
@@ -218,7 +228,7 @@ class LanguageList(View):
     def get(self, request, rk):
         resume = Resume.objects.get(pk=rk)
         ll = LanguageLink.objects.filter(resume=resume)
-        msgs = Message.objects.filter(student=resume.student)
+        msgs = get_messages('student', resume.student)
         languages = []
         for x in ll:
             languages.append(x.language)
@@ -290,7 +300,7 @@ class ExperienceList(View):
     def get(self, request, rk):
         resume = Resume.objects.get(pk=rk)
         el = ExperienceLink.objects.filter(resume=resume)
-        msgs = Message.objects.filter(student=resume.student)
+        msgs = get_messages('student', resume.student)
         experience = []
         for x in el:
             experience.append(x.experience)
@@ -368,7 +378,7 @@ class AwardList(View):
     def get(self, request, rk):
         resume = Resume.objects.get(pk=rk)
         al = AwardLink.objects.filter(resume=resume)
-        msgs = Message.objects.filter(student=resume.student)
+        msgs = get_messages('student', resume.student)
         awards = []
         for x in al:
             awards.append(x.award)
@@ -446,7 +456,7 @@ class SchoolList(View):
     def get(self, request, rk):
         resume = Resume.objects.get(pk=rk)
         sl = SchoolLink.objects.filter(resume=resume)
-        msgs = Message.objects.filter(student=resume.student)
+        msgs = get_messages('student', resume.student)
         schools = []
         for x in sl:
             schools.append(x.school)
@@ -524,7 +534,7 @@ class SkillList(View):
     def get(self, request, rk):
         resume = Resume.objects.get(pk=rk)
         sl = SkillLink.objects.filter(resume=resume)
-        msgs = Message.objects.filter(student=resume.student)
+        msgs = get_messages('student', resume.student)
         skills = []
         for x in sl:
             skills.append(x.skill)
@@ -597,11 +607,12 @@ class FirstSchoolWalkthrough(View):
         sch.name = student.school
         sch.program = student.program
         form = self.form_class(instance=sch)
-        msgs = Message.objects.filter(student=student)
+        msgs = get_messages('student', student)
         context = {
             'form': form,
             'rkey': rk,
             'msgs': msgs,
+            'nav_student': student,
         }
         for x in msgs:
             x.delete()
@@ -631,12 +642,15 @@ class SchoolWalkthrough(View):
     form_class = SchoolForm
 
     def get(self, request, rk, rq):
+        student = Student.objects.get(user=self.request.user)
+        res = Resume.objects.get(pk=rk)
         form = self.form_class(None)
-        msgs = Message.objects.filter(student=Student.objects.get(user=self.request.user))
+        msgs = get_messages('student', student)
         context = {
             'form': form,
             'rkey': rk,
             'msgs': msgs,
+            'nav_student': res.student,
         }
         for x in msgs:
             x.delete()
@@ -668,12 +682,15 @@ class LanguageWalkthrough(View):
     form_class = LanguageForm
 
     def get(self, request, rk, rq):
+        student = Student.objects.filter(user=self.request.user)
+        res = Resume.objects.get(pk=rk)
         form = self.form_class(None)
-        msgs = Message.objects.filter(student=Student.objects.get(user=self.request.user))
+        msgs = get_messages('student', student)
         context = {
             'form': form,
             'rkey': rk,
             'msgs': msgs,
+            'nav_student': res.student,
         }
         for x in msgs:
             x.delete()
@@ -706,11 +723,12 @@ class ExperienceWalkthrough(View):
     form_class = ExperienceForm
 
     def get(self, request, rk, rq, pk):
+        student = Student.objects.get(user=self.request.user)
         resume = Resume.objects.get(pk=rk)
         if rq == 'link':
             create_experience_link(Experience.objects.get(pk=pk), resume)
         form = self.form_class(None)
-        msgs = Message.objects.filter(student=Student.objects.get(user=self.request.user))
+        msgs = get_messages('student', student)
         items = get_other_experience(resume)
         context = {
             'form': form,
@@ -718,6 +736,7 @@ class ExperienceWalkthrough(View):
             'msgs': msgs,
             'items': items,
             'rcount': len(items),
+            'nav_student': resume.student,
         }
         for x in msgs:
             x.delete()

@@ -3,12 +3,12 @@
         <div class="col-md-offset-2 col-md-10">
             <span class="text-danger">{{ field.errors }}</span>
         </div>
-        <label class="control-label col-md-2">
+        <label class="control-label col-md-3">
             {{ field.label_tag }}{% if field.field.required %} * {% endif %}
         </label>
-        <div class="col-md-6">
+        <div class="col-md-7">
             {{ field }}
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-2"></div>
     </div>
 {% endfor %}
