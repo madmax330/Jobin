@@ -10,11 +10,9 @@
 {% endblock %}
 
 {% block buttons %}
-    <div class="w3-rest">
-        <input type="submit" value="Save & Add Another School" class="w3-btn w3-light-grey"
-               onclick='this.form.action="{% url 'resume:schoolwalk' rk=rkey rq='new' %}";'/>
-        <button type="submit" class="w3-btn w3-green">Save & Continue</button>
-    </div>
+    <input type="submit" value="Save & Add Another School" class="w3-btn regular-btn"
+           onclick='this.form.action="{% url 'resume:schoolwalk' rk=rkey rq='new' %}";'/>
+    <button type="submit" class="w3-btn submit-btn">Save & Continue</button>
 {% endblock %}
 
 {% block hiddenblock %}

@@ -11,11 +11,11 @@
 
 {% block side_content %}
     {% if rcount > 0 %}
-        <div class="w3-container w3-padding-32 w3-col s12 m5">
-            <div class="w3-container w3-indigo">
+        <div class="w3-container w3-padding-32 w3-col s12 m12">
+            <div class="w3-container title-color w3-text-white">
                 <h5>Add Experience from other resumes:</h5>
             </div>
-            <div class="w3-container w3-pale-blue">
+            <div class="w3-container resume-other-items-background">
                 <ul style="margin:0;">
                     {% for x in items %}
                         <li style="margin-top:10px;">
@@ -29,13 +29,7 @@
 {% endblock %}
 
 {% block buttons %}
-    <div class="w3-row">
-        <div class="w3-col s6">
-            <input type="submit" value="Save & Add Another Experience" class="w3-btn w3-light-grey"
-                   onclick='this.form.action="{% url 'resume:experiencewalk' rk=rkey rq='default' pk='0'%}";'/>
-        </div>
-        <div class="w3-col s6">
-            <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn w3-green">Continue</a>
-        </div>
-    </div>
+    <input type="submit" value="Save & Add Another Experience" class="w3-btn regular-btn"
+           onclick='this.form.action="{% url 'resume:experiencewalk' rk=rkey rq='default' pk='0'%}";'/>
+    <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn submit-btn">Continue</a>
 {% endblock %}

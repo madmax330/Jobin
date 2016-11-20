@@ -8,29 +8,17 @@
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'student/style.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,700" rel="stylesheet">
     {% block styles %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{% static 'student/genscript.js' %}"></script>
     <script type="text/javascript" src="{% static 'student/DynamicHtmlScript.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/resize_script.js' %}"></script>
 </head>
 <body>
-    <nav class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:300px;" id="mySidenav">
-        <header class="w3-container w3-blue">
-            <h1>Menu</h1>
-        </header>
-        <a href="javascript:void(0)" onclick="w3_close()"
-        class="w3-closenav w3-large w3-hide-large">Close &times;</a>
-        <a class="{% block homeactive %}{% endblock %}" href="{% url 'student:index' %}">Home</a>
-        <a class="{% block postsactive %}{% endblock %}" href="{% url 'post:studentposts' pk=0 pt='internship'%}">Posts</a>
-        <a class="{% block eventsactive %}{% endblock %}" href="{% url 'event:studentevents' pk=0%}">Events</a>
-        <a class="{% block resumesactive %}{% endblock %}" href="{% url 'resume:index' %}">Resumes</a>
-        <a class="{% block activityactive %}{% endblock %}" href="{% url 'student:activity' %}">Activity</a>
-        <a class="{% block profileactive %}{% endblock %}" href="{% url 'student:profile' %}">Profile</a>
 
-    </nav>
-
-    <div class="w3-main" style="margin-left:300px">
-        <header class="w3-container w3-blue">
+    <div class="w3-main">
+        <header class="w3-container header-color w3-text-white">
             <div class="w3-row">
                 <div class="w3-col s10">
                     <span class="w3-opennav w3-xlarge w3-hide-large" onclick="w3_open()">&#9776;</span>
@@ -43,40 +31,99 @@
                 </div>
             </div>
         </header>
-        <div class="w3-container" style="position:relative">
-            {% for x in msgs %}
-                {% if x.code == 'danger' %}
-                    <div class="w3-pale-red  w3-leftbar w3-border-red message">
-                        <span class="w3-text-red">{{ x.message }}</span>
-                    </div>
-                {% elif x.code == 'warning' %}
-                    <div class="w3-pale-yellow  w3-leftbar w3-border-yellow message">
-                        <span class="w3-text-yellow">{{ x.message }}</span>
-                    </div>
-                {% else %}
-                    <div class="w3-pale-blue  w3-leftbar w3-border-blue message">
-                        <span class="w3-text-blue">{{ x.message }}</span>
+        <div class="w3-padding-16 w3-row" style="position:relative">
+            <div id="navCol" class="w3-col s12 m12 l3" style="height: inherit;">
+                <nav class="w3-sidenav w3-collapse w3-white w3-card-2" style="width:100%;" id="mySidenav">
+                    <header class="w3-container header-color w3-text-white">
+                        <h1>Menu</h1>
+                    </header>
+                    <a href="javascript:void(0)" onclick="w3_close()"
+                    class="w3-closenav w3-large w3-hide-large">Close &times;</a>
+                    <a class="{% block homeactive %}{% endblock %}" href="{% url 'student:index' %}">Home</a>
+                    <a class="{% block postsactive %}{% endblock %}" href="{% url 'post:studentposts' pk=0 pt='internship'%}">Posts</a>
+                    <a class="{% block eventsactive %}{% endblock %}" href="{% url 'event:studentevents' pk=0%}">Events</a>
+                    <a class="{% block resumesactive %}{% endblock %}" href="{% url 'resume:index' %}">Resumes</a>
+                    <a class="{% block historyactive %}{% endblock %}" href="{% url 'student:history' %}">History</a>
+                    <a class="{% block profileactive %}{% endblock %}" href="{% url 'student:profile' %}">Profile</a>
+                </nav>
+                <div class="w3-padding-8">
+                    {% if notifications %}
+                        <div class="w3-card-2 w3-white">
+                            <header class="w3-container title-color">
+                                <h4 class="w3-text-white">Notifications ({{ notifications.count }})</h4>
+                            </header>
+                            {% for x in notifications %}
+                                <div class="notifications-background w3-container">
+                                    <a href="{% url 'home:closenote' u='student' pk=x.pk %}">x</a>
+                                    <p>{{ x.message }}</p>
+                                </div>
+                            {% endfor %}
+                            <a href="{% url 'home:closeallnotes' u='student' %}"
+                               class="w3-btn note-close-btn" style="width:100%;">Close all</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="w3-padding-8">
+                    {% if nav_student %}
+                        <div class="w3-card-2 w3-white">
+                            <header class="w3-container title-color">
+                                <h3 class="w3-text-white">Student Information</h3>
+                            </header>
+                            <div class="w3-container">
+                                <label>First Name:</label><span> {{ nav_student.firstname }}</span><br/>
+                                <label>Last Name:</label><span> {{ nav_student.lastname }}</span><br/>
+                                <label>Date of Birth:</label><span> {{ nav_student.dob }}</span><br/>
+                                <label>School:</label><span>{{ nav_student.school }}</span><br/>
+                                <label>Program:</label><span>{{ nav_student.program }}</span><br/>
+                                <label>Major:</label><span>{{ nav_student.major }}</span><br/>
+                                <label>Phone:</label><span>{{ nav_student.phone }}</span><br/>
+                                <label>Email:</label><span>{{ nav_student.email }}</span><br/>
+                                <label>Address:</label>
+                                <p>{{ nav_student.address }}, {{ nav_student.city }},
+                                    {{ nav_student.state }}, {{ nav_student.zipcode }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="bodyCol" class="w3-col s12 m12 l9">
+                {% if msgs %}
+                    <div class="w3-container">
+                        {% for x in msgs %}
+                            {% if x.code == 'danger' %}
+                                <div class="danger-message message">
+                                    <span class="w3-text-red">{{ x.message }}</span>
+                                </div>
+                            {% elif x.code == 'warning' %}
+                                <div class="warning-message message">
+                                    <span class="w3-text-yellow">{{ x.message }}</span>
+                                </div>
+                            {% else %}
+                                <div class="info-message message">
+                                    <span>{{ x.message }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 {% endif %}
-            {% endfor %}
-            {% block content %}
-            {% endblock %}
+                {% block content %}{% endblock %}
+                <div class="w3-container" style="width:100%;">
+                    <div class="w3-container w3-padding-16 warning-container hide">
+                    </div>
+                </div>
+            </div>
         </div>
-        {% block warning %}
-        {% endblock %}
-        <footer class="w3-container w3-blue">
+        <footer class="w3-container header-color w3-text-white">
             <h5>Footer</h5>
-            <p>This platform is brought to you by Jobin Solutions. Your use of the platform confirms your consent to
-            our <a href="">Terms and Conditions</a> and our <a href="">Privacy Policy</a></p>
+            <p>This platform is brought to you by Jobin Solutions. Your use of the platform confirms that you are in
+                agreement with our <a href="">Terms and Conditions</a> and our <a href="">Privacy Policy</a>.</p>
         </footer>
     </div>
+
 
 <script>
 function w3_open() {
     document.getElementById("mySidenav").style.display = "block";
-}
-function w3_close() {
-    document.getElementById("mySidenav").style.display = "none";
 }
 function w3_close() {
     document.getElementById("mySidenav").style.display = "none";

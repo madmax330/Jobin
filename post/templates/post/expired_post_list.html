@@ -7,11 +7,10 @@
             <th>Start Date</th>
             <th>Application Deadline</th>
             <th></th>
-            <th><a href="{% url 'post:new' %}"><button class="btn new-btn">New Post</button></a></th>
         </tr>
     </thead>
     <tbody>
-    {% for p in posts %}
+    {% for p in expired_posts %}
         <tr {% if p.notified %}style="background-color: #c2f9ce"
             {% elif p.new_apps %}style="background-color: #c9f3fc;"
             {% endif %}>
@@ -24,8 +23,7 @@
             <td>{{ p.openings }}</td>
             <td>{{ p.start_date }}</td>
             <td>{{ p.deadline }}</td>
-            <td><a href="{% url 'post:applicants' p.pk %}">Applicants</a></td>
-            <td><a href="{% url 'post:update' p.pk %}">Edit</a></td>
+            <td><a href="{% url 'post:reactivate' p.pk %}">Re-activate</a></td>
         </tr>
     {% endfor %}
     </tbody>

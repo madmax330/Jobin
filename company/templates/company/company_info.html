@@ -1,0 +1,19 @@
+{% if company %}
+    <div class="row">
+        <div class="col-sm-4">
+            Logo area
+        </div>
+        <div class="col-sm-8">
+            <h3>{{ company.name }}</h3>
+        </div>
+    </div>
+    <hr/>
+    <label>Email: </label><label>{{ company.email }}</label><br/>
+    <label>Phone: </label><label>{{ company.phone }}</label><br/>
+    <label>Address: </label><br/>
+    <label>
+        {{ company.address }}, {{ company.city }},
+        {{ company.state }}, {{ company.zipcode }}
+    </label><br/>
+    <label>Website: </label><label>{{ company.website }}</label>
+{% endif %}

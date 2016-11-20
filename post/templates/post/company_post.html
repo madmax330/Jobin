@@ -4,11 +4,43 @@
 
 {% block postactive %}active{% endblock %}
 
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align: center;color: white">Applicants</h4>
+        </div>
+        <div class="panel-body">
+            <a class="btn regular-btn btn-block"
+               href="{% url 'post:applicants' pk=post.pk%}">View Post Applicants ({{ count }})</a>
+            <table class="table margined">
+                <tr>
+                    <th>Name</th>
+                    <th>School</th>
+                    <th>Date Applied</th>
+                </tr>
+                {% for x in applicants %}
+                    <tr {% if x.cover_opened %} style="background-color: #96beff;"
+                    {% elif x.cover_submitted %} style="background-color: #c2f9ce"
+                    {% elif x.cover_requested %} style="background-color: #fdffb2;"
+                    {% endif %}>
+                        <td>{{ x.fname }} {{ x.lname }}</td>
+                        <td>{{ x.school }}</td>
+                        <td>{{ x.date_applied }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% include 'company/applicant_legend.html' %}
+{% endblock %}
+
 {% block content %}
-    <div class="row">
-        <div class="col-md-7">
-            <h3>{{ post.title }}</h3>
-            <hr/>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4>{{ post.title }}</h4>
+        </div>
+        <div class="panel-body">
             <label>Post Status:</label><span> {{ post.status }}</span>
             <a style="color: red;" href="#" class="warning-open">Close Post</a>
             <div class="warning alert alert-warning hidden">
@@ -16,8 +48,8 @@
                 <hr/>
                 <p>This will permanently delete this post and close all remaining applications.<br/>
                 <b>Note:</b> posts are closed automatically when the start date is reached.</p>
-                <button class="warning-close btn btn-default" type="button">Cancel</button>
-                <a class="btn btn-danger" href="{% url 'post:close' post.pk %}">Close Post</a>
+                <button class="warning-close btn regular-btn" type="button">Cancel</button>
+                <a class="btn danger-btn" href="{% url 'post:close' post.pk %}">Close Post</a>
             </div>
             <br/>
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
@@ -29,43 +61,8 @@
             <label>Requirements: </label><p>{{ post.requirements }}</p>
             <label>Schools: </label><p>{{ post.schools }}</p>
             <label>Programs: </label><p>{{ post.programs }}</p>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h4 style="text-align: center;color: white">Applicants</h4>
-                </div>
-                <div class="panel-body">
-                    <a class="btn btn-default col-md-12" style="margin-bottom: 10px;"
-                       href="{% url 'post:applicants' pk=post.pk%}">View Post Applicants ({{ count }})</a>
-                    <table class="table">
-                        <tr>
-                            <th>Name</th>
-                            <th>School</th>
-                            <th>Date Applied</th>
-                        </tr>
-                        {% for x in applicants %}
-                            <tr {% if x.cover_opened %} style="background-color: #96beff;"
-                                {% elif x.cover_submitted %} style="background-color: #c2f9ce"
-                                {% elif x.cover_requested %} style="background-color: #fdffb2;"
-                                {% endif %}>
-                                <td>{{ x.fname }} {{ x.lname }}</td>
-                                <td>{{ x.school }}</td>
-                                <td>{{ x.date_applied }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <a class="btn btn-default" href="{% url 'post:update' pk=post.pk %}">Edit</a>
-        </div>
-        <div class="col-md-9">
-            <a class="btn btn-default" href="{% url 'post:companyposts' %}">Back to list</a>
+            <a class="btn regular-btn" href="{% url 'post:companyposts' %}">Back to list</a>
+            <a class="btn regular-btn" href="{% url 'post:update' pk=post.pk %}">Edit</a>
         </div>
     </div>
 {% endblock %}

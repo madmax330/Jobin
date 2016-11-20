@@ -2,8 +2,9 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Company
-from home.models import Message, Notification, JobinTerritory
-from home.utils import new_message
+from event.models import Event
+from home.models import JobinTerritory
+from home.utils import new_message, get_notifications, get_messages
 from .forms import NewCompanyForm
 from post.models import Post, Application
 from django.views.generic import View
@@ -37,12 +38,14 @@ class IndexView(View):
                     msg += x
                     msg += ', '
                 new_message('company', res.first(), 'info', msg[:-2])
-            msgs = Message.objects.filter(company=res.first())
+            msgs = get_messages('company', res.first())
+            events = Event.objects.filter(company=res.first(), active=True)
             context = {
                 'company': res.first(),
                 'posts': posts,
+                'events': events,
                 'msgs': msgs,
-                'notifications': Notification.objects.filter(company=res.first()).filter(opened=False),
+                'notifications': get_notifications('company', res.first()),
             }
             for x in msgs:
                 x.delete()

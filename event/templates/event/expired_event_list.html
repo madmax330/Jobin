@@ -6,18 +6,16 @@
             <th>Active</th>
             <th>Website</th>
             <th></th>
-            <th><a href="{% url 'event:new' %}"><button class="btn new-btn">New Event</button></a></th>
         </tr>
     </thead>
     <tbody>
-    {% for x in events %}
+    {% for x in expired_events %}
         <tr>
             <td>{{ x.title }}</td>
             <td>{{ x.date }} {{ x.time }}</td>
             <td>{{ x.active }}</td>
             <td>{{ x.website }}</td>
-            <td><a href="{% url 'event:companyevent' pk=x.pk %}">Details</a></td>
-            <td><a href="{% url 'event:update' pk=x.pk %}">Edit</a></td>
+            <td><a href="{% url 'event:reactivate' pk=x.pk %}">Re-activate</a></td>
         </tr>
     {% endfor %}
     </tbody>

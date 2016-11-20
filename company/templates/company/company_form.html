@@ -4,37 +4,47 @@
 
 {% block profileactive %}active{% endblock %}
 
-{% block content %}
-    <div class="alert alert-info">
-        <h4>Welcome to Jobin!</h4>
-        <hr/>
-        <ul>
-            <li>Please fill out your company info, as it will be displayed
-            to other candidates when viewing your posts.</li>
-            <li><strong>Note:</strong>Your email and phone number will remain
-            confidential to ensure that you do not receive any spam.</li>
-            <li>Thank you, and have fun using Jobin!</li>
-        </ul>
-    </div>
-    <div class="panel panel-primary">
+{% block side_content %}
+    <div class="panel panel-default secondary-panel">
         <div class="panel-heading">
-            Company Information Form
+            <h4 style="text-align: center">Note</h4>
+        </div>
+        <div class="panel-body">
+            The information in this form helps us identify you as a company,
+            please make sure to only provide accurate information. Thank you.
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if not update %}
+        <div class="alert info-message">
+            <h4>Welcome to Jobin!</h4>
+            <hr/>
+            <ul>
+                <li>Please fill out your company info, as it will be displayed
+                to other candidates when viewing your posts.</li>
+                <li><strong>Note:</strong>Your email and phone number will remain
+                confidential to ensure that you do not receive any spam.</li>
+                <li>Thank you, and have fun using Jobin!</li>
+            </ul>
+        </div>
+    {% endif %}
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4>Company Information Form</h4>
         </div>
         <div class="panel-body">
             <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include 'company/form_template.html' %}
                 {% if update %}
-                    <div class="col-md-2">
-                        <a href="javascript:history.back()" class="btn btn-default">Cancel</a>
-                    </div>
-                    <div class="col-md-10">
-                        <button class="btn btn-primary" type="submit">Submit</button>
+                    <div class="margined">
+                        <a href="javascript:history.back()" class="btn regular-btn">Cancel</a>
+                        <button class="btn submit-btn" type="submit">Submit</button>
                     </div>
                 {% else %}
-                    <div class="col-md-offset-2 col-md-10">
-                        <button class="btn btn-primary" type="submit">Submit</button>
-                    </div>
+                    <button class="btn submit-btn" type="submit">Submit</button>
                 {% endif %}
             </form>
         </div>

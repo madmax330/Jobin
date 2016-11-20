@@ -6,45 +6,9 @@
 
 {% block content %}
     <div class="w3-row">
-        <div class="w3-col s4">
-            <div class="w3-container w3-padding-16">
-            {% if notifications %}
-                <div class="w3-card-4 w3-white">
-                    <header>
-                        <h4 class="w3-center">Notifications ({{ notifications.count }})</h4>
-                    </header>
-                {% for x in notifications %}
-                    <div class="w3-pale-blue w3-text-blue w3-border-blue w3-border-top w3-container w3-pale-blue">
-                        <a href="{% url 'home:closenote' u='student' pk=x.pk %}" class="w3-text-blue">x</a>
-                        <p>{{ x.message }}</p>
-                    </div>
-                {% endfor %}
-                <a href="{% url 'home:closeallnotes' u='student' %}" class="w3-btn w3-red w3-text-white" style="width:100%;">Close all</a>
-                </div>
-            {% endif %}
-                <div class="w3-card-4 w3-white">
-                    <header class="w3-container w3-dark-grey">
-                        <h3 class="w3-center">Student Information</h3>
-                    </header>
-                    <div class="w3-container">
-                        <label>First Name:</label><span> {{ student.firstname }}</span><br/>
-                        <label>Last Name:</label><span> {{ student.lastname }}</span><br/>
-                        <label>Date of Birth:</label><span> {{ student.dob }}</span><br/>
-                        <label>School:</label><span>{{ student.school }}</span><br/>
-                        <label>Program:</label><span>{{ student.program }}</span><br/>
-                        <label>Major:</label><span>{{ student.major }}</span><br/>
-                        <label>Phone:</label><span>{{ student.phone }}</span><br/>
-                        <label>Email:</label><span>{{ student.email }}</span><br/>
-                        <label>Address:</label>
-                        <p>{{ student.address }}, {{ student.city }},
-                            {{ student.state }}, {{ student.zipcode }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="w3-col s8">
-            <div class="w3-container w3-padding-16">
-                <h4 style="margin:0;" class="w3-dark-grey w3-center w3-padding-8">Active Applications</h4>
+        <div class="w3-col s12 m12 l12">
+            <div class="w3-container">
+                <h4 style="margin:0;" class="title-color w3-center w3-padding-8 w3-text-white">Active Applications</h4>
                 {% if apps.count == 0 %}
                     <div class="w3-container w3-orange">
                         You currently have no active applications. <a href="{% url 'post:studentposts' pk=0 pt='internship'%}">Browse the posts</a> to apply.
@@ -66,9 +30,8 @@
                     </table>
                 {% endif %}
             </div>
-
             <div class="w3-container w3-padding-16">
-                <h4 style="margin:0;" class="w3-dark-grey w3-center w3-padding-8">Interested Events</h4>
+                <h4 style="margin:0;" class="title-color w3-center w3-padding-8 w3-text-white">Interested Events</h4>
                 {% if events.count == 0 %}
                     <div class="w3-container w3-orange">
                         You currently have shown no interest in any events. <a href="{% url 'event:studentevents' pk=0 %}">Browse the events</a> to see which ones interest you.

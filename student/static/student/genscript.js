@@ -39,11 +39,15 @@ $(function(){
     });
 
     $('.warning-open').click(function(){
-       $(this).siblings('.warning').show();
+        var w = $('#bodyCol').width();
+        var warn = $('.warning-container');
+        warn.html($(this).siblings('.warning').html());
+        warn.css('width', (w-32)+'px');
+        warn.show();
     });
 
-    $('.warning-close').click(function(){
-        $(this).parent().hide();
+    $('#bodyCol').on('click', '.warning-close', function(){
+        $('.warning-container').hide();
     });
 
 });
