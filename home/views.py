@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group , User
+from django.contrib.auth.models import Group, User
 from .forms import NewUserForm
 from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail,JobinInvalidUser
 from student.models import Student
@@ -14,7 +14,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-request = HttpRequest()
+
+#request = HttpRequest()
 class IndexView(View):
     template_name = 'home/home.html'
 
@@ -67,44 +68,59 @@ class RegisterView(View):
             user.set_password(password)
             user.save()
 
+            if utype == 'company':
+                g = Group.objects.get(name='company_user')
+                g.user_set.add(user)
+                return redirect('home:index')
+            elif utype == 'student':
+                g = Group.objects.get(name='student_user')
+                g.user_set.add(user)
+                ext = user.email.split('@', 1)[1]
+                ems = JobinSchool.objects.filter(email=ext.lower())
+                if ems.count() == 0:
+                    x = JobinRequestedEmail()
+                    x.extension = ext.lower()
+                    x.save()
+                return redirect('home:index')
+        return render(request, self.template_name, {'form': form})
 
             #Temp user create
-            temp_user =  JobinInvalidUser()
+            #temp_user =  JobinInvalidUser()
 
-            if utype == 'company':
-                temp_user.user = user
-                temp_user.category = 'company'
-                temp_user.date = datetime.now()
-                temp_user.save()
-                token = generate_confirmation_token(user.email)
-                url = request.build_absolute_uri()
-                confirm_url = url + 'confirm_email/' + token
-                html = render_to_string('home/active.html', {'confirm_url': confirm_url})
-                text_content = strip_tags(html)
-                subject = "Please confirm your email"
-                send_email(user.email, subject, html, text_content)
-                g = Group.objects.get(name='unvalid_user')
-                g.user_set.add(user)
+            #if utype == 'company':
+             #   temp_user.user = user
+              #  temp_user.category = 'company'
+               # temp_user.date = datetime.now()
+                #temp_user.save()
+                #token = generate_confirmation_token(user.email)
+                #url = request.build_absolute_uri()
+                #confirm_url = url + 'confirm_email/' + token
+                #html = render_to_string('home/active.html', {'confirm_url': confirm_url})
+                #text_content = strip_tags(html)
+                #subject = "Please confirm your email"
+                #send_email(user.email, subject, html, text_content)
+                #g = Group.objects.get(name='invalid_user')
+                #g.user_set.add(user)
 
-            elif utype == 'student':
-                temp_user.user = user
-                temp_user.category ='student'
-                temp_user.date = datetime.now()
-                temp_user.save()
-                token = generate_confirmation_token(user.email)
-                url = request.build_absolute_uri()
-                confirm_url = url + 'confirm_email/' + token
-                html = render_to_string('home/active.html', {'confirm_url': confirm_url})
-                text_content = strip_tags(html)
-                subject = "Please confirm your email"
-                send_email(user.email, subject, html,text_content )
-                g = Group.objects.get(name='unvalid_user')
-                g.user_set.add(user)
+            #elif utype == 'student':
+             #   temp_user.user = user
+              #  temp_user.category ='student'
+               # temp_user.date = datetime.now()
+                #temp_user.save()
+                #token = generate_confirmation_token(user.email)
+                #url = request.build_absolute_uri()
+                #confirm_url = url + 'confirm_email/' + token
+                #html = render_to_string('home/active.html', {'confirm_url': confirm_url})
+                #text_content = strip_tags(html)
+                #subject = "Please confirm your email"
+                #send_email(user.email, subject, html,text_content )
+                #g = Group.objects.get(name='invalid_user')
+                #g.user_set.add(user)
 
-            else:
-                return redirect('home:index')
-            return redirect('home:verify')
-        return render(request, self.template_name, {'form': form})
+            #else:
+             #   return redirect('home:index')
+            #return redirect('home:verify')
+
 
 
 class ChangeUserInfo(View):
@@ -273,7 +289,7 @@ def confirm_email(request,token):
         infos = 'The confirmation link is invalid or has expired.'
         return redirect('home:invalid_user', Infos=infos)
     user_auth = User.objects.get(username=email)
-    if not user_auth.groups.filter(name='unvalid_user').exists():
+    if not user_auth.groups.filter(name='invalid_user').exists():
         infos = 'Account already confirmed. Please login.'
         return redirect('home:invalid_user', Infos=infos)
     else:
@@ -281,7 +297,7 @@ def confirm_email(request,token):
         try:
           user = JobinInvalidUser.objects.get(user=email)
         except:
-            infos = 'User ncannot be found!'
+            infos = 'User cannot be found!'
             return redirect('home:invalid_user', Infos=infos)
 
         if user.category == 'company':
@@ -296,7 +312,7 @@ def confirm_email(request,token):
                 x = JobinRequestedEmail()
                 x.extension = ext.lower()
                 x.save()
-        g = Group.objects.get(name='unvalid_user')
+        g = Group.objects.get(name='invalid_user')
         g.user_set.remove(user_auth)
         infos = 'You have confirmed your account. Thanks!'
 
