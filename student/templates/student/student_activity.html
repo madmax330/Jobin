@@ -2,52 +2,119 @@
 
 {% block title %}User Activity{% endblock %}
 
-{% block activityactive %}active{% endblock %}
+{% block historyactive %}active{% endblock %}
 
 {% block content %}
-    <div class="w3-row">
-        <div class="w3-col w3-s5">
-            <div class="w3-card-4 w3-sand">
-                <header>
-                    <h5>Notifications ({{ notifications.count }})</h5>
-                </header>
-                {% for x in notifications %}
-                    <p>{{ x.message }}</p>
-                    <hr/>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="w3-col w3-s7">
-            <div class="w3-card-4 w3-white">
-                <header>
-                    <h4 class="w3-center">Posts Activity</h4>
-                </header>
-                {% if applications.count > 0 %}
-                    <table class="w3-table">
-                        <thead>
-                            <tr>
-                                <th>Post</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+    <div class="w3-container">
+        <div class="w3-card-4 w3-white">
+            <header class="w3-container title-color w3-text-white">
+                <h4 class="w3-center">Applications History</h4>
+            </header>
+            {% if applications.count > 0 %}
+                <table class="w3-table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Company</th>
+                        <th>Post</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                         {% for x in applications %}
                             <tr>
-                                <td>{{ x.post_title }}</td>
                                 <td>{{ x.date }}</td>
+                                <td>{{ x.post.company }}</td>
+                                <td>{{ x.post_title }}</td>
                                 <td>{{ x.status }}</td>
                             </tr>
                         {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <div class="w3-pale-yellow">
-                        <p>You currently don't have any posts <a href="{% url 'post:studentposts' pk=0 pt='internship'%}">Click Here</a>
-                            to apply for jobs of your choice.</p>
-                    </div>
-                {% endif %}
-            </div>
+                        <tr>
+                            <td colspan="4">
+                                <span>Page: </span>
+                                {% for x in apages %}
+                                    {% if x == apage %}<strong>{% endif %}
+                                    <span class="app-page-number page-number">{{ x }} </span>
+                                    {% if x == apage %}</strong>{% endif %}|
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="warning-message">
+                    <p>You currently don't have any applications <a href="{% url 'post:studentposts' pk=0 pt='internship'%}">Click Here</a>
+                        to apply for jobs of your choice.</p>
+                </div>
+            {% endif %}
         </div>
+        <div class="w3-card-4 w3-white margined">
+            <header class="w3-container title-color w3-text-white">
+                <h4 class="w3-center">Events History</h4>
+            </header>
+            {% if ecount > 0 %}
+                <table class="w3-table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Company</th>
+                        <th>Title</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in events %}
+                            <tr>
+                                <td>{{ x.date }}</td>
+                                <td>{{ x.company }}</td>
+                                <td>{{ x.title }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4">
+                                <span>Page: </span>
+                                {% for x in epages %}
+                                    {% if x == epage %}<strong>{% endif %}
+                                    <span class="event-page-number page-number">{{ x }} </span>
+                                    {% if x == epage %}</strong>{% endif %}|
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="warning-message">
+                    <p>You haven't expressed interest in any events <a href="{% url 'event:studentevents' pk=0%}">Click Here</a>
+                        to check out some events.</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="w3-card-4 margined">
+            <header class="w3-container title-color w3-text-white">
+                <h5 class="w3-center">Notification History</h5>
+            </header>
+            {% if ncount > 0 %}
+                <div class="w3-container">
+                    {% for x in all_notifications %}
+                        <span>{{ x.date }}</span>
+                        <p>{{ x.message }}</p>
+                        <hr/>
+                    {% endfor %}
+                </div>
+                <div class="w3-container">
+                    <span>Page: </span>
+                    {% for x in npages %}
+                        {% if x == npage %}<strong>{% endif %}
+                        <span class="note-page-number page-number">{{ x }} </span>
+                        {% if x == npage %}</strong>{% endif %}|
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="warning-message">
+                    <p>You have no notifications in your notification history.</p>
+                </div>
+            {% endif %}
+
+        </div>
+
     </div>
 {% endblock %}

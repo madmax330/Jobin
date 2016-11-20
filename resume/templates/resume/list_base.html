@@ -5,22 +5,18 @@
 {% block resumesactive %}active{% endblock %}
 
 {% block content %}
-    {% block noresult %}
-    {% endblock %}
-    <table class="w3-table w3-bordered w3-white">
-        {% block list %}
+    <div class="w3-container">
+        {% block noresult %}
         {% endblock %}
-    </table>
-    {% if rkey %}
-        <div class="w3-padding-16">
-            <div class="w3-row">
-                <div class="w3-col s12 m6">
-                    <a class="w3-btn w3-white" href="{% url 'resume:index' %}">Resume List</a>
-                </div>
-                <div class="w3-col s12 m6">
-                    <a class="w3-btn w3-white" href="{% url 'resume:details' pk=rkey %}">Resume Overview</a>
-                </div>
+        <table class="w3-table w3-bordered w3-white">
+            {% block list %}
+            {% endblock %}
+        </table>
+        {% if rkey %}
+            <div class="w3-padding-16">
+                <a class="w3-btn regular-btn" href="{% url 'resume:index' %}">Resume List</a>
+                <a class="w3-btn regular-btn" href="{% url 'resume:details' pk=rkey %}">Resume Overview</a>
             </div>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}

@@ -4,110 +4,60 @@
 
 {% block homeactive %}active{% endblock %}
 
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+    {% include 'company/post_legend.html' %}
+{% endblock %}
+
 {% block content %}
-    <div class="col-md-5">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-4">
-                        Logo area
-                    </div>
-                    <div class="col-sm-8">
-                        <h3>{{ company.name }}</h3>
-                    </div>
-                </div>
-                <hr/>
-                <label>Email: </label><label>{{ company.email }}</label><br/>
-                <label>Phone: </label><label>{{ company.phone }}</label><br/>
-                <label>Address: </label><br/>
-                <label>
-                    {{ company.address }}, {{ company.city }},
-                    {{ company.state }}, {{ company.zipcode }}
-                </label><br/>
-                <label>Website: </label><label>{{ company.website }}</label>
-            </div>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align: center;">Active Posts</h4>
         </div>
-        {% if notifications %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Notifications</h4>
-                </div>
-                <div class="panel-body">
-                    {% for x in notifications %}
-                        <div class="alert alert-info">
-                            <div style="position:relative; top:0; left:0; padding:2px;">
-                                <a href="{% url 'home:closenote' u='company' pk=x.pk %}">x</a>
-                            </div>
-                            <p>
-                                {{ x.message }}
-                            </p>
-                        </div>
-                    {% endfor %}
-                    <a href="{% url 'home:closeallnotes' u='company' %}" class="btn btn-danger" style="width:100%">Close all</a>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-    <div class="col-md-7">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h5>Legend</h5>
-            </div>
-            <div class="panel-body" >
-                <div class="row" style="padding: 0 15px 0 15px;">
-                    <div style="background-color: #c2f9ce; color: #c2f9ce;" class="col-md-2">
-                        xxx
-                    </div>
-                    <div class="col-md-10">
-                        A new cover letter was received for this post
-                    </div>
-                </div>
-                <hr/>
-                <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
-                    <div style="background-color: #c9f3fc; color: #c9f3fc;" class="col-md-2">
-                        xxx
-                    </div>
-                    <div class="col-md-10">
-                        New applications were received for this post
-                    </div>
-                </div>
-                <hr/>
-                <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
-                    <div style="background-color: white; color: white; border: 1px solid black;" class="col-md-2">
-                        xxx
-                    </div>
-                    <div class="col-md-10">
-                        No activity on this post
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 style="text-align: center;">Active Posts</h4>
-            </div>
-            <div class="panel-body">
-                <table class="table">
-                    <tr>
-                        <th>Title</th>
-                        <th>Openings</th>
-                        <th>Start</th>
-                        <th>Deadline</th>
-                        <th></th>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>Openings</th>
+                    <th>Start</th>
+                    <th>Deadline</th>
+                    <th></th>
+                </tr>
+                {% for x in posts %}
+                    <tr {% if x.notified %}style="background-color: #c2f9ce"
+                        {% elif x.new_apps %}style="background-color: #c9f3fc;"
+                        {% endif %}>
+                        <td>{{ x.title }}</td>
+                        <td>{{ x.openings }}</td>
+                        <td>{{ x.start_date }}</td>
+                        <td>{{ x.deadline }}</td>
+                        <td><a href="{% url 'post:companypost' pk=x.pk%}">Details</a></td>
                     </tr>
-                    {% for x in posts %}
-                        <tr {% if x.notified %}style="background-color: #c2f9ce"
-                            {% elif x.new_apps %}style="background-color: #c9f3fc;"
-                            {% endif %}>
-                            <td>{{ x.title }}</td>
-                            <td>{{ x.openings }}</td>
-                            <td>{{ x.start_date }}</td>
-                            <td>{{ x.deadline }}</td>
-                            <td><a href="{% url 'post:companypost' pk=x.pk%}">Details</a></td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align: center;">Upcoming Events</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th></th>
+                </tr>
+                {% for x in events %}
+                    <tr>
+                        <td>{{ x.title }}</td>
+                        <td>{{ x.date }}</td>
+                        <td>{{ x.time }}</td>
+                        <td><a href="{% url 'event:companyevent' pk=x.pk%}">Details</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 {% endblock %}

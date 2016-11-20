@@ -4,27 +4,43 @@
 
 {% block eventactive %}active{% endblock %}
 
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+{% endblock %}
+
 {% block content %}
-    <div class="container">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h4 style="text-align:center">My Events</h4>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Active Events</h4>
+        </div>
+        <div class="panel-body">
+            {% if events.count == 0 %}
+                <div class="alert alert-warning">
+                    <p>
+                        You currently don't have any events.
+                        <a href="{% url 'event:new' %}"><strong>Create a event</strong></a>
+                        to get started.
+                    </p>
                 </div>
-                <div class="panel-body">
-                    {% if list.count == 0 %}
-                        <div class="alert alert-warning">
-                            <p>
-                                You currently don't have any events.
-                                <a href="{% url 'event:new' %}"><strong>Create a event</strong></a>
-                                 to get started.
-                            </p>
-                        </div>
-                    {% else %}
-                        {% include 'event/event_list.html' %}
-                    {% endif %}
+            {% else %}
+                {% include 'event/event_list.html' %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Expired Events</h4>
+        </div>
+        <div class="panel-body">
+            {% if expired_events.count == 0 %}
+                <div class="alert warning-message">
+                    <p>
+                        You don't have any expired events.
+                    </p>
                 </div>
-            </div>
+            {% else %}
+                {% include 'event/expired_event_list.html' %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

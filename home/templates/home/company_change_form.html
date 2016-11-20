@@ -4,19 +4,25 @@
 
 {% block profileactive %}active{% endblock %}
 
+{% block side_content %}
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align: center">Note</h4>
+        </div>
+        <div class="panel-body">
+            Changing the email attached to this account will result in
+            your account being blocked until you verifiy the new email
+            you have entered.
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
-    <div class="panel panel-primary">
+    <div class="panel panel-default primary-panel">
         <div class="panel-heading">
             <h4 style="text-align:center">Change User Info</h4>
         </div>
         <div class="panel-body">
-            <div class="alert alert-warning">
-                <p>
-                    Changing the email attached to this account will result in
-                    your account being blocked until you verifiy the new email
-                    you have entered.
-                </p>
-            </div>
             <form class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include 'home/form-template-company.html' %}

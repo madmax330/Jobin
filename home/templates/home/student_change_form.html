@@ -5,28 +5,29 @@
 {% block profileactive %}active{% endblock %}
 
 {% block content %}
-    <div class="w3-card-8 w3-half" style="margin-top:30px; margin-left:10%">
-        <div class="w3-blue w3-container">
-            <h4 class="w3-center">Change User Info</h4>
-        </div>
-        <div class="w3-container w3-leftbar w3-border-yellow w3-pale-yellow">
-            <p>
-                Changing the email attached to this account will result in
-                your account being blocked until you verifiy the new email
-                you have entered. Your school will also be changed to match
-                the new email you provide.
-            </p>
-        </div>
-        <div class="w3-container">
-            <form method="post" class="w3-form" enctype="multipart/form-data" action="">
-                {% include 'home/form-template-student.html' %}
-                <div class="w3-third">
-                    <a href="{% url 'student:profile' %}" class="w3-btn w3-grey">Cancel</a>
-                </div>
-                <div class="w3-rest">
-                    <button type="submit" class="w3-btn w3-blue">Save</button>
-                </div>
-            </form>
+    <div class="w3-container">
+        <div class="w3-card-8">
+            <div class="header-color w3-container w3-text-white">
+                <h4 class="w3-center">Change User Info</h4>
+            </div>
+            <div class="w3-container warning-message">
+                <p>
+                    Changing the email attached to this account will result in
+                    your account being blocked until you verifiy the new email
+                    you have entered. Your school will also be changed to match
+                    the new email you provide.
+                </p>
+            </div>
+            <div class="w3-container">
+                <form method="post" class="w3-form" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    {% include 'home/form-template-student.html' %}
+                    <div class="w3-padding-16">
+                        <a href="{% url 'student:profile' %}" class="w3-btn regular-btn">Cancel</a>
+                        <button type="submit" class="w3-btn submit-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

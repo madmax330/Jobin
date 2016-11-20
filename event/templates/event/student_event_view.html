@@ -2,22 +2,22 @@
     <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px">
         <div class="row">
             <div class="w3-col s4">
-                <div class="w3-container w3-padding-16 w3-grey">
-                    <h4 class="w3-text-white w3-center">Company</h4>
+                <div class="w3-container w3-padding-8 title-color">
+                    <h4 class="w3-text-white">Company</h4>
                 </div>
                 <div class="w3-container">
                     {{ x.logo }}
-                    <h5 class="w3-center">{{ x.name }}</h5>
+                    <h5>{{ x.name }}</h5>
                     <label>Address:</label><span> {{ x.caddr }}</span><br/>
                     <label>Website:</label><span> {{ x.cweb }}</span>
                 </div>
             </div>
-            <div class="w3-col s8 w3-border-left w3-border-dark-grey">
-                <div class="w3-container w3-padding-16 w3-grey">
-                    <h4 class="w3-text-white w3-center">Event Information</h4>
+            <div class="w3-col s8">
+                <div class="w3-container w3-padding-8 title-color">
+                    <h4 class="w3-text-white">Event Information</h4>
                 </div>
                 <div class="w3-container scrollable">
-                    <h5 class="w3-center">{{ x.title }}</h5>
+                    <h5>{{ x.title }}</h5>
                     <label>Date:</label><span> {{ x.date }}</span><br/>
                     <label>Time:</label><span> {{ x.time }}</span><br/>
                     <label>Address:</label><span> {{ x.address }}</span><br/>
@@ -27,9 +27,10 @@
                 </div>
                 <div class="w3-display-topright w3-medium w3-container w3-padding-16">
                     {% if not x.interested %}
-                        <a class="w3-btn w3-green" href="{% url 'event:interest' pk=x.pk %}">Interested</a>
+                        <a class="w3-btn apply-btn w3-padding-8 w3-text-black w3-border w3-border-white"
+                           href="{% url 'event:interest' pk=x.pk %}">Interested in this event</a>
                     {% else %}
-                        <div class="w3-container w3-padding-8 w3-pale-green">
+                        <div class="w3-container w3-padding-8 already-applied">
                             Already Saved.
                         </div>
                     {% endif %}

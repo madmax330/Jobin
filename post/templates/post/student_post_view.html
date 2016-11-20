@@ -1,24 +1,24 @@
 {% for x in list%}
     <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px;">
         <div class="row">
-            <div class="w3-col s4 w3-border-right w3-border-dark-grey" style="min-height:500px">
-                <div class="w3-container w3-padding-16 w3-grey">
-                    <h4 class="w3-text-white w3-center">Company</h4>
+            <div class="w3-col s4" style="min-height:500px">
+                <div class="w3-container w3-padding-8 title-color">
+                    <h4 class="w3-text-white">Company</h4>
                 </div>
                 <div class="w3-container">
                     {{ x.logo }}
-                    <h5 class="w3-center">{{ x.name }}</h5>
+                    <h5>{{ x.name }}</h5>
                     <label>Address:</label><span> {{ x.address }}</span><br/>
                     <label>Website:</label><a href="{{ x.website }}"> {{ x.website }}</a>
                 </div>
-                <div class="w3-container w3-padding-4 w3-grey">
-                    <h6 class="w3-text-white w3-center">Resumes</h6>
+                <div class="w3-container title-color">
+                    <h6 class="w3-text-white">Resumes</h6>
                 </div>
                 <table class="w3-table w3-bordered">
                     {% for x in resumes %}
                         <tr>
                             {% if x.is_active %}
-                                <td class="w3-light-blue">
+                                <td style="background-color: #d0ddd7;">
                                     <strong>{{ x.name }}</strong>
                                 </td>
                             {% else %}
@@ -31,11 +31,11 @@
                 </table>
             </div>
             <div class="w3-col s8">
-                <div class="w3-container w3-padding-16 w3-grey">
-                    <h4 class="w3-text-white w3-center">Post Information</h4>
+                <div class="w3-container w3-padding-8 title-color">
+                    <h4 class="w3-text-white">Post Information</h4>
                 </div>
                 <div class="w3-container scrollable" style="max-height: 400px;">
-                    <h5 class="w3-center">{{ x.title }}</h5>
+                    <h5>{{ x.title }}</h5>
                     <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
                     <label>End Date:</label><span> {{ x.end_date }}</span><br/>
                     <label>Wage:</label><span> {{ x.wage }}$/hr</span><br/>
@@ -50,10 +50,11 @@
         </div>
         <div class="w3-display-topright w3-medium w3-container w3-padding-16">
             {% if not x.applied %}
-                <a class="w3-btn w3-green" href="{% url 'post:apply' pk=x.pk pt=pt %}">Apply</a>
+                <a class="w3-btn apply-btn w3-text-black w3-padding-8 w3-border w3-border-white"
+                   href="{% url 'post:apply' pk=x.pk pt=pt %}">Apply for this post</a>
             {% else %}
-                <div class="w3-container w3-padding-8 w3-pale-green">
-                    Already Applied.
+                <div class="w3-container w3-padding-8 already-applied">
+                    Already applied for this post.
                 </div>
             {% endif %}
         </div>

@@ -4,6 +4,24 @@
 
 {% block postactive %}active{% endblock %}
 
+{% block side_content %}
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align: center">Student</h4>
+        </div>
+        <div class="panel-body">
+            <label>Name:</label><span> {{ app.fname }} {{ app.lname }}</span><br/>
+            <label>Email:</label><span> {{ app.email }}</span><br/>
+            <label>Phone:</label><span> {{ app.phone }}</span><br/>
+            <label>Address:</label><span> {{ app.address }}</span><br/>
+            <label>School:</label><span> {{ app.school }}</span><br/>
+            <label>Program:</label><span> {{ app.program }}</span><br/>
+            <label>Major:</label><span> {{ app.major }}</span><br/>
+        </div>
+    </div>
+    {% include 'company/post_info.html' %}
+{% endblock %}
+
 {% block content %}
     <form id="hiddenform" style="display:none;" action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -12,146 +30,34 @@
         <input id="page" type="number" name="page" value="{{ page }}"/>
         <input id="cover" type="text" name="cover" value="False"/>
     </form>
-    <div style="margin: 10px 0 10px 0;overflow:hidden">
-        <a href="{% url 'post:applicants' pk=app.post.pk %}" class="btn btn-default col-md-12">Multiple Applicants View</a>
+    <div class="btn-group btn-group-justified">
+        <div class="btn-group">
+            <a href="{% url 'post:applicants' pk=post.pk %}" class="btn applicant-view-btn" style="border-right: none;">
+                Multiple Applicants View
+            </a>
+        </div>
+        <div class="btn-group">
+            <button class="btn applicant-view-btn active-applicant-view-btn" style="border-left: none;">
+                Single Applicant View
+            </button>
+        </div>
     </div>
-    <div class="panel panel-primary">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-10">
-                    <h4>Student Information:</h4>
-                </div>
-                <div class="col-md-1">
-                    <button id="prevBtn" type="button" class="btn btn-default">Previous</button>
-                </div>
-                <div class="col-md-1">
-                    <button id="nBtn" class="btn btn-default">Next</button>
-                </div>
-            </div>
-
-            <hr/>
-            <label>Name:</label><span> {{ app.fname }} {{ app.lname }}</span><br/>
-            <label>Email:</label><span> {{ app.email }}</span><br/>
-            <label>Phone:</label><span> {{ app.phone }}</span><br/>
-            <label>Address:</label><span> {{ app.address }}</span><br/>
-            <label>School:</label><span> {{ app.school }}</span><br/>
-            <label>Program:</label><span> {{ app.program }}</span><br/>
-            <label>Major:</label><span> {{ app.major }}</span><br/>
-            <hr/>
-            <h4>Student Resume:</h4>
-            <hr/>
-            {% if resume.file_resume %}
-                {{ resume.file_resume }}
-            {% else %}
-                {% if ecount > 0 %}
-                    <h5>Experience:</h5>
-                    {% for x in exp %}
-                        <div class="row">
-                            <div class="col-md-2"><label>Title:</label></div>
-                            <div class="col-md-2">{{ x.title }}</div>
-                            <div class="col-md-2">Duration:</div>
-                            <div class="col-md-3">{{ x.start }} to {{ x.end }}</div>
-                            <div class="col-md-1">Type:</div>
-                            <div class="col-md-2">{{ x.experience_type }}</div>
-                        </div>
-                        <label>Description:</label>
-                        <p>{{ x.description }}</p><hr/>
-                    {% endfor %}
-                {% endif %}
-                {% if scount > 0 %}
-                    <h5>Education:</h5>
-                    <table class="table">
-                        <tr>
-                            <th>School Name</th>
-                            <th>Start</th>
-                            <th>End</th>
-                            <th>Level</th>
-                            <th>Program</th>
-                        </tr>
-                    {% for x in schools %}
-                        <tr>
-                            <td>{{ x.name }}</td>
-                            <td>{{ x.start }}</td>
-                            <td>{{ x.end }}</td>
-                            <td>{{ x.level }}</td>
-                            <td>{{ x.program }}</td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                {% endif %}
-                {% if acount > 0 %}
-                    <h5>Awards:</h5>
-                    {% for x in aws %}
-                        <div class="row">
-                            <div class="col-md-2"><label>Title:</label></div>
-                            <div class="col-md-2">{{ x.title }}</div>
-                            <div class="col-md-2">Date Received:</div>
-                            <div class="col-md-2">{{ x.date }}</div>
-                            <div class="col-md-2">Type:</div>
-                            <div class="col-md-2">{{ x.award_type }}</div>
-                        </div>
-                        <label>Description:</label>
-                        <p>{{ x.description }}</p><hr/>
-                    {% endfor %}
-                {% endif %}
-                {% if lcount > 0 %}
-                    <h5>Languages:</h5>
-                    <table class="table">
-                        <tr>
-                            <th>Language</th>
-                            <th>Proficiency</th>
-                        </tr>
-                    {% for x in lan %}
-                        <tr>
-                            <td>{{ x.name }}</td>
-                            <td>{{ x.level }}</td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                {% endif %}
-                {% if kcount > 0 %}
-                    <h5>Skills:</h5>
-                    <table class="table">
-                        <tr>
-                            <th>Skill</th>
-                            <th>Proficiency</th>
-                        </tr>
-                    {% for x in skills %}
-                        <tr>
-                            <td>{{ x.name }}</td>
-                            <td>{{ x.level }}</td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                {% endif %}
-            {% endif %}
-            <hr/>
-            <div class="row">
-                {% if app.cover_requested %}
-                    <div class="col-md-10">
-                        <div class="alert alert-success">
-                            A cover letter request was already sent to this applicant.
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="col-md-3">
-                        <button id="clBtn" type="button"  class="btn btn-default">Request Cover Letter</button>
-                    </div>
-                {% endif %}
-                <div class="col-md-9">
-                    <button type="button" class="warning-open btn btn-danger">Discard Applicant</button>
-                    <div class="warning alert alert-warning hidden">
-                        <h4>Are you sure you want to discard this applicant?</h4>
-                        <hr/>
-                        <p>This will permanently remove him from the list of applicants and cancel his application.</p>
-                        <button class="warning-close btn btn-default" type="button">Cancel</button>
-                        <button id="dBtn" type="button" class="btn btn-danger">Discard Applicant</button>
-                    </div>
-                </div>
-            </div>
+    <div class="row margined">
+        <div class="col-md-6">
+            <button id="prevBtn" type="button" class="btn move-btn btn-block">
+                <span class="glyphicon glyphicon-arrow-left" style="float:left"></span>
+                Previous Applicant
+            </button>
+        </div>
+        <div class="col-md-6">
+            <button id="nBtn" type="button" class="btn move-btn btn-block">
+                Next Applicant
+                <span class="glyphicon glyphicon-arrow-right" style="float:right"></span>
+            </button>
         </div>
     </div>
 
+    {% include 'post/applicant_info.html' %}
     <script>
     $(function(){
         $("#prevBtn").click(function(){

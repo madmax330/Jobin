@@ -3,8 +3,7 @@ from django.views import generic
 from django.views.generic import View
 from django.shortcuts import redirect
 from .models import Event, EventInterest
-from home.models import Message
-from home.utils import new_message, get_messages
+from home.utils import new_message, get_messages, get_notifications
 from .forms import NewEventForm
 from company.models import Company
 from student.models import Student
@@ -12,14 +11,17 @@ from student.models import Student
 
 class CompanyEvents(generic.ListView):
     template_name = 'event/company_events.html'
-    context_object_name = 'list'
+    context_object_name = 'events'
 
     def get_queryset(self):
-        return Event.objects.filter(company=Company.objects.get(user=self.request.user))
+        return Event.objects.filter(company=Company.objects.get(user=self.request.user), active=True)
 
     def get_context_data(self, **kwargs):
+        company = Company.objects.get(user=self.request.user)
         context = super(CompanyEvents, self).get_context_data(**kwargs)
-        msgs = Message.objects.filter(company=Company.objects.get(user=self.request.user))
+        msgs = get_messages('company', company)
+        context['company'] = company
+        context['expired_events'] = Event.objects.filter(company=company, active=False)
         context['msgs'] = msgs
         for x in msgs:
             x.delete()
@@ -29,6 +31,12 @@ class CompanyEvents(generic.ListView):
 class NewEventView(CreateView):
     model = Event
     form_class = NewEventForm
+
+    def get_context_data(self, **kwargs):
+        context = super(NewEventView, self).get_context_data(**kwargs)
+        company = Company.objects.get(user=self.request.user)
+        context['company'] = company
+        return context
 
     def form_valid(self, form):
         event = form.save(commit=False)
@@ -42,6 +50,12 @@ class EventUpdateView(UpdateView):
     model = Event
     form_class = NewEventForm
 
+    def get_context_data(self, **kwargs):
+        context = super(EventUpdateView, self).get_context_data(**kwargs)
+        company = Company.objects.get(user=self.request.user)
+        context['company'] = company
+        return context
+
     def form_valid(self, form):
         event = form.save(commit=False)
         msg = 'Your event was updated successfully.'
@@ -52,6 +66,12 @@ class EventUpdateView(UpdateView):
 class CompanyEvent(generic.DetailView):
     model = Event
     template_name = 'event/company_event.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyEvent, self).get_context_data(**kwargs)
+        company = Company.objects.get(user=self.request.user)
+        context['company'] = company
+        return context
 
 
 class StudentEvents(generic.ListView):
@@ -78,11 +98,14 @@ class StudentEvents(generic.ListView):
         return l
 
     def get_context_data(self, **kwargs):
-        student = Student.objects.filter(user=self.request.user)
+        student = Student.objects.get(user=self.request.user)
         context = super(StudentEvents, self).get_context_data(**kwargs)
         context['count'] = Event.objects.count()
         msgs = get_messages('student', student)
+        notes = get_notifications('student', student)
         context['msgs'] = msgs
+        context['nav_student'] = student
+        context['notifications'] = notes
         return context
 
 

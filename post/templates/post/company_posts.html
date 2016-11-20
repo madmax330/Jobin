@@ -4,64 +4,46 @@
 
 {% block postactive %}active{% endblock %}
 
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+    {% include 'company/post_legend.html' %}
+{% endblock %}
+
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h4 style="text-align:center">My Posts</h4>
-                    </div>
-                    <div class="panel-body">
-                        {% if posts.count == 0 %}
-                            <div class="alert alert-warning">
-                                <p>
-                                    You currently don't have any posts.
-                                    <a href="{% url 'post:new' %}"><strong>Create a post</strong></a>
-                                     to get started.
-                                </p>
-                            </div>
-                        {% else %}
-                            {% include 'post/post_list.html' %}
-                        {% endif %}
-                    </div>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Active Posts</h4>
+        </div>
+        <div class="panel-body">
+            {% if posts.count == 0 %}
+                <div class="alert warning-message">
+                    You currently don't have any posts.
+                    <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
+                    to get started.
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h5>Legend</h5>
-                    </div>
-                    <div class="panel-body" >
-                        <div class="row" style="padding: 0 15px 0 15px;">
-                            <div style="background-color: #c2f9ce; color: #c2f9ce;" class="col-md-2">
-                                xxx
-                            </div>
-                            <div class="col-md-10">
-                                A new cover letter was received for this post
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
-                            <div style="background-color: #c9f3fc; color: #c9f3fc;" class="col-md-2">
-                                xxx
-                            </div>
-                            <div class="col-md-10">
-                                New applications were received for this post
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
-                            <div style="background-color: white; color: white; border: 1px solid black;" class="col-md-2">
-                                xxx
-                            </div>
-                            <div class="col-md-10">
-                                No activity on this post
-                            </div>
-                        </div>
-                    </div>
+            {% else %}
+                {% include 'post/post_list.html' %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Expired Posts</h4>
+        </div>
+        <div class="panel-body">
+            {% if posts.count == 0 %}
+                <div class="alert warning-message">
+                    You currently don't have any posts.
+                    <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
+                    to get started.
                 </div>
-            </div>
+            {% elif expired_posts.count == 0 %}
+                <div class="alert warning-message">
+                    You don't have any expired posts.
+                </div>
+            {% else %}
+                {% include 'post/expired_post_list.html' %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

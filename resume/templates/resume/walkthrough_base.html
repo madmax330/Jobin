@@ -6,18 +6,19 @@
 
 {% block content %}
     <div class="w3-row">
-        <div class="w3-container w3-padding-32 w3-col s12 {% if rcount > 0 %}m7{% endif %}">
-            <div class="w3-container w3-dark-grey w3-center">
+        <div class="w3-container w3-col s12 {% if rcount > 0 %}m7{% endif %}">
+            <div class="w3-container title-color w3-center w3-text-white">
                 <h3>{% block form_title %}{% endblock %}</h3>
             </div>
-            <div class="w3-container w3-pale-blue form-info-div">
+            <div class="w3-container w3-padding-8 form-info-div">
                 {% block info %}{% endblock %}
             </div>
             <form class="w3-container w3-border-left w3-border-right w3-border-bottom w3-white" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include 'resume/form_template.html' %}
-                {% block buttons %}
-                {% endblock %}
+                <div class="w3-padding-16">
+                    {% block buttons %}{% endblock %}
+                </div>
             </form>
             <div style="display: none">
                 {% block hiddenblock %}

@@ -1,0 +1,126 @@
+{% if app.cover %}
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            Cover Letter
+        </div>
+        <div class="panel-body">
+            <p>{{ app.cover }}</p>
+        </div>
+    </div>
+{% endif %}
+{% if resume.file_resume %}
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            File Resume
+        </div>
+        <div class="panel-body">
+            {{ resume.file_resume }}
+        </div>
+    </div>
+{% endif %}
+<div class="panel panel-default margined primary-panel">
+    <div class="panel-heading">
+        <h4 style="text-align: center">Student Resume</h4>
+    </div>
+    <div class="panel-body">
+        {% if ecount > 0 %}
+            <h5>Experience:</h5>
+            {% for x in exp %}
+                <div class="row">
+                    <div class="col-md-2"><label>Title:</label></div>
+                    <div class="col-md-2">{{ x.title }}</div>
+                    <div class="col-md-2">Duration:</div>
+                    <div class="col-md-3">{{ x.start }} to {{ x.end }}</div>
+                    <div class="col-md-1">Type:</div>
+                    <div class="col-md-2">{{ x.experience_type }}</div>
+                </div>
+                <label>Description:</label>
+                <p>{{ x.description }}</p><hr/>
+            {% endfor %}
+        {% endif %}
+        {% if scount > 0 %}
+            <h5>Education:</h5>
+            <table class="table">
+                <tr>
+                    <th>School Name</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Level</th>
+                    <th>Program</th>
+                </tr>
+                {% for x in schools %}
+                    <tr>
+                        <td>{{ x.name }}</td>
+                        <td>{{ x.start }}</td>
+                        <td>{{ x.end }}</td>
+                        <td>{{ x.level }}</td>
+                        <td>{{ x.program }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        {% if acount > 0 %}
+            <h5>Awards:</h5>
+            {% for x in aws %}
+                <div class="row">
+                    <div class="col-md-2"><label>Title:</label></div>
+                    <div class="col-md-2">{{ x.title }}</div>
+                    <div class="col-md-2">Date Received:</div>
+                    <div class="col-md-2">{{ x.date }}</div>
+                    <div class="col-md-2">Type:</div>
+                    <div class="col-md-2">{{ x.award_type }}</div>
+                </div>
+                <label>Description:</label>
+                <p>{{ x.description }}</p><hr/>
+            {% endfor %}
+        {% endif %}
+        {% if lcount > 0 %}
+            <h5>Languages:</h5>
+            <table class="table">
+                <tr>
+                    <th>Language</th>
+                    <th>Proficiency</th>
+                </tr>
+                {% for x in lan %}
+                    <tr>
+                        <td>{{ x.name }}</td>
+                        <td>{{ x.level }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        {% if kcount > 0 %}
+            <h5>Skills:</h5>
+            <table class="table">
+                <tr>
+                    <th>Skill</th>
+                    <th>Proficiency</th>
+                </tr>
+                {% for x in skills %}
+                    <tr>
+                        <td>{{ x.name }}</td>
+                        <td>{{ x.level }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        <hr/>
+        <div class="container" style="width: inherit">
+            <button type="button" class="warning-open btn danger-btn">Discard Applicant</button>
+            {% if app.cover_requested %}
+                <div class="alert warning-message margined">
+                    A cover letter request was already sent to this applicant.
+                </div>
+            {% else %}
+                <button id="clBtn" type="button"  class="btn btn-default submit-btn">Request Cover Letter</button>
+            {% endif %}
+            <div class="warning alert alert-warning hidden">
+                <h4>Are you sure you want to discard this applicant?</h4>
+                <hr/>
+                <p>This will permanently remove him from the list of applicants and cancel his application.</p>
+                <button class="warning-close btn btn-default regular-btn" type="button">Cancel</button>
+                <button id="dBtn" type="button" class="btn btn-default danger-btn">Discard Applicant</button>
+            </div>
+        </div>
+    </div>
+</div>

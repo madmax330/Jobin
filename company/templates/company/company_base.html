@@ -6,61 +6,81 @@
     {% load staticfiles %}
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'company/style.css' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:400,700,800" rel="stylesheet">
     {% block styles %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{% static 'company/DynamicHtmlScript.js' %}"></script>
     <script type="text/javascript" src="{% static 'company/genscript.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/resize_script.js' %}"></script>
     {% block scripts %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#homenav">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% url 'home:index' %}">Jobin</a>
+
+    <div class="main-container">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#homenav">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'home:index' %}">
+                        <h4 >Jobin Home</h4>
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse" id="homenav">
+                    <ul class="nav navbar-nav">
+                        <li class="{% block homeactive %}{% endblock %}"><a href="{% url 'company:index' %}"><h5>Home</h5></a></li>
+                        <li class="{% block postactive %}{% endblock %}"><a href="{% url 'post:companyposts' %}"><h5>Posts</h5></a></li>
+                        <li class="{% block eventactive %}{% endblock %}"><a href="{% url 'event:companyevents' %}"><h5>Events</h5></a></li>
+                        <li class="{% block howtoactive %}{% endblock %}"><a href="#"><h5>How To</h5></a></li>
+                        <li class="{% block profileactive %}{% endblock %}"><a href="{% url 'company:profile' %}"><h5>Profile</h5></a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{% url 'home:logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="collapse navbar-collapse" id="homenav">
-                <ul class="nav navbar-nav">
-                    <li class="{% block homeactive %}{% endblock %}"><a href="{% url 'company:index' %}">Home</a></li>
-                    <li class="{% block postactive %}{% endblock %}"><a href="{% url 'post:companyposts' %}">Posts</a></li>
-                    <li class="{% block eventactive %}{% endblock %}"><a href="{% url 'event:companyevents' %}">Events</a></li>
-                    <li class="{% block profileactive %}{% endblock %}"><a href="{% url 'company:profile' %}">Profile</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{% url 'home:logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
-                </ul>
+        </nav>
+        <div class="row container">
+            <div id="sideCol" class="col-sm-12 col-md-3">
+                {% include 'company/notifications.html' %}
+                {% block side_content %}
+                {% endblock %}
+            </div>
+            <div id="bodyCol" class="container col-sm-12 col-md-9">
+                {% for x in msgs %}
+                    {% if x.code == 'danger' %}
+                        <div class="alert alert-danger alert-dismissible">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ x.message }}
+                        </div>
+                    {% elif x.code == 'warning' %}
+                        <div class="alert alert-warning alert-dismissible">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ x.message }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info alert-dismissible">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ x.message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% block content %}
+                {% endblock %}
+                <div class="warning-container hidden">
+                </div>
             </div>
         </div>
-    </nav>
-    <div class="container">
-        {% for x in msgs %}
-            {% if x.code == 'danger' %}
-                <div class="alert alert-danger">
-                    <p>
-                        {{ x.message }}
-                    </p>
-                </div>
-            {% elif x.code == 'warning' %}
-                <div class="alert alert-warning">
-                    <p>
-                        {{ x.message }}
-                    </p>
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    <p>
-                        {{ x.message }}
-                    </p>
-                </div>
-            {% endif %}
-        {% endfor %}
-        {% block content %}
-        {% endblock %}
+        <hr/>
+        <footer class="container">
+            <p>This platform is brought to you by Jobin Solutions. Your use of the platform confirms that you are in
+                agreement with our <a href="">Terms and Conditions</a> and our <a href="">Privacy Policy</a>.</p>
+        </footer>
     </div>
+
 </body>
 </html>

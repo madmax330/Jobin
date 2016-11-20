@@ -159,7 +159,7 @@ class ChangeUserInfo(View):
                     jre = JobinRequestedEmail()
                     jre.extension = ext.lower()
                     jre.save()
-                elif es.count > 0:
+                elif es.count() > 0:
                     school = es.first().name
                     student.school = school
                 student.email = email

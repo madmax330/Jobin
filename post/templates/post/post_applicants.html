@@ -4,102 +4,71 @@
 
 {% block postactive %}active{% endblock %}
 
-{% block content %}
-    <div class="row">
-        <div class="col-md-3">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h4 style="text-align: center;">Post Information</h4>
-                </div>
-                <div class="panel-body">
-                    <label>Title</label><span> {{ post.title }}</span><br/>
-                    <label>Start Date</label><span> {{ post.start_date }}</span><br/>
-                    <label>End Date</label><span> {{ post.end_date }}</span><br/>
-                    <label>Openings</label><span> {{ post.openings }}</span><br/>
-                    <label>Wage</label><span> {{ post.wage }}</span>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 style="text-align: center;">Filters</h4>
-                </div>
-                <div class="panel-body">
-                    <form id="filter-form" class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <h5>Schools:</h5>
-                        <div class="sdiv">
-                            {% for x in schools %}
-                                <input class="school-val" type="checkbox" name="{{ x.name }}" value="{{ x.name }}">
-                                <span> - {{ x.name }}</span><br/>
-                            {% endfor %}
-                        </div>
-                        <h5>Majors:</h5>
-                        <div class="mdiv">
-                            {% for x in majors %}
-                                <input class="major-val" type="checkbox" name="{{ x.name }}" value="{{ x.name }}">
-                                <span> - {{ x.name }}</span><br/>
-                            {% endfor %}
-                        </div>
-                        <input id="school-input" style="display: none;" name="schools" value="">
-                        <input id="major-input" style="display: none;" name="majors" value="">
-                        <input id="keepCheckbox" style="margin-top:10px;" type="checkbox" name="keep" checked/>
-                        <span>Keep applications that are not in filtered values.</span><br/>
-                        <div id="checkWarning" class="alert alert-danger hidden">
-                            <p>Unchecking this checkbox means that all the applicants who do not fit the filter
-                             criteria will be discarded. Be sure that this is what you want because this action is
-                             irreversible.</p>
-                        </div>
-                        <a href="{% url 'post:applicants' pk=post.pk %}" class="btn btn-default">Remove Filter</a>
-                        <button class="btn btn-default" type="submit">Filter</button>
-                    </form>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h5 style="text-align: center;">Legend</h5>
-                </div>
-                <div class="panel-body" >
-                    <div class="row" style="padding: 0 15px 0 15px;">
-                        <div style="background-color: #96beff; color: #96beff;" class="col-md-2">
-                            xxx
-                        </div>
-                        <div class="col-md-10">
-                            Cover letter received and read
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
-                        <div style="background-color: #c2f9ce; color: #c2f9ce;" class="col-md-2">
-                            xxx
-                        </div>
-                        <div class="col-md-10">
-                            Cover letter received
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
-                        <div style="background-color: #fdffb2; color: #fdffb2;" class="col-md-2">
-                            xxx
-                        </div>
-                        <div class="col-md-10">
-                            Cover letter requested
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row" style="padding: 0 15px 0 15px;margin-top: 5px;">
-                        <div style="background-color: white; color: white; border: 1px solid black;" class="col-md-2">
-                            xxx
-                        </div>
-                        <div class="col-md-10">
-                            No activity
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% block side_content %}
+    {% include 'company/post_info.html' %}
+    {% include 'company/applicant_legend.html' %}
+    <div class="panel panel-default regular-panel">
+        <div class="panel-heading">
+            <h4 style="text-align: center;">Filters</h4>
         </div>
-        <div class="col-md-9">
-            <a href="{% url 'post:applicant' pk=post.pk%}" class="btn btn-default col-md-12" style="margin-bottom:20px;">Single Applicant View</a>
+        <div class="panel-body">
+            <form id="filter-form" class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h5>Schools:</h5>
+                <div class="sdiv">
+                    {% for x in schools %}
+                        <input class="school-val" type="checkbox" name="{{ x.name }}" value="{{ x.name }}">
+                        <span> - {{ x.name }}</span><br/>
+                    {% endfor %}
+                </div>
+                <h5>Majors:</h5>
+                <div class="mdiv">
+                    {% if majors.count > 0 %}
+                        {% for x in majors %}
+                            <input class="major-val" type="checkbox" name="{{ x.name }}" value="{{ x.name }}">
+                            <span> - {{ x.name }}</span><br/>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <p>This post is for all majors</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <input id="school-input" style="display: none;" name="schools" value="">
+                <input id="major-input" style="display: none;" name="majors" value="">
+                <input id="keepCheckbox" style="margin-top:10px;" type="checkbox" name="keep" checked/>
+                <span>Keep applications that are not in filtered values.</span><br/>
+                <div id="checkWarning" class="alert alert-danger hidden">
+                    <p>Unchecking this checkbox means that all the applicants who do not fit the filter
+                        criteria will be discarded. Be sure that this is what you want because this action is
+                        irreversible.</p>
+                </div>
+                <a href="{% url 'post:applicants' pk=post.pk %}" class="btn regular-btn">Remove Filter</a>
+                <button class="btn btn-default regular-btn" type="submit">Filter</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="btn-group btn-group-justified">
+        <div class="btn-group">
+            <button class="btn applicant-view-btn active-applicant-view-btn" style="border-right: none;">
+                Multiple Applicants View
+            </button>
+        </div>
+        <div class="btn-group">
+            <a href="{% url 'post:applicant' pk=post.pk ak=0%}"
+               class="btn applicant-view-btn" style="border-left: none;">
+                Single Applicant View
+            </a>
+        </div>
+    </div>
+    <div class="panel panel-default primary-panel margined">
+        <div class="panel-heading">
             <h3 style="text-align: center;">Post Applicants ({{ count }}):</h3>
+        </div>
+        <div class="panel-body">
             <table class="table">
                 <tr>
                     <th>Name</th>
@@ -111,14 +80,14 @@
                 </tr>
                 {% for x in list %}
                     <tr {% if x.cover_opened %}
-                            style="background-color: #96beff;"
-                        {% elif x.cover_submitted %}
-                            style="background-color: #c2f9ce;"
-                        {% elif x.cover_requested %}
-                            style="background-color: #fdffb2;"
-                        {% endif %}>
+                        style="background-color: #96beff;"
+                    {% elif x.cover_submitted %}
+                        style="background-color: #c2f9ce;"
+                    {% elif x.cover_requested %}
+                        style="background-color: #fdffb2;"
+                    {% endif %}>
                         <td>
-                            <a href="{% url 'post:applicantdetails' pk=x.pk%}">
+                            <a href="{% url 'post:applicant' pk=post.pk ak=x.pk%}">
                                 {{ x.fname }} {{ x.lname }}{% if not x.app_opened %} (<b>new</b>){% endif %}
                             </a>
                         </td>
@@ -131,18 +100,19 @@
                             <div class="warning alert alert-warning hidden">
                                 <h4>Are you sure you want to discard this applicant?</h4>
                                 <hr/>
-                                <p>This will permanently remove him from the list of applicants and cancel his application.</p>
-                                <button class="warning-close btn btn-default" type="button">Cancel</button>
-                                <a href="{% url 'post:discard' pk=x.post.pk ak=x.pk %}" class="btn btn-danger">Discard Applicant</a>
+                                <p>This will permanently remove him from the
+                                    list of applicants and cancel his application.</p>
+                                <button class="warning-close btn regular-btn" type="button">Cancel</button>
+                                <a href="{% url 'post:discard' pk=x.post.pk ak=x.pk %}"
+                                   class="btn danger-btn">Discard Applicant</a>
                             </div>
                         </td>
                     </tr>
                 {% endfor %}
             </table>
+            <a href="{% url 'post:companypost' pk=post.pk %}" class="btn regular-btn">Back to post</a>
         </div>
     </div>
-    <a href="{% url 'post:companypost' pk=post.pk %}" class="btn btn-default">Back to post</a>
-
     <script>
         $(function(){
             $("#filter-form").submit(function(){

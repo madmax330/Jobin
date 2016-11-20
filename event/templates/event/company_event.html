@@ -4,15 +4,21 @@
 
 {% block eventactive %}active{% endblock %}
 
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+{% endblock %}
+
 {% block content %}
-    <div class="panel panel-primary">
-        <label>Title:</label><span> {{ event.title }}</span><br/>
-        <label>Date and Time:</label><span> {{ event.date }} at {{ event.time }}</span><br/>
-        <label>Address:</label><span> {{ event.address }}, {{ event.city }}, {{ event.state }}, {{ event.zipcode }}</span><br/>
-        <label>Website:</label><span> {{ event.website }}</span><br/>
-        <label>Description:</label><p>{{ event.description }}</p>
-        <label>Schools:</label><span> {{ event.schools }}</span><br/>
-        <label>Programs:</label><span> {{ event.programs }}</span><br/>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4>{{ event.title }}</h4>
+        </div>
+        <div class="panel-body">
+            <label>Date and Time:</label><span> {{ event.date }} at {{ event.time }}</span><br/>
+            <label>Address:</label><span> {{ event.address }}, {{ event.city }}, {{ event.state }}, {{ event.zipcode }}</span><br/>
+            <label>Website:</label><span> {{ event.website }}</span><br/>
+            <label>Description:</label><p>{{ event.description }}</p>
+        </div>
     </div>
-    <a href="{% url 'event:companyevents' %}" class="btn btn-default">Back to list</a>
+    <a href="{% url 'event:companyevents' %}" class="btn regular-btn">Back to list</a>
 {% endblock %}
