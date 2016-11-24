@@ -32,7 +32,7 @@ $(document).ready(function(){
             success: function(data){
 				$('select[name=major]').empty();
                 $.each(data, function(key, value){
-                    $('select[name=major]').append('<option value="' + key + '">' + value +'</option>');
+                    $('select[name=major]').append('<option value="' + value + '">' + value +'</option>');
                 });
 				
             },
