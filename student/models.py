@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 
 
 class Student(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT, default=0)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     firstname = models.CharField(max_length=100, null=True)
     lastname = models.CharField(max_length=100, null=True)
     dob = models.DateField(null=True)

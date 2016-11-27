@@ -4,6 +4,11 @@
 
 {% block profileactive %}active{% endblock %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'home/zipcode_validation.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="w3-container">
         <div class="w3-container title-color w3-center w3-text-white">

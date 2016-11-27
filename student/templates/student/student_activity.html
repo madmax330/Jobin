@@ -42,7 +42,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <div class="warning-message">
+                <div class="warning-message message">
                     <p>You currently don't have any applications <a href="{% url 'post:studentposts' pk=0 pt='internship'%}">Click Here</a>
                         to apply for jobs of your choice.</p>
                 </div>
@@ -82,7 +82,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <div class="warning-message">
+                <div class="warning-message message">
                     <p>You haven't expressed interest in any events <a href="{% url 'event:studentevents' pk=0%}">Click Here</a>
                         to check out some events.</p>
                 </div>
@@ -109,7 +109,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="warning-message">
+                <div class="warning-message message">
                     <p>You have no notifications in your notification history.</p>
                 </div>
             {% endif %}

@@ -12,6 +12,7 @@ from student.models import Student
 from resume.models import Resume
 import datetime
 from django.core.exceptions import ObjectDoesNotExist
+from wkhtmltopdf.views import PDFTemplateResponse
 
 
 class CompanyPosts(generic.ListView):
@@ -24,6 +25,12 @@ class CompanyPosts(generic.ListView):
         posts = Post.objects.filter(company=company, status='open')
         temp = []
         for x in posts:
+            rem_date = (datetime.datetime.now() + datetime.timedelta(days=4)).date()
+            if x.deadline < rem_date:
+                msg = 'The post ' + x.title + "'s deadline is coming up soon. After the deadline, the post will not" \
+                                              " be visible to students anymore, but you will be able to manage " \
+                                              " applicants until the start date."
+                new_notification('company', company, 100, msg)
             if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False,
                                           status='active').count() > 0:
                 x.notified = True
@@ -99,6 +106,7 @@ class ClosePostView(View):
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
         post.status = 'closed'
+        post.notified = False
         post.save()
         msg = 'Post ' + post.title + ' closed successfully'
         new_message('company', post.company, 'warning', msg)
@@ -106,7 +114,7 @@ class ClosePostView(View):
         new_notification('company', post.company, 0, msg)
         apps = Application.objects.filter(post=post, status='active')
         for x in apps:
-            x.status = 'closed'
+            x.status = 'hold'
             x.save()
             msg = 'The position ' + post.title + ' has been closed.'
             new_notification('student', x.student, 100, msg)
@@ -119,8 +127,12 @@ class CompanyPost(View):
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
         apps = Application.objects.filter(post=post, status='active')
+        old_apps = Application.objects.filter(post=post, status='hold')
         l = []
         for x in apps:
+            xx = Applicant(x, x.student)
+            l.append(xx)
+        for x in old_apps:
             xx = Applicant(x, x.student)
             l.append(xx)
         msgs = get_messages('company', post.company)
@@ -280,8 +292,12 @@ class PostApplicantsView(View):
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
         apps = Application.objects.filter(post=post, status='active')
+        old_apps = Application.objects.filter(post=post, status='hold')
         l = []
         for x in apps:
+            xx = Applicant(x, x.student)
+            l.append(xx)
+        for x in old_apps:
             xx = Applicant(x, x.student)
             l.append(xx)
         msgs = get_messages('company', post.company)
@@ -303,6 +319,10 @@ class PostApplicantsView(View):
         program = JobinProgram.objects.filter(name=post.programs)
         school_filter = request.POST.get('schools')
         major_filter = request.POST.get('majors')
+        gpa_filter = request.POST.get('gpa_filter')
+        gpa = 0
+        if gpa_filter:
+            gpa = float(gpa_filter)
         schools = []
         majors = []
         if school_filter and major_filter:
@@ -316,14 +336,20 @@ class PostApplicantsView(View):
         if school_filter:
             msg += school_filter
         else:
-            msg+= 'None'
+            msg += 'None'
         if major_filter:
             msg += '; Majors: ' + major_filter
         else:
             msg += '; Majors: None'
         new_message('company', post.company, 'info', msg)
         keep = request.POST.get('keep')
-        apps = Application.objects.filter(post=post, status='active')
+        new_apps = Application.objects.filter(post=post, status='active')
+        old_apps = Application.objects.filter(psot=post, status='hold')
+        apps = []
+        for x in new_apps:
+            apps.append(x)
+        for x in old_apps:
+            apps.append(x)
         l = []
         for x in apps:
             xx = Applicant(x, x.student)
@@ -336,19 +362,14 @@ class PostApplicantsView(View):
             elif majors:
                 if xx.major in majors:
                     l.append(xx)
+            if gpa > 0:
+                temp = []
+                for a in l:
+                    if xx.gpa > gpa:
+                        temp.append(a)
+                l = temp
         if not keep:
-            d = []
-            for x in apps:
-                xx = Applicant(x, x.student)
-                if schools and majors:
-                    if xx.school not in schools and xx.major not in majors:
-                        d.append(x)
-                elif majors:
-                    if xx.major not in majors:
-                        d.append(x)
-                elif schools:
-                    if xx.school not in schools:
-                        d.append(x)
+            d = [x for x in apps if x not in l]
             for x in d:
                 x.status = 'closed'
                 x.save()
@@ -389,11 +410,17 @@ class SingleApplicantView(View):
                     xx = x
                     break
                 page += 1
+        changed = False
         if not xx.opened:
             xx.opened = True
-            xx.save()
+            changed = True
         if xx.cover_submitted and (not xx.cover_opened):
             xx.cover_opened = True
+            changed = True
+        if xx.resume_notified:
+            xx.resume_notified = False
+            changed = True
+        if changed:
             xx.save()
         app = Applicant(xx, xx.student)
         context = get_applicant_context(app)
@@ -476,24 +503,13 @@ class SingleApplicantView(View):
 
 class PostRecoveryView(View):
     form_class = NewPostForm
-    template_name = 'post_form'
+    template_name = 'post/post_form.html'
 
     def get(self, request, pk):
         post = Post.objects.get(pk=pk)
         company = post.company
-        post.status = 'open'
-        post.save()
-        msg = 'Post successfully re-opened, you will be able to view all the applicants that you kept from last time,' \
-              ' you will also be able to view their old cover letters, or request new ones.'
+        msg = 'Please update the post information and save it to reactivate the post.'
         new_message('company', company, 'info', msg)
-        apps = Application.objects.filter(post=post, status='hold')
-        for x in apps:
-            msg = 'The post ' + post.title + ' by' + company.name + ' has been re-opened. Since your application' \
-                  ' was not discarded your candidacy is automatically renewed. Thank you.'
-            new_notification('student', x.student, 100, msg)
-            x.status = 'active'
-            x.cover_requested = False
-            x.save()
         form = self.form_class(instance=post)
         msgs = get_messages('company', company)
         context = {
@@ -504,6 +520,65 @@ class PostRecoveryView(View):
         for x in msgs:
             x.delete()
         return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        company = Company.objects.get(user=self.request.user)
+        p = Post.objects.get(pk=pk)
+        form = self.form_class(request.POST, instance=p)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.company = company
+            post.is_startup_post = company.is_startup
+            post.schools = 'ALL'
+            post.status = 'open'
+            post.save()
+            msg = 'Post successfully re-opened, you will be able to view all ' \
+                  'the applicants that you kept from last time,' \
+                  ' you will also be able to view their old cover letters, or request new ones.'
+            new_message('company', company, 'info', msg)
+            apps = Application.objects.filter(post=post, status='hold')
+            for x in apps:
+                msg = 'The post ' + post.title + ' by' + company.name + ' has been re-opened.' \
+                      ' Since your application was not discarded your candidacy is automatically renewed, but ' \
+                      'you can remove it in your home screen.'
+                new_notification('student', x.student, 100, msg)
+                x.cover_requested = False
+                x.save()
+            return redirect('post:companyposts')
+        msgs = get_messages('company', company)
+        context = {
+            'company': company,
+            'msgs': msgs,
+            'form': form,
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
+
+
+def close_old_application(request, ak):
+
+    if request.method == 'GET':
+        app = Application.objects.get(pk=ak)
+        app.status = 'closed'
+        app.save()
+        msg = 'Application for post ' + app.post_title + ' successfully closed.'
+        new_message('student', app.student, 'info', msg)
+        return redirect('student:index')
+    return redirect('home:index')
+
+
+def activate_old_application(request, ak):
+
+    if request.method == 'GET':
+        app = Application.objects.get(pk=ak)
+        app.status = 'active'
+        app.save()
+        msg = 'Application for post ' + app.post_title + ' successfully continued.'
+        new_message('student', app.student, 'info', msg)
+        return redirect('student:index')
+    return redirect('home:index')
 
 
 class DiscardApplicant(View):
@@ -537,6 +612,31 @@ class RequestCover(View):
                         'is received.'
             new_message('company', post.company, 'warning', msg)
         return redirect('post:applicants', pk=pk)
+
+
+class ApplicantPDF(View):
+    template_name = 'post/applicant_resume_pdf.html'
+
+    def get(self, request, ak):
+        a = Application.objects.get(pk=ak)
+        app = Applicant(a, a.student)
+        filename = app.fname + app.lname + 'Resume.pdf'
+        context = get_applicant_context(app)
+        response = PDFTemplateResponse(
+            request=request,
+            template=self.template_name,
+            filename=filename,
+            context=context,
+            show_content_in_browser=False,
+            cmd_options={
+                'page-size': 'A4',
+                'orientation': 'portrait',
+                'disable-smart-shrinking': True,
+            },
+        )
+        return response
+        #context = get_applicant_context(app)
+        #return render(request, self.template_name, context)
 
 
 class CustomPost:
@@ -574,6 +674,7 @@ class Applicant:
         self.program = stu.program
         self.major = stu.major
         self.resume = app.resume
+        self.gpa = app.resume.gpa
         self.post = app.post
         self.cover = app.cover
         self.cover_requested = app.cover_requested
@@ -581,3 +682,4 @@ class Applicant:
         self.cover_opened = app.cover_opened
         self.date_applied = app.date
         self.app_opened = app.opened
+        self.resume_notified = app.resume_notified

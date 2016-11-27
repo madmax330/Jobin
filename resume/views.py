@@ -99,31 +99,34 @@ class NewResumeView(CreateView):
 
 
 def copyresume(request, rk):
-    cr = Resume.objects.get(pk=rk)
-    nr = Resume()
-    nr.name = cr.name + ' COPY'
-    nr.gpa = cr.gpa
-    nr.student = cr.student
-    nr.is_complete = cr.is_complete
-    nr.save()
-    langs = LanguageLink.objects.filter(resume=cr)
-    schs = SchoolLink.objects.filter(resume=cr)
-    exps = ExperienceLink.objects.filter(resume=cr)
-    skills = SkillLink.objects.filter(resume=cr)
-    aws = AwardLink.objects.filter(resume=cr)
-    for x in langs:
-        create_language_link(x.language, nr)
-    for x in schs:
-        create_school_link(x.school, nr)
-    for x in exps:
-        create_experience_link(x.experience, nr)
-    for x in skills:
-        create_skill_link(x.skill, nr)
-    for x in aws:
-        create_award_link(x.award, nr)
-    msg = 'Your new resume was successfully created based on ' + cr.name + '. You can now taylor it to your needs.'
-    new_message('student', nr.student, 'info', msg)
-    return redirect('resume:index')
+
+    if request.method == 'GET':
+        cr = Resume.objects.get(pk=rk)
+        nr = Resume()
+        nr.name = cr.name + ' COPY'
+        nr.gpa = cr.gpa
+        nr.student = cr.student
+        nr.is_complete = cr.is_complete
+        nr.save()
+        langs = LanguageLink.objects.filter(resume=cr)
+        schs = SchoolLink.objects.filter(resume=cr)
+        exps = ExperienceLink.objects.filter(resume=cr)
+        skills = SkillLink.objects.filter(resume=cr)
+        aws = AwardLink.objects.filter(resume=cr)
+        for x in langs:
+            create_language_link(x.language, nr)
+        for x in schs:
+            create_school_link(x.school, nr)
+        for x in exps:
+            create_experience_link(x.experience, nr)
+        for x in skills:
+            create_skill_link(x.skill, nr)
+        for x in aws:
+            create_award_link(x.award, nr)
+        msg = 'Your new resume was successfully created based on ' + cr.name + '. You can now taylor it to your needs.'
+        new_message('student', nr.student, 'info', msg)
+        return redirect('resume:index')
+    return redirect('home:index')
 
 
 class ResumeUpdateView(UpdateView):
@@ -146,6 +149,20 @@ class ResumeUpdateView(UpdateView):
                 r.is_active = False
                 r.save()
         return super(ResumeUpdateView, self).form_valid(form)
+
+
+def change_resume(request, rk, ak):
+
+    if request.method == 'GET':
+        app = Application.objects.get(pk=ak)
+        resume = Resume.objects.get(pk=rk)
+        app.resume = resume
+        app.resume_notified = True
+        app.save()
+        msg = 'Resume for ' + app.post_title + ' has been changed to ' + resume.name + '.'
+        new_message('student', app.student, 'info', msg)
+        return redirect('student:index')
+    return redirect('home:index')
 
 
 class DeleteResume(DeleteView):

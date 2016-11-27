@@ -1,5 +1,5 @@
 {% if app.cover %}
-    <div class="panel panel-default secondary-panel">
+    <div class="panel panel-default secondary-panel margined">
         <div class="panel-heading">
             Cover Letter
         </div>
@@ -9,7 +9,7 @@
     </div>
 {% endif %}
 {% if resume.file_resume %}
-    <div class="panel panel-default secondary-panel">
+    <div class="panel panel-default secondary-panel margined">
         <div class="panel-heading">
             File Resume
         </div>
@@ -24,22 +24,31 @@
     </div>
     <div class="panel-body">
         {% if ecount > 0 %}
-            <h5>Experience:</h5>
+            <h3>Experience</h3>
             {% for x in exp %}
-                <div class="row">
-                    <div class="col-md-2"><label>Title:</label></div>
-                    <div class="col-md-2">{{ x.title }}</div>
-                    <div class="col-md-2">Duration:</div>
-                    <div class="col-md-3">{{ x.start }} to {{ x.end }}</div>
-                    <div class="col-md-1">Type:</div>
-                    <div class="col-md-2">{{ x.experience_type }}</div>
-                </div>
+                <table class="resume-table">
+                    <tr>
+                        <th>Title:</th>
+                        <td>{{ x.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Duration:</th>
+                        <td>
+                            {{ x.start }} to {% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Type:</th>
+                        <td>{{ x.experience_type }}</td>
+                    </tr>
+                </table>
                 <label>Description:</label>
-                <p>{{ x.description }}</p><hr/>
+                <p>{{ x.description }}</p>
+                <hr/>
             {% endfor %}
         {% endif %}
         {% if scount > 0 %}
-            <h5>Education:</h5>
+            <h3>Education:</h3>
             <table class="table">
                 <tr>
                     <th>School Name</th>
@@ -52,7 +61,7 @@
                     <tr>
                         <td>{{ x.name }}</td>
                         <td>{{ x.start }}</td>
-                        <td>{{ x.end }}</td>
+                        <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
                         <td>{{ x.level }}</td>
                         <td>{{ x.program }}</td>
                     </tr>
@@ -60,22 +69,29 @@
             </table>
         {% endif %}
         {% if acount > 0 %}
-            <h5>Awards:</h5>
+            <h3>Awards:</h3>
             {% for x in aws %}
-                <div class="row">
-                    <div class="col-md-2"><label>Title:</label></div>
-                    <div class="col-md-2">{{ x.title }}</div>
-                    <div class="col-md-2">Date Received:</div>
-                    <div class="col-md-2">{{ x.date }}</div>
-                    <div class="col-md-2">Type:</div>
-                    <div class="col-md-2">{{ x.award_type }}</div>
-                </div>
+                <table class="resume-table">
+                    <tr>
+                        <th>Title:</th>
+                        <td>{{ x.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date Received:</th>
+                        <td>{{ x.date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Type:</th>
+                        <td>{{ x.award_type }}</td>
+                    </tr>
+                </table>
                 <label>Description:</label>
-                <p>{{ x.description }}</p><hr/>
+                <p>{{ x.description }}</p>
+                <hr/>
             {% endfor %}
         {% endif %}
         {% if lcount > 0 %}
-            <h5>Languages:</h5>
+            <h3>Languages:</h3>
             <table class="table">
                 <tr>
                     <th>Language</th>
@@ -90,7 +106,7 @@
             </table>
         {% endif %}
         {% if kcount > 0 %}
-            <h5>Skills:</h5>
+            <h3>Skills:</h3>
             <table class="table">
                 <tr>
                     <th>Skill</th>
@@ -107,6 +123,7 @@
         <hr/>
         <div class="container" style="width: inherit">
             <button type="button" class="warning-open btn danger-btn">Discard Applicant</button>
+            <a href="{% url 'post:app_pdf' ak=app.pk %}" class="btn regular-btn">Download PDF Resume</a>
             {% if app.cover_requested %}
                 <div class="alert warning-message margined">
                     A cover letter request was already sent to this applicant.

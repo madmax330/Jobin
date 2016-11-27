@@ -34,6 +34,8 @@
                         </div>
                     {% endif %}
                 </div>
+                <h5>GPA:</h5>
+                <input id="id_gpa_filter" class="form-control" type="text" name="gpa_filter"/>
                 <input id="school-input" style="display: none;" name="schools" value="">
                 <input id="major-input" style="display: none;" name="majors" value="">
                 <input id="keepCheckbox" style="margin-top:10px;" type="checkbox" name="keep" checked/>
@@ -79,7 +81,9 @@
                     <th></th>
                 </tr>
                 {% for x in list %}
-                    <tr {% if x.cover_opened %}
+                    <tr {% if x.resume_notified %}
+                        style="background-color: #E3DAFF"
+                    {% elif x.cover_opened %}
                         style="background-color: #96beff;"
                     {% elif x.cover_submitted %}
                         style="background-color: #c2f9ce;"
