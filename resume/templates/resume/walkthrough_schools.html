@@ -5,8 +5,10 @@
 {% block form_title %}New School Form:{% endblock %}
 
 {% block info %}
-    It is required for you to enter at least one school record for this resume before you can continue. We encourage
-    you to enter your whole education history up to and including high school at least.
+    <div class="w3-container w3-padding-8 form-info-div">
+        It is required for you to enter at least one school record for this resume before you can continue. We encourage
+        you to enter your whole education history up to and including high school at least.
+    </div>
 {% endblock %}
 
 {% block buttons %}
@@ -24,11 +26,10 @@
             var sch = $('#id_name');
             var prog = $('#id_program');
             if(!(sch.val() == "")){
-                alert(sch.val());
                 sch.hide();
-                sch.parent().siblings('p').html('School Name: ' + sch.val());
+                $('label[for="id_name"]').html('School: ' + sch.val());
                 prog.hide();
-                prog.parent().siblings('p').html('Program: ' + prog.val());
+                $('label[for="id_program"]').html('Program: ' + prog.val());
             }
 
             $('.form-info-div').html(

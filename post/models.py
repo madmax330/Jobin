@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 
 
 class Post(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.PROTECT, default=0)
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
     title = models.CharField(max_length=100)
     wage = models.IntegerField(null=True, blank=True)
     openings = models.IntegerField(null=True)
@@ -45,6 +45,7 @@ class Application(models.Model):
     cover_opened = models.BooleanField(default=False)
     post_title = models.CharField(max_length=100, null=True)
     student_name = models.CharField(max_length=100, null=True)
+    resume_notified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.status

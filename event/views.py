@@ -4,9 +4,12 @@ from django.views.generic import View
 from django.shortcuts import redirect
 from .models import Event, EventInterest
 from home.utils import new_message, get_messages, get_notifications
+from home.models import JobinTerritory
 from .forms import NewEventForm
 from company.models import Company
 from student.models import Student
+import simplejson
+from django.http import HttpResponse
 
 
 class CompanyEvents(generic.ListView):
@@ -122,6 +125,24 @@ class NewInterest(View):
                                                          ' in the Home page.'
         new_message('student', student, 'info', msg)
         return redirect('event:studentevents', pk=pk)
+
+
+def get_states(request, country_name):
+    states = JobinTerritory.objects.filter(country=country_name)
+    state_dic = {}
+    for state in states:
+        state_dic[state.name] = state.name
+    state_dic = sorted(state_dic)
+    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
+
+
+def get_states_update(request,pk, country_name):
+    states = JobinTerritory.objects.filter(country=country_name)
+    state_dic = {}
+    for state in states:
+        state_dic[state.name] = state.name
+    state_dic = sorted(state_dic)
+    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
 class CustomEvent:

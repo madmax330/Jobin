@@ -5,6 +5,7 @@ from django.contrib.auth import logout
 from .models import Student
 from post.models import Application
 from event.models import EventInterest
+from resume.models import Resume
 from home.models import JobinSchool, JobinTerritory, JobinProgram, JobinMajor, Notification
 from home.utils import new_message, get_notifications, get_messages
 from .forms import NewStudentForm
@@ -23,12 +24,18 @@ class IndexView(View):
             student = res.first()
             events = EventInterest.objects.filter(student=student, active=True)
             apps = Application.objects.filter(student=student, status='active')
+            old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
+            resumes = Resume.objects.filter(student=student, is_complete=True)
             msgs = get_messages('student', student)
             notifications = get_notifications('student', student)
+            if len(student.email) > 30:
+                student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
             context = {
-                'nav_student': res.first(),
+                'nav_student': student,
                 'apps': apps,
+                'old_apps': old_apps,
                 'events': events,
+                'resumes': resumes,
                 'msgs': msgs,
                 'notifications': notifications,
             }
@@ -225,6 +232,7 @@ class ProfileView(View):
         except ObjectDoesNotExist:
             return redirect('student:new')
 
+
 def get_states(request, country_name):
     states = JobinTerritory.objects.filter(country=country_name)
     state_dic = {}
@@ -232,6 +240,7 @@ def get_states(request, country_name):
         state_dic[state.name] = state.name
     state_dic = sorted(state_dic)
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
+
 
 def get_states_update(request,pk, country_name):
     states = JobinTerritory.objects.filter(country=country_name)

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>PDF RESUME</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'company/style.css' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:400,700,800" rel="stylesheet">
+    <style>
+    body {
+        height: 842px;
+        width: 595px;
+        /* to centre page on screen*/
+        margin-left: auto;
+        margin-right: auto;
+        background-color: white;
+    }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <h4>{{ app.fname }} {{ app.lname }}</h4>
+        <h5>{{ app.school }}, {{ app.program }}, {{ app.major }}</h5>
+        <h5>{{ app.email }}</h5>
+        <h5>{{ app.phone }}</h5>
+        <h5>{{ app.address }}</h5>
+    </div>
+    <hr/>
+    {% if ecount > 0 %}
+        <h3>Experience</h3>
+        {% for x in exp %}
+            <table class="resume-table">
+                <tr>
+                    <th>Title:</th>
+                    <td>{{ x.title }}</td>
+                </tr>
+                <tr>
+                    <th>Duration:</th>
+                    <td>
+                        {{ x.start }} to {% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td>{{ x.experience_type }}</td>
+                </tr>
+            </table>
+            <label>Description:</label>
+            <p>{{ x.description }}</p>
+            <hr/>
+        {% endfor %}
+    {% endif %}
+    {% if scount > 0 %}
+        <h3>Education:</h3>
+        <table class="table">
+            <tr>
+                <th>School Name</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Level</th>
+                <th>Program</th>
+            </tr>
+            {% for x in schools %}
+                <tr>
+                    <td>{{ x.name }}</td>
+                    <td>{{ x.start }}</td>
+                    <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
+                    <td>{{ x.level }}</td>
+                    <td>{{ x.program }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if acount > 0 %}
+        <h3>Awards:</h3>
+        {% for x in aws %}
+            <table class="resume-table">
+                <tr>
+                    <th>Title:</th>
+                    <td>{{ x.title }}</td>
+                </tr>
+                <tr>
+                    <th>Date Received:</th>
+                    <td>{{ x.date }}</td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td>{{ x.award_type }}</td>
+                </tr>
+            </table>
+            <label>Description:</label>
+            <p>{{ x.description }}</p>
+            <hr/>
+        {% endfor %}
+    {% endif %}
+    {% if lcount > 0 %}
+        <h3>Languages:</h3>
+        <table class="table">
+            <tr>
+                <th>Language</th>
+                <th>Proficiency</th>
+            </tr>
+            {% for x in lan %}
+                <tr>
+                    <td>{{ x.name }}</td>
+                    <td>{{ x.level }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if kcount > 0 %}
+        <h3>Skills:</h3>
+        <table class="table">
+            <tr>
+                <th>Skill</th>
+                <th>Proficiency</th>
+            </tr>
+            {% for x in skills %}
+                <tr>
+                    <td>{{ x.name }}</td>
+                    <td>{{ x.level }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>
+

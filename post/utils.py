@@ -1,6 +1,6 @@
 from .models import Post, Application
 from resume.models import LanguageLink, AwardLink, ExperienceLink, SchoolLink, SkillLink
-
+import datetime
 
 def get_applicant_context(app):
     ll = LanguageLink.objects.filter(resume=app.resume)
@@ -43,16 +43,17 @@ def get_applicant_context(app):
 
 def get_student_posts_context(post_type, student, posts, resumes, rkey):
     pt = post_type
-    vcount = Post.objects.filter(type='volunteer', status='open', programs=student.program).count() + \
-             Post.objects.filter(type='volunteer', status='open', programs='All Programs').count()
-    icount = Post.objects.filter(type='internship', status='open', programs=student.program).count() + \
-             Post.objects.filter(type='internship', status='open', programs='All Programs').count()
-    ptcount = Post.objects.filter(type='parttime', status='open', programs=student.program).count() + \
-              Post.objects.filter(type='parttime', status='open', programs='All Programs').count()
-    ngcount = Post.objects.filter(type='newgrad', status='open', programs=student.program).count() + \
-              Post.objects.filter(type='newgrad', status='open', programs='All Programs').count()
-    scount = Post.objects.filter(is_startup_post=True, status='open', programs=student.program).count() + \
-             Post.objects.filter(is_startup_post=True, status='open', programs='All Programs').count()
+    today = datetime.datetime.now().date()
+    vcount = Post.objects.filter(type='volunteer', status='open', programs=student.program, deadline__gte=today).count() + \
+             Post.objects.filter(type='volunteer', status='open', programs='All Programs', deadline__gte=today).count()
+    icount = Post.objects.filter(type='internship', status='open', programs=student.program, deadline__gte=today).count() + \
+             Post.objects.filter(type='internship', status='open', programs='All Programs', deadline__gte=today).count()
+    ptcount = Post.objects.filter(type='parttime', status='open', programs=student.program, deadline__gte=today).count() + \
+              Post.objects.filter(type='parttime', status='open', programs='All Programs', deadline__gte=today).count()
+    ngcount = Post.objects.filter(type='newgrad', status='open', programs=student.program, deadline__gte=today).count() + \
+              Post.objects.filter(type='newgrad', status='open', programs='All Programs', deadline__gte=today).count()
+    scount = Post.objects.filter(is_startup_post=True, status='open', programs=student.program, deadline__gte=today).count() + \
+             Post.objects.filter(is_startup_post=True, status='open', programs='All Programs', deadline__gte=today).count()
     vact = ''
     iact = ''
     pact = ''

@@ -53,17 +53,17 @@
             <div id="bodyCol" class="container col-sm-12 col-md-9">
                 {% for x in msgs %}
                     {% if x.code == 'danger' %}
-                        <div class="alert alert-danger alert-dismissible">
+                        <div class="alert danger-message alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                             {{ x.message }}
                         </div>
                     {% elif x.code == 'warning' %}
-                        <div class="alert alert-warning alert-dismissible">
+                        <div class="alert warning-message alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                             {{ x.message }}
                         </div>
                     {% else %}
-                        <div class="alert alert-info alert-dismissible">
+                        <div class="alert info-message alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                             {{ x.message }}
                         </div>

@@ -14,6 +14,13 @@
     <script src="{% static 'student/genscript.js' %}"></script>
     <script type="text/javascript" src="{% static 'student/DynamicHtmlScript.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/resize_script.js' %}"></script>
+    {% block scripts %}{% endblock %}
+    <style>
+        body{
+            background-image: url("{% static 'home/pattern_max_finshed8.png' %}");
+            background-size: 120px 120px;
+        }
+    </style>
 </head>
 <body>
 

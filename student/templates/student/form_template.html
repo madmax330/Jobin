@@ -1,13 +1,17 @@
 {% for field in form %}
-    <div class="w3-pale-red  w3-leftbar w3-border-red">
-            <span class="w3-text-red">{{ field.errors }}</span>
-    </div>
-    <div class="w3-row">
-        <p class="w3-col s5">
-            <label>{{ field.label_tag }}{% if field.field.required %} * {% endif %}</label>
-        </p>
-        <div class="w3-col s12">
-            {{ field }}
+    <div class="form-element">
+        <div class="form-error {% if field.errors %}danger-message message{% endif %}">
+            {{ field.errors }}
+        </div>
+        <div class="w3-row">
+            {% if field.field.required %}
+                <span class="required">{{ field.label_tag }}</span>
+            {% else %}
+                {{ field.label_tag }}
+            {% endif %}
+            <div class="w3-col s12">
+                {{ field }}
+            </div>
         </div>
     </div>
 {% endfor %}

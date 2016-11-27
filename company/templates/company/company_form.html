@@ -4,6 +4,11 @@
 
 {% block profileactive %}active{% endblock %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'home/zipcode_validation.js' %}"></script>
+{% endblock %}
+
 {% block side_content %}
     <div class="panel panel-default secondary-panel">
         <div class="panel-heading">

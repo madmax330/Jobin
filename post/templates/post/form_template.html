@@ -1,10 +1,14 @@
 {% for field in form %}
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <span class="text-danger">{{ field.errors }}</span>
+    <div class="form-group form-element">
+        <div class="col-md-offset-2 col-md-10 form-error {% if field.errors %}alert danger-message{% endif %}">
+            {{ field.errors }}
         </div>
         <label class="control-label col-md-3">
-            {{ field.label_tag }}{% if field.field.required %} * {% endif %}
+            {% if field.field.required %}
+                <span class="required">{{ field.label_tag }}</span>
+            {% else %}
+                {{ field.label_tag }}
+            {% endif %}
         </label>
         <div class="col-md-9">
             {{ field }}
