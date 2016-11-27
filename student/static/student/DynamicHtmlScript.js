@@ -9,7 +9,7 @@ $(document).ready(function(){
             success: function(data){
 				$('select[name=state]').empty();
                 $.each(data, function(key, value){
-                    $('select[name=state]').append('<option value="' + key + '">' + value +'</option>');
+                    $('select[name=state]').append('<option value="' + value + '">' + value +'</option>');
                 });
 				if ($('select[name=country]').val() == "Canada")
 				{					
@@ -32,7 +32,7 @@ $(document).ready(function(){
             success: function(data){
 				$('select[name=major]').empty();
                 $.each(data, function(key, value){
-                    $('select[name=major]').append('<option value="' + key + '">' + value +'</option>');
+                    $('select[name=major]').append('<option value="' + value + '">' + value +'</option>');
                 });
 				
             },

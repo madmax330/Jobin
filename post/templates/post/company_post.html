@@ -20,7 +20,9 @@
                     <th>Date Applied</th>
                 </tr>
                 {% for x in applicants %}
-                    <tr {% if x.cover_opened %} style="background-color: #96beff;"
+                    <tr {% if x.resume_notified %}
+                        style="background-color: #E3DAFF;"
+                    {% elif x.cover_opened %} style="background-color: #96beff;"
                     {% elif x.cover_submitted %} style="background-color: #c2f9ce"
                     {% elif x.cover_requested %} style="background-color: #fdffb2;"
                     {% endif %}>
@@ -42,15 +44,29 @@
         </div>
         <div class="panel-body">
             <label>Post Status:</label><span> {{ post.status }}</span>
-            <a style="color: red;" href="#" class="warning-open">Close Post</a>
-            <div class="warning alert alert-warning hidden">
-                <h4>Are you sure you want to delete <u>{{ post.title }}</u> post?</h4>
-                <hr/>
-                <p>This will permanently delete this post and close all remaining applications.<br/>
-                <b>Note:</b> posts are closed automatically when the start date is reached.</p>
-                <button class="warning-close btn regular-btn" type="button">Cancel</button>
-                <a class="btn danger-btn" href="{% url 'post:close' post.pk %}">Close Post</a>
-            </div>
+            {% if post.status == 'open' %}
+                <a style="color: red;" href="#" class="warning-open">Close Post</a>
+                <div class="warning hidden">
+                    <h4>Are you sure you want to delete <u>{{ post.title }}</u> post?</h4>
+                    <hr/>
+                    <p>This will permanently delete this post and close all remaining applications.<br/>
+                    <b>Note:</b> posts are closed automatically when the start date is reached.</p>
+                    <button class="warning-close btn regular-btn" type="button">Cancel</button>
+                    <a class="btn danger-btn" href="{% url 'post:close' post.pk %}">Close Post</a>
+                </div>
+            {% elif post.status == 'closed' %}
+                <a style="color: green;" href="#" class="warning-open"><strong>Re-Open Post</strong></a>
+                <div class="warning hidden">
+                    <h4>Are you sure you want to re-activate <u>{{ post.title }}</u> post?</h4>
+                    <hr/>
+                    <p>This will make the post visible to applicants again and bring back all the old
+                        applications that you had not discarded.<br/>
+                    <b>Note:</b> All resumes will be up to date even on old applications, you will
+                        also be able to request a new cover letter.</p>
+                    <button class="warning-close btn regular-btn" type="button">Cancel</button>
+                    <a class="btn submit-btn" href="{% url 'post:recover' post.pk %}">Re-Open Post</a>
+                </div>
+            {% endif %}
             <br/>
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
             <label>End Date: </label><span> {{ post.end_date }}</span><br/>

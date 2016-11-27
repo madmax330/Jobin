@@ -15,7 +15,7 @@
         </div>
         <div class="panel-body">
             {% if events.count == 0 %}
-                <div class="alert alert-warning">
+                <div class="alert warning-message">
                     <p>
                         You currently don't have any events.
                         <a href="{% url 'event:new' %}"><strong>Create a event</strong></a>

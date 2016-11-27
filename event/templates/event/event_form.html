@@ -4,6 +4,11 @@
 
 {% block eventactive %}active{% endblock %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'home/zipcode_validation.js' %}"></script>
+{% endblock %}
+
 {% block side_content %}
     {% include 'company/company_info.html' %}
 {% endblock %}
@@ -11,7 +16,7 @@
 {% block content %}
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">
-            <h4>Create a New Event</h4>
+            <h4>Event Information Form</h4>
         </div>
         <div class="panel-body">
             <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
