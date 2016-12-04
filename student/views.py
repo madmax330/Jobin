@@ -7,7 +7,7 @@ from post.models import Application
 from event.models import EventInterest
 from resume.models import Resume
 from home.models import JobinSchool, JobinTerritory, JobinProgram, JobinMajor, Notification
-from home.utils import new_message, get_notifications, get_messages
+from home.utils import MessageCenter
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -26,8 +26,8 @@ class IndexView(View):
             apps = Application.objects.filter(student=student, status='active')
             old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
             resumes = Resume.objects.filter(student=student, is_complete=True)
-            msgs = get_messages('student', student)
-            notifications = get_notifications('student', student)
+            msgs = MessageCenter.get_messages('student', student)
+            notifications = MessageCenter.get_notifications('student', student)
             if len(student.email) > 30:
                 student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
             context = {
@@ -87,8 +87,7 @@ class UpdateStudentView(UpdateView):
 
     def form_valid(self, form):
         student = Student.objects.get(user=self.request.user)
-        msg = 'Your profile was successfully updated.'
-        new_message('student', student, 'info', msg)
+        MessageCenter.student_updated(student)
         return super(UpdateStudentView, self).form_valid(form)
 
 
@@ -227,7 +226,7 @@ class ProfileView(View):
     def get(self, request):
         try:
             student = Student.objects.get(user=self.request.user)
-            notes = get_notifications('student', student)
+            notes = MessageCenter.get_notifications('student', student)
             return render(request, self.template_name, {'student': student, 'user': student.user, 'notifications': notes})
         except ObjectDoesNotExist:
             return redirect('student:new')
@@ -242,7 +241,7 @@ def get_states(request, country_name):
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
-def get_states_update(request,pk, country_name):
+def get_states_update(request, pk, country_name):
     states = JobinTerritory.objects.filter(country=country_name)
     state_dic = {}
     for state in states:
@@ -261,7 +260,7 @@ def get_majors(request, program_id):
     return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
 
 
-def get_majors_update(request,pk, program_id):
+def get_majors_update(request, pk, program_id):
     program = JobinProgram.objects.get(name=program_id)
     majors = JobinMajor.objects.filter(program=program)
     major_dic = {}
