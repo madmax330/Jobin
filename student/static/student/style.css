@@ -13,6 +13,11 @@ h1, h2, h3, h4, h5{
     overflow: hidden;
 }
 
+.slide-container{
+    max-height: 500px!important;
+    min-height: 500px!important;
+}
+
 .presentbtn{
     margin-left: 10px;
 }

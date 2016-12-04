@@ -77,17 +77,14 @@
                                 <h3 class="w3-text-white">Student Information</h3>
                             </header>
                             <div class="w3-container">
-                                <label>First Name:</label><span> {{ nav_student.firstname }}</span><br/>
-                                <label>Last Name:</label><span> {{ nav_student.lastname }}</span><br/>
-                                <label>Date of Birth:</label><span> {{ nav_student.dob }}</span><br/>
-                                <label>School:</label><span>{{ nav_student.school }}</span><br/>
-                                <label>Program:</label><span>{{ nav_student.program }}</span><br/>
-                                <label>Major:</label><span>{{ nav_student.major }}</span><br/>
-                                <label>Phone:</label><span>{{ nav_student.phone }}</span><br/>
-                                <label>Email:</label><span>{{ nav_student.email }}</span><br/>
-                                <label>Address:</label>
-                                <p>{{ nav_student.address }}, {{ nav_student.city }},
-                                    {{ nav_student.state }}, {{ nav_student.zipcode }}</p>
+                                <h5>{{ nav_student.firstname }} {{ nav_student.lastname }}</h5>
+                                <span><i>{{ nav_student.school }}</i></span><br/>
+                                <span>{{ nav_student.program }}</span><br/>
+                                <span>{{ nav_student.major }}</span><br/>
+                                <span><i>{{ nav_student.phone }}</i></span><br/>
+                                <span><i>{{ nav_student.email }}</i></span><br/>
+                                <span>{{ nav_student.address }}, {{ nav_student.city }},
+                                    {{ nav_student.state }}, {{ nav_student.zipcode }}</span>
                             </div>
                         </div>
                     {% endif %}

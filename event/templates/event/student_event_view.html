@@ -16,14 +16,14 @@
                 <div class="w3-container w3-padding-8 title-color">
                     <h4 class="w3-text-white">Event Information</h4>
                 </div>
-                <div class="w3-container scrollable">
+                <div class="slide-container w3-container scrollable">
                     <h5>{{ x.title }}</h5>
                     <label>Date:</label><span> {{ x.date }}</span><br/>
                     <label>Time:</label><span> {{ x.time }}</span><br/>
                     <label>Address:</label><span> {{ x.address }}</span><br/>
                     <label>Website:</label><span> {{ x.website }}</span><br/>
                     <label>Description:</label><br/>
-                    <span>{{ x.desc }}</span>
+                    <span>{{ x.desc | linebreaksbr}}</span>
                 </div>
                 <div class="w3-display-topright w3-medium w3-container w3-padding-16">
                     {% if not x.interested %}

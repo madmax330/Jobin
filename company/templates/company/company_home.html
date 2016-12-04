@@ -31,7 +31,7 @@
                         <td>{{ x.openings }}</td>
                         <td>{{ x.start_date }}</td>
                         <td>{{ x.deadline }}</td>
-                        <td><a href="{% url 'post:companypost' pk=x.pk%}">Details</a></td>
+                        <td><a href="{% url 'post:applicants' pk=x.pk%}">Applicants</a></td>
                     </tr>
                 {% endfor %}
             </table>

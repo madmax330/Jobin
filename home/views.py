@@ -37,7 +37,7 @@ class IndexView(View):
                     return redirect('student:index')
                 elif user.groups.filter(name='unvalid_user').exists():
                     infos = 'Your account is not verified yet, please confirm your account with the link sent to you by mail'
-                    return redirect('home:invalid_user', Infos =infos )
+                    return redirect('home:invalid_user', Infos=infos)
                 else:
                     return redirect('home:index')
         return render(request, self.template_name, {'error': 'Username or password is incorrect.'})

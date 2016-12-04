@@ -34,17 +34,17 @@
                 <div class="w3-container w3-padding-8 title-color">
                     <h4 class="w3-text-white">Post Information</h4>
                 </div>
-                <div class="w3-container scrollable" style="max-height: 400px;">
+                <div class="slide-container w3-container scrollable">
                     <h5>{{ x.title }}</h5>
                     <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
                     <label>End Date:</label><span> {{ x.end_date }}</span><br/>
                     <label>Wage:</label><span> {{ x.wage }}$/hr</span><br/>
                     <label>Openings:</label><span> {{ x.openings }}</span><br/>
-                    <label>Application Deadline:</label><span> {{ x.deadline }}</span><br/>
-                    <label>Description:</label><br/>
-                    <span>{{ x.description }}</span><br/>
+                    <label><strong>Application Deadline:</strong></label><span> {{ x.deadline }}</span><br/>
                     <label>Requirements:</label><br/>
-                    <span>{{ x.requirements }}</span>
+                    <span>{{ x.requirements | linebreaksbr}}</span><br/>
+                    <label>Description:</label><br/>
+                    <span>{{ x.description | linebreaksbr}}</span>
                 </div>
             </div>
         </div>
