@@ -4,7 +4,7 @@
             Cover Letter
         </div>
         <div class="panel-body">
-            <p>{{ app.cover }}</p>
+            <p>{{ app.cover | linebreaksbr}}</p>
         </div>
     </div>
 {% endif %}
@@ -43,7 +43,7 @@
                     </tr>
                 </table>
                 <label>Description:</label>
-                <p>{{ x.description }}</p>
+                <p>{{ x.description | linebreaksbr}}</p>
                 <hr/>
             {% endfor %}
         {% endif %}
@@ -86,7 +86,7 @@
                     </tr>
                 </table>
                 <label>Description:</label>
-                <p>{{ x.description }}</p>
+                <p>{{ x.description | linebreaksbr}}</p>
                 <hr/>
             {% endfor %}
         {% endif %}
@@ -140,4 +140,10 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(function(){
+           $('body').on('click', '#dBtn')
+        });
+    </script>
 </div>

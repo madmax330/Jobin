@@ -65,15 +65,18 @@
             page.val(parseInt(page.val()) - 1);
             $("#hiddenform").submit();
         });
+
         $("#nBtn").click(function(){
             var page = $("#page");
             page.val(parseInt(page.val()) + 1);
             $("#hiddenform").submit();
         });
-        $("#dBtn").click(function(){
+
+        $('body').on('click', '#dBtn', function(){
             $("#keep").val("False");
             $("#hiddenform").submit();
         });
+
         $("#clBtn").click(function(){
             $("#cover").val("True");
             $("#hiddenform").submit();

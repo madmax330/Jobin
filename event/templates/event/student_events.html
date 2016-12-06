@@ -6,7 +6,7 @@
 
 {% block content %}
     <div class="w3-container">
-        <div class="w3-container header-color">
+        <div class="events-header w3-container header-color">
             <h3 class="w3-center w3-text-white">Events ({{ count }})</h3>
         </div>
         <div class="w3-content w3-container w3-padding-16" style="position:relative">
@@ -34,5 +34,13 @@
           }
           x[slideIndex-1].style.display = "block";
         }
+    </script>
+
+    <script>
+        $(function(){
+            $('html, body').animate({
+                scrollTop: $('.events-header').offset().top
+            }, 'slow');
+        });
     </script>
 {% endblock %}

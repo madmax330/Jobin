@@ -3,7 +3,7 @@ from django.views import generic
 from django.views.generic import View
 from django.shortcuts import redirect
 from .models import Event, EventInterest
-from home.utils import new_message, get_messages, get_notifications
+from home.utils import MessageCenter
 from home.models import JobinTerritory
 from .forms import NewEventForm
 from company.models import Company
@@ -22,7 +22,7 @@ class CompanyEvents(generic.ListView):
     def get_context_data(self, **kwargs):
         company = Company.objects.get(user=self.request.user)
         context = super(CompanyEvents, self).get_context_data(**kwargs)
-        msgs = get_messages('company', company)
+        msgs = MessageCenter.get_messages('company', company)
         context['company'] = company
         context['expired_events'] = Event.objects.filter(company=company, active=False)
         context['msgs'] = msgs
@@ -42,10 +42,10 @@ class NewEventView(CreateView):
         return context
 
     def form_valid(self, form):
+        company = Company.objects.get(user=self.request.user)
         event = form.save(commit=False)
-        event.company = Company.objects.get(user=self.request.user)
-        msg = 'Your event was created successfully.'
-        new_message('company', event.company, 'info', msg)
+        event.company = company
+        MessageCenter.event_created(company, event.title)
         return super(NewEventView, self).form_valid(form)
 
 
@@ -57,12 +57,12 @@ class EventUpdateView(UpdateView):
         context = super(EventUpdateView, self).get_context_data(**kwargs)
         company = Company.objects.get(user=self.request.user)
         context['company'] = company
+        context['update'] = 'True'
         return context
 
     def form_valid(self, form):
         event = form.save(commit=False)
-        msg = 'Your event was updated successfully.'
-        new_message('company', event.company, 'info', msg)
+        MessageCenter.event_updated(event.company, event.title)
         return super(EventUpdateView, self).form_valid(form)
 
 
@@ -104,8 +104,10 @@ class StudentEvents(generic.ListView):
         student = Student.objects.get(user=self.request.user)
         context = super(StudentEvents, self).get_context_data(**kwargs)
         context['count'] = Event.objects.count()
-        msgs = get_messages('student', student)
-        notes = get_notifications('student', student)
+        msgs = MessageCenter.get_messages('student', student)
+        notes = MessageCenter.get_notifications('student', student)
+        if len(student.email) > 30:
+            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
         context['msgs'] = msgs
         context['nav_student'] = student
         context['notifications'] = notes
@@ -121,9 +123,7 @@ class NewInterest(View):
         interest.student = student
         interest.event = event
         interest.save()
-        msg = 'Your interest in event: ' + event.title + ' noted, you can view this event in your "Interested Events"' \
-                                                         ' in the Home page.'
-        new_message('student', student, 'info', msg)
+        MessageCenter.event_interest_noticed(student, event.title)
         return redirect('event:studentevents', pk=pk)
 
 
@@ -136,13 +136,17 @@ def get_states(request, country_name):
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
-def get_states_update(request,pk, country_name):
-    states = JobinTerritory.objects.filter(country=country_name)
+def get_states_update(request, pk, country_name, state):
+    current_state = JobinTerritory.objects.get(name=state)
+    states = JobinTerritory.objects.filter(country=current_state.country)
+    state_list = [current_state.name]
     state_dic = {}
-    for state in states:
-        state_dic[state.name] = state.name
+    for x in states:
+        if not x.name == current_state.name:
+            state_dic[x.name] = x.name
     state_dic = sorted(state_dic)
-    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
+    state_list.extend(state_dic)
+    return HttpResponse(simplejson.dumps(state_list), content_type='application/json')
 
 
 class CustomEvent:
