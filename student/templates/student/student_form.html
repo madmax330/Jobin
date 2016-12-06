@@ -7,6 +7,8 @@
 {% block scripts %}
     {% load staticfiles %}
     <script src="{% static 'home/zipcode_validation.js' %}"></script>
+    <script src="{% static 'home/change_major_script.js' %}"></script>
+    <script src="{% static 'home/change_state_script.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -47,5 +49,13 @@
 
             });
         </script>
+    </div>
+
+    <div class="page-info-div">
+        {% if update %}
+            update
+        {% else %}
+            new
+        {% endif %}
     </div>
 {% endblock %}

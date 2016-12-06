@@ -98,10 +98,14 @@ def get_states(request, country_name):
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
-def get_states_update(request,pk, country_name):
-    states = JobinTerritory.objects.filter(country=country_name)
+def get_states_update(request, pk, country_name, state):
+    current_state = JobinTerritory.objects.get(name=state)
+    states = JobinTerritory.objects.filter(country=current_state.country)
+    state_list = [current_state.name]
     state_dic = {}
-    for state in states:
-        state_dic[state.name] = state.name
+    for x in states:
+        if not x.name == current_state.name:
+            state_dic[x.name] = x.name
     state_dic = sorted(state_dic)
-    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
+    state_list.extend(state_dic)
+    return HttpResponse(simplejson.dumps(state_list), content_type='application/json')
