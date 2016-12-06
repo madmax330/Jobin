@@ -7,6 +7,7 @@
 {% block scripts %}
     {% load staticfiles %}
     <script src="{% static 'home/zipcode_validation.js' %}"></script>
+    <script src="{% static 'home/change_state_script.js' %}"></script>
 {% endblock %}
 
 {% block side_content %}
@@ -52,6 +53,14 @@
                     <button class="btn submit-btn" type="submit">Submit</button>
                 {% endif %}
             </form>
+        </div>
+
+        <div class="page-info-div">
+            {% if update %}
+                update
+            {% else %}
+                new
+            {% endif %}
         </div>
     </div>
 {% endblock %}

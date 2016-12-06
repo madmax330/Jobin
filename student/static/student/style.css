@@ -26,6 +26,10 @@ h1, h2, h3, h4, h5{
     overflow: scroll;
 }
 
+.page-info-div{
+    display: none;
+}
+
 .form-element{
     margin-top: 8px;
 }

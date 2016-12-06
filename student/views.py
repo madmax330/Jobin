@@ -241,13 +241,17 @@ def get_states(request, country_name):
     return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
-def get_states_update(request, pk, country_name):
-    states = JobinTerritory.objects.filter(country=country_name)
+def get_states_update(request, pk, country_name, state):
+    current_state = JobinTerritory.objects.get(name=state)
+    states = JobinTerritory.objects.filter(country=current_state.country)
+    state_list = [current_state.name]
     state_dic = {}
-    for state in states:
-        state_dic[state.name] = state.name
+    for x in states:
+        if not x.name == current_state.name:
+            state_dic[x.name] = x.name
     state_dic = sorted(state_dic)
-    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
+    state_list.extend(state_dic)
+    return HttpResponse(simplejson.dumps(state_list), content_type='application/json')
 
 
 def get_majors(request, program_id):
@@ -260,11 +264,14 @@ def get_majors(request, program_id):
     return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
 
 
-def get_majors_update(request, pk, program_id):
-    program = JobinProgram.objects.get(name=program_id)
-    majors = JobinMajor.objects.filter(program=program)
+def get_majors_update(request, pk, program_id, major):
+    current_major = JobinMajor.objects.get(name=major)
+    majors = JobinMajor.objects.filter(program=current_major.program)
+    major_list = [current_major.name]
     major_dic = {}
-    for major in majors:
-        major_dic[major.name] = major.name
+    for x in majors:
+        if not x.name == current_major.name:
+            major_dic[x.name] = x.name
     major_dic = sorted(major_dic)
-    return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
+    major_list.extend(major_dic)
+    return HttpResponse(simplejson.dumps(major_list), content_type='application/json')

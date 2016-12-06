@@ -24,6 +24,10 @@ span.required:after{
     text-align: center;
 }
 
+.page-info-div{
+    display: none;
+}
+
 .resume-table td{
     padding-left: 16px;
 }

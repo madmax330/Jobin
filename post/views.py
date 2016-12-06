@@ -69,6 +69,7 @@ class PostUpdateView(UpdateView):
         context = super(PostUpdateView, self).get_context_data(**kwargs)
         company = Company.objects.get(user=self.request.user)
         context['company'] = company
+        context['update'] = 'True'
         return context
 
     def form_valid(self, form):
