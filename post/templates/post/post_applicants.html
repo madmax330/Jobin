@@ -114,7 +114,11 @@
                     </tr>
                 {% endfor %}
             </table>
-            <a href="{% url 'post:companypost' pk=post.pk %}" class="btn regular-btn">Back to post</a>
+            <div class="margined">
+                <a href="{% url 'post:companyposts' %}" class="btn regular-btn">Back to List</a>
+                <a href="{% url 'post:companypost' pk=post.pk %}" class="btn regular-btn">Back to Post Details</a>
+            </div>
+
         </div>
     </div>
     <script>

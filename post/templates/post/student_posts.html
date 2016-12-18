@@ -28,6 +28,7 @@
         </div>
         <div class="w3-content w3-container w3-padding-16" style="position:relative">
             {% include 'post/student_post_view.html' %}
+            <span style="display: none;" class="post-type">{{ pt }}</span>
             <a class="w3-btn-floating w3-hover-dark-grey" style="position:absolute;top:50%;left:0" onclick="plusDivs(-1)">❮</a>
             <a class="w3-btn-floating w3-hover-dark-grey" style="position:absolute;top:50%;right:0" onclick="plusDivs(1)">❯</a>
         </div>
@@ -38,18 +39,21 @@
         showDivs(slideIndex);
 
         function plusDivs(n) {
-          showDivs(slideIndex += n);
+            showDivs(slideIndex += n);
         }
 
         function showDivs(n) {
-          var i;
-          var x = document.getElementsByClassName("mySlides");
-          if (n > x.length) {slideIndex = 1}
-          if (n < 1) {slideIndex = x.length}
-          for (i = 0; i < x.length; i++) {
-             x[i].style.display = "none";
-          }
-          x[slideIndex-1].style.display = "block";
+            $('.viewed-post').removeClass('viewed-post');
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            if (n > x.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = x.length}
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            x[slideIndex-1].style.display = "block";
+            var cp = $(x[slideIndex - 1]);
+            cp.addClass('viewed-post');
         }
     </script>
 
@@ -68,3 +72,5 @@
     </script>
 
 {% endblock %}
+
+{% block page_name %}posts{% endblock %}

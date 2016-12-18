@@ -50,6 +50,8 @@ $(function(){
         $('.warning-container').hide();
     });
 
+    $("option[value='All Programs']").remove();
+
 });
 
 

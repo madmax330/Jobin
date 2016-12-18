@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from .forms import NewUserForm
-from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail,JobinInvalidUser
+from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail, JobinInvalidUser
+from .content_gen import ContentGen
 from student.models import Student
 from company.models import Company
 from django.views.generic import View
@@ -122,7 +123,6 @@ class RegisterView(View):
             #return redirect('home:verify')
 
 
-
 class ChangeUserInfo(View):
     template_name = 'home/user_info_change.html'
 
@@ -229,11 +229,13 @@ class VerifyView(View):
     def get(self, request):
         return render(request, self.template_name)
 
+
 class UnvalidUser(View):
     template_name = 'home/invalid_user.html'
 
     def get(self, request,Infos):
         return render(request, self.template_name, {'Infos': Infos})
+
 
 class NotOpenView(View):
     template_name = 'home/notopen.html'
@@ -251,21 +253,32 @@ class LogoutView(View):
 
 class CloseNotification(View):
 
-    def get(self, request, u, pk):
-        n = Notification.objects.get(pk=pk)
+    def get(self, request, u, nk, page, pk, pt):
+        n = Notification.objects.get(pk=nk)
         n.opened = True
         n.save()
         if u == 'company':
             return redirect('company:index')
         elif u == 'student':
-            return redirect('student:index')
+            if page == 'home':
+                return redirect('student:index')
+            elif page == 'posts':
+                return redirect('post:studentposts', pk=pk, pt=pt)
+            elif page == 'events':
+                return redirect('event:studentevents', pk=pk)
+            elif page == 'resumes':
+                return redirect('resume:index')
+            elif page == 'profile':
+                return redirect('student:profile')
+            elif page == 'history':
+                return redirect('student:history')
         logout(request)
         return redirect('home:index')
 
 
 class CloseAllNotifications(View):
 
-    def get(self, request, u):
+    def get(self, request, u, page, pk, pt):
         if u == 'company':
             ns = Notification.objects.filter(company=Company.objects.filter(user=self.request.user).first())
             for x in ns:
@@ -277,12 +290,21 @@ class CloseAllNotifications(View):
             for x in ns:
                 x.opened = True
                 x.save()
-            return redirect('student:index')
+            if page == 'home':
+                return redirect('student:index')
+            elif page == 'posts':
+                return redirect('post:studentposts', pk=pk, pt=pt)
+            elif page == 'events':
+                return redirect('event:studentevents', pk=pk)
+            elif page == 'resumes':
+                return redirect('resume:index')
+            elif page == 'profile':
+                return redirect('student:profile')
         logout(request)
         return redirect('home:index')
 
 
-def confirm_email(request,token):
+def confirm_email(request, token):
     try:
         email = confirm_token(token)
     except:
@@ -317,5 +339,11 @@ def confirm_email(request,token):
         infos = 'You have confirmed your account. Thanks!'
 
     return redirect('home:invalid_user', Infos=infos)
+
+
+def create_test_content(request):
+    ContentGen.gen_test_content()
+    return redirect('home:index')
+
 
 

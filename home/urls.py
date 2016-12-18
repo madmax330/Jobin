@@ -11,8 +11,10 @@ urlpatterns = [
     url(r'^closed/$', views.NotOpenView.as_view(), name='closed'),
     url(r'^updateinfo/(?P<utype>\w+)/$', views.ChangeUserInfo.as_view(), name='updateinfo'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
-    url(r'^closenote/(?P<u>\w+)/(?P<pk>[0-9]+)/$', views.CloseNotification.as_view(), name='closenote'),
-    url(r'^closenote/(?P<u>\w+)/$', views.CloseAllNotifications.as_view(), name='closeallnotes'),
+    url(r'^closenote/(?P<u>\w+)/(?P<nk>[0-9]+)/(?P<page>\w+)/(?P<pk>[0-9]+)/(?P<pt>\w+)/$',
+        views.CloseNotification.as_view(), name='closenote'),
+    url(r'^closenote/all/(?P<u>\w+)/(?P<page>\w+)/(?P<pk>[0-9]+)/(?P<pt>\w+)/$',
+        views.CloseAllNotifications.as_view(), name='closeallnotes'),
     url(r'^invalid_user/(?P<Infos>[\w\.\-_ ]+)', views.UnvalidUser.as_view(), name='invalid_user'),
     url(r'^register/student/confirm_email/(?P<token>[\w\.\-_ ]+)', views.confirm_email, name='confirm_email'),
     url(r'^register/company/confirm_email/(?P<token>[\w\.\-_ ]+)', views.confirm_email, name='confirm_email')
