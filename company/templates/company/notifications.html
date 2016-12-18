@@ -7,14 +7,15 @@
             {% for x in notifications %}
                 <div class="alert alert-info">
                     <div style="position:relative; top:0; left:0; padding:2px;">
-                        <a href="{% url 'home:closenote' u='company' pk=x.pk %}">x</a>
+                        <a href="{% url 'home:closenote' u='company' nk=x.pk page='home' pk=0 pt='none'%}">x</a>
                     </div>
                     <p>
                         {{ x.message }}
                     </p>
                 </div>
             {% endfor %}
-            <a href="{% url 'home:closeallnotes' u='company' %}" class="btn btn-danger" style="width:100%">Close all</a>
+            <a href="{% url 'home:closeallnotes' u='company' page='home' pk=0 pt='none'%}"
+               class="btn btn-danger" style="width:100%">Close all</a>
         </div>
     </div>
 {% endif %}

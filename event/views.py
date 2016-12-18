@@ -111,6 +111,8 @@ class StudentEvents(generic.ListView):
         context['msgs'] = msgs
         context['nav_student'] = student
         context['notifications'] = notes
+        for x in msgs:
+            x.delete()
         return context
 
 

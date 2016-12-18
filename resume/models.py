@@ -10,7 +10,7 @@ class Resume(models.Model):
     last_updated = models.DateTimeField(default=django.utils.timezone.now)
     file_resume = models.FileField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
-    gpa = models.DecimalField(null=True, blank=True, max_digits=4, decimal_places=2)
+    gpa = models.DecimalField(default=0, null=True, blank=True, max_digits=4, decimal_places=2)
     is_complete = models.BooleanField(default=False)
     status = models.CharField(max_length=50, default="open")
 

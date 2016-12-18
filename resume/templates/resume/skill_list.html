@@ -13,7 +13,7 @@
             <td>{{ x.name }}</td>
             <td><a href="{% url 'resume:updateskill' pk=x.pk %}">Edit</a></td>
             <td>
-                <a href="#">Delete</a>
+                <a href="#" class="warning-open">Delete</a>
                 <div class="warning hide">
                     <h4>Are you sure you want to delete <u>{{ x.name }}</u> skill?</h4>
                     <hr/>

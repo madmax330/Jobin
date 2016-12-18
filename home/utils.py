@@ -199,7 +199,8 @@ class MessageCenter:
     @staticmethod
     def incoming_deadline(company, title):
         msg = 'The post ' + title + "'s deadline is coming up soon. After the deadline, the post will not" \
-                " be visible to students anymore, but you will be able to manage applicants until the start date."
+                " be visible to students anymore, therefore you will not get any new application, but you will " \
+                "continue to be able to manage applicants."
         MessageCenter.new_message('company', company, 'warning', msg)
 
     @staticmethod

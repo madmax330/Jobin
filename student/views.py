@@ -5,6 +5,7 @@ from django.contrib.auth import logout
 from .models import Student
 from post.models import Application
 from event.models import EventInterest
+from event.utils import EventUtil
 from resume.models import Resume
 from home.models import JobinSchool, JobinTerritory, JobinProgram, JobinMajor, Notification
 from home.utils import MessageCenter
@@ -22,6 +23,7 @@ class IndexView(View):
         res = Student.objects.filter(user=request.user)
         if res.count() > 0:
             student = res.first()
+
             events = EventInterest.objects.filter(student=student, active=True)
             apps = Application.objects.filter(student=student, status='active')
             old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
@@ -126,6 +128,8 @@ class HistoryView(View):
                 epages = list(range(1, int(ecount / 10) + 1))
             if len(epages) > 10:
                 epages = epages[0:10]
+            if len(student.email) > 30:
+                student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
             context = {
                 'nav_student': student,
                 'all_notifications': notes[0:10],
@@ -199,7 +203,8 @@ class HistoryView(View):
             else:
                 if len(epages) > 10:
                     epages = epages[0:10]
-
+        if len(student.email) > 30:
+            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
         context = {
             'nav_student': student,
             'all_notifications': notes[note_start: note_start+10],

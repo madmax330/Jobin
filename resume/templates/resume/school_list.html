@@ -21,7 +21,7 @@
             <td>{% if x.is_current %}Current School{% else %}{{ x.end }}{% endif %}</td>
             <td><a href="{% url 'resume:updateschool' pk=x.pk %}">Edit</a></td>
             <td>
-                <a href="#">Delete</a>
+                <a href="#" class="warning-open">Delete</a>
                 <div class="warning hide">
                     <h4>Are you sure you want to delete <u>{{ x.name }}</u> school?</h4>
                     <hr/>
