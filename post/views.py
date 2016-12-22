@@ -12,7 +12,7 @@ from company.models import Company
 from student.models import Student
 from resume.models import Resume
 from django.core.exceptions import ObjectDoesNotExist
-from wkhtmltopdf.views import PDFTemplateResponse
+#from wkhtmltopdf.views import PDFTemplateResponse
 
 
 class CompanyPosts(generic.ListView):
@@ -428,18 +428,19 @@ class ApplicantPDF(View):
         app = Applicant(a, a.student)
         filename = app.fname + app.lname + 'Resume.pdf'
         context = PostContexts.get_applicant_context(app)
-        response = PDFTemplateResponse(
-            request=request,
-            template=self.template_name,
-            filename=filename,
-            context=context,
-            show_content_in_browser=False,
-            cmd_options={
-                'page-size': 'A4',
-                'orientation': 'portrait',
-                'disable-smart-shrinking': True,
-            },
-        )
+        reponse = 'none'
+        # response = PDFTemplateResponse(
+        #     request=request,
+        #     template=self.template_name,
+        #     filename=filename,
+        #     context=context,
+        #     show_content_in_browser=False,
+        #     cmd_options={
+        #         'page-size': 'A4',
+        #         'orientation': 'portrait',
+        #         'disable-smart-shrinking': True,
+        #     },
+        # )
         return response
         #context = get_applicant_context(app)
         #return render(request, self.template_name, context)
