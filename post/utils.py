@@ -112,8 +112,9 @@ class ApplicantUtil:
                 x.save()
                 msg = "Your application for the job " + x.post_title + " was discontinued."
                 MessageCenter.new_notification('student', x.student, 100, msg)
-            msg = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
-            MessageCenter.new_message('company', post.company, 'info', msg)
+            if len(d) > 0:
+                msg = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
+                MessageCenter.new_message('company', post.company, 'info', msg)
         return l['apps']
 
     @staticmethod

@@ -1,9 +1,9 @@
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import generic
 from django.views.generic import View
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from .models import Event, EventInterest
-from home.utils import MessageCenter
+from home.utils import MessageCenter, Pagination
 from home.models import JobinTerritory
 from .forms import NewEventForm
 from company.models import Company
@@ -12,23 +12,48 @@ import simplejson
 from django.http import HttpResponse
 
 
-class CompanyEvents(generic.ListView):
+class CompanyEvents(View):
     template_name = 'event/company_events.html'
-    context_object_name = 'events'
 
-    def get_queryset(self):
-        return Event.objects.filter(company=Company.objects.get(user=self.request.user), active=True)
-
-    def get_context_data(self, **kwargs):
+    def get(self, request):
         company = Company.objects.get(user=self.request.user)
-        context = super(CompanyEvents, self).get_context_data(**kwargs)
+        events = Event.objects.filter(company=Company.objects.get(user=self.request.user), active=True)
+        ex_events = Event.objects.filter(company=company, active=False)
         msgs = MessageCenter.get_messages('company', company)
-        context['company'] = company
-        context['expired_events'] = Event.objects.filter(company=company, active=False)
-        context['msgs'] = msgs
+        context = {
+            'events': Pagination.get_page_items(events),
+            'expired_events': Pagination.get_page_items(ex_events),
+            'msgs': msgs,
+            'company': company,
+            'epages': Pagination.get_pages(events),
+            'epage': 1,
+            'xepages': Pagination.get_pages(ex_events),
+            'xepage': 1,
+        }
         for x in msgs:
             x.delete()
-        return context
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        company = Company.objects.get(user=self.request.user)
+        epage = int(request.POST.get('event_page'))
+        xepage = int(request.POST.get('xevent_page'))
+        events = Event.objects.filter(company=Company.objects.get(user=self.request.user), active=True)
+        ex_events = Event.objects.filter(company=company, active=False)
+        msgs = MessageCenter.get_messages('company', company)
+        context = {
+            'events': Pagination.get_page_items(events, epage),
+            'expired_events': Pagination.get_page_items(ex_events, xepage),
+            'msgs': msgs,
+            'company': company,
+            'epages': Pagination.get_pages(events, epage),
+            'epage': epage + 1,
+            'xepages': Pagination.get_pages(ex_events, xepage),
+            'xepage': xepage + 1,
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
 
 
 class NewEventView(CreateView):
@@ -114,6 +139,50 @@ class StudentEvents(generic.ListView):
         for x in msgs:
             x.delete()
         return context
+
+
+class EventRecovery(View):
+    form_class = NewEventForm
+    template_name = 'event/event_form.html'
+
+    def get(self, request, pk):
+        event = Event.objects.get(pk=pk)
+        company = event.company
+        MessageCenter.event_reactivate_info_message(company)
+        form = self.form_class(instance=event)
+        msgs = MessageCenter.get_messages('company', company)
+        context = {
+            'form': form,
+            'company': company,
+            'msgs': msgs,
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        company = Company.objects.get(user=self.request.user)
+        e = Event.objects.get(pk=pk)
+        form = self.form_class(request.POST, instance=e)
+
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.company = company
+            event.is_startup_post = company.is_startup
+            event.schools = 'ALL'
+            event.status = 'open'
+            event.save()
+            MessageCenter.event_reactivated(company, event.title)
+            return redirect('event:companyevents')
+        msgs = MessageCenter.get_messages('company', company)
+        context = {
+            'company': company,
+            'msgs': msgs,
+            'form': form,
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
 
 
 class NewInterest(View):

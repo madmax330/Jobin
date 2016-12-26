@@ -26,5 +26,17 @@
             <td><a href="{% url 'post:recover' p.pk %}">Re-activate</a></td>
         </tr>
     {% endfor %}
+        <tr>
+            <td colspan="6">
+                <span>Page: </span><span class="hidden page-object">xpost_page</span>
+                {% for x in xpages %}
+                    {% if x == xpage %}
+                        <strong><span>{{ x }} </span></strong>
+                    {% else %}
+                        <span class="app-page-number page-number">{{ x }} </span>
+                    {% endif %}|
+                {% endfor %}
+            </td>
+        </tr>
     </tbody>
 </table>

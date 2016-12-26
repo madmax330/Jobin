@@ -4,13 +4,19 @@
 
 {% block historyactive %}active{% endblock %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'home/page_script.js' %}"></script>
+{% endblock %}
+
 {% block content %}
+
     <div class="w3-container">
         <div class="w3-card-4 w3-white">
             <header class="w3-container title-color w3-text-white">
                 <h4 class="w3-center">Applications History</h4>
             </header>
-            {% if applications.count > 0 %}
+            {% if acount > 0 %}
                 <table class="w3-table">
                     <thead>
                     <tr>
@@ -31,11 +37,13 @@
                         {% endfor %}
                         <tr>
                             <td colspan="4">
-                                <span>Page: </span>
+                                <span>Page: </span><span class="hide page-object">app_page</span>
                                 {% for x in apages %}
-                                    {% if x == apage %}<strong>{% endif %}
-                                    <span class="app-page-number page-number">{{ x }} </span>
-                                    {% if x == apage %}</strong>{% endif %}|
+                                    {% if x == apage %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <span class="app-page-number page-number">{{ x }} </span>
+                                    {% endif %}|
                                 {% endfor %}
                             </td>
                         </tr>
@@ -71,11 +79,13 @@
                         {% endfor %}
                         <tr>
                             <td colspan="4">
-                                <span>Page: </span>
+                                <span>Page: </span><span class="hide page-object">event_page</span>
                                 {% for x in epages %}
-                                    {% if x == epage %}<strong>{% endif %}
-                                    <span class="event-page-number page-number">{{ x }} </span>
-                                    {% if x == epage %}</strong>{% endif %}|
+                                    {% if x == epage %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <span class="app-page-number page-number">{{ x }} </span>
+                                    {% endif %}|
                                 {% endfor %}
                             </td>
                         </tr>
@@ -101,11 +111,13 @@
                     {% endfor %}
                 </div>
                 <div class="w3-container">
-                    <span>Page: </span>
+                    <span>Page: </span><span class="hide page-object">note_page</span>
                     {% for x in npages %}
-                        {% if x == npage %}<strong>{% endif %}
-                        <span class="note-page-number page-number">{{ x }} </span>
-                        {% if x == npage %}</strong>{% endif %}|
+                        {% if x == npage %}
+                            <strong><span>{{ x }} </span></strong>
+                        {% else %}
+                            <span class="app-page-number page-number">{{ x }} </span>
+                        {% endif %}|
                     {% endfor %}
                 </div>
             {% else %}
@@ -115,7 +127,19 @@
             {% endif %}
 
         </div>
-
+        <div class="hide">
+            <form id="page-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input id="note_page" type="number" name="note_page" value="{{ npage }}"/>
+                <input id="app_page" type="number" name="app_page" value="{{ apage }}"/>
+                <input id="event_page" type="number" name="event_page" value="{{ epage }}"/>
+            </form>
+            <div id="page-ids">note_page,app_page,event_page</div>
+            <div id="current-note_page">{{ npage }}</div>
+            <div id="current-app_page">{{ apage }}</div>
+            <div id="current-event_page">{{ epage }}</div>
+            <div id="form-id">page-form</div>
+        </div>
     </div>
 {% endblock %}
 
