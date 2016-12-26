@@ -35,9 +35,9 @@
                     {% endif %}
                 </div>
                 <h5>GPA:</h5>
-                <input id="id_gpa_filter" class="form-control" type="text" name="gpa_filter"/>
-                <input id="school-input" style="display: none;" name="schools" value="">
-                <input id="major-input" style="display: none;" name="majors" value="">
+                <input id="id_gpa_filter" class="form-control" type="text" name="gpa_filter" value="{{ gpa_val }}"/>
+                <input id="school-input" style="display: none;" name="schools" value="{{ school_val }}">
+                <input id="major-input" style="display: none;" name="majors" value="{{ major_val }}">
                 <input id="keepCheckbox" style="margin-top:10px;" type="checkbox" name="keep" checked/>
                 <span>Keep applications that are not in filtered values.</span><br/>
                 <div id="checkWarning" class="alert alert-danger hidden">
@@ -47,6 +47,12 @@
                 </div>
                 <a href="{% url 'post:applicants' pk=post.pk %}" class="btn regular-btn">Remove Filter</a>
                 <button class="btn btn-default regular-btn" type="submit">Filter</button>
+                <div class="hidden">
+                    <input id="page" type="number" name="page" value="{{ page }}"/>
+                    <div id="page-ids">page</div>
+                    <div id="current-page">{{ page }}</div>
+                    <div id="form-id">filter-form</div>
+                </div>
             </form>
         </div>
     </div>
@@ -113,6 +119,18 @@
                         </td>
                     </tr>
                 {% endfor %}
+                    <tr>
+                        <td colspan="6">
+                            <span>Page: </span><span class="hidden page-object">page</span>
+                            {% for x in pages %}
+                                {% if x == page %}
+                                    <strong><span>{{ x }} </span></strong>
+                                {% else %}
+                                    <span class="app-page-number page-number">{{ x }} </span>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
             </table>
             <div class="margined">
                 <a href="{% url 'post:companyposts' %}" class="btn regular-btn">Back to List</a>
@@ -124,6 +142,8 @@
     <script>
         $(function(){
             $("#filter-form").submit(function(){
+                var sch = $('#school-input');
+                var maj = $('#major-input');
                 var schools = "";
                 var majors = "";
                 $(".sdiv").children("input:checked").each(function(){
@@ -132,8 +152,18 @@
                 $(".mdiv").children("input:checked").each(function(){
                     majors = majors + this.value + ",";
                 });
-                $("#school-input").val(schools.substring(0,schools.length-1));
-                $("#major-input").val(majors.substring(0,majors.length-1));
+                if(sch.val() != ""){
+                    var sval = sch.val().toString();
+                    sch.val(sval.substring(0, sval.length - 1));
+                }
+                else
+                    sch.val(schools.substring(0,schools.length-1));
+                if(maj.val() != ""){
+                    var mval = maj.val().toString();
+                    maj.val(mval.substring(0, mval.length - 1));
+                }
+                else
+                    maj.val(majors.substring(0,majors.length-1));
             });
 
             $('#keepCheckbox').click(function(){

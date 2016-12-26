@@ -9,6 +9,11 @@
     {% include 'company/post_legend.html' %}
 {% endblock %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'home/page_script.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">
@@ -34,6 +39,18 @@
                         <td><a href="{% url 'post:applicants' pk=x.pk%}">Applicants</a></td>
                     </tr>
                 {% endfor %}
+                <tr>
+                    <td colspan="5">
+                        <span>Page: </span><span class="hidden page-object">post_page</span>
+                        {% for x in ppages %}
+                            {% if x == ppage %}
+                                <strong><span>{{ x }} </span></strong>
+                            {% else %}
+                                <span class="app-page-number page-number">{{ x }} </span>
+                            {% endif %}|
+                        {% endfor %}
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -57,8 +74,31 @@
                         <td><a href="{% url 'event:companyevent' pk=x.pk%}">Details</a></td>
                     </tr>
                 {% endfor %}
+                <tr>
+                    <td colspan="4">
+                        <span>Page: </span><span class="hidden page-object">event_page</span>
+                        {% for x in epages %}
+                            {% if x == epage %}
+                                <strong><span>{{ x }} </span></strong>
+                            {% else %}
+                                <span class="app-page-number page-number">{{ x }} </span>
+                            {% endif %}|
+                        {% endfor %}
+                    </td>
+                </tr>
             </table>
         </div>
+    </div>
+    <div class="hidden">
+        <form id="page-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input id="post_page" type="number" name="post_page" value="{{ ppage }}"/>
+            <input id="event_page" type="number" name="event_page" value="{{ epage }}"/>
+        </form>
+        <div id="page-ids">post_page,event_page</div>
+        <div id="current-post_page">{{ ppage }}</div>
+        <div id="current-event_page">{{ epage }}</div>
+        <div id="form-id">page-form</div>
     </div>
 {% endblock %}
 

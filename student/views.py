@@ -3,12 +3,13 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from .models import Student
+from .utils import StudentUtil
 from post.models import Application
 from event.models import EventInterest
 from event.utils import EventUtil
 from resume.models import Resume
 from home.models import JobinSchool, JobinTerritory, JobinProgram, JobinMajor, Notification
-from home.utils import MessageCenter
+from home.utils import MessageCenter, Pagination
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -23,24 +24,13 @@ class IndexView(View):
         res = Student.objects.filter(user=request.user)
         if res.count() > 0:
             student = res.first()
-
-            events = EventInterest.objects.filter(student=student, active=True)
-            apps = Application.objects.filter(student=student, status='active')
-            old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
-            resumes = Resume.objects.filter(student=student, is_complete=True)
             msgs = MessageCenter.get_messages('student', student)
             notifications = MessageCenter.get_notifications('student', student)
             if len(student.email) > 30:
                 student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-            context = {
-                'nav_student': student,
-                'apps': apps,
-                'old_apps': old_apps,
-                'events': events,
-                'resumes': resumes,
-                'msgs': msgs,
-                'notifications': notifications,
-            }
+            context = StudentUtil.get_home_context(student, 0, 0)
+            context['msgs'] = msgs
+            context['notifications'] = notifications
             for x in msgs:
                 x.delete()
             return render(request, self.template_name, context)
@@ -51,6 +41,21 @@ class IndexView(View):
                 logout(request)
                 return redirect('home:closed')
             return redirect('student:new')
+
+    def post(self, request):
+        student = Student.objects.get(user=self.request.user)
+        app_page = int(request.POST.get('app_page'))
+        event_page = int(request.POST.get('event_page'))
+        msgs = MessageCenter.get_messages('student', student)
+        notifications = MessageCenter.get_notifications('student', student)
+        if len(student.email) > 30:
+            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
+        context = StudentUtil.get_home_context(student, app_page, event_page)
+        context['msgs'] = msgs
+        context['notifications'] = notifications
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
 
 
 class NewStudentView(CreateView):
@@ -110,32 +115,17 @@ class HistoryView(View):
             for x in es:
                 events.append(x.event)
             notes = Notification.objects.filter(student=student)
-            npages = list(range(1, 2))
-            ncount = notes.count()
-            if (ncount/10) >= 1:
-                npages = list(range(1, int(ncount/10) + 1))
-            if len(npages) > 10:
-                npages = npages[0:10]
-            apages = list(range(1, 2))
-            acount = apps.count()
-            if (acount / 10) >= 1:
-                apages = list(range(1, int(acount / 10) + 1))
-            if len(apages) > 10:
-                apages = apages[0:10]
-            epages = list(range(1, 2))
-            ecount = len(events)
-            if (ecount / 10) >= 1:
-                epages = list(range(1, int(ecount / 10) + 1))
-            if len(epages) > 10:
-                epages = epages[0:10]
+            npages = Pagination.get_pages(notes)
+            apages = Pagination.get_pages(apps)
+            epages = Pagination.get_pages(events)
             if len(student.email) > 30:
                 student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
             context = {
                 'nav_student': student,
-                'all_notifications': notes[0:10],
+                'all_notifications': Pagination.get_page_items(notes),
                 'notifications': notes.filter(opened=False),
-                'applications': apps[0:10],
-                'events': events[0:10],
+                'applications': Pagination.get_page_items(apps),
+                'events': Pagination.get_page_items(events),
                 'ncount': notes.count(),
                 'acount': apps.count(),
                 'ecount': len(events),
@@ -161,65 +151,26 @@ class HistoryView(View):
         for x in es:
             events.append(x.event)
         notes = Notification.objects.filter(student=student)
-        note_start = int(note_page) * 10
-        app_start = int(app_page) * 10
-        event_start = int(event_page) * 10
-        npages = list(range(1, 2))
-        ncount = notes.count()
-        nval = int(ncount / 10)
-        if nval > 0:
-            npages = list(range(1, nval + 1))
-            if note_page - 5 > 0:
-                if note_page + 5 < nval:
-                    npages = npages[note_page - 5: note_page + 5]
-                else:
-                    npages = npages[note_page - 5:]
-            else:
-                if len(npages) > 10:
-                    npages = npages[0:10]
-        apages = list(range(1, 2))
-        acount = apps.count()
-        aval = int(acount / 10)
-        if aval > 0:
-            apages = list(range(1, aval + 1))
-            if app_page - 5 > 0:
-                if app_page + 5 < aval:
-                    apages = apages[app_page - 5: app_page + 5]
-                else:
-                    apages = apages[app_page - 5:]
-            else:
-                if len(apages) > 10:
-                    apages = apages[0:10]
-        epages = list(range(1, 2))
-        ecount = len(events)
-        e_val = int(ecount / 10)
-        if e_val > 0:
-            epages = list(range(1, e_val + 1))
-            if event_page - 5 > 0:
-                if event_page + 5 < e_val:
-                    epages = epages[event_page - 5: event_page + 5]
-                else:
-                    epages = epages[event_page - 5:]
-            else:
-                if len(epages) > 10:
-                    epages = epages[0:10]
+        npages = Pagination.get_pages(notes, note_page)
+        apages = Pagination.get_pages(apps, app_page)
+        epages = Pagination.get_pages(events, event_page)
         if len(student.email) > 30:
             student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
         context = {
             'nav_student': student,
-            'all_notifications': notes[note_start: note_start+10],
+            'all_notifications': Pagination.get_page_items(notes, note_page),
             'notifications': notes.filter(opened=False),
-            'applications': apps[app_start: app_start+10],
-            'events': events[event_start: event_start+10],
+            'applications': Pagination.get_page_items(apps, app_page),
+            'events': Pagination.get_page_items(events, event_page),
             'ncount': notes.count(),
             'acount': apps.count(),
             'ecount': len(events),
             'npages': npages,
             'apages': apages,
             'epages': epages,
-            'npage': note_page,
-            'apage': app_page,
-            'epage': event_page,
+            'npage': note_page + 1,
+            'apage': app_page + 1,
+            'epage': event_page + 1,
         }
 
         return render(request, self.template_name, context)
