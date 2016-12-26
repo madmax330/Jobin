@@ -31,6 +31,8 @@ class EventInterest(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
+    date = models.DateField()
+    event_name = models.CharField(max_length=100, null=True)
 
 
 

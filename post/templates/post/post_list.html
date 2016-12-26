@@ -28,5 +28,17 @@
             <td><a href="{% url 'post:update' p.pk %}">Edit</a></td>
         </tr>
     {% endfor %}
+        <tr>
+            <td colspan="7">
+                <span>Page: </span><span class="hidden page-object">post_page</span>
+                {% for x in ppages %}
+                    {% if x == ppage %}
+                        <strong><span>{{ x }} </span></strong>
+                    {% else %}
+                        <span class="app-page-number page-number">{{ x }} </span>
+                    {% endif %}|
+                {% endfor %}
+            </td>
+        </tr>
     </tbody>
 </table>

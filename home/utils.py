@@ -2,6 +2,34 @@ from .models import Message, Notification
 import datetime
 
 
+class Pagination:
+
+    @staticmethod
+    def get_pages(l, cp=0, base=10):
+        half_base = int(base / 2)
+        pages = list(range(1, 2))
+        count = len(l)
+        cv = int(count / base)
+        if not (count % base) == 0:
+            cv += 1
+        if cv > 0:
+            pages = list(range(1, cv + 1))
+            if cp - half_base > 0:
+                if cp + half_base < cv:
+                    pages = pages[cp - half_base: cp + half_base]
+                else:
+                    pages = pages[cp - half_base:]
+            else:
+                if len(pages) > base:
+                    pages = pages[0:base]
+        return pages
+
+    @staticmethod
+    def get_page_items(l, cp=0, base=10):
+        start = cp * base
+        return l[start: start + base]
+
+
 class MessageCenter:
 
     @staticmethod
@@ -89,6 +117,17 @@ class MessageCenter:
         msg = 'Your interest in event: ' + title + ' noted, you can view this event in your "Interested Events"' \
                                                          ' in the Home page.'
         MessageCenter.new_message('student', student, 'info', msg)
+
+    @staticmethod
+    def event_reactivate_info_message(company):
+        msg = 'Please update the event information and save it to reactivate the event.'
+        MessageCenter.new_message('company', company, 'info', msg)
+
+    @staticmethod
+    def event_reactivated(company, title):
+        msg = 'Event ' + title + ' successfully re-opened, students will now be able to view it in their ' \
+                'upcoming events'
+        MessageCenter.new_message('company', company, 'info', msg)
 
     #
     #   RESUME APP MESSAGES
@@ -199,7 +238,8 @@ class MessageCenter:
     @staticmethod
     def incoming_deadline(company, title):
         msg = 'The post ' + title + "'s deadline is coming up soon. After the deadline, the post will not" \
-                " be visible to students anymore, but you will be able to manage applicants until the start date."
+                " be visible to students anymore, therefore you will not get any new application, but you will " \
+                "continue to be able to manage applicants."
         MessageCenter.new_message('company', company, 'warning', msg)
 
     @staticmethod

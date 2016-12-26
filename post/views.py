@@ -7,7 +7,7 @@ from .classes import Applicant
 from .forms import NewPostForm
 from .utils import PostContexts, ApplicantUtil, ApplicationUtil, PostUtil
 from home.models import JobinSchool, JobinProgram, JobinMajor
-from home.utils import MessageCenter
+from home.utils import MessageCenter, Pagination
 from company.models import Company
 from student.models import Student
 from resume.models import Resume
@@ -15,30 +15,54 @@ from django.core.exceptions import ObjectDoesNotExist
 #from wkhtmltopdf.views import PDFTemplateResponse
 
 
-class CompanyPosts(generic.ListView):
+class CompanyPosts(View):
     template_name = 'post/company_posts.html'
-    context_object_name = 'posts'
 
-    def get_queryset(self):
-        user = self.request.user
-        company = Company.objects.filter(user=user).first()
+    def get(self, request):
+        company = Company.objects.get(user=self.request.user)
         posts = Post.objects.filter(company=company, status='open')
+        msgs = MessageCenter.get_messages('company', company)
+        ex_posts = Post.objects.filter(company=company, status='closed')
         temp = PostUtil.do_post_notifications(posts)
         if len(temp) > 0:
             MessageCenter.new_applicants_message(company, temp)
-        return posts
-
-    def get_context_data(self, **kwargs):
-        company = Company.objects.get(user=self.request.user)
-        context = super(CompanyPosts, self).get_context_data(**kwargs)
-        msgs = MessageCenter.get_messages('company', company)
-        ex_posts = Post.objects.filter(company=company, status='closed')
-        context['expired_posts'] = ex_posts
-        context['company'] = company
-        context['msgs'] = msgs
+        context = {
+            'posts': Pagination.get_page_items(posts),
+            'expired_posts': Pagination.get_page_items(ex_posts),
+            'company': company,
+            'msgs': msgs,
+            'ppages': Pagination.get_pages(posts),
+            'ppage': 1,
+            'xpages': Pagination.get_pages(ex_posts),
+            'xpage': 1,
+        }
         for x in msgs:
             x.delete()
-        return context
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        company = Company.objects.get(user=self.request.user)
+        ppage = int(request.POST.get('post_page'))
+        xpage = int(request.POST.get('xpost_page'))
+        posts = Post.objects.filter(company=company, status='open')
+        msgs = MessageCenter.get_messages('company', company)
+        ex_posts = Post.objects.filter(company=company, status='closed')
+        temp = PostUtil.do_post_notifications(posts)
+        if len(temp) > 0:
+            MessageCenter.new_applicants_message(company, temp)
+        context = {
+            'posts': Pagination.get_page_items(posts, ppage),
+            'expired_posts': Pagination.get_page_items(ex_posts, xpage),
+            'company': company,
+            'msgs': msgs,
+            'ppages': Pagination.get_pages(posts, ppage),
+            'ppage': ppage + 1,
+            'xpages': Pagination.get_pages(ex_posts, xpage),
+            'xpage': xpage + 1,
+        }
+        for x in msgs:
+            x.delete()
+        return render(request, self.template_name, context)
 
 
 class NewPostView(CreateView):
@@ -226,29 +250,44 @@ class PostApplicantsView(View):
         program = JobinProgram.objects.filter(name=post.programs)
         context = {
             'post': post,
-            'list': l,
+            'list': Pagination.get_page_items(l, 0, 50),
             'msgs': msgs,
             'schools': JobinSchool.objects.all(),
             'majors': JobinMajor.objects.filter(program=program),
-            'count': len(l)
+            'count': len(l),
+            'pages': Pagination.get_pages(l, 0, 50),
+            'page': 1,
         }
         for x in msgs:
             x.delete()
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
+        page = request.POST.get('page')
         post = Post.objects.get(pk=pk)
         program = JobinProgram.objects.filter(name=post.programs)
         apps = ApplicantUtil.get_post_applicants(post)
-        l = ApplicantUtil.apply_filters(ApplicantUtil.prep_app_filters(request, post), apps, post)
+        filters = ApplicantUtil.prep_app_filters(request, post)
+        l = ApplicantUtil.apply_filters(filters, apps, post)
         msgs = MessageCenter.get_messages('company', post.company)
+        school_val = ''
+        for x in filters['schools']:
+            school_val += x + ','
+        major_val = ''
+        for x in filters['majors']:
+            major_val += x + ','
         context = {
             'post': post,
-            'list': l,
+            'list': Pagination.get_page_items(l, page, 50),
             'msgs': msgs,
             'schools': JobinSchool.objects.all(),
             'majors': JobinMajor.objects.filter(program=program),
-            'count': len(l)
+            'count': len(l),
+            'pages': Pagination.get_pages(l, page, 50),
+            'page': page + 1,
+            'gpa_val': filters['gpa'],
+            'major_val': major_val,
+            'school_val': school_val,
         }
         for m in msgs:
             m.delete()

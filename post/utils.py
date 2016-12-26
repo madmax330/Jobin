@@ -12,8 +12,9 @@ class PostUtil:
     def do_post_notifications(posts):
         temp = []
         for x in posts:
+            today = datetime.datetime.now().date()
             rem_date = (datetime.datetime.now() + datetime.timedelta(days=4)).date()
-            if x.deadline < rem_date:
+            if today < x.deadline < rem_date:
                 MessageCenter.incoming_deadline(x.company, x.title)
             if Application.objects.filter(post=x, cover_submitted=True, cover_opened=False,
                                           status='active').count() > 0:
@@ -111,8 +112,9 @@ class ApplicantUtil:
                 x.save()
                 msg = "Your application for the job " + x.post_title + " was discontinued."
                 MessageCenter.new_notification('student', x.student, 100, msg)
-            msg = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
-            MessageCenter.new_message('company', post.company, 'info', msg)
+            if len(d) > 0:
+                msg = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
+                MessageCenter.new_message('company', post.company, 'info', msg)
         return l['apps']
 
     @staticmethod
@@ -179,8 +181,8 @@ class ApplicationUtil:
     def update_opened_application(pk):
         app = ApplicationUtil.get_application(pk)
         changed = False
-        if not app.app_opened:
-            app.app_opened = True
+        if not app.opened:
+            app.opened = True
             changed = True
         if app.cover_submitted and (not app.cover_opened):
             app.cover_opened = True
