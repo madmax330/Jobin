@@ -34,6 +34,17 @@ class NewUserForm(forms.ModelForm):
             if ems.count() > 0:
                 raise forms.ValidationError({'username': "The school email extension '" + ext[1].lower() + "' is not recognized"})
 
+class ForgetFormUSer(forms.Form):
+    class Meta:
+        widgets = {
+        'email' : forms.TextInput(attrs={'placeholder': 'Email', 'class': 'form-control'})
+        }
+    def __init__(self, *args, **kwargs):
+        self.utype = kwargs.pop('utype', None)
+        super(ForgetFormUSer, self).__init__(*args, **kwargs)
+    def clean(self):
+        cleaned_data = super(ForgetFormUSer, self).clean()
+        print("form data in clean method: %s" % cleaned_data)
 
 class LoginForm(AuthenticationForm):
 

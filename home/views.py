@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from .forms import NewUserForm
+from .forms import ForgetFormUSer
 from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail, JobinInvalidUser
 from .content_gen import ContentGen
 from student.models import Student
@@ -14,7 +15,8 @@ from home.email import send_email
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
+import string
+import random
 
 #request = HttpRequest()
 class IndexView(View):
@@ -303,6 +305,40 @@ class CloseAllNotifications(View):
         logout(request)
         return redirect('home:index')
 
+def Reset_password(request):
+    template_name = 'home/password_forget.html'
+
+    return render(request,template_name,)
+
+
+class Change_password(View):
+    form_class = ForgetFormUSer
+    template_name = 'home/invalid_user.html'
+    def post(self, request):
+        form = self.form_class(request.POST)
+        Infos = 'Error with the form'
+        if form.is_valid():
+            # clean data
+            email = form.data['email']
+            user_auth = User.objects.get(username=email)
+            Infos = 'An email has been send with a new password. Note you can change it afterwards'
+            if user_auth.groups.filter(name='student_user').exists() or user_auth.groups.filter(name='company_user').exists() :
+                # Just alphanumeric characters
+                chars = string.ascii_letters + string.digits
+
+                sizeOfPass = 10
+                password = ''.join((random.choice(chars)) for x in range(sizeOfPass))
+                user_auth.set_password(password)
+                user_auth.save()
+                Infos_email =  password
+                html = render_to_string('home/password_changed_confirmation.html', {'Infos': Infos_email})
+                text_content = strip_tags(html)
+                subject = "Password change request"
+                send_email(email, subject, html,text_content)
+            else:
+                Infos = 'The email entered does not appear in our database'
+
+        return render(request,self.template_name,{'Infos': Infos})
 
 def confirm_email(request, token):
     try:
