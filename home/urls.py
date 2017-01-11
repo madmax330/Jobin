@@ -6,6 +6,7 @@ app_name = 'home'
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^section/(?P<section>\w+)/$', views.section_view, name='section'),
     url(r'^register/(?P<utype>\w+)/$', views.RegisterView.as_view(), name='register'),
     url(r'^verify/$', views.VerifyView.as_view(), name='verify'),
     url(r'^password_forgotten/$', views.Reset_password, name='Reset_password'),
@@ -19,5 +20,7 @@ urlpatterns = [
         views.CloseAllNotifications.as_view(), name='closeallnotes'),
     url(r'^invalid_user/(?P<Infos>[\w\.\-_ ]+)', views.UnvalidUser.as_view(), name='invalid_user'),
     url(r'^register/student/confirm_email/(?P<token>[\w\.\-_ ]+)', views.confirm_email, name='confirm_email'),
-    url(r'^register/company/confirm_email/(?P<token>[\w\.\-_ ]+)', views.confirm_email, name='confirm_email')
+    url(r'^register/company/confirm_email/(?P<token>[\w\.\-_ ]+)', views.confirm_email, name='confirm_email'),
+    url(r'^privacy-policy/$', views.privacy_policy, name='policy'),
+    url(r'^terms-and-conditions/$', views.terms_and_conditions, name='terms'),
 ]

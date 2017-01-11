@@ -9,8 +9,10 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="{% static 'home/navigation_script.js' %}"></script>
 </head>
 <body>
+
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -23,17 +25,32 @@
             </div>
             <div class="collapse navbar-collapse" id="homenav">
                 <ul class="nav navbar-nav">
-                    <li class="{% block homeactive %}{% endblock %}"><a href="{% url 'home:index' %}">Home</a></li>
-                    <li class="{% block aboutactive %}{% endblock %}"><a href="#">About Us</a></li>
-                    <li class="{% block missionactive %}{% endblock %}"><a href="#">Mission</a></li>
-                    <li class="{% block contactactive %}{% endblock %}"><a href="#">Contact Us</a></li>
+                    <li>
+                        <a class="nav-item" href="{% url 'home:index' %}" data-sectitle="home">Home</a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="#" data-sectitle="about">About Us</a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="#" data-sectitle="mission">Mission</a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="#" data-sectitle="contact">Contact Us</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container">
+    <div class="container-fluid">
         {% block content %}
         {% endblock %}
     </div>
+    <div class="hidden">
+        {% block hidden %}{% endblock %}
+        <div id="page-name">
+            {% block page_name %}blank{% endblock %}
+        </div>
+    </div>
+
 </body>
 </html>

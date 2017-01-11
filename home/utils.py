@@ -180,6 +180,11 @@ class MessageCenter:
         MessageCenter.new_message('student', student, 'info', msg)
 
     @staticmethod
+    def resume_app_resume_already_on_file(student, resume):
+        msg = resume + ' is already the resume on file for this application.'
+        MessageCenter.new_message('student', student, 'warning', msg)
+
+    @staticmethod
     def resume_error_creating_record(student):
         msg = 'Error creating your record, please try again.'
         MessageCenter.new_message('student', student, 'danger', msg)

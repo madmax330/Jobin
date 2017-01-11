@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Company Home{% endblock %}</title>
+    <title>{% block title %}Student Home{% endblock %}</title>
     {% load staticfiles %}
-    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <!--<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">-->
+    <link rel="stylesheet" href="{% static 'student/w3.css' %}">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'student/style.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,700" rel="stylesheet">
     {% block styles %}{% endblock %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{% static 'student/genscript.js' %}"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+    <script src="{% static 'home/jquery-3.1.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'student/genscript.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/resize_script.js' %}"></script>
     <script type="text/javascript" src="{% static 'student/notification_script.js' %}"></script>
     {% block scripts %}{% endblock %}
@@ -52,6 +54,7 @@
                     <a class="{% block resumesactive %}{% endblock %}" href="{% url 'resume:index' %}">Resumes</a>
                     <a class="{% block historyactive %}{% endblock %}" href="{% url 'student:history' %}">History</a>
                     <a class="{% block profileactive %}{% endblock %}" href="{% url 'student:profile' %}">Profile</a>
+                    <a class="{% block manualactive %}{% endblock %}" href="{% url 'manual:student_index' %}">Manual</a>
                 </nav>
                 <div class="w3-padding-8">
                     {% if notifications %}
@@ -97,11 +100,11 @@
                         {% for x in msgs %}
                             {% if x.code == 'danger' %}
                                 <div class="danger-message message">
-                                    <span class="w3-text-red">{{ x.message }}</span>
+                                    <span>{{ x.message }}</span>
                                 </div>
                             {% elif x.code == 'warning' %}
                                 <div class="warning-message message">
-                                    <span class="w3-text-yellow">{{ x.message }}</span>
+                                    <span>{{ x.message }}</span>
                                 </div>
                             {% else %}
                                 <div class="info-message message">

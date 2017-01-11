@@ -53,7 +53,17 @@
                                         <a href="#">{{ x.resume.name }}</a>
                                         <div class="w3-dropdown-content w3-border">
                                             {% for r in resumes %}
-                                                <a href="{% url 'resume:change' rk=r.pk ak=x.pk %}">{{ r.name }}</a>
+                                                <a href="#" class="warning-open">{{ r.name }}</a>
+                                                <div class="warning hide">
+                                                    <h4>Change resume for {{ x.post_title }} to {{ r.name }}?</h4>
+                                                    <hr/>
+                                                    <p>This will change the resume {{ x.resume.name }} with {{ r.name }}.
+                                                    <br/>
+                                                    (<strong>Note:</strong> a notification will be sent to {{ x.post.company }} to alert that you have
+                                                    updated your resume.)</p>
+                                                    <button class="warning-close w3-btn regular-btn" type="button">Cancel</button>
+                                                    <a class="w3-btn regular-btn" href="{% url 'resume:change' rk=r.pk ak=x.pk %}">Change Resume</a>
+                                                </div>
                                             {% endfor %}
                                         </div>
                                     </div>

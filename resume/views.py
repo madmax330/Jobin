@@ -161,10 +161,13 @@ def change_resume(request, rk, ak):
     if request.method == 'GET':
         app = Application.objects.get(pk=ak)
         resume = Resume.objects.get(pk=rk)
-        app.resume = resume
-        app.resume_notified = True
-        app.save()
-        MessageCenter.resume_app_resume_changed(app.student, app.post_title, resume.name)
+        if app.resume == resume:
+            MessageCenter.resume_app_resume_already_on_file(app.student, resume.name)
+        else:
+            app.resume = resume
+            app.resume_notified = True
+            app.save()
+            MessageCenter.resume_app_resume_changed(app.student, app.post_title, resume.name)
         return redirect('student:index')
     return redirect('home:index')
 
@@ -697,7 +700,7 @@ class LanguageWalkthrough(View):
     form_class = LanguageForm
 
     def get(self, request, rk, rq):
-        student = Student.objects.filter(user=self.request.user)
+        student = Student.objects.get(user=self.request.user)
         res = Resume.objects.get(pk=rk)
         form = self.form_class(None)
         msgs = MessageCenter.get_messages('student', student)

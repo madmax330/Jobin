@@ -3,7 +3,7 @@ body{
     font-family: 'Roboto Slab', serif;
 }
 
-h1, h2, h3, h4, h5{
+h1, h2, h3, h4, h5, h6{
     font-family: 'Roboto Slab', serif;
     font-weight: 700;
 }
@@ -94,7 +94,7 @@ span.required:after{
 /* BACKGROUND COLORS */
 
 .student-cover-letter{
-    background-color: #84dcc6;
+    background-color: #eeeeee;
 }
 
 .student-cover-letter-instructions{
@@ -116,6 +116,10 @@ span.required:after{
 /* HEADERS AND TITLES */
 .title-color{
     background-color: #95A3B3;
+}
+
+.title-two-color{
+    background: #BCCCD1;
 }
 
 .header-color{
@@ -187,9 +191,9 @@ span.required:after{
 }
 
 .submit-btn{
-    background-color: #7bc950;
-    border: 1px solid #000000;
-    color: #000000;
+    background-color: #FFFFFF;
+    border: 1px solid #aaaaaa;
+    color: #1FAB54;
 }
 
 /* MESSAGES STYLE */
