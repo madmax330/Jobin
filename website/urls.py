@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^post/', include('post.urls')),
     url(r'^event/', include('event.urls')),
     url(r'^resume/', include('resume.urls')),
+    url(r'^manual/', include('manual.urls')),
     url(r'^', include('home.urls')),
 ]
 

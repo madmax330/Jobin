@@ -40,8 +40,8 @@
                         <li class="{% block homeactive %}{% endblock %}"><a href="{% url 'company:index' %}"><h5>Home</h5></a></li>
                         <li class="{% block postactive %}{% endblock %}"><a href="{% url 'post:companyposts' %}"><h5>Posts</h5></a></li>
                         <li class="{% block eventactive %}{% endblock %}"><a href="{% url 'event:companyevents' %}"><h5>Events</h5></a></li>
-                        <li class="{% block howtoactive %}{% endblock %}"><a href="#"><h5>How To</h5></a></li>
                         <li class="{% block profileactive %}{% endblock %}"><a href="{% url 'company:profile' %}"><h5>Profile</h5></a></li>
+                        <li class="{% block howtoactive %}{% endblock %}"><a href="#"><h5>Manual</h5></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="{% url 'home:logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>

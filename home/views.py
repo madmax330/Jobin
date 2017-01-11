@@ -1,5 +1,5 @@
 from django.http import HttpRequest
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, Http404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from .forms import NewUserForm
@@ -22,7 +22,7 @@ class IndexView(View):
 
     # not logged in
     def get(self, request):
-        return render(request, self.template_name)
+        return render(request, self.template_name, {'page': 'home'})
 
     def post(self, request):
         username = request.POST.get('username')
@@ -36,12 +36,20 @@ class IndexView(View):
                     return redirect('company:index')
                 elif user.groups.filter(name='student_user').exists():
                     return redirect('student:index')
-                elif user.groups.filter(name='unvalid_user').exists():
-                    infos = 'Your account is not verified yet, please confirm your account with the link sent to you by mail'
+                elif user.groups.filter(name='invalid_user').exists():
+                    infos = 'Your account is not verified yet, please confirm your account with' \
+                            ' the link sent to you by mail.'
                     return redirect('home:invalid_user', Infos=infos)
                 else:
                     return redirect('home:index')
         return render(request, self.template_name, {'error': 'Username or password is incorrect.'})
+
+
+def section_view(request, section):
+
+    if request.method == 'GET':
+        return render(request, 'home/home.html', {'page': section})
+    raise Http404
 
 
 class RegisterView(View):
@@ -272,6 +280,8 @@ class CloseNotification(View):
                 return redirect('student:profile')
             elif page == 'history':
                 return redirect('student:history')
+            elif page == 'manual':
+                return redirect('manual:student_index')
         logout(request)
         return redirect('home:index')
 
@@ -280,13 +290,13 @@ class CloseAllNotifications(View):
 
     def get(self, request, u, page, pk, pt):
         if u == 'company':
-            ns = Notification.objects.filter(company=Company.objects.filter(user=self.request.user).first())
+            ns = Notification.objects.filter(company=Company.objects.get(user=self.request.user))
             for x in ns:
                 x.opened = True
                 x.save()
             return redirect('company:index')
         elif u == 'student':
-            ns = Notification.objects.filter(student=Student.objects.filter(user=self.request.user).first())
+            ns = Notification.objects.filter(student=Student.objects.get(user=self.request.user))
             for x in ns:
                 x.opened = True
                 x.save()
@@ -300,6 +310,10 @@ class CloseAllNotifications(View):
                 return redirect('resume:index')
             elif page == 'profile':
                 return redirect('student:profile')
+            elif page == 'manual':
+                return redirect('manual:student_index')
+            elif page == 'history':
+                return redirect('student:history')
         logout(request)
         return redirect('home:index')
 
@@ -341,9 +355,27 @@ def confirm_email(request, token):
     return redirect('home:invalid_user', Infos=infos)
 
 
+def terms_and_conditions(request):
+
+    if request.method == 'GET':
+        return render(request, 'home/terms_and_conditions.html')
+    raise Http404
+
+
+def privacy_policy(request):
+
+    if request.method == 'GET':
+        return render(request, 'home/privacy_policy.html')
+    raise Http404
+
+
 def create_test_content(request):
-    ContentGen.gen_test_content()
-    return redirect('home:index')
+
+    if request.method == 'GET':
+        ContentGen.gen_test_content()
+        return redirect('home:index')
+    raise Http404
+
 
 
 

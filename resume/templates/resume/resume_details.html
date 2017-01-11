@@ -11,13 +11,17 @@
         }
     </style>
     <div class="w3-container">
-        <div class="w3-center header-color w3-padding-8 w3-text-white">
+        <div class="w3-center title-color w3-padding-8">
             <h3>Resume Overview</h3>
         </div>
         <label>Name:</label><span> {{ resume.name }}</span><br/>
         <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
         <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
-        <label>File:</label><span> {{ resume.file_resume }}</span><br/>
+        <label>File:</label>{% if resume.file_resume %}
+                                <span> {{ resume.file_resume }}</span>
+                            {% else %}
+                                <span> No file uploaded</span>
+                            {% endif %}
         <div class="w3-container title-color w3-row w3-padding-8 w3-text-white">
             <div class="w3-col s9">
                 <h4>Experience</h4>
