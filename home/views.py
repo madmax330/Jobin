@@ -1,9 +1,11 @@
 from django.http import HttpRequest
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, Http404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from .forms import NewUserForm
-from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail,JobinInvalidUser
+from .forms import ForgetFormUSer
+from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail, JobinInvalidUser
+from .content_gen import ContentGen
 from student.models import Student
 from company.models import Company
 from django.views.generic import View
@@ -13,7 +15,8 @@ from home.email import send_email
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
+import string
+import random
 
 #request = HttpRequest()
 class IndexView(View):
@@ -21,7 +24,7 @@ class IndexView(View):
 
     # not logged in
     def get(self, request):
-        return render(request, self.template_name)
+        return render(request, self.template_name, {'page': 'home'})
 
     def post(self, request):
         username = request.POST.get('username')
@@ -35,12 +38,20 @@ class IndexView(View):
                     return redirect('company:index')
                 elif user.groups.filter(name='student_user').exists():
                     return redirect('student:index')
-                elif user.groups.filter(name='unvalid_user').exists():
-                    infos = 'Your account is not verified yet, please confirm your account with the link sent to you by mail'
+                elif user.groups.filter(name='invalid_user').exists():
+                    infos = 'Your account is not verified yet, please confirm your account with' \
+                            ' the link sent to you by mail.'
                     return redirect('home:invalid_user', Infos=infos)
                 else:
                     return redirect('home:index')
         return render(request, self.template_name, {'error': 'Username or password is incorrect.'})
+
+
+def section_view(request, section):
+
+    if request.method == 'GET':
+        return render(request, 'home/home.html', {'page': section})
+    raise Http404
 
 
 class RegisterView(View):
@@ -120,7 +131,6 @@ class RegisterView(View):
             #else:
              #   return redirect('home:index')
             #return redirect('home:verify')
-
 
 
 class ChangeUserInfo(View):
@@ -229,11 +239,13 @@ class VerifyView(View):
     def get(self, request):
         return render(request, self.template_name)
 
+
 class UnvalidUser(View):
     template_name = 'home/invalid_user.html'
 
     def get(self, request,Infos):
         return render(request, self.template_name, {'Infos': Infos})
+
 
 class NotOpenView(View):
     template_name = 'home/notopen.html'
@@ -251,38 +263,98 @@ class LogoutView(View):
 
 class CloseNotification(View):
 
-    def get(self, request, u, pk):
-        n = Notification.objects.get(pk=pk)
+    def get(self, request, u, nk, page, pk, pt):
+        n = Notification.objects.get(pk=nk)
         n.opened = True
         n.save()
         if u == 'company':
             return redirect('company:index')
         elif u == 'student':
-            return redirect('student:index')
+            if page == 'home':
+                return redirect('student:index')
+            elif page == 'posts':
+                return redirect('post:studentposts', pk=pk, pt=pt)
+            elif page == 'events':
+                return redirect('event:studentevents', pk=pk)
+            elif page == 'resumes':
+                return redirect('resume:index')
+            elif page == 'profile':
+                return redirect('student:profile')
+            elif page == 'history':
+                return redirect('student:history')
+            elif page == 'manual':
+                return redirect('manual:student_index')
         logout(request)
         return redirect('home:index')
 
 
 class CloseAllNotifications(View):
 
-    def get(self, request, u):
+    def get(self, request, u, page, pk, pt):
         if u == 'company':
-            ns = Notification.objects.filter(company=Company.objects.filter(user=self.request.user).first())
+            ns = Notification.objects.filter(company=Company.objects.get(user=self.request.user))
             for x in ns:
                 x.opened = True
                 x.save()
             return redirect('company:index')
         elif u == 'student':
-            ns = Notification.objects.filter(student=Student.objects.filter(user=self.request.user).first())
+            ns = Notification.objects.filter(student=Student.objects.get(user=self.request.user))
             for x in ns:
                 x.opened = True
                 x.save()
-            return redirect('student:index')
+            if page == 'home':
+                return redirect('student:index')
+            elif page == 'posts':
+                return redirect('post:studentposts', pk=pk, pt=pt)
+            elif page == 'events':
+                return redirect('event:studentevents', pk=pk)
+            elif page == 'resumes':
+                return redirect('resume:index')
+            elif page == 'profile':
+                return redirect('student:profile')
+            elif page == 'manual':
+                return redirect('manual:student_index')
+            elif page == 'history':
+                return redirect('student:history')
         logout(request)
         return redirect('home:index')
 
+def Reset_password(request):
+    template_name = 'home/password_forget.html'
 
-def confirm_email(request,token):
+    return render(request,template_name,)
+
+
+class Change_password(View):
+    form_class = ForgetFormUSer
+    template_name = 'home/invalid_user.html'
+    def post(self, request):
+        form = self.form_class(request.POST)
+        Infos = 'Error with the form'
+        if form.is_valid():
+            # clean data
+            email = form.data['email']
+            user_auth = User.objects.get(username=email)
+            Infos = 'An email has been send with a new password. Note you can change it afterwards'
+            if user_auth.groups.filter(name='student_user').exists() or user_auth.groups.filter(name='company_user').exists() :
+                # Just alphanumeric characters
+                chars = string.ascii_letters + string.digits
+
+                sizeOfPass = 10
+                password = ''.join((random.choice(chars)) for x in range(sizeOfPass))
+                user_auth.set_password(password)
+                user_auth.save()
+                Infos_email =  password
+                html = render_to_string('home/password_changed_confirmation.html', {'Infos': Infos_email})
+                text_content = strip_tags(html)
+                subject = "Password change request"
+                send_email(email, subject, html,text_content)
+            else:
+                Infos = 'The email entered does not appear in our database'
+
+        return render(request,self.template_name,{'Infos': Infos})
+
+def confirm_email(request, token):
     try:
         email = confirm_token(token)
     except:
@@ -317,5 +389,29 @@ def confirm_email(request,token):
         infos = 'You have confirmed your account. Thanks!'
 
     return redirect('home:invalid_user', Infos=infos)
+
+
+def terms_and_conditions(request):
+
+    if request.method == 'GET':
+        return render(request, 'home/terms_and_conditions.html')
+    raise Http404
+
+
+def privacy_policy(request):
+
+    if request.method == 'GET':
+        return render(request, 'home/privacy_policy.html')
+    raise Http404
+
+
+def create_test_content(request):
+
+    if request.method == 'GET':
+        ContentGen.gen_test_content()
+        return redirect('home:index')
+    raise Http404
+
+
 
 

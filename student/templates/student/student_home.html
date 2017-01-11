@@ -4,6 +4,11 @@
 
 {% block homeactive %}active{% endblock %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'home/page_script.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="w3-row">
         <div class="w3-col s12 m12 l12">
@@ -48,7 +53,17 @@
                                         <a href="#">{{ x.resume.name }}</a>
                                         <div class="w3-dropdown-content w3-border">
                                             {% for r in resumes %}
-                                                <a href="{% url 'resume:change' rk=r.pk ak=x.pk %}">{{ r.name }}</a>
+                                                <a href="#" class="warning-open">{{ r.name }}</a>
+                                                <div class="warning hide">
+                                                    <h4>Change resume for {{ x.post_title }} to {{ r.name }}?</h4>
+                                                    <hr/>
+                                                    <p>This will change the resume {{ x.resume.name }} with {{ r.name }}.
+                                                    <br/>
+                                                    (<strong>Note:</strong> a notification will be sent to {{ x.post.company }} to alert that you have
+                                                    updated your resume.)</p>
+                                                    <button class="warning-close w3-btn regular-btn" type="button">Cancel</button>
+                                                    <a class="w3-btn regular-btn" href="{% url 'resume:change' rk=r.pk ak=x.pk %}">Change Resume</a>
+                                                </div>
                                             {% endfor %}
                                         </div>
                                     </div>
@@ -70,6 +85,18 @@
                                 </td>
                             </tr>
                         {% endfor %}
+                        <tr>
+                            <td colspan="4">
+                                <span>Page: </span><span class="hide page-object">app_page</span>
+                                {% for x in apages %}
+                                    {% if x == apage %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <span class="app-page-number page-number">{{ x }} </span>
+                                    {% endif %}|
+                                {% endfor %}
+                            </td>
+                        </tr>
                     </table>
                 {% endif %}
             </div>
@@ -93,9 +120,35 @@
                                 <td>{{ x.event.address }}, {{ x.event.city }}, {{ x.event.state }}</td>
                             </tr>
                         {% endfor %}
+                        <tr>
+                            <td colspan="4">
+                                <span>Page: </span><span class="hide page-object">event_page</span>
+                                {% for x in epages %}
+                                    {% if x == epage %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <span class="app-page-number page-number">{{ x }} </span>
+                                    {% endif %}|
+                                {% endfor %}
+                            </td>
+                        </tr>
                     </table>
                 {% endif %}
+            </div>
+            <div class="hide">
+                <form id="page-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input id="app_page" type="number" name="app_page" value="{{ apage }}"/>
+                    <input id="event_page" type="number" name="event_page" value="{{ epage }}"/>
+                </form>
+                <div id="page-ids">app_page,event_page</div>
+                <div id="current-app_page">{{ apage }}</div>
+                <div id="current-event_page">{{ epage }}</div>
+                <div id="form-id">page-form</div>
             </div>
         </div>
     </div>
 {% endblock %}
+
+{% block page_name %}home{% endblock %}
+

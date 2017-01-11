@@ -8,6 +8,11 @@
     {% include 'company/company_info.html' %}
 {% endblock %}
 
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'home/page_script.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">
@@ -42,5 +47,16 @@
                 {% include 'event/expired_event_list.html' %}
             {% endif %}
         </div>
+    </div>
+    <div class="hidden">
+        <form id="page-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input id="event_page" type="number" name="event_page" value="{{ epage }}"/>
+            <input id="xevent_page" type="number" name="xevent_page" value="{{ xepage }}"/>
+        </form>
+        <div id="page-ids">xpost_page,post_page</div>
+        <div id="current-event_page">{{ epage }}</div>
+        <div id="current-xevent_page">{{ xepage }}</div>
+        <div id="form-id">page-form</div>
     </div>
 {% endblock %}
