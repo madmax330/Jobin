@@ -1,41 +1,65 @@
+
+body{
+    color: #231651;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6{
+    font-family:'Quicksand', sans-serif;
+    font-weight: 700;
+}
+
 .navbar{
     border-radius: 0;
+    margin: 0;
+    border: none;
 }
 
-.panel-default{
-    border: 2px solid #1176BA;
+.jobin-nav{
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #231651;
 }
 
-.signup-div{
-    padding-top: 5px;
-    padding-bottom: 5px;
+.jobin-nav h4{
+    margin: 0;
 }
 
-.panel-heading{
-    text-align: center;
+.jobin-nav li{
+    padding: 16px;
 }
 
-.div-image img{
-    max-width: 100%;
-    height: auto;
-}
-
-.about-image{
-    max-width: 400px;
-    margin: 0 auto 0 auto;
-}
-
-.about-text{
-    padding: 20px 20px 0 20px;
+.jobin-nav-link{
+    color: #231651 !important;
 }
 
 .section{
     padding-bottom: 20px;
     width: 100%;
-    border-bottom: 1px solid grey;
+}
+
+.less-font-weight{
+    font-weight: normal;
 }
 
 footer{
+    background-color: #f2f2f2;
     padding: 32px;
+    color: #231651;
+}
+
+footer a{
+    color: #2782be;
+}
+
+footer a:hover{
+    color: #2782be;
+    text-decoration: underline;
+}
+
+
+.div-image img{
+    max-width: 100%;
+    height: auto;
 }
 

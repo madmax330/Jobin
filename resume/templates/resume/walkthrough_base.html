@@ -6,7 +6,8 @@
 
 {% block content %}
     <div class="w3-row">
-        <div class="w3-container w3-col s12 {% if rcount > 0 %}m7{% endif %}">
+        {% block side_content %}{% endblock %}
+        <div class="w3-container w3-col s12 {% if rcount > 0 %}m12{% endif %}">
             <div class="w3-container title-color w3-center w3-text-white">
                 <h3>{% block form_title %}{% endblock %}</h3>
             </div>
@@ -24,6 +25,5 @@
                 {% endblock %}
             </div>
         </div>
-        {% block side_content %}{% endblock %}
     </div>
 {% endblock %}

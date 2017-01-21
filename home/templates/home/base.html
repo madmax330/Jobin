@@ -4,47 +4,81 @@
     <meta charset="UTF-8">
     <title>{% block title %}Jobin Home{% endblock %}</title>
     {% load staticfiles %}
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700" rel="stylesheet">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'home/style.css' %}"/>
-
+    {% block stylesheets %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="{% static 'home/navigation_script.js' %}"></script>
+    {% block scripts %}{% endblock %}
 </head>
 <body>
 
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
+    <nav class="navbar navbar-default jobin-nav">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#homenav">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{% url 'home:index' %}">Jobin</a>
+                <a class="navbar-brand jobin-nav-link" href="{% url 'home:index' %}">Jobin</a>
             </div>
             <div class="collapse navbar-collapse" id="homenav">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a class="nav-item" href="{% url 'home:index' %}" data-sectitle="home">Home</a>
+                        <a class="nav-item jobin-nav-link" href="{% url 'home:index' %}" data-sectitle="home">
+                            <h4>Home</h4>
+                        </a>
                     </li>
                     <li>
-                        <a class="nav-item" href="#" data-sectitle="about">About Us</a>
+                        <a class="nav-item jobin-nav-link" href="#" data-sectitle="about">
+                            <h4>About Us</h4>
+                        </a>
                     </li>
                     <li>
-                        <a class="nav-item" href="#" data-sectitle="mission">Mission</a>
-                    </li>
-                    <li>
-                        <a class="nav-item" href="#" data-sectitle="contact">Contact Us</a>
+                        <a class="nav-item jobin-nav-link" href="#" data-sectitle="contact">
+                            <h4>Contact Us</h4>
+                        </a>
                     </li>
                 </ul>
+                {% if logged %}
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            {% if logged == 'company' %}
+                                <a class="jobin-nav-link" href="{% url 'company:index' %}">
+                            {% elif logged == 'student' %}
+                                <a class="jobin-nav-link" href="{% url 'student:index' %}">
+                            {% else %}
+                                <a class="jobin-nav-link" href="#">
+                            {% endif %}
+                                <span class="glyphicon glyphicon-user"></span> {{ user_name }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="jobin-nav-link" href="{% url 'home:logout' %}">
+                                <span class="glyphicon glyphicon-log-out"></span> Logout
+                            </a>
+                        </li>
+                    </ul>
+                {% endif %}
             </div>
         </div>
     </nav>
-    <div class="container-fluid">
+    <div class="content-div">
         {% block content %}
         {% endblock %}
     </div>
+
+    <footer>
+        <div class="container">
+            This website is brought to you by Jobin Solutions &copy 2017. Your use of this platform confirms that you
+            are in agreement with our <a href="{% url 'home:terms' %}">Terms and Conditions</a>
+            and <a href="{% url 'home:policy' %}">Privacy Policy</a>.
+        </div>
+    </footer>
+
     <div class="hidden">
         {% block hidden %}{% endblock %}
         <div id="page-name">

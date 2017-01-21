@@ -22,7 +22,19 @@ class IndexView(View):
 
     # not logged in
     def get(self, request):
-        return render(request, self.template_name, {'page': 'home'})
+        context = {
+            'page': 'home'
+        }
+        if request.user.is_authenticated():
+            comp = Company.objects.filter(user=request.user)
+            stu = Student.objects.filter(user=request.user)
+            if comp.count() > 0:
+                context['logged'] = 'company'
+                context['user_name'] = comp.first().name
+            elif stu.count() > 0:
+                context['logged'] = 'student'
+                context['user_name'] = stu.first().firstname + ' ' + stu.first().lastname
+        return render(request, self.template_name, context)
 
     def post(self, request):
         username = request.POST.get('username')
@@ -358,14 +370,38 @@ def confirm_email(request, token):
 def terms_and_conditions(request):
 
     if request.method == 'GET':
-        return render(request, 'home/terms_and_conditions.html')
+        context = {
+            'page': 'policy'
+        }
+        if request.user.is_authenticated():
+            comp = Company.objects.filter(user=request.user)
+            stu = Student.objects.filter(user=request.user)
+            if comp.count() > 0:
+                context['logged'] = 'company'
+                context['user_name'] = comp.first().name
+            elif stu.count() > 0:
+                context['logged'] = 'student'
+                context['user_name'] = stu.first().firstname + ' ' + stu.first().lastname
+        return render(request, 'home/terms_and_conditions.html', context)
     raise Http404
 
 
 def privacy_policy(request):
 
     if request.method == 'GET':
-        return render(request, 'home/privacy_policy.html')
+        context = {
+            'page': 'terms'
+        }
+        if request.user.is_authenticated():
+            comp = Company.objects.filter(user=request.user)
+            stu = Student.objects.filter(user=request.user)
+            if comp.count() > 0:
+                context['logged'] = 'company'
+                context['user_name'] = comp.first().name
+            elif stu.count() > 0:
+                context['logged'] = 'student'
+                context['user_name'] = stu.first().firstname + ' ' + stu.first().lastname
+        return render(request, 'home/privacy_policy.html', context)
     raise Http404
 
 

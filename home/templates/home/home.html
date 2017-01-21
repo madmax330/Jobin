@@ -1,100 +1,108 @@
 {% extends 'home/base.html' %}
 
 {% load staticfiles %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css_home.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css_about.css' %}"/>
+{% endblock %}
+
 {% block title %}Jobin Home{% endblock %}
 {% block homeactive %}active{% endblock %}
 
 {% block content %}
     <div class="section home-section">
-        <div class="row">
-            <div class="col-sm-5 col-md-4 col-lg-3">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h2>Login Here:</h2>
-                        <hr/>
-                        {% if error %}
-                            <div class="alert alert-danger">
-                                {{ error }}
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-6 col-md-7 col-lg-8 home-info-div">
+                    <div class="row">
+                        <div class="col-sm-4 col-md-3 col-lg-3">
+                            <div class="div-image">
+                                <img src="{% static 'home/images/jobin3transp.gif' %}">
                             </div>
-                        {% endif %}
-                        <form id="login-form" class="form-horizontal" action="{% url 'home:index' %}" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {% if msg %}
-                                <div class="{{ cl }}">
-                                    <p>{{ msg }}</p>
+                        </div>
+                        <div class="col-sm-8 col-md-9 col-lg-9">
+                            <h3>At Jobin, we bring the jobs to you!</h3>
+                            <h5>
+                                We give you access to the many jobs that are posted and all you have to do is decide
+                                whether you want to apply or not. We want to make the job searching and application
+                                simpler and faster.
+                            </h5>
+                            Job In is a website/mobile job application tool. We wish to connect companies with
+                            students that are looking to have an impact on a company`s future. We also provide a
+                            very sophisticated application management tool to help employers hire the right candidates.
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-5 col-lg-4">
+                    <div class="panel panel-default login-panel">
+                        <div class="panel-body">
+                            <h3>Login</h3>
+                            {% if error %}
+                                <div class="alert error-alert">
+                                    {{ error }}
                                 </div>
                             {% endif %}
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <input id="id_username" class="form-control" type="text" name="username" placeholder="Username"/>
+                            <form id="login-form" class="form-horizontal login-page-form"
+                                  action="{% url 'home:index' %}"
+                                  method="post"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% if msg %}
+                                    <div class="{{ cl }}">
+                                        <p>{{ msg }}</p>
+                                    </div>
+                                {% endif %}
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input id="id_username" class="form-control" type="text" name="username" placeholder="Username"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <input class="form-control" type="password" name="password" placeholder="Password"/>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input class="form-control" type="password" name="password" placeholder="Password"/>
+                                    </div>
                                 </div>
+                                <button class="btn btn-primary" type="submit">Login</button>
+                            </form>
+                            <a href="#" style="margin-top: 10px;">Forgot your password?</a>
+                            <hr/>
+                            <h4>Don't have an account?</h4>
+                            <div class="signup-div col-sm-12">
+                                <a href="{% url 'home:register' 'student'%}" class="btn btn-default col-sm-12">New Student Account</a>
                             </div>
-                            <button class="btn btn-primary" type="submit">Login</button>
-                        </form>
-                        <a href="#">Forgot your password?</a>
-                        <hr/>
-                        <h4>Don't have an account?</h4>
-                        <div class="signup-div col-sm-12">
-                            <a href="{% url 'home:register' 'student'%}" class="btn btn-default col-sm-12">New Student Account</a>
+                            <div class="signup-div col-sm-12">
+                                <a href="{% url 'home:register' 'company' %}" class="btn btn-default col-sm-12">New Company Account</a>
+                            </div>
                         </div>
-                        <div class="signup-div col-sm-12">
-                            <a href="{% url 'home:register' 'company' %}" class="btn btn-default col-sm-12">New Company Account</a>
-                        </div>
-                    </div>
-                    <script>
-                        $(function(){
+                        <script>
+                            $(function(){
 
-                            $('#id_username')[0].maxLength = 100;
+                                $('#id_username')[0].maxLength = 100;
 
-                            $('#login-form').submit(function(){
-                                var user_in = $('#id_username');
-                                var currval = user_in.val();
-                                if( currval.length > 30){
-                                    user_in.val(currval.substring(0,30));
-                                }
-                                return true;
+                                $('#login-form').submit(function(){
+                                    var user_in = $('#id_username');
+                                    var currval = user_in.val();
+                                    if( currval.length > 30){
+                                        user_in.val(currval.substring(0,30));
+                                    }
+                                    return true;
+                                });
                             });
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="col-sm-7 col-md-8 col-lg-9">
-                <div class="row">
-                    <div class="col-sm-8 col-md-9 col-lg-9">
-                        <h3>At Jobin, we bring the jobs to you!</h3>
-                        <h5>
-                            We give you access to the many jobs that are posted and all you have to do is decide
-                            whether you want to apply or not. We want to make the job searching and application
-                            simpler and faster.
-                        </h5>
-                        Job In is a website/mobile job application tool. We wish to connect companies with
-                        students that are looking to have an impact on a company`s future. We also provide a
-                        very sophisticated application management tool to help employers hire the right candidates.
-                    </div>
-                    <div class="col-sm-4 col-md-3 col-lg-3">
-                        <div class="div-image">
-                            <img src="{% static 'home/images/test.png' %}">
-                        </div>
+                        </script>
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 
     {% include 'home/about.html' %}
-    {% include 'home/mission.html' %}
     {% include 'home/contact.html' %}
-
-    <footer>
-        This website is brought to you by Jobin Solutions &copy 2017. Your use of this platform confirms that you
-        are in agreement with our <a href="{% url 'home:terms' %}">Terms and Conditions</a>
-        and <a href="{% url 'home:policy' %}">Privacy Policy</a>.
-    </footer>
 
 {% endblock %}
 
