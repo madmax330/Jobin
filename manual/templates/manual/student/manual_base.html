@@ -9,7 +9,7 @@
 {% block content %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
-    <script src="{% static 'manual/open_page_script.js' %}"></script>
+    <script src="{% static 'manual/student_open_page_script.js' %}"></script>
     <div class="w3-container">
         <h4 style="margin:0;" class="title-color w3-center w3-padding-8 w3-text-white">
             {% block man-title %}{% endblock %}
@@ -37,6 +37,8 @@
         <div id="Manual" class="w3-container man-section" style="display:none">
             {% block manual %}{% endblock %}
         </div>
+        <hr/>
+        <a href="{% url 'manual:student_index' %}" class="w3-btn regular-btn">Back to manual Home</a>
     </div>
 
 {% endblock %}

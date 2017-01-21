@@ -1,0 +1,309 @@
+{% extends 'manual/student/manual_base.html' %}
+
+{% block man-title %}Resumes Page Manual{% endblock %}
+
+
+
+{% block howto %}
+    (Note: the active resume is the resume that will be attached when you apply for a job post)
+    <ul>
+        <li>
+            <h6>Resumes</h6>
+            <ul class="margined-li">
+                <li>
+                    To create a new resume click on the 'New Resume' button.
+                    <ul>
+                        <li>
+                            To create a resume similar to an existing one, look in the 'Create your resume based off
+                            of an existing resume' and chose the appropriate resume. (Note: an identical
+                            resume that you can edit to your liking)
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    To activate a resume click on the 'Make Active' link of that resume.
+                </li>
+                <li>
+                    To view the contents of a resume click on the 'Overview' link of that resume.
+                </li>
+                <li>
+                    To edit a resume click on the 'Edit' link of that resume.
+                </li>
+                <li>
+                    To delete a resume click on the 'Delete' link of that resume.
+                </li>
+                <li>
+                    To quickly manage a resume's education, experience, awards, languages, skills, hover over the
+                    'Manage' button and select the appropriate section.
+                </li>
+                <li>
+                    To get more information in <strong>any</strong> section hover over the
+                    <i class="fa fa-info-circle"></i>
+                </li>
+                <li>
+                    To attach a file resume to your virtual resume click on the edit link, upload your file
+                    and save the changes.
+                </li>
+            </ul>
+        </li>
+        <li>
+            <h6>Resume Sections</h6>
+            <ul>
+                <li>
+                    To manage a resume section (Education/School, Experience, Awards, Languages, Skills), hover
+                    over the 'Manage' button in the resume list and select the appropriate section, or in the
+                    'Overview' screen click on the 'Manage' button of the appropriate section.
+                    <br/>
+                    For example, to manage the 'Education' section hover over the 'Manage' button and click on the
+                    'Education' button, or in the overview screen click on the 'Manage' button of the 'Education'
+                    section.
+                    <br/>
+                    (Note: all steps below assume that you are in the right section)
+                </li>
+                <li>
+                    To create a new resume object click on the 'New (object)' button.
+                    <ul>
+                        <li>
+                            To add in a record that you already created in another resume, look in the 'Add (object)
+                            from other resumes' and click on the appropriate record.
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    To edit a resume object click on the 'Edit' link for that object.
+                </li>
+                <li>
+                    To delete a resume object click on the 'Delete' link for that object. (Note: if the object is
+                    in multiple resumes, it will only be deleted from the current resume)
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+{% block faq %}
+
+    <ul>
+        <li>
+            <h6>How do I upload a file resume?</h6>
+            <p>
+                Click on the 'Edit' link of a resume, upload your file then save the changes.
+            </p>
+        </li>
+        <li>
+            <h6>When I update my resume is it updated in the applications I already sent?</h6>
+            <p>
+                All to made to resumes are automatically updated on all applications with that resume.
+            </p>
+        </li>
+        <li>
+            <h6>How do I know which resume is sent in my applications?</h6>
+            <p>
+                The resume that is sent with your applications is the active resume. (Note: it shows up as
+                highlighted in the 'Resumes' section of the 'Posts' page)
+            </p>
+        </li>
+        <li>
+            <h6>How do I view all the elements in my resume?</h6>
+            <p>
+                Click on the 'Overview' link to view all the elements on your resume by category.
+            </p>
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+{% block manual %}
+
+    <h5>
+        The 'Resumes' page is a portal that allows you to manage your resumes.
+    </h5>
+    <p>
+        Resumes are virtual files that are sent to companies when you apply for a job post. They should contain
+        your education, work experience and other information important to employers.
+    </p>
+    <ul class="margined-li">
+        <li>
+            To create a new resume, click on the ‘New Resume’ button and go through the walkthrough
+            adding your information as you go.
+            <ul>
+                <li>
+                    If you already have a resume, your education and languages will be added in automatically.
+                </li>
+                <li>
+                    You can also choose to copy an existing resume and modify it from there.
+                </li>
+            </ul>
+        </li>
+        <li>
+            To edit a resume click on the edit for that resume. (Note: any changes made to the resume are
+            automatically updated so that companies which have that resume on file for an application
+            can view your latest changes)
+        </li>
+        <li>
+            To remove a resume click on the delete link for that resume. (Note: all applications that
+            were made with this resume will still have it)
+        </li>
+        <li>
+            To upload a file resume (word document or pdf) click on the edit link of a resume and
+            upload your file in the ‘Edit’ screen.
+        </li>
+        <li>
+            To activate a resume click on the ‘make active’ link. (Note: the active resume is the one
+            that is sent when you apply for a job post)
+        </li>
+        <li>
+            To get an overview of what your resume contains click on the ‘Overview’ link.
+        </li>
+        <li>
+            To quickly manage a section of your resume (Languages, Experience, etc…) hover over the manage
+            button and select the section you would like to look at.
+        </li>
+    </ul>
+
+    <h5>
+        A resume is composed of five sections:
+    </h5>
+    <ul>
+        <li>
+            <h6>Education</h6>
+            <p>
+                Education/School records represent your academic history. We recommend that you
+                specify it at least back to your high school education.
+            </p>
+            <ul class="margined-li">
+                <li>
+                    To manage your education on file for your resume, hover over the manage button on the
+                    ‘Resume List’ screen and click on ‘Schools’ or, click on the manage button for the
+                    education section on the ‘Resume Overview’ screen.
+                </li>
+                <li>
+                    To add a new school to your resume click on the ‘New School’ button. (Note: you can add
+                    in school records that are present in other resumes, but not the current one automatically)
+                </li>
+                <li>
+                    To edit a school record click on the edit link for that school. (Note: any resumes
+                    containing this school record will be updated automatically so that companies can
+                    view your latest resumes)
+                </li>
+                <li>
+                    To delete a school record click on the delete link for that school. (Note: this will
+                    only remove the school from the current resume)
+                </li>
+            </ul>
+        </li>
+        <li>
+            <h6>Experience</h6>
+            <p>
+                Experience records represent your work experience.
+            </p>
+            <ul class="margined-li">
+                <li>
+                    To manage your experience on file for your resume, hover over the manage button on the
+                    ‘Resume List’ screen and click on ‘Experience’ or, click on the manage button for the
+                    experience section on the ‘Resume Overview’ screen.
+                </li>
+                <li>
+                    To add a new experience record to your resume click on the ‘New Experience’ button.
+                    (Note: you can add in experience records that are present in other resumes,
+                    but not the current one automatically)
+                </li>
+                <li>
+                    To edit an experience record click on the edit link for that experience record.
+                    (Note: any resumes containing this experience record will be updated automatically
+                    so that companies can view your latest resumes)
+                </li>
+                <li>
+                    To delete an experience record click on the delete link for that experience record.
+                    (Note: this will only remove the experience from the current resume)
+                </li>
+            </ul>
+        </li>
+        <li>
+            <h6>Awards</h6>
+            <p>
+                Awards represent any awards (academic, sports or other) that you won,
+                but also represent any professional certificates that you acquired.
+            </p>
+            <ul class="margined-li">
+                <li>
+                    To manage your awards on file for your resume, hover over the manage button on the
+                    ‘Resume List’ screen and click on ‘Awards’ or, click on the manage button for the
+                    awards section on the ‘Resume Overview’ screen.
+                </li>
+                <li>
+                    To add a new award to your resume click on the ‘New Award’ button. (Note: you can add
+                    in award records that are present in other resumes, but not the current one automatically)
+                </li>
+                <li>
+                    To edit an award record click on the edit link for that award. (Note: any resumes
+                    containing this award record will be updated automatically so that companies can view
+                    your latest resumes)
+                </li>
+                <li>
+                    To delete an award record click on the delete link for that award. (Note: this will
+                    only remove the award from the current resume)
+                </li>
+            </ul>
+        </li>
+        <li>
+            <h6>Languages</h6>
+            <p>
+                Language records represent the languages that you are familiar with.
+            </p>
+            <ul class="margined-li">
+                <li>
+                    To manage the languages on file for your resume, hover over the manage button on the
+                    ‘Resume List’ screen and click on ‘Languages’ or, click on the manage button for the
+                    language section on the ‘Resume Overview’ screen.
+                </li>
+                <li>
+                    To add a new language to your resume click on the ‘New Language’ button.
+                    (Note: you can add in language records that are present in other resumes,
+                    but not the current one automatically)
+                </li>
+                <li>
+                    To edit a language record click on the edit link for that language. (Note: any resumes
+                    containing this language will be updated automatically so that companies can view
+                    your latest resumes)
+                </li>
+                <li>
+                    To delete a language record click on the delete link for that language. (Note: this will
+                    only remove the language from the current resume)
+                </li>
+            </ul>
+        </li>
+        <li>
+            <h6>Skills</h6>
+            <p>
+                Skill records represent any skills that you have. (For example: photoshop knowledge,
+                typing speed, photography, programming knowledge, etc…)
+            </p>
+            <ul class="margined-li">
+                <li>
+                    To manage your skills on file for your resume, hover over the manage button on the
+                    ‘Resume List’ screen and click on ‘Skills’ or, click on the manage button for the
+                    skills section on the ‘Resume Overview’ screen.
+                </li>
+                <li>
+                    To add a new skill to your resume click on the ‘New Skill’ button. (Note: you can add
+                    in skill records that are present in other resumes, but not the current one automatically)
+                </li>
+                <li>
+                    To edit a skill record click on the edit link for that skill. (Note: any resumes containing
+                    this skill record will be updated automatically so that companies can view your latest resumes)
+                </li>
+                <li>
+                    To delete a skill record click on the delete link for that skill. (Note: this will only
+                    remove the skill from the current resume)
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+{% endblock %}
+
+

@@ -1,0 +1,41 @@
+{% extends 'company/company_base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Company Manual{% endblock %}
+
+{% block manualactive %}active{% endblock %}
+
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+{% endblock %}
+
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
+
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 class="text-center">Company Manual</h4>
+        </div>
+        <div class="panel-body">
+            <h4>The company manual assists you in learning how to use the Jobin Platform.</h4>
+            <p>
+                You can look at the "FAQ" section for a quick answer to your question, look in the "How To" section
+                to quickly find out how to use one of the platforms features, or look in the "Manual" section to read
+                all about the platform pages and their functionalities.
+            </p>
+            <h5>Select which manual you would like to look into:</h5>
+            <ul class="margined-li">
+                <li><a href="{% url 'manual:company_home' %}">Home Page Manual</a></li>
+                <li><a href="{% url 'manual:company_posts' %}">Posts Page Manual</a></li>
+                <li><a href="{% url 'manual:company_events' %}">Events Page Manual</a></li>
+                <li><a href="{% url 'manual:company_profile' %}">Profile Page Manual</a></li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block page_name %}manual{% endblock %}

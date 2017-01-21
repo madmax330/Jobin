@@ -31,7 +31,9 @@
             <div class="w3-row">
                 <div class="w3-col s10">
                     <span class="w3-opennav w3-xlarge w3-hide-large" onclick="w3_open()">&#9776;</span>
-                    <h1 class="w3-center">Jobin</h1>
+                    <h1 class="w3-center">
+                        <a href="{% url 'home:index' %}" style="text-decoration: none;">Jobin</a>
+                    </h1>
                 </div>
                 <div class="w3-col s2 w3-center">
                     <a style="text-decoration: none;" href="{% url 'home:logout' %}">
@@ -124,8 +126,11 @@
         </div>
         <footer class="w3-container header-color w3-text-white">
             <h5>Footer</h5>
-            <p>This platform is brought to you by Jobin Solutions. Your use of the platform confirms that you are in
-                agreement with our <a href="">Terms and Conditions</a> and our <a href="">Privacy Policy</a>.</p>
+            <p>
+                This platform is brought to you by JobIn Solutions. Your use of the platform confirms that you are in
+                agreement with our <a href="{% url 'home:terms' %}">Terms and Conditions</a>
+                and our <a href="{% url 'home:policy' %}">Privacy Policy</a>.
+            </p>
         </footer>
         <div id="page-name" style="display: none;">
             {% block page_name %}

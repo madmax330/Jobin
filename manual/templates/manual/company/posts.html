@@ -1,0 +1,353 @@
+{% extends 'manual/company/manual_base.html' %}
+
+{% block man_title %}Posts Page Manual{% endblock %}
+
+
+{% block howto %}
+    <h4>Posts</h4>
+    <ul class="margined-li">
+        <li>
+            To create a new post click on the 'New Post' button.
+        </li>
+        <li>
+            To edit a post click on the 'Edit' link for that post.
+        </li>
+        <li>
+            To view a post's details click on the post's title in the table.
+        </li>
+        <li>
+            To deactivate a post, click on the 'close post' link in the post's detail page.
+        </li>
+        <li>
+            To reactivate an old post click on the 'Reactivate' link for that post in
+            the expired posts section.
+        </li>
+        <li>
+            Use the pagination at the bottom if necessary to navigate through your posts.
+        </li>
+        <li>
+            Take a look at the 'Post Legend' in the sidebar for color codes.
+        </li>
+    </ul>
+
+    <h4>Applications</h4>
+    <ul class="margined-li">
+        <li>
+            To view a post's applicants click on the 'Applicants' link for that post.
+        </li>
+        <li>
+            To view an expired post's applicants navigate to that post's detail page and click on the
+            'View Post Applicants' button in the sidebar.
+        </li>
+        <li>
+            Take a look at the 'Legend' in the sidebar for color codes.
+        </li>
+        <li>
+            To view applicants in a list format click on the 'Multiple Applicants View'.
+        </li>
+        <li>
+            To view applicants one at a time click on the 'Single Applicant View'.
+        </li>
+        <li>
+            Navigate through applicants from the 'Single Applicant View' using the 'Next Applicant' and
+            'Previous Applicant' buttons.
+        </li>
+        <li>
+            To request a cover letter from an applicant, navigate to his/her detail page by clicking on their
+            name and click on the 'Request Cover Letter' button at the bottom of the page.
+        </li>
+        <li>
+            To discard an application click on discard link for that applicant in the 'Multiple Applicants View'
+            or click on the 'Discard Applicant' button in the 'Single Applicant View'.
+        </li>
+        <li>
+            To view an applicant's details from the 'Multiple Applicants View' click on his/her name
+            in the table.
+        </li>
+        <li>
+            To download an applicant's PDF resume, go to his/her detail page and click on the
+            'Download PDF Resume' button at the bottom of the page.
+        </li>
+    </ul>
+
+    <h5>Application Filters</h5>
+    <ul class="margined-li">
+        <li>
+            To filter your list of applicants by schools, check all the schools for which you would like to see
+            the applicants.
+        </li>
+        <li>
+            To filter your list of applicants by majors, check all the majors for which you would like to see
+            the applicants. (Note: if you created your post for all programs, you will not have any major filters)
+        </li>
+        <li>
+            To filter your list of applicants by GPA (US GPA 0-4.0), enter the minimum GPA for which you would
+            like to see the applicants.
+        </li>
+        <li>
+            You can combine all the previous by applying them as discussed respectively.
+        </li>
+        <li>
+            <strong>DANGER!</strong>
+            <br/>
+            You can discard all the applicants that do not fall in your filtered values by un-checking the
+            'Keep applications that are no in the filtered values' checkbox.
+        </li>
+        <li>
+            To remove a filter click on the 'Remove Filter' button.
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+{% block faq %}
+
+    <h4>Posts</h4>
+    <ul>
+        <li>
+            <h5>Who can apply for my post?</h5>
+            <p>
+                In the 'Post Form' you are allowed to restrict your post to a certain program. If that is the
+                case, only students of that program will be able to apply to your post. Otherwise all students
+                will be able to apply to your post. (Note: when you receive applications, you will be able to
+                filter them by school, major (if you specified a program) or GPA)
+            </p>
+        </li>
+        <li>
+            <h5>How will I know when there is activity on a post?</h5>
+            <p>
+                The color code will indicate the type of activity going on with a post. If there is no color code
+                that means there is no recent activity.
+            </p>
+        </li>
+        <li>
+            <h5>What happens after I edit a post?</h5>
+            <p>
+                All the changes made will automatically be updated and shared across the Jobin platform.
+            </p>
+        </li>
+        <li>
+            <h5>What happens to applications when a post closes?</h5>
+            <p>
+                All applications are kept for you to keep looking through, but you will not be able to receive
+                new applications for that post unless you reactivate it.
+            </p>
+        </li>
+        <li>
+            <h5>When do I stop receiving new applications?</h5>
+            <p>
+                You can stop new receiving new applications by closing the post. Otherwise, posts are no longer
+                visible by candidates after the application deadline has passed.
+            </p>
+        </li>
+    </ul>
+
+    <h4>Applications</h4>
+    <ul>
+        <li>
+            <h5>What are expired posts?</h5>
+            <p>
+                Expired posts serve three purposes:
+            </p>
+            <ul>
+                <li>
+                    To keep a record of your posts.
+                </li>
+                <li>
+                    To give you access to the posts applicants even after the post has expired (Even though
+                    you will not receive any new applications for that post, all the ones you haven't discarded
+                    will still be accessible)
+                </li>
+                <li>
+                    If you will be hiring for the same position in some time, reactivating an expired post allows
+                    you to recreate the same post without having to refill all the forms, just change the deadline,
+                    start and end dates and its live.
+                </li>
+            </ul>
+        </li>
+        <li>
+            <h5>What happens after I request a cover letter?</h5>
+            <p>
+                A notification is sent to the student and you can track the status by the color code for that
+                application in the 'Applicants' view. Moreover, you will be notified when you receive a response.
+            </p>
+        </li>
+        <li>
+            <h5>How do I get in touch with a candidate?</h5>
+            <p>
+                You can use the platform to request a cover letter to that applicant, for any further communication
+                we provide you with the student's email address.
+            </p>
+        </li>
+    </ul>
+    <h4>Application Filters</h4>
+    <ul>
+        <li>
+            <h5>Why aren't there any major filters?</h5>
+            <p>
+                When creating your post you were asked what program you would like it to be specific to. If you
+                selected 'All Programs' then you cannot filter by major. If you selected a program then you can
+                filter amongst that program's majors. (Note: You can always change the program by editing the post,
+                but the applicants outside of that program that already applied will remain active until you
+                discard them)
+            </p>
+        </li>
+        <li>
+            <h5>Where can I see the active filter?</h5>
+            <p>
+                A message will pop up with the value for each filter.
+            </p>
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+{% block manual %}
+
+    <h4>
+        The 'Posts' section allows you to manage your posts and their applications effectively.
+    </h4>
+    <p>
+        Your posts represent the job offers that you created, available for the student users of the Jobin
+        platform. Once these users apply, their applications are pooled together in one place where you can
+        filter them to your liking to select the best possible candidate.
+    </p>
+    <ul>
+        <li>
+            <h5>
+                Posts
+            </h5>
+            <p>
+                Your post objects are what will allow you to reach the students using the Jobin platform. They
+                will allow you to receive and sort through hopefully many applicants to find the right talent
+                for your organization.
+            </p>
+            <ul>
+                <li>
+                    Create a new post by clicking on the 'New Post' button. (Note: to narrow the target candidates
+                    for a post, specify the program field by selecting the appropriate target program.)
+                </li>
+                <li>
+                    Edit a post by clicking on the 'Edit' link of that post in the list. (Note: all changes
+                    made to a post are transmitted to applicants in real time)
+                </li>
+                <li>
+                    View a post's details by clicking on the post's title in the list.
+                </li>
+                <li>
+                    To close a post click on the 'Close Post' link in the post's detail view.
+                </li>
+                <li>
+                    You can reactivate an expired post to save yourself the hassle of refilling the forms by
+                    clicking on the 'Reactivate' link of that post in the 'Expired Posts' section.
+                </li>
+            </ul>
+            <p>
+                <strong>NB:</strong> your posts remain visible to possible applicants until the application
+                deadline, after which you cannot receive any new applications, but will still be able to browse
+                through the applications that were already received.
+            </p>
+        </li>
+        <li>
+            <h5>
+                Applicants
+            </h5>
+            <p>
+                Applicants are all the student's who chose to apply for your job post. You can look through them
+                and filter them using set filters to find the ideal candidate.
+            </p>
+            <ul>
+                <li>
+                    To view a post's applicants click on the 'Applicants' link for that post, or from the detail
+                    view click on the 'View Post Applicants' button.
+                </li>
+                <li>
+                    You can view applicants either in a list (Multiple Applicants View) or one by one (Single
+                    Applicant View). Use the buttons at the top of the page to go from one view to the other.
+                </li>
+                <li>
+                    Applicants are color coded in the 'Multiple Applicants View' to let you quickly identify
+                    what the state of each application is. (Note: the legend for the color code is in the sidebar)
+                </li>
+                <li>
+                    The 'Single Applicant View' let's you navigate through the applicants one at a time, showing
+                    you their resume and other information they may have supplied. (Note: to navigate between
+                    applicants, use the previous/next button at the top of the page)
+                </li>
+                <li>
+                    <strong>Actions related to applicants</strong>
+                    <ul>
+                        <li>
+                            To request a cover letter from an applicant click on the 'Request Cover Letter' button
+                            in the 'Single Applicant View' at the bottom of the page.
+                        </li>
+                        <li>
+                            To download a pdf version of the applicant's resume click on the 'Download PDF Resume'
+                            button at the bottom of the page in the 'Single Applicant View'
+                        </li>
+                        <li>
+                            To discard an application click on the 'Discard' link in the 'Multiple Applicants View'
+                            or use the 'Discard Applicant' button in the 'Single Applicant View' at the bottom of
+                            the page.
+                        </li>
+                        <li>
+                            To contact an applicant, use his email address that is provided with the resume.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <h5>
+                Applicant Filters
+            </h5>
+            <p>
+                The applicant filters are available in the 'Multiple Applicants View' to help you narrow down
+                your list of applicants.
+            </p>
+            <ul>
+                <li>
+                    <strong>School Filter</strong>
+                    <br/>
+                    The school filter lets you filter the applicants by school. (Note: you can select more than
+                    one school)
+                </li>
+                <li>
+                    <strong>Major Filter</strong>
+                    <br/>
+                    The major filter lets you filter the applicants by major. (Note: you can select more than
+                    one major.)
+                    <strong>NB: </strong> this filter is only available if you specified a program to which your
+                    post should be restricted.
+                </li>
+                <li>
+                    <strong>GPA Filter</strong>
+                    <br/>
+                    The GPA filter lets you filter the applicants by GPA. The GPA is noted on a scale from 0-4.0
+                    as per the American system. (Note: the GPA filter will return all the applicants with a GPA
+                    greater than or equal to the value entered)
+                </li>
+                <li>
+                    You can combine all the filters together to get a more specific pool of candidates.
+                </li>
+                <li>
+                    <strong>Danger!</strong>
+                    <br/>
+                    You can also chose to discard all the applications that do not match the filter criteria, but
+                    be careful as this action is irreversible. We suggest that you apply the filter first without
+                    discarding the applicants; once you are satisfied with the filtered results you can proceed to
+                    discarding the other applicants.
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+
+
+
+

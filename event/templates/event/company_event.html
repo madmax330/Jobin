@@ -18,6 +18,17 @@
             <label>Address:</label><span> {{ event.address }}, {{ event.city }}, {{ event.state }}, {{ event.zipcode }}</span><br/>
             <label>Website:</label><span> {{ event.website }}</span><br/>
             <label>Description:</label><p>{{ event.description }}</p>
+            <div>
+                <a href="#" class="warning-open btn danger-btn">Cancel Event</a>
+                <div class="warning hidden">
+                    <h4>Are you sure you want to cancel <u>{{ event.title }}</u>?</h4>
+                    <hr/>
+                    <p>This will cancel this event so that it is no longer visible to students.<br/>
+                    <b>Note:</b> events are closed automatically when the event date is reached.</p>
+                    <button class="warning-close btn regular-btn" type="button">Cancel</button>
+                    <a class="btn danger-btn" href="{% url 'event:close' event.pk %}">Cancel Event</a>
+                </div>
+            </div>
         </div>
     </div>
     <a href="{% url 'event:companyevents' %}" class="btn regular-btn">Back to list</a>

@@ -1,0 +1,56 @@
+{% extends 'company/company_base.html' %}
+
+{% block title %}Company Manual{% endblock %}
+
+{% block manualactive %}active{% endblock %}
+
+{% load staticfiles %}
+
+
+{% block side_content %}
+    {% include 'company/company_info.html' %}
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
+
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4>
+                {% block man_title %}{% endblock %}
+            </h4>
+        </div>
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#howto">How To</a></li>
+                <li><a data-toggle="tab" href="#faq">FAQs</a></li>
+                <li><a data-toggle="tab" href="#manual">Manual</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="howto" class="tab-pane fade in active margined">
+                    {% block howto %}
+                    {% endblock %}
+                </div>
+                <div id="faq" class="tab-pane fade margined">
+                    {% block faq %}
+                    {% endblock %}
+                </div>
+                <div id="manual" class="tab-pane fade margined">
+                    {% block manual %}
+                    {% endblock %}
+                </div>
+            </div>
+            <hr/>
+            <a href="{% url 'manual:company_index' %}" class="btn regular-btn">Back to manual Home</a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block page_name %}manual{% endblock %}
+
+
+
