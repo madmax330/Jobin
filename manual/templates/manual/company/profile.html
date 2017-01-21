@@ -1,0 +1,83 @@
+{% extends 'manual/company/manual_base.html' %}
+
+{% block man_title %}Profile Page Manual{% endblock %}
+
+
+{% block howto %}
+
+    <ul class="margined-li">
+        <li>
+            To edit your profile, click on the 'Edit Profile' button and from there you can update
+            your company information.
+        </li>
+        <li>
+            To change your account information (i.e email or password), click on the 'Edit Account' button.
+            (Note: if you change your email, your account will be locked until you verify the new email
+            address)
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+{% block faq %}
+
+    <ul>
+        <li>
+            <h5>What happens to my account while it is locked due to a change of email?</h5>
+            <p>
+                Everything in your account remains functional, but you will not be able to access it until
+                you verify the new email address.
+            </p>
+        </li>
+        <li>
+            <h5>We want to change the manager of our Jobin account, how do we proceed?</h5>
+            <p>
+                Just change the email by clicking on the 'Edit Account' button, verify the new email and
+                optionally change the password from there (recommended).
+            </p>
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+{% block manual %}
+
+    <h4>
+        The 'Profile' page let's you see and edit your profile and account information.
+    </h4>
+    <p>
+        The 'Profile' page is composed of two sections:
+    </p>
+    <ul>
+        <li>
+            <h5>
+                User Information
+            </h5>
+            <p>
+                The 'User Information' section represents your account information (email, password, date joined,
+                etc...)
+                <br/>
+                You can change this information by clicking on the 'Edit Account' button
+            </p>
+        </li>
+        <li>
+            <h5>
+                Company Information
+            </h5>
+            <p>
+                The 'Company Information' section represents your company information (name, address, etc...)
+                <br/>
+                You can change this information by clicking on the 'Edit Profile' button
+            </p>
+        </li>
+    </ul>
+
+{% endblock %}
+
+
+
+
+
+

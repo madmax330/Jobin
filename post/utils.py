@@ -115,7 +115,7 @@ class ApplicantUtil:
             if len(d) > 0:
                 msg = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
                 MessageCenter.new_message('company', post.company, 'info', msg)
-        return l['apps']
+        return list(l['apps'])
 
     @staticmethod
     def __apply_school_filter(schools, apps):

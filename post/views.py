@@ -263,7 +263,7 @@ class PostApplicantsView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
-        page = request.POST.get('page')
+        page = int(request.POST.get('page'))
         post = Post.objects.get(pk=pk)
         program = JobinProgram.objects.filter(name=post.programs)
         apps = ApplicantUtil.get_post_applicants(post)

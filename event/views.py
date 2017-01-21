@@ -91,6 +91,14 @@ class EventUpdateView(UpdateView):
         return super(EventUpdateView, self).form_valid(form)
 
 
+def close_event(request, pk):
+
+    if request.method == 'GET':
+        event = Event.objects.get(pk=pk)
+        event.active = False
+        event.save()
+
+
 class CompanyEvent(generic.DetailView):
     model = Event
     template_name = 'event/company_event.html'

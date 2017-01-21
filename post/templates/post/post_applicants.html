@@ -142,6 +142,8 @@
     <script>
         $(function(){
             $("#filter-form").submit(function(){
+                var page = $('#page');
+                page.val(parseInt(page.val()) - 1);
                 var sch = $('#school-input');
                 var maj = $('#major-input');
                 var schools = "";

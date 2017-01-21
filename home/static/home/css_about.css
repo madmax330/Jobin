@@ -1,0 +1,44 @@
+
+.about-section{
+   background: linear-gradient(#FFFFFF, #e9f1fb);
+}
+
+.about-image{
+    margin: 0 auto 0 auto;
+}
+
+.about-text{
+    padding: 20% 20px 0 20px;
+}
+
+#myCarousel{
+    min-height: 400px;
+}
+
+.carousel-control.left{
+    background-image: none;
+}
+
+.carousel-control.right{
+    background-image: none;
+}
+
+.carousel-control{
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 1);
+}
+
+.carousel-item{
+    padding: 0 15% 55px 15%;
+}
+
+.carousel-indicators li{
+    border: 1px solid #8c8c8c;
+}
+
+.carousel-indicators .active{
+    background-color: #8c8c8c;
+}
+
+
+
+

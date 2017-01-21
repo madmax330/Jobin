@@ -26,7 +26,7 @@ class Pagination:
 
     @staticmethod
     def get_page_items(l, cp=0, base=10):
-        start = cp * base
+        start = int(cp * base)
         return l[start: start + base]
 
 
