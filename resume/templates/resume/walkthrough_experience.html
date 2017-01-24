@@ -32,6 +32,8 @@
 
 {% block buttons %}
     <input type="submit" value="Save & Add Another Experience" class="w3-btn regular-btn"
+           onclick='this.form.action="{% url 'resume:experiencewalk' rk=rkey rq='continue' pk='0'%}";'/>
+    <input type="submit" value="Save & Continue" class="w3-btn submit-btn"
            onclick='this.form.action="{% url 'resume:experiencewalk' rk=rkey rq='default' pk='0'%}";'/>
-    <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn submit-btn">Continue</a>
+    <a href="{% url 'resume:nav' rk=rkey rq='experience_done'%}" class="w3-btn regular-btn">Skip</a>
 {% endblock %}

@@ -24,6 +24,11 @@ span.required:after{
     text-align: center;
 }
 
+.page-number{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .page-info-div{
     display: none;
 }

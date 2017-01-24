@@ -4,11 +4,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from .forms import NewUserForm
 from .forms import ForgetFormUSer
-from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail, JobinInvalidUser
+from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail, JobinInvalidUser, JobinProgram, JobinTerritory, JobinMajor
 from .content_gen import ContentGen
 from student.models import Student
 from company.models import Company
 from django.views.generic import View
+import simplejson
+from django.http import HttpResponse
+
+
 from datetime import datetime
 from home.token import generate_confirmation_token, confirm_token
 from home.email import send_email
@@ -331,6 +335,7 @@ class CloseAllNotifications(View):
         logout(request)
         return redirect('home:index')
 
+
 def Reset_password(request):
     template_name = 'home/password_forget.html'
 
@@ -365,6 +370,7 @@ class Change_password(View):
                 Infos = 'The email entered does not appear in our database'
 
         return render(request,self.template_name,{'Infos': Infos})
+
 
 def confirm_email(request, token):
     try:
@@ -448,6 +454,58 @@ def create_test_content(request):
         return redirect('home:index')
     raise Http404
 
+
+def get_states(request, country, state):
+
+    if request.method == 'GET':
+
+        if state == 'none':
+            states = JobinTerritory.objects.filter(country=country)
+            state_dic = {}
+            for state in states:
+                state_dic[state.name] = state.name
+            state_dic = sorted(state_dic)
+            return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
+        else:
+            current_state = JobinTerritory.objects.get(name=state)
+            states = JobinTerritory.objects.filter(country=current_state.country)
+            state_list = [current_state.name]
+            state_dic = {}
+            for x in states:
+                if not x.name == current_state.name:
+                    state_dic[x.name] = x.name
+            state_dic = sorted(state_dic)
+            state_list.extend(state_dic)
+            return HttpResponse(simplejson.dumps(state_list), content_type='application/json')
+
+    raise Http404
+
+
+def get_majors(request, program, major):
+
+    if request.method == 'GET':
+
+        if major == 'none':
+            program = JobinProgram.objects.get(name=program)
+            majors = JobinMajor.objects.filter(program=program)
+            major_dic = {}
+            for major in majors:
+                major_dic[major.name] = major.name
+            major_dic = sorted(major_dic)
+            return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
+        else:
+            current_major = JobinMajor.objects.get(name=major)
+            majors = JobinMajor.objects.filter(program=current_major.program)
+            major_list = [current_major.name]
+            major_dic = {}
+            for x in majors:
+                if not x.name == current_major.name:
+                    major_dic[x.name] = x.name
+            major_dic = sorted(major_dic)
+            major_list.extend(major_dic)
+            return HttpResponse(simplejson.dumps(major_list), content_type='application/json')
+
+    raise Http404
 
 
 

@@ -5,6 +5,7 @@
             <th>Date and Time</th>
             <th>Active</th>
             <th>Website</th>
+            <th>Times Saved</th>
             <th></th>
             <th><a href="{% url 'event:new' %}"><button class="btn new-btn">New Event</button></a></th>
         </tr>
@@ -16,6 +17,7 @@
             <td>{{ x.date }} {{ x.time }}</td>
             <td>{{ x.active }}</td>
             <td>{{ x.website }}</td>
+            <td>{{ x.times_saved }}</td>
             <td><a href="{% url 'event:companyevent' pk=x.pk %}">Details</a></td>
             <td><a href="{% url 'event:update' pk=x.pk %}">Edit</a></td>
         </tr>
