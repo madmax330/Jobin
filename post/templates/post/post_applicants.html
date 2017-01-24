@@ -1,5 +1,10 @@
 {% extends 'company/company_base.html' %}
 
+{% load staticfiles %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'post/applicants_filter_script.js' %}"></script>
+{% endblock %}
+
 {% block title %}Post Applicants{% endblock %}
 
 {% block postactive %}active{% endblock %}

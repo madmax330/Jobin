@@ -113,9 +113,9 @@ class MessageCenter:
         MessageCenter.new_message('company', company, 'info', msg)
 
     @staticmethod
-    def event_interest_noticed(student, title):
-        msg = 'Your interest in event: ' + title + ' noted, you can view this event in your "Interested Events"' \
-                                                         ' in the Home page.'
+    def saved_event_notice(student, title):
+        msg = 'Event: ' + title + ' saved, you can view this event in your "Saved Events"' \
+              ' in the Home page.'
         MessageCenter.new_message('student', student, 'info', msg)
 
     @staticmethod
@@ -139,10 +139,10 @@ class MessageCenter:
 
     @staticmethod
     def resume_walkthrough_completion_message(student):
-        msg = 'Your resume was successfully created and is ready to be used in an application.\n'
-        msg += 'You can upload a file resume as well by going to edit resume.\n'
+        msg = 'Your resume was successfully created and is ready to be used in an application.'
+        msg += 'You can upload a file resume as well by going to edit resume.'
         msg += 'Fill in the rest of your resume information (Schools, Languages, Skills, Awards and Work' \
-               'Experience) with the manage button or on the overview screen.'
+               ' Experience) using the manage button.'
         MessageCenter.new_message('student', student, 'info', msg)
 
     @staticmethod

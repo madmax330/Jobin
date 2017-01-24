@@ -2,14 +2,11 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views import generic
 from django.views.generic import View
 from django.shortcuts import redirect, render
-from .models import Event, EventInterest
+from .models import Event, SavedEvent
 from home.utils import MessageCenter, Pagination
-from home.models import JobinTerritory
 from .forms import NewEventForm
 from company.models import Company
 from student.models import Student
-import simplejson
-from django.http import HttpResponse
 
 
 class CompanyEvents(View):
@@ -193,39 +190,20 @@ class EventRecovery(View):
         return render(request, self.template_name, context)
 
 
-class NewInterest(View):
+class SaveEvent(View):
 
     def get(self, request, pk):
         student = Student.objects.filter(user=self.request.user).first()
         event = Event.objects.get(pk=pk)
-        interest = EventInterest()
-        interest.student = student
-        interest.event = event
-        interest.save()
-        MessageCenter.event_interest_noticed(student, event.title)
+        save = SavedEvent()
+        save.student = student
+        save.event = event
+        save.date = event.date
+        save.save()
+        event.times_saved += 1
+        event.save()
+        MessageCenter.saved_event_notice(student, event.title)
         return redirect('event:studentevents', pk=pk)
-
-
-def get_states(request, country_name):
-    states = JobinTerritory.objects.filter(country=country_name)
-    state_dic = {}
-    for state in states:
-        state_dic[state.name] = state.name
-    state_dic = sorted(state_dic)
-    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
-
-
-def get_states_update(request, pk, country_name, state):
-    current_state = JobinTerritory.objects.get(name=state)
-    states = JobinTerritory.objects.filter(country=current_state.country)
-    state_list = [current_state.name]
-    state_dic = {}
-    for x in states:
-        if not x.name == current_state.name:
-            state_dic[x.name] = x.name
-    state_dic = sorted(state_dic)
-    state_list.extend(state_dic)
-    return HttpResponse(simplejson.dumps(state_list), content_type='application/json')
 
 
 class CustomEvent:
@@ -242,7 +220,7 @@ class CustomEvent:
         self.time = e.time
         self.website = e.website
         self.desc = e.description
-        if EventInterest.objects.filter(student=s, event=e).count() > 0:
+        if SavedEvent.objects.filter(student=s, event=e).count() > 0:
             self.interested = True
         else:
             self.interested = False

@@ -29,7 +29,10 @@ class Applicant:
         self.pk = app.pk
         self.fname = stu.firstname
         self.lname = stu.lastname
-        self.email = stu.email
+        if len(stu.email) > 30:
+            self.email = stu.email[0:5] + '...@' + stu.email.split('@', 1)[1]
+        else:
+            self.email = stu.email
         self.phone = stu.phone
         self.address = stu.address + ' ' + stu.city + ' ' + stu.state + ' ' + stu.zipcode
         self.school = stu.school

@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^delete/skill/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteSkill.as_view(), name='deleteskill'),
 
     # Walkthrough
+    url(r'^nav/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.WalkthrougNav.as_view(), name='nav'),
     url(r'^walkthrough/first/school/(?P<rk>[0-9]+)/$', views.FirstSchoolWalkthrough.as_view(), name='firstschoolwalk'),
     url(r'^walkthrough/school/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.SchoolWalkthrough.as_view(), name='schoolwalk'),
     url(r'^walkthrough/language/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.LanguageWalkthrough.as_view(), name='languagewalk'),
@@ -55,7 +56,6 @@ urlpatterns = [
     url(r'^change/(?P<rk>[0-9]+)/(?P<ak>[0-9]+)/$', views.change_resume, name='change'),
     url(r'^activate/(?P<pk>[0-9]+)/(?P<rq>\w+)/$', views.MakeActive.as_view(), name='makeactive'),
     url(r'^details/(?P<pk>[0-9]+)/$', views.ResumeDetailView.as_view(), name='details'),
-    url(r'^nav/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.WalkthrougNav.as_view(), name='nav'),
     url(r'^copy/resume/(?P<rk>[0-9]+)/$', views.copyresume, name='copy'),
 ]
 
