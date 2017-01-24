@@ -47,8 +47,10 @@ class IndexView(View):
 
     def post(self, request):
         company = Company.objects.get(user=self.request.user)
-        ppage = request.POST.get('post_page')
-        epage = request.POST.get('event_page')
+        ppage = int(request.POST.get('post_page'))
+        epage = int(request.POST.get('event_page'))
+        print('epage: ' + str(epage))
+        print('ppage: ' + str(ppage))
         posts = Post.objects.filter(company=company, status='open')
         temp = PostUtil.do_post_notifications(posts)
         if len(temp) > 0:
@@ -122,23 +124,5 @@ class ProfileView(View):
         return render(request, self.template_name, {'company': company, 'user': user})
 
 
-def get_states(request, country_name):
-    states = JobinTerritory.objects.filter(country=country_name)
-    state_dic = {}
-    for state in states:
-        state_dic[state.name] = state.name
-    state_dic = sorted(state_dic)
-    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
 
 
-def get_states_update(request, pk, country_name, state):
-    current_state = JobinTerritory.objects.get(name=state)
-    states = JobinTerritory.objects.filter(country=current_state.country)
-    state_list = [current_state.name]
-    state_dic = {}
-    for x in states:
-        if not x.name == current_state.name:
-            state_dic[x.name] = x.name
-    state_dic = sorted(state_dic)
-    state_list.extend(state_dic)
-    return HttpResponse(simplejson.dumps(state_list), content_type='application/json')

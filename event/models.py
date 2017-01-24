@@ -19,6 +19,7 @@ class Event(models.Model):
     zipcode = models.CharField(max_length=50, null=True)
     country = models.CharField(max_length=50, null=True)
     description = models.TextField(null=True)
+    times_saved = models.IntegerField(default=0)
 
     def get_absolute_url(self):
         return reverse('event:companyevent', kwargs={'pk': self.pk})
@@ -27,7 +28,7 @@ class Event(models.Model):
         return self.title
 
 
-class EventInterest(models.Model):
+class SavedEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)

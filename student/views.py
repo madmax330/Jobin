@@ -5,16 +5,12 @@ from django.contrib.auth import logout
 from .models import Student
 from .utils import StudentUtil
 from post.models import Application
-from event.models import EventInterest
-from event.utils import EventUtil
-from resume.models import Resume
-from home.models import JobinSchool, JobinTerritory, JobinProgram, JobinMajor, Notification
+from event.models import SavedEvent
+from home.models import JobinSchool, Notification
 from home.utils import MessageCenter, Pagination
 from .forms import NewStudentForm
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
-import simplejson
-from django.http import HttpResponse
 
 
 class IndexView(View):
@@ -110,7 +106,7 @@ class HistoryView(View):
         try:
             student = Student.objects.get(user=self.request.user)
             apps = Application.objects.filter(student=student)
-            es = EventInterest.objects.filter(student=student)
+            es = SavedEvent.objects.filter(student=student)
             events = []
             for x in es:
                 events.append(x.event)
@@ -146,7 +142,7 @@ class HistoryView(View):
         app_page = int(request.POST.get('app_page'))
         event_page = int(request.POST.get('event_page'))
         apps = Application.objects.filter(student=student)
-        es = EventInterest.objects.filter(student=student)
+        es = SavedEvent.objects.filter(student=student)
         events = []
         for x in es:
             events.append(x.event)
@@ -187,47 +183,3 @@ class ProfileView(View):
         except ObjectDoesNotExist:
             return redirect('student:new')
 
-
-def get_states(request, country_name):
-    states = JobinTerritory.objects.filter(country=country_name)
-    state_dic = {}
-    for state in states:
-        state_dic[state.name] = state.name
-    state_dic = sorted(state_dic)
-    return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
-
-
-def get_states_update(request, pk, country_name, state):
-    current_state = JobinTerritory.objects.get(name=state)
-    states = JobinTerritory.objects.filter(country=current_state.country)
-    state_list = [current_state.name]
-    state_dic = {}
-    for x in states:
-        if not x.name == current_state.name:
-            state_dic[x.name] = x.name
-    state_dic = sorted(state_dic)
-    state_list.extend(state_dic)
-    return HttpResponse(simplejson.dumps(state_list), content_type='application/json')
-
-
-def get_majors(request, program_id):
-    program = JobinProgram.objects.get(name=program_id)
-    majors = JobinMajor.objects.filter(program=program)
-    major_dic = {}
-    for major in majors:
-        major_dic[major.name] = major.name
-    major_dic = sorted(major_dic)
-    return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
-
-
-def get_majors_update(request, pk, program_id, major):
-    current_major = JobinMajor.objects.get(name=major)
-    majors = JobinMajor.objects.filter(program=current_major.program)
-    major_list = [current_major.name]
-    major_dic = {}
-    for x in majors:
-        if not x.name == current_major.name:
-            major_dic[x.name] = x.name
-    major_dic = sorted(major_dic)
-    major_list.extend(major_dic)
-    return HttpResponse(simplejson.dumps(major_list), content_type='application/json')

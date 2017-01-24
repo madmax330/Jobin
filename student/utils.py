@@ -1,4 +1,4 @@
-from event.models import EventInterest
+from event.models import SavedEvent
 from post.models import Application
 from resume.models import Resume
 from home.utils import Pagination
@@ -8,7 +8,7 @@ class StudentUtil:
 
     @staticmethod
     def get_home_context(student, apage, epage):
-        events = EventInterest.objects.filter(student=student, active=True)
+        events = SavedEvent.objects.filter(student=student, active=True)
         apps = Application.objects.filter(student=student, status='active')
         old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
         resumes = Resume.objects.filter(student=student, is_complete=True)

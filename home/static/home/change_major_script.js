@@ -1,30 +1,36 @@
 
 $(function(){
 
-    ChangeSelectMajor = function(major){
+    var program_in = $('#id_program');
+    var major_in = $('#id_major');
 
-        var program_name= $('select[name=program]').val();
-        var request_url = 'get_majors/' + program_name + '/';
-        if(major)
-            request_url += major + '/';
-        $.ajax({
-            url: request_url,
-            success: function(data){
-				$('select[name=major]').empty();
-                $.each(data, function(key, value){
-                    $('select[name=major]').append('<option value="' + value + '">' + value +'</option>');
-                });
-
-            }
-
-        })
-    };
-
-    if($(/^\s*update\s*$/.test($('.page-info-div').html())))
-        ChangeSelectMajor($('#id_major').val());
+	if($(/^\s*update\s*$/.test($('.page-info-div').html())))
+        get_data(program_in.val(), major_in.val());
     else
-        ChangeSelectMajor();
+        get_data(program_in.val(), 'none');
 
-    $('select[name=program]').change(ChangeSelectMajor);
+    program_in.change(function(){
+        get_data(program_in.val(), 'none')
+    });
 
 });
+
+function get_data(program, major){
+
+    var request_url = '/home/get_majors/' + program + '/' + major + '/';
+    var major_in = $('#id_major');
+
+    $.get(request_url, function(data, status){
+
+        major_in.empty();
+        $.each(data, function(key, value){
+            major_in.append('<option value="' + value + '">' + value +'</option>');
+        });
+
+    });
+}
+
+
+
+
+

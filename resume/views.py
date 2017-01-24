@@ -775,6 +775,8 @@ class ExperienceWalkthrough(View):
             e.save()
             ResumeUtil.create_experience_link(e, resume)
             MessageCenter.resume_object_created(student, 'Experience', e.title)
+            if rq == 'continue':
+                return redirect('resume:nav', rk=rk, rq='experience_done')
             return self.get(request, rk=rk, rq=rq, pk=pk)
         MessageCenter.resume_error_creating_record(student)
         return self.get(request, rk=rk, rq=rq, pk=pk)

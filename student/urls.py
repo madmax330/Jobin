@@ -11,14 +11,5 @@ urlpatterns = [
     url(r'^profile/$', views.ProfileView.as_view(), name='profile'),
     url(r'^history/$', views.HistoryView.as_view(), name='history'),
     url(r'^update/(?P<pk>[0-9]+)/$', views.UpdateStudentView.as_view(), name='update'),
-    url(r'^new/get_states/(?P<country_name>[a-zA-Z_ ]+)/$', views.get_states, name='get_states'),
-    url(r'^update/(?P<pk>[0-9]+)/get_states/(?P<country_name>[a-zA-Z_ ]+)/(?P<state>[a-zA-Z_& ]+)/$',
-        views.get_states_update, name='get_states_update'),
-
-    url(r'^new/get_majors/(?P<program_id>[a-zA-Z_& ]+)/$', views.get_majors, name='get_majors'),
-    url(r'^update/(?P<pk>[0-9]+)/get_majors/(?P<program_id>[a-zA-Z_& ]+)/(?P<major>[a-zA-Z_& ]+)/$',
-        views.get_majors_update, name='get_majors_update'),
-
-
 ]
 

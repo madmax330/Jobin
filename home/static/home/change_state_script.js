@@ -1,39 +1,41 @@
 
 $(function(){
 
-    ChangeSelectState = function(state){
+    var country_in = $('#id_country');
+    var state_in = $('#id_state');
 
-        var country_name= $('select[name=country]').val();
-        var request_url = 'get_states/' + country_name + '/';
-        if(state)
-            request_url += state + '/';
-
-        $.ajax({
-            url: request_url,
-            success: function(data){
-				$('select[name=state]').empty();
-                $.each(data, function(key, value){
-                    $('select[name=state]').append('<option value="' + value + '">' + value +'</option>');
-                });
-				if ($('select[name=country]').val() == "Canada")
-				{
-                   $("label[for='"+$('select[name=state]').attr('id')+"']").text('Province:');
-                }
-				else{
-                    $("label[for='"+$('select[name=state]').attr('id')+"']").text('State:');
-                }
-            }
-
-        })
-    };
-
-
-	if($(/^\s*update\s*$/.test($('.page-info-div').html()))) {
-        ChangeSelectState($('#id_state').val());
-    }
+	if($(/^\s*update\s*$/.test($('.page-info-div').html())))
+        get_data(country_in.val(), state_in.val());
     else
-        ChangeSelectState();
+	    get_data(country_in.val(), 'none');
 
-    $('select[name=country]').change(ChangeSelectState);
+
+    country_in.change(function(){
+        get_data(country_in.val(), 'none')
+    });
 
 });
+
+function get_data(country, state){
+
+    var request_url = '/home/get_states/' + country + '/' + state + '/';
+    var state_in = $('#id_state');
+
+    $.get(request_url, function(data, status){
+
+        state_in.empty();
+        $.each(data, function(key, value){
+            state_in.append('<option value="' + value + '">' + value +'</option>');
+        });
+        if ($('select[name=country]').val() == "Canada")
+            $("label[for=id_state]").text('Province:');
+        else
+            $("label[for=id_state]").text('State:');
+
+    });
+}
+
+
+
+
+
