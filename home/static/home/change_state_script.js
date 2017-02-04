@@ -5,18 +5,18 @@ $(function(){
     var state_in = $('#id_state');
 
 	if($(/^\s*update\s*$/.test($('.page-info-div').html())))
-        get_data(country_in.val(), state_in.val());
+        get_state_data(country_in.val(), state_in.val());
     else
-	    get_data(country_in.val(), 'none');
+	    get_state_data(country_in.val(), 'none');
 
 
     country_in.change(function(){
-        get_data(country_in.val(), 'none')
+        get_state_data(country_in.val(), 'none')
     });
 
 });
 
-function get_data(country, state){
+function get_state_data(country, state){
 
     var request_url = '/home/get_states/' + country + '/' + state + '/';
     var state_in = $('#id_state');

@@ -20,7 +20,7 @@
                     {% if x.is_active %}
                         {{ x.is_active }}
                     {% else %}
-                        <a href="{% url 'resume:makeactive' pk=x.pk rq='res' %}">Make Active</a>
+                        <a href="{% url 'resume:makeactive' pk=x.pk rq='res' fk=0 pt='none'%}">Make Active</a>
                     {% endif %}
                 </td>
                 <td>

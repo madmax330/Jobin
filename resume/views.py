@@ -604,12 +604,12 @@ class DeleteSkill(DeleteView):
 
 class MakeActive(View):
 
-    def get(self, request, pk, rq):
+    def get(self, request, pk, rq, fk, pt):
         r = Resume.objects.get(pk=pk)
         ResumeUtil.make_active(r.student, r)
         MessageCenter.resume_activated(r.student, r.name)
         if rq == 'post':
-            return redirect('post:studentposts', pk=0, pt='internship')
+            return redirect('post:studentposts', pk=fk, pt=pt)
         else:
             return redirect('resume:index')
 

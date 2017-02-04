@@ -480,9 +480,9 @@ class ApplicantPDF(View):
         #         'disable-smart-shrinking': True,
         #     },
         # )
-        return response
-        #context = get_applicant_context(app)
-        #return render(request, self.template_name, context)
+        #return response
+        context = PostContexts.get_applicant_context(app)
+        return render(request, self.template_name, context)
 
 
 

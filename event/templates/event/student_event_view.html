@@ -29,7 +29,7 @@
                 <div class="w3-display-topright w3-medium w3-container w3-padding-16">
                     {% if not x.interested %}
                         <a class="w3-btn apply-btn w3-padding-8 w3-text-black w3-border w3-border-white"
-                           href="{% url 'event:interest' pk=x.pk %}">Interested in this event</a>
+                           href="{% url 'event:interest' pk=x.pk %}">Save Event</a>
                     {% else %}
                         <div class="w3-container w3-padding-8 already-applied">
                             Already Saved.
