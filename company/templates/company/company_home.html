@@ -64,6 +64,7 @@
                     <th>Title</th>
                     <th>Date</th>
                     <th>Time</th>
+                    <th>Times Saved</th>
                     <th></th>
                 </tr>
                 {% for x in events %}
@@ -71,6 +72,7 @@
                         <td>{{ x.title }}</td>
                         <td>{{ x.date }}</td>
                         <td>{{ x.time }}</td>
+                        <td>{{ x.times_saved }}</td>
                         <td><a href="{% url 'event:companyevent' pk=x.pk%}">Details</a></td>
                     </tr>
                 {% endfor %}
