@@ -15,15 +15,15 @@
                     <h6 class="w3-text-white">Resumes</h6>
                 </div>
                 <table class="w3-table w3-bordered">
-                    {% for x in resumes %}
+                    {% for xx in resumes %}
                         <tr>
-                            {% if x.is_active %}
+                            {% if xx.is_active %}
                                 <td style="background-color: #d0ddd7;">
-                                    <strong>{{ x.name }}</strong>
+                                    <strong>{{ xx.name }}</strong>
                                 </td>
                             {% else %}
                                 <td>
-                                    <a href="{% url 'resume:makeactive' pk=x.pk rq='post' %}">{{ x.name }}</a>
+                                    <a href="{% url 'resume:makeactive' pk=xx.pk rq='post' fk=x.pk pt=pt%}">{{ xx.name }}</a>
                                 </td>
                             {% endif %}
                         </tr>

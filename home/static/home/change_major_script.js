@@ -5,17 +5,17 @@ $(function(){
     var major_in = $('#id_major');
 
 	if($(/^\s*update\s*$/.test($('.page-info-div').html())))
-        get_data(program_in.val(), major_in.val());
+        get_major_data(program_in.val(), major_in.val());
     else
-        get_data(program_in.val(), 'none');
+        get_major_data(program_in.val(), 'none');
 
     program_in.change(function(){
-        get_data(program_in.val(), 'none')
+        get_major_data(program_in.val(), 'none')
     });
 
 });
 
-function get_data(program, major){
+function get_major_data(program, major){
 
     var request_url = '/home/get_majors/' + program + '/' + major + '/';
     var major_in = $('#id_major');

@@ -159,18 +159,8 @@
                 $(".mdiv").children("input:checked").each(function(){
                     majors = majors + this.value + ",";
                 });
-                if(sch.val() != ""){
-                    var sval = sch.val().toString();
-                    sch.val(sval.substring(0, sval.length - 1));
-                }
-                else
-                    sch.val(schools.substring(0,schools.length-1));
-                if(maj.val() != ""){
-                    var mval = maj.val().toString();
-                    maj.val(mval.substring(0, mval.length - 1));
-                }
-                else
-                    maj.val(majors.substring(0,majors.length-1));
+                sch.val(schools.substring(0,schools.length-1));
+                maj.val(majors.substring(0,majors.length-1));
             });
 
             $('#keepCheckbox').click(function(){

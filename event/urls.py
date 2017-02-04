@@ -14,9 +14,5 @@ urlpatterns = [
     url(r'^student/events/(?P<pk>[0-9]+)/$', views.StudentEvents.as_view(), name='studentevents'),
     url(r'^interested/(?P<pk>[0-9]+)/$', views.SaveEvent.as_view(), name='interest'),
 
-    url(r'^new/get_states/(?P<country_name>[a-zA-Z_ ]+)/$', views.get_states, name='get_states'),
-    url(r'^update/(?P<pk>[0-9]+)/get_states/(?P<country_name>[a-zA-Z_ ]+)/(?P<state>[a-zA-Z_& ]+)/$',
-        views.get_states_update, name='get_states_update'),
-
 ]
 

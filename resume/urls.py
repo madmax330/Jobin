@@ -54,7 +54,7 @@ urlpatterns = [
 
     # Misc
     url(r'^change/(?P<rk>[0-9]+)/(?P<ak>[0-9]+)/$', views.change_resume, name='change'),
-    url(r'^activate/(?P<pk>[0-9]+)/(?P<rq>\w+)/$', views.MakeActive.as_view(), name='makeactive'),
+    url(r'^activate/(?P<pk>[0-9]+)/(?P<rq>\w+)/(?P<fk>[0-9]+)/(?P<pt>\w+)/$', views.MakeActive.as_view(), name='makeactive'),
     url(r'^details/(?P<pk>[0-9]+)/$', views.ResumeDetailView.as_view(), name='details'),
     url(r'^copy/resume/(?P<rk>[0-9]+)/$', views.copyresume, name='copy'),
 ]
