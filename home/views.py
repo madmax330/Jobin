@@ -11,6 +11,7 @@ from company.models import Company
 from django.views.generic import View
 import simplejson
 from django.http import HttpResponse
+from django.db import transaction, IntegrityError
 
 
 from datetime import datetime
@@ -447,10 +448,28 @@ def privacy_policy(request):
     raise Http404
 
 
-def create_test_content(request):
+def create_test_content(request, n):
 
     if request.method == 'GET':
-        ContentGen.gen_test_content()
+        try:
+            with transaction.atomic():
+                ContentGen.gen_test_content(int(n))
+                print('No error')
+        except (IntegrityError, TypeError, ValueError) as e:
+            print(str(e))
+        return redirect('home:index')
+    raise Http404
+
+
+def clear_test_content(request):
+
+    if request.method == 'GET':
+        try:
+            with transaction.atomic():
+                ContentGen.clear_test_content()
+                print('No error')
+        except IntegrityError as e:
+            print(str(e))
         return redirect('home:index')
     raise Http404
 

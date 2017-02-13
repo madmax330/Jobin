@@ -1,8 +1,8 @@
-
+/*
 .about-section{
    background: linear-gradient(#FFFFFF, #e9f1fb);
 }
-
+*/
 .about-image{
     margin: 0 auto 0 auto;
 }
@@ -15,12 +15,9 @@
     min-height: 400px;
 }
 
-.carousel-control.left{
+.carousel-control.left, .carousel-control.right{
     background-image: none;
-}
-
-.carousel-control.right{
-    background-image: none;
+    color: #255c99;
 }
 
 .carousel-control{
@@ -32,11 +29,11 @@
 }
 
 .carousel-indicators li{
-    border: 1px solid #8c8c8c;
+    border: 1px solid #255c99;
 }
 
 .carousel-indicators .active{
-    background-color: #8c8c8c;
+    background-color: #255c99;
 }
 
 

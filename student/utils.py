@@ -12,13 +12,13 @@ class StudentUtil:
         apps = Application.objects.filter(student=student, status='active')
         old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
         resumes = Resume.objects.filter(student=student, is_complete=True)
-        apages = Pagination.get_pages(apps, apage, 15)
-        epages = Pagination.get_pages(events, epage, 15)
+        apages = Pagination.get_pages(apps, apage, 10)
+        epages = Pagination.get_pages(events, epage, 10)
         context = {
             'nav_student': student,
-            'apps': apps,
+            'apps': Pagination.get_page_items(apps, apage, 10),
             'old_apps': old_apps,
-            'events': events,
+            'events': Pagination.get_page_items(events, epage, 10),
             'resumes': resumes,
             'apages': apages,
             'apage': apage + 1,

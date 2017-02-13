@@ -31,4 +31,7 @@ urlpatterns = [
 
     url(r'^get_states/(?P<country>[a-zA-Z_ ]+)/(?P<state>[a-zA-Z_& ]+)/$', views.get_states, name='get_states'),
     url(r'^get_majors/(?P<program>[a-zA-Z_ ]+)/(?P<major>[a-zA-Z_& ]+)/$', views.get_majors, name='get_majors'),
+
+    url(r'^create/content/(?P<n>[0-9]+)/$', views.create_test_content, name='gen_content'),
+    url(r'^clear/content/$', views.clear_test_content, name='clear_content'),
 ]
