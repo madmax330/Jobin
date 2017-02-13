@@ -30,10 +30,10 @@
         <header class="w3-container header-color w3-text-white">
             <div class="w3-row">
                 <div class="w3-col s10">
-                    <span class="w3-opennav w3-xlarge w3-hide-large" onclick="w3_open()">&#9776;</span>
-                    <h1 class="w3-center">
-                        <a href="{% url 'home:index' %}" style="text-decoration: none;">Jobin</a>
-                    </h1>
+                    <a href="{% url 'home:index' %}" class="logo-img">
+                        <span class="w3-opennav w3-xlarge w3-hide-large" onclick="w3_open()">&#9776;</span>
+                        <img class="w3-center" src="{% static 'home/images/jobinblue.gif' %}">
+                    </a>
                 </div>
                 <div class="w3-col s2 w3-center">
                     <a style="text-decoration: none;" href="{% url 'home:logout' %}">
@@ -46,7 +46,7 @@
             <div id="navCol" class="w3-col s12 m12 l3" style="height: inherit;">
                 <nav class="w3-sidenav w3-collapse w3-white w3-card-2" style="width:100%;" id="mySidenav">
                     <header class="w3-container header-color w3-text-white">
-                        <h1>Menu</h1>
+                        <h2>Menu</h2>
                     </header>
                     <a href="javascript:void(0)" onclick="w3_close()"
                     class="w3-closenav w3-large w3-hide-large">Close &times;</a>

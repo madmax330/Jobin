@@ -1,9 +1,7 @@
 
 
 .home-section{
-    background: linear-gradient(#e9f1fb, #FFFFFF);
-    padding-top: 20px;
-    border-bottom: 1px solid #eeeeee;
+    padding: 0 32px 0 32px;
 }
 
 .home-info-div{
@@ -11,11 +9,19 @@
 }
 
 .login-panel{
-    border: 1px solid #8c8c8c;
+    border: 1px solid #255c99;
+    color: #000000;
+    border-radius: 0;
 }
 
-.login-panel h3{
-    margin-top: 0;
+.login-panel .panel-heading{
+    background-color: #255c99;
+    color: #FFFFFF;
+    border-radius: 0;
+}
+
+.login-panel .btn, .login-panel input{
+    border-radius: 0;
 }
 
 #login-form{
