@@ -24,7 +24,7 @@ class ContentGen:
     def create_company(u, i):
         c = Company()
         c.user = u
-        c.name = 'Company' + i
+        c.name = 'Company' + str(i)
         c.email = u.email
         c.address = '111 company address'
         c.city = 'Company City'
@@ -47,7 +47,7 @@ class ContentGen:
         for i in range(0, 5):
             p = Post()
             p.company = company
-            p.title = company.name + 'Post' + i
+            p.title = company.name + 'Post' + str(i)
             p.wage = i
             p.openings = i
             p.start_date = start
@@ -75,7 +75,7 @@ class ContentGen:
         for i in range(0, 5):
             e = Event()
             e.company = company
-            e.title = company.name + 'Event' + i
+            e.title = company.name + 'Event' + str(i)
             e.date = date
             e.time = time
             e.website = 'www.eventwebsite.com'
@@ -95,8 +95,8 @@ class ContentGen:
     def create_student(u, i, sch):
         s = Student()
         s.user = u
-        s.firstname = 'Student' + i
-        s.lastname = 'Last0' + i
+        s.firstname = 'Student' + str(i)
+        s.lastname = 'Last0' + str(i)
         s.dob = datetime.datetime.now().date()
         s.address = '111 student address'
         s.city = 'Student City'
@@ -106,11 +106,11 @@ class ContentGen:
         s.phone = '555 444 2222'
         s.email = u.email
         s.school = sch
-        p = ContentGen.programs[randint(0, ContentGen.programs.count() - 1)].name
-        while p == 'All Programs':
-            p = ContentGen.programs[randint(0, ContentGen.programs.count() - 1)].name
-        s.program = p
-        majors = ContentGen.majors.filter(program=s.program)
+        p = ContentGen.programs[randint(0, ContentGen.programs.count() - 1)]
+        while p.name == 'All Programs':
+            p = ContentGen.programs[randint(0, ContentGen.programs.count() - 1)]
+        s.program = p.name
+        majors = ContentGen.majors.filter(program=p)
         s.major = majors[randint(0, majors.count() - 1)].name
         s.save()
         ContentGen.create_student_resumes(s)
@@ -127,7 +127,7 @@ class ContentGen:
             else:
                 r.is_active = False
             r.is_complete = True
-            r.name = 'Resume' + i
+            r.name = 'Resume' + str(i)
             r.save()
             ContentGen.create_resume_schools(r, i)
             ContentGen.create_resume_languages(r, i)
@@ -150,7 +150,7 @@ class ContentGen:
 
         s = School()
         s.student = r.student
-        s.name = 'School' + r.name + i
+        s.name = 'School' + r.name + str(i)
         s.start = start
         s.end = end
         s.level = 'University'
@@ -177,7 +177,7 @@ class ContentGen:
 
         l = Language()
         l.student = r.student
-        l.name = 'Language' + r.name + i
+        l.name = 'Language' + r.name + str(i)
         l.level = 'native'
         l.rkey = r.pk
         l.rname = r.name
@@ -204,7 +204,7 @@ class ContentGen:
 
         e = Experience()
         e.student = r.student
-        e.title = 'Experience' + r.name + i
+        e.title = 'Experience' + r.name + str(i)
         e.start = start
         e.end = end
         e.description = 'Integer consectetur id arcu eu euismod. In viverra odio ut nisi tempus,' \
@@ -238,7 +238,7 @@ class ContentGen:
 
         a = Award()
         a.student = r.student
-        a.title = 'Award' + r.name + i
+        a.title = 'Award' + r.name + str(i)
         a.date = date
         a.description = 'Integer consectetur id arcu eu euismod. In viverra odio ut nisi tempus,' \
                         ' non rhoncus magna commodo. Fusce nec leo vel mi consectetur cursus in vitae nibh.' \
@@ -268,7 +268,7 @@ class ContentGen:
 
         s = Skill()
         s.student = r.student
-        s.name = 'Skill' + r.name + i
+        s.name = 'Skill' + r.name + str(i)
         s.level = 'Skill Level'
         s.rkey = r.pk
         s.rname = r.name
@@ -280,20 +280,24 @@ class ContentGen:
         sl.save()
 
     @staticmethod
-    def gen_test_content():
+    def gen_test_content(val):
 
         # Create company users and companies and student users and students
-        for i in range(0, 100):
+        for i in range(0, val):
             # Companies
-            cuname = 'user' + i + '@gmail.com'
+            cuname = 'user' + str(i) + '@gmail.com'
             cu = User.objects.create_user(username=cuname, email=cuname, password=ContentGen.pw)
             ContentGen.create_company(cu, i)
 
+        for i in range(0, val):
             # Students
             sch = ContentGen.schools[randint(0, ContentGen.schools.count() - 1)]
-            suname = 'student00' + i + '@' + sch.email
+            suname = 'student00' + str(i) + '@' + sch.email
             su = User.objects.create_user(username=suname, email=suname, password=ContentGen.pw)
             ContentGen.create_student(su, i, sch)
+
+        ContentGen.create_event_interests()
+        ContentGen.create_post_applications()
 
     @staticmethod
     def create_event_interests():
@@ -302,7 +306,7 @@ class ContentGen:
         for x in students:
             for i in range(0, 5):
                 event = events[randint(0, events.count() - 1)]
-                ei = EventInterest()
+                ei = SavedEvent()
                 ei.student = x
                 ei.event = event
                 ei.date = event.date
@@ -311,7 +315,7 @@ class ContentGen:
 
     @staticmethod
     def create_post_applications():
-        students = Student.objects.all()
+        students = Student.objects.filter(firstname__contains='Student')
         for x in students:
             resumes = Resume.objects.filter(student=x)
             posts = Post.objects.filter(Q(programs='All Programs') | Q(programs=x.program))
@@ -321,12 +325,71 @@ class ContentGen:
                 a.student = x
                 a.resume = resumes[randint(0, resumes.count() - 1)]
                 a.date = datetime.datetime.now().date()
-                a.status = 'open'
+                a.status = 'active'
                 a.post_title = p.title
                 a.student_name = x.firstname + ' ' + x.lastname
                 a.save()
 
+    @staticmethod
+    def clear_test_content():
+        languages = Language.objects.all()
+        schools = School.objects.all()
+        experience = Experience.objects.all()
+        skills = Skill.objects.all()
+        awards = Award.objects.all()
+        resumes = Resume.objects.all()
+        students = Student.objects.all()
 
+        apps = Application.objects.all()
+        saved = SavedEvent.objects.all()
+        events = Event.objects.all()
+        posts = Post.objects.all()
+        companies = Company.objects.all()
+
+        for x in languages:
+            if 'language' in x.name.lower():
+                x.delete()
+        for x in schools:
+            if 'school' in x.name.lower():
+                x.delete()
+        for x in experience:
+            if 'experience' in x.title.lower():
+                x.delete()
+        for x in skills:
+            if 'skill' in x.name.lower():
+                x.delete()
+        for x in awards:
+            if 'award' in x.title.lower():
+                x.delete()
+
+        for x in apps:
+            if 'student' in x.student_name.lower():
+                x.delete()
+        for x in saved:
+            if 'student' in x.student.firstname.lower():
+                x.delete()
+
+        for x in resumes:
+            if 'resume' in x.name.lower()[0:6]:
+                x.delete()
+        for x in students:
+            if 'student' in x.firstname.lower():
+                x.delete()
+
+        for x in events:
+            if 'event' in x.title.lower():
+                x.delete()
+        for x in posts:
+            if 'post' in x.title.lower():
+                x.delete()
+        for x in companies:
+            if 'company' in x.name.lower():
+                x.delete()
+
+        users = User.objects.all()
+        for x in users:
+            if 'user' in x.email or 'student' in x.email:
+                x.delete()
 
 
 

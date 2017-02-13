@@ -41,12 +41,15 @@
             $(function(){
 
                 var t = $('#form-title').html();
+                var el = $('#id_school');
                 if(t.split(' ')[0].toLowerCase() == 'new' ){
-                    var el = $('#id_school');
                     el.parent().hide();
                     el.parent().siblings('p').html('School: {{ school }}');
                 }
-
+                if(t.split(' ')[0].toLowerCase() == 'update' ){
+                    var sch = el.val();
+                    el.parent().html('<span style="margin-left: 10px;">' + sch + '</span>');
+                }
             });
         </script>
     </div>
