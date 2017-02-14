@@ -268,6 +268,8 @@ class PostApplicantsView(View):
         program = JobinProgram.objects.filter(name=post.programs)
         apps = ApplicantUtil.get_post_applicants(post)
         filters = ApplicantUtil.prep_app_filters(request, post)
+        if not filters:
+            return redirect('post:applicants', pk=pk)
         l = ApplicantUtil.apply_filters(filters, apps, post)
         msgs = MessageCenter.get_messages('company', post.company)
         school_val = ''
@@ -324,57 +326,68 @@ class SingleApplicantView(View):
     def post(self, request, pk, ak):
         post = Post.objects.get(pk=pk)
         keep = request.POST.get('keep')
-        appid = request.POST.get('appid')
         page = int(request.POST.get('page'))
         cover = request.POST.get('cover')
-        if not keep == 'True':
-            x = Application.objects.get(pk=appid)
+        if keep == 'Delete':
+            x = Application.objects.get(pk=ak)
             x.status = 'closed'
             x.save()
             MessageCenter.applicant_removed(post.company, x.student_name)
             MessageCenter.application_discontinued(x.student, x.post_title)
-            apps = ApplicantUtil.get_post_applicants(post)
-            if len(apps) > 0:
-                if page >= len(apps):
-                    page = 0
-                app = apps[page]
-                ApplicationUtil.update_opened_application(app.pk)
-                context = PostContexts.get_applicant_context(app)
-                msgs = MessageCenter.get_messages('company', post.company)
-                context['msgs'] = msgs
-                context['page'] = page
-                for m in msgs:
-                    m.delete()
-                return render(request, self.template_name, context)
+        if cover == 'True':
+            a = Application.objects.get(pk=ak)
+            if not a.cover_requested:
+                MessageCenter.cover_letter_request(post.company, a.student_name)
+                MessageCenter.cover_letter_notification(a.student, post.company.name, post.title)
+                a.cover_requested = True
+                a.cover_submitted = False
+                a.cover_opened = False
+                a.save()
             else:
-                MessageCenter.no_applicants_left(post.company)
-                return redirect('post:applicants', pk=pk)
-        else:
-            if cover == 'True':
-                a = Application.objects.get(pk=appid)
-                if not a.cover_requested:
-                    MessageCenter.cover_letter_request(post.company, a.student_name)
-                    MessageCenter.cover_letter_notification(a.student, post.company.name, post.title)
-                    a.cover_requested = True
-                    a.cover_submitted = False
-                    a.cover_opened = False
-                    a.save()
-                else:
-                    MessageCenter.cover_letter_already_requested(post.company)
-            apps = ApplicantUtil.get_post_applicants(post)
+                MessageCenter.cover_letter_already_requested(post.company)
+
+        apps = ApplicantUtil.get_post_applicants(post)
+        filters = ApplicantUtil.prep_app_filters(request, post)
+        if filters:
+            apps = ApplicantUtil.apply_filters(filters, apps, post)
+
+        if len(apps) > 0:
             if page >= len(apps):
                 page = 0
             elif page < 0:
                 page = len(apps) - 1
+
+            if not int(ak) == 0:
+                page = 0
+                for x in apps:
+                    if int(x.pk) == int(ak):
+                        break
+                    page += 1
+
             app = apps[page]
             ApplicationUtil.update_opened_application(app.pk)
             context = PostContexts.get_applicant_context(app)
             msgs = MessageCenter.get_messages('company', post.company)
             context['msgs'] = msgs
             context['page'] = page
+            school_val = ''
+            major_val = ''
+            gpa_val = 0
+            if filters:
+                for x in filters['schools']:
+                    school_val += x + ','
+                for x in filters['majors']:
+                    major_val += x + ','
+                    gpa_val = filters['gpa']
+            context['gpa_val'] = (gpa_val if gpa_val > 0 else '')
+            context['major_val'] = major_val
+            context['school_val'] = school_val
             for m in msgs:
                 m.delete()
             return render(request, self.template_name, context)
+        else:
+            MessageCenter.no_applicants_left(post.company)
+            return redirect('post:applicants', pk=pk)
 
 
 class PostRecoveryView(View):

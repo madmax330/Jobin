@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% block scripts %}
     <script type="text/javascript" src="{% static 'post/applicants_filter_script.js' %}"></script>
+    <script type="text/javascript" src="{% static 'post/single_applicant_nav.js' %}"></script>
 {% endblock %}
 
 {% block title %}Post Applicants{% endblock %}
@@ -41,8 +42,8 @@
                 </div>
                 <h5>GPA:</h5>
                 <input id="id_gpa_filter" class="form-control" type="text" name="gpa_filter" value="{{ gpa_val }}"/>
-                <input id="school-input" style="display: none;" name="schools" value="{{ school_val }}">
-                <input id="major-input" style="display: none;" name="majors" value="{{ major_val }}">
+                <input id="school-input" type="hidden" style="display: none;" name="schools" value="{{ school_val }}">
+                <input id="major-input" type="hidden" style="display: none;" name="majors" value="{{ major_val }}">
                 <input id="keepCheckbox" style="margin-top:10px;" type="checkbox" name="keep" checked/>
                 <span>Keep applications that are not in filtered values.</span><br/>
                 <div id="checkWarning" class="alert alert-danger hidden">
@@ -53,7 +54,7 @@
                 <a href="{% url 'post:applicants' pk=post.pk %}" class="btn regular-btn">Remove Filter</a>
                 <button class="btn btn-default regular-btn" type="submit">Filter</button>
                 <div class="hidden">
-                    <input id="page" type="number" name="page" value="{{ page }}"/>
+                    <input id="page" type="hidden" name="page" value="{{ page }}"/>
                     <div id="page-ids">page</div>
                     <div id="current-page">{{ page }}</div>
                     <div id="form-id">filter-form</div>
@@ -71,8 +72,8 @@
             </button>
         </div>
         <div class="btn-group">
-            <a href="{% url 'post:applicant' pk=post.pk ak=0%}"
-               class="btn applicant-view-btn" style="border-left: none;">
+            <a href="#" data-url="{% url 'post:applicant' pk=post.pk ak=0%}"
+               class="btn applicant-view-btn single-app-view" style="border-left: none;">
                 Single Applicant View
             </a>
         </div>
@@ -102,7 +103,7 @@
                         style="background-color: #fdffb2;"
                     {% endif %}>
                         <td>
-                            <a href="{% url 'post:applicant' pk=post.pk ak=x.pk%}">
+                            <a href="#" data-url="{% url 'post:applicant' pk=post.pk ak=x.pk%}" class="single-app-view">
                                 {{ x.fname }} {{ x.lname }}{% if not x.app_opened %} (<b>new</b>){% endif %}
                             </a>
                         </td>
@@ -173,4 +174,18 @@
             });
         });
     </script>
+
+    <div class="hidden">
+        <form id="single-view-form" action="{% url 'post:applicant' pk=post.pk ak=0 %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="0">
+            <input type="hidden" name="keep" value="True">
+            <input type="hidden" name="cover" value="False">
+
+            <input id="single-schools" type="hidden" name="schools" value="{{ school_val }}">
+            <input id="single-majors" type="hidden" name="majors" value="{{ major_val }}">
+            <input type="hidden" name="gpa_filter" value="{{ gpa_val }}">
+
+        </form>
+    </div>
 {% endblock %}
