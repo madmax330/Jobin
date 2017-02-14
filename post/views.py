@@ -130,7 +130,7 @@ class CompanyPost(View):
         context = {
             'company': post.company,
             'post': post,
-            'applicants': l,
+            'applicants': l[0:10],
             'msgs': msgs,
             'count': len(l)
         }
