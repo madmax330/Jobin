@@ -60,7 +60,8 @@
                 <label><u>Requirements</u>:</label><br/>
                 <span>{{ post.requirements | linebreaksbr}}</span><br/>
                 <label><u>Description</u>:</label><br/>
-                <span>{{ post.description | linebreaksbr}}</span>
+                <span>{{ post.description | linebreaksbr}}</span><br/>
+                <a href="{% url 'student:index' %}" class="w3-btn regular-btn margined">Back</a>
             </div>
         </div>
     </div>

@@ -9,7 +9,13 @@ class StudentUtil:
     @staticmethod
     def get_home_context(student, apage, epage):
         events = SavedEvent.objects.filter(student=student, active=True)
-        apps = Application.objects.filter(student=student, status='active')
+        apps = []
+        rq_apps = Application.objects.filter(student=student, status='active', cover_requested=True)
+        apps.extend(rq_apps)
+        rs_apps = Application.objects.filter(student=student, status='active', cover_submitted=True)
+        apps.extend(rs_apps)
+        r_apps = Application.objects.filter(student=student, status='active', cover_requested=False)
+        apps.extend(r_apps)
         old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
         resumes = Resume.objects.filter(student=student, is_complete=True)
         apages = Pagination.get_pages(apps, apage, 10)

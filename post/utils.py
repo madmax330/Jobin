@@ -76,6 +76,8 @@ class ApplicantUtil:
         major_filter = request.POST.get('majors')
         gpa_filter = request.POST.get('gpa_filter')
         gpa = 0
+        if not (gpa_filter or school_filter or major_filter):
+            return None
         if gpa_filter:
             gpa = float(gpa_filter)
         schools = []
@@ -106,7 +108,7 @@ class ApplicantUtil:
         if majors:
             l = ApplicantUtil.__apply_major_filter(majors, l['apps'])
         if not keep:
-            d = [x for x in apps if int(x) not in l['ids']]
+            d = [x for x in apps if int(x.pk) not in l['ids']]
             for x in d:
                 x.status = 'closed'
                 x.save()

@@ -46,7 +46,7 @@
                 {% include 'company/form_template.html' %}
                 {% if update %}
                     <div class="margined">
-                        <a href="javascript:history.back()" class="btn regular-btn">Cancel</a>
+                        <a href="{% url 'company:profile' %}" class="btn regular-btn">Cancel</a>
                         <button class="btn submit-btn" type="submit">Submit</button>
                     </div>
                 {% else %}
