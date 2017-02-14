@@ -4,6 +4,12 @@
 
 {% block postactive %}active{% endblock %}
 
+{% load staticfiles %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'post/single_applicant_nav.js' %}"></script>
+{% endblock %}
+
+
 {% block side_content %}
     <div class="panel panel-default secondary-panel">
         <div class="panel-heading">
@@ -24,16 +30,20 @@
 {% endblock %}
 
 {% block content %}
-    <form id="hiddenform" style="display:none;" action="" method="post" enctype="multipart/form-data">
+    <form id="hiddenform" style="display:none;" action="{% url 'post:applicant' pk=post.pk ak=0 %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input id="keep" type="text" name="keep" value="True"/>
-        <input type="number" name="appid" value="{{ app.pk }}"/>
-        <input id="page" type="number" name="page" value="{{ page }}"/>
-        <input id="cover" type="text" name="cover" value="False"/>
+        <input id="keep" type="hidden" name="keep" value="True"/>
+        <input id="page" type="hidden" name="page" value="{{ page }}"/>
+        <input id="cover" type="hidden" name="cover" value="False"/>
+
+        <input id="schools" type="hidden" name="schools" value="{{ school_val }}">
+        <input id="majors" type="hidden" name="majors" value="{{ major_val }}">
+        <input type="hidden" name="gpa_filter" value="{{ gpa_val }}">
     </form>
     <div class="btn-group btn-group-justified">
         <div class="btn-group">
-            <a href="{% url 'post:applicants' pk=post.pk %}" class="btn applicant-view-btn" style="border-right: none;">
+            <a href="#" data-url="{% url 'post:applicants' pk=post.pk %}"
+               class="btn applicant-view-btn multiple-app-view" style="border-right: none;">
                 Multiple Applicants View
             </a>
         </div>
@@ -60,28 +70,50 @@
 
     {% include 'post/applicant_info.html' %}
     <script>
-    $(function(){
-        $("#prevBtn").click(function(){
-            var page = $("#page");
-            page.val(parseInt(page.val()) - 1);
-            $("#hiddenform").submit();
-        });
+        $(function(){
 
-        $("#nBtn").click(function(){
-            var page = $("#page");
-            page.val(parseInt(page.val()) + 1);
-            $("#hiddenform").submit();
-        });
+            $("#prevBtn").click(function(){
+                var page = $("#page");
+                page.val(parseInt(page.val()) - 1);
+                $("#hiddenform").submit();
+            });
 
-        $('body').on('click', '#dBtn', function(){
-            $("#keep").val("False");
-            $("#hiddenform").submit();
-        });
+            $("#nBtn").click(function(){
+                var page = $("#page");
+                page.val(parseInt(page.val()) + 1);
+                $("#hiddenform").submit();
+            });
 
-        $("#clBtn").click(function(){
-            $("#cover").val("True");
-            $("#hiddenform").submit();
+            $('body').on('click', '#dBtn', function(){
+                $("#keep").val("Delete");
+                $("#hiddenform").submit();
+            });
+
+            $("#clBtn").click(function(){
+                $("#cover").val("True");
+                $("#hiddenform").submit();
+            });
+
+            $('#hiddenform').submit(function(){
+                var schools = $('#schools');
+                var majors = $('#majors');
+
+                schools.val(schools.val().substring(0,schools.val().length-1));
+                majors.val(majors.val().substring(0,majors.val().length-1));
+            });
+
         });
-    });
     </script>
+
+    <div class="hidden">
+        <form id="multiple-view-form" method="post" action="{% url 'post:applicants' pk=post.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="0">
+            <input type="hidden" name="keep" value="True">
+
+            <input id="multi-schools" type="hidden" name="schools" value="{{ school_val }}">
+            <input id="multi-majors" type="hidden" name="majors" value="{{ major_val }}">
+            <input type="hidden" name="gpa_filter" value="{{ gpa_val }}">
+        </form>
+    </div>
 {% endblock %}

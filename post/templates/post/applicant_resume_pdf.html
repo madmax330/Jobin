@@ -39,7 +39,7 @@
         <h3>Experience</h3>
         {% for x in exp %}
             <div>
-                <label>Title:</label><span class="label-information">{{ x.title }}</span><br/>
+                <label>Title:</label><span class="label-information capital">{{ x.title }}</span><br/>
                 <label>Duration:</label><span class="label-information">
                     {{ x.start }} to {% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}
                 </span><br/>
@@ -93,7 +93,7 @@
         <h3>Awards:</h3>
         {% for x in aws %}
             <div>
-                <label>Title:</label><span class="label-information">{{ x.title }}</span><br/>
+                <label>Title:</label><span class="label-information capital">{{ x.title }}</span><br/>
                 <label>Date Received:</label><span class="label-information">{{ x.date }}</span><br/>
                 <label>Type:</label><span class="label-information capital">{{ x.award_type }}</span>
             </div>
@@ -127,8 +127,8 @@
             </tr>
             {% for x in lan %}
                 <tr>
-                    <td>{{ x.name }}</td>
-                    <td>{{ x.level }}</td>
+                    <td class="capital">{{ x.name }}</td>
+                    <td class="capital">{{ x.level }}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -142,8 +142,8 @@
             </tr>
             {% for x in skills %}
                 <tr>
-                    <td>{{ x.name }}</td>
-                    <td>{{ x.level }}</td>
+                    <td class="capital">{{ x.name }}</td>
+                    <td class="capital">{{ x.level }}</td>
                 </tr>
             {% endfor %}
         </table>

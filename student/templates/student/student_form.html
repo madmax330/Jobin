@@ -26,7 +26,7 @@
             {% include 'student/form_template.html' %}
             {% if update %}
                 <div class="w3-padding-16">
-                    <a href="javascript:history.back()" class="w3-btn regular-btn">Cancel</a>
+                    <a href="{% url 'student:profile' %}" class="w3-btn regular-btn">Cancel</a>
                     <button type="submit" class="w3-btn submit-btn">Submit</button>
                 </div>
             {% else %}
@@ -48,8 +48,12 @@
                 }
                 if(t.split(' ')[0].toLowerCase() == 'update' ){
                     var sch = el.val();
-                    el.parent().html('<span style="margin-left: 10px;">' + sch + '</span>');
+                    el.hide();
+                    var html = el.parent().html();
+                    html += '<span style="margin-left: 10px;">' + sch + '</span>';
+                    el.parent().html(html);
                 }
+
             });
         </script>
     </div>

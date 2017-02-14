@@ -208,6 +208,10 @@ span.required:after{
 
 /* MESSAGES STYLE */
 
+.form-error ul{
+    margin: 0;
+}
+
 .message{
     padding: 8px 0 8px 16px;
     margin-bottom: 8px;
