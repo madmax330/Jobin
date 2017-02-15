@@ -5,24 +5,28 @@ import datetime
 class Pagination:
 
     @staticmethod
-    def get_pages(l, cp=0, base=10):
+    def get_pages(l, current_page=0, base=10):
+        max_pages = 20
         half_base = int(base / 2)
-        pages = list(range(1, 2))
         count = len(l)
-        cv = int(count / base)
+        start = 0
+        end = 1
+        pages_number = int(count / base)
         if not (count % base) == 0:
-            cv += 1
-        if cv > 0:
-            pages = list(range(1, cv + 1))
-            if cp - half_base > 0:
-                if cp + half_base < cv:
-                    pages = pages[cp - half_base: cp + half_base]
+            pages_number += 1
+        if pages_number > 0:
+            if pages_number > max_pages:
+                if current_page - half_base > 0:
+                    start = current_page - half_base - 1  # -1 to cancel + 1 at end
+                    if current_page + half_base > pages_number:
+                        end = pages_number
+                    else:
+                        end = current_page + half_base
                 else:
-                    pages = pages[cp - half_base:]
+                    end = max_pages
             else:
-                if len(pages) > base:
-                    pages = pages[0:base]
-        return pages
+                end = pages_number
+        return range(start+1, end+1)
 
     @staticmethod
     def get_page_items(l, cp=0, base=10):
@@ -199,6 +203,12 @@ class MessageCenter:
         msg = "You must add at least one language entry before continuing."
         MessageCenter.new_message('student', student, 'danger', msg)
 
+    @staticmethod
+    def resume_used_in_active_applications_error(student):
+        msg = """This resume is used in active applications.
+                Make sure it is not used in any active applications before deleting it."""
+        MessageCenter.new_message('student', student, 'warning', msg)
+
     #
     #   POST APP MESSAGES
     #
@@ -313,7 +323,7 @@ class MessageCenter:
 
     @staticmethod
     def post_reactivated_notification(student, title, company):
-        msg = 'The post ' + title + ' by' + company + ' has been re-opened.' \
+        msg = 'The post ' + title + ' by' + str(company) + ' has been re-opened.' \
               ' Since your application was not discarded your candidacy is automatically renewed, but ' \
               'you can remove it in your home screen.'
         MessageCenter.new_notification('student', student, 100, msg)

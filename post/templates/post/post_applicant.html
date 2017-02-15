@@ -71,27 +71,30 @@
     {% include 'post/applicant_info.html' %}
     <script>
         $(function(){
+            var form = $('#hiddenform');
 
             $("#prevBtn").click(function(){
                 var page = $("#page");
                 page.val(parseInt(page.val()) - 1);
-                $("#hiddenform").submit();
+                form.submit();
             });
 
             $("#nBtn").click(function(){
                 var page = $("#page");
                 page.val(parseInt(page.val()) + 1);
-                $("#hiddenform").submit();
+                form.submit();
             });
 
             $('body').on('click', '#dBtn', function(){
                 $("#keep").val("Delete");
-                $("#hiddenform").submit();
+                form.attr('action', $(this).data('url'));
+                form.submit();
             });
 
             $("#clBtn").click(function(){
                 $("#cover").val("True");
-                $("#hiddenform").submit();
+                form.attr('action', $(this).data('url'));
+                form.submit();
             });
 
             $('#hiddenform').submit(function(){

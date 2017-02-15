@@ -96,6 +96,8 @@ class ApplicantUtil:
 
     @staticmethod
     def apply_filters(filters, apps, post):
+        if not filters:
+            return list(apps)
         gpa = filters['gpa']
         schools = filters['schools']
         majors = filters['majors']
@@ -110,12 +112,13 @@ class ApplicantUtil:
         if not keep:
             d = [x for x in apps if int(x.pk) not in l['ids']]
             for x in d:
-                x.status = 'closed'
-                x.save()
-                msg = "Your application for the job " + x.post_title + " was discontinued."
-                MessageCenter.new_notification('student', x.student, 100, msg)
+                temp = Application.objects.get(pk=x.pk)
+                temp.status = 'closed'
+                temp.save()
+                msg = "Your application for the job " + temp.post_title + " was discontinued."
+                MessageCenter.new_notification('student', temp.student, 100, msg)
             if len(d) > 0:
-                msg = 'The applicants outside the filter (' + str(len(d)) + ') were removed successfully.'
+                msg = 'The (' + str(len(d)) + ') applicants outside the filter were removed successfully.'
                 MessageCenter.new_message('company', post.company, 'info', msg)
         return list(l['apps'])
 
