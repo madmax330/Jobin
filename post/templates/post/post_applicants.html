@@ -2,6 +2,7 @@
 
 {% load staticfiles %}
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'home/page_script.js' %}"></script>
     <script type="text/javascript" src="{% static 'post/applicants_filter_script.js' %}"></script>
     <script type="text/javascript" src="{% static 'post/single_applicant_nav.js' %}"></script>
 {% endblock %}
@@ -147,9 +148,11 @@
     </div>
     <script>
         $(function(){
+
+            var page = $('#page');
+            page.val(parseInt(page.val()) - 1);
+
             $("#filter-form").submit(function(){
-                var page = $('#page');
-                page.val(parseInt(page.val()) - 1);
                 var sch = $('#school-input');
                 var maj = $('#major-input');
                 var schools = "";

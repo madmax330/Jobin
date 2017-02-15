@@ -94,6 +94,7 @@ def close_event(request, pk):
         event = Event.objects.get(pk=pk)
         event.active = False
         event.save()
+    return redirect('event:companyevents')
 
 
 class CompanyEvent(generic.DetailView):
@@ -175,7 +176,7 @@ class EventRecovery(View):
             event.company = company
             event.is_startup_post = company.is_startup
             event.schools = 'ALL'
-            event.status = 'open'
+            event.active = True
             event.save()
             MessageCenter.event_reactivated(company, event.title)
             return redirect('event:companyevents')
