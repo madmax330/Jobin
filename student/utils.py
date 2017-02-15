@@ -17,7 +17,7 @@ class StudentUtil:
         r_apps = Application.objects.filter(student=student, status='active', cover_requested=False)
         apps.extend(r_apps)
         old_apps = Application.objects.filter(student=student, status='hold', post__status='open')
-        resumes = Resume.objects.filter(student=student, is_complete=True)
+        resumes = Resume.objects.filter(student=student, is_complete=True, status='open')
         apages = Pagination.get_pages(apps, apage, 10)
         epages = Pagination.get_pages(events, epage, 10)
         context = {

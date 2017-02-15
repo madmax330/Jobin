@@ -145,7 +145,7 @@ class StudentPosts(View):
     def get(self, request, pk, pt):
         try:
             student = Student.objects.get(user=self.request.user)
-            resumes = Resume.objects.filter(student=student)
+            resumes = Resume.objects.filter(student=student, is_complete=True, status='open')
             l = PostUtil.get_student_posts(student, pt, pk)
             rkey = 0
             for r in resumes:
@@ -165,7 +165,7 @@ class StudentPosts(View):
     def post(self, request, pk, pt):
         r = request.POST.get('rk')
         student = Student.objects.get(user=self.request.user)
-        resumes = Resume.objects.filter(student=student)
+        resumes = Resume.objects.filter(student=student, is_complete=True, status='open')
         for x in resumes:
             x.is_active = False
             if x.pk == r:
@@ -250,12 +250,12 @@ class PostApplicantsView(View):
         program = JobinProgram.objects.filter(name=post.programs)
         context = {
             'post': post,
-            'list': Pagination.get_page_items(l, 0, 50),
+            'list': Pagination.get_page_items(l, 0, 2),
             'msgs': msgs,
             'schools': JobinSchool.objects.all(),
             'majors': JobinMajor.objects.filter(program=program),
             'count': len(l),
-            'pages': Pagination.get_pages(l, 0, 50),
+            'pages': Pagination.get_pages(l, 0, 2),
             'page': 1,
         }
         for x in msgs:
@@ -268,26 +268,27 @@ class PostApplicantsView(View):
         program = JobinProgram.objects.filter(name=post.programs)
         apps = ApplicantUtil.get_post_applicants(post)
         filters = ApplicantUtil.prep_app_filters(request, post)
-        if not filters:
-            return redirect('post:applicants', pk=pk)
         l = ApplicantUtil.apply_filters(filters, apps, post)
         msgs = MessageCenter.get_messages('company', post.company)
         school_val = ''
-        for x in filters['schools']:
-            school_val += x + ','
         major_val = ''
-        for x in filters['majors']:
-            major_val += x + ','
+        gpa_val = 0
+        if filters:
+            for x in filters['schools']:
+                school_val += x + ','
+            for x in filters['majors']:
+                major_val += x + ','
+            gpa_val = filters['gpa']
         context = {
             'post': post,
-            'list': Pagination.get_page_items(l, page, 50),
+            'list': Pagination.get_page_items(l, page, 2),
             'msgs': msgs,
             'schools': JobinSchool.objects.all(),
             'majors': JobinMajor.objects.filter(program=program),
             'count': len(l),
-            'pages': Pagination.get_pages(l, page, 50),
+            'pages': Pagination.get_pages(l, page, 2),
             'page': page + 1,
-            'gpa_val': filters['gpa'],
+            'gpa_val': (gpa_val if gpa_val > 0 else ''),
             'major_val': major_val,
             'school_val': school_val,
         }
@@ -357,7 +358,7 @@ class SingleApplicantView(View):
             elif page < 0:
                 page = len(apps) - 1
 
-            if not int(ak) == 0:
+            if not int(ak) == 0 and not keep == 'Delete':
                 page = 0
                 for x in apps:
                     if int(x.pk) == int(ak):

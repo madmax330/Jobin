@@ -178,6 +178,9 @@ class DeleteResume(DeleteView):
 
     def get(self, *args, **kwargs):
         resume = Resume.objects.get(pk=kwargs['pk'])
+        if Application.objects.filter(resume=resume, status='active').count() > 0:
+            MessageCenter.resume_used_in_active_applications_error(resume.student)
+            return redirect('resume:index')
         ll = LanguageLink.objects.filter(resume=resume)
         sl = SchoolLink.objects.filter(resume=resume)
         el = ExperienceLink.objects.filter(resume=resume)
