@@ -250,12 +250,12 @@ class PostApplicantsView(View):
         program = JobinProgram.objects.filter(name=post.programs)
         context = {
             'post': post,
-            'list': Pagination.get_page_items(l, 0, 2),
+            'list': Pagination.get_page_items(l, 0, 50),
             'msgs': msgs,
             'schools': JobinSchool.objects.all(),
             'majors': JobinMajor.objects.filter(program=program),
             'count': len(l),
-            'pages': Pagination.get_pages(l, 0, 2),
+            'pages': Pagination.get_pages(l, 0, 50),
             'page': 1,
         }
         for x in msgs:
@@ -281,12 +281,12 @@ class PostApplicantsView(View):
             gpa_val = filters['gpa']
         context = {
             'post': post,
-            'list': Pagination.get_page_items(l, page, 2),
+            'list': Pagination.get_page_items(l, page, 50),
             'msgs': msgs,
             'schools': JobinSchool.objects.all(),
             'majors': JobinMajor.objects.filter(program=program),
             'count': len(l),
-            'pages': Pagination.get_pages(l, page, 2),
+            'pages': Pagination.get_pages(l, page, 50),
             'page': page + 1,
             'gpa_val': (gpa_val if gpa_val > 0 else ''),
             'major_val': major_val,
