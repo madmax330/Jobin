@@ -12,8 +12,6 @@ class StudentUtil:
         apps = []
         rq_apps = Application.objects.filter(student=student, status='active', cover_requested=True)
         apps.extend(rq_apps)
-        rs_apps = Application.objects.filter(student=student, status='active', cover_submitted=True)
-        apps.extend(rs_apps)
         r_apps = Application.objects.filter(student=student, status='active', cover_requested=False)
         apps.extend(r_apps)
         old_apps = Application.objects.filter(student=student, status='hold', post__status='open')

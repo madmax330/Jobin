@@ -77,7 +77,7 @@ class NewResumeView(CreateView):
             s.is_new = False
             s.save()
         msgs = MessageCenter.get_messages('student', s)
-        rs = Resume.objects.filter(student=s)
+        rs = Resume.objects.filter(student=s, status='open')
         if len(s.email) > 30:
             s.email = s.email[0:5] + '...@' + s.email.split('@', 1)[1]
         context['msgs'] = msgs
@@ -97,7 +97,7 @@ class NewResumeView(CreateView):
             student.is_new = False
             student.save()
         if resume.is_active:
-            rs = Resume.objects.filter(student=student)
+            rs = Resume.objects.filter(student=student, status='open')
             for r in rs:
                 r.is_active = False
                 r.save()
@@ -149,7 +149,7 @@ class ResumeUpdateView(UpdateView):
         resume.last_updated = datetime.datetime.now()
         s = resume.student
         if resume.is_active:
-            rs = Resume.objects.filter(student=s)
+            rs = Resume.objects.filter(student=s, status='open')
             for r in rs:
                 r.is_active = False
                 r.save()
@@ -791,7 +791,7 @@ class WalkthrougNav(View):
         resume = Resume.objects.get(pk=rk)
         student = resume.student
         if rq == 'resume_done':
-            rs = Resume.objects.filter(student=student)
+            rs = Resume.objects.filter(student=student, status='open')
             if rs.count() > 1:
                 for x in rs:
                     if x.is_complete:
