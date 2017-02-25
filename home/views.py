@@ -173,6 +173,7 @@ class ChangeUserInfo(View):
         user = self.request.user
         email = request.POST.get('email')
         cemail = request.POST.get('cemail')
+        old_password = request.POST.get('old_pass')
         password = request.POST.get('pass')
         cpassword = request.POST.get('cpass')
         context = {
@@ -215,6 +216,9 @@ class ChangeUserInfo(View):
         if password:
             if not password == cpassword:
                 context['error'] = 'Password fields do not match.'
+                return render(request, self.template_name, context)
+            if not user.check_password(old_password):
+                context['error'] = 'Current password is incorrect.'
                 return render(request, self.template_name, context)
             user.set_password(password)
             user.save()
