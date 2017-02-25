@@ -64,8 +64,12 @@ class ApplicantUtil:
     @staticmethod
     def get_post_applicants(post):
         a1 = Application.objects.filter(Q(status='active') | Q(status='hold'), post=post)
+        ca = a1.filter(cover_submitted=True)
+        rest = a1.filter(cover_submitted=False)
         apps = []
-        for x in a1:
+        for x in ca:
+            apps.append(Applicant(x, x.student))
+        for x in rest:
             apps.append(Applicant(x, x.student))
         return apps
 
