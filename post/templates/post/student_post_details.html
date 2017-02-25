@@ -48,7 +48,11 @@
                 <label><u>Company</u>:</label><span> {{ comp.name }}</span><br/>
                 <label><u>Address</u>:</label>
                 <p> {{ comp.address }}, {{ comp.city }}, {{ comp.state }}</p>
-                <label><u>Website</u>:</label><span> <a href="{{ comp.website }}">{{ comp.website }}</a></span><br/>
+                <label><u>Website</u>:</label>
+                <span>
+                    <a target="_blank" href="{{ comp.website }}">{{ comp.website }}</a>
+                </span>
+                <br/>
             </div>
             <hr/>
             <div class="w3-container">
