@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Application
 from home.models import JobinProgram
 import datetime
 
@@ -56,6 +56,18 @@ class NewPostForm(forms.ModelForm):
             raise forms.ValidationError({'deadline': 'The deadline must be before the start date.'})
 
 
+class NewApplicationForm(forms.ModelForm):
+
+    class Meta:
+        model = Application
+        fields = ('post', 'student', 'resume', 'date', 'status', 'post_title', 'student_name')
+
+
+class AddCoverLetterForm(forms.ModelForm):
+
+    class Meta:
+        model = Application
+        fields = ('cover', 'cover_submitted',)
 
 
 

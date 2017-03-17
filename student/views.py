@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from .models import Student
 from .utils import StudentUtil
+from .util_student import StudentContainer
 from post.models import Application
 from event.models import SavedEvent
 from home.models import JobinSchool, Notification
@@ -17,6 +18,9 @@ class IndexView(View):
     template_name = 'student/student_home.html'
 
     def get(self, request):
+        stu = StudentContainer(request.user)
+        apps = stu.get_applications()
+        context = {'apps': apps}
         res = Student.objects.filter(user=request.user)
         if res.count() > 0:
             student = res.first()

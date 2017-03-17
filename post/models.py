@@ -43,8 +43,8 @@ class Application(models.Model):
     cover_requested = models.BooleanField(default=False)
     cover_submitted = models.BooleanField(default=False)
     cover_opened = models.BooleanField(default=False)
-    post_title = models.CharField(max_length=100, null=True)
-    student_name = models.CharField(max_length=100, null=True)
+    post_title = models.CharField(max_length=100)
+    student_name = models.CharField(max_length=100)
     resume_notified = models.BooleanField(default=False)
 
     def __str__(self):

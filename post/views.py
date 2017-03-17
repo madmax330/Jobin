@@ -6,12 +6,14 @@ from .models import Post, Application
 from .classes import Applicant
 from .forms import NewPostForm
 from .utils import PostContexts, ApplicantUtil, ApplicationUtil, PostUtil
+from student.util_student import StudentContainer
 from home.models import JobinSchool, JobinProgram, JobinMajor
 from home.utils import MessageCenter, Pagination
 from company.models import Company
 from student.models import Student
 from resume.models import Resume
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction, IntegrityError
 #from wkhtmltopdf.views import PDFTemplateResponse
 
 
@@ -225,19 +227,32 @@ class StudentDetailsView(View):
 class ApplyView(View):
 
     def get(self, request, pk, pt):
+        stu = StudentContainer(self.request.user)
         post = Post.objects.get(pk=pk)
-        student = Student.objects.get(user=self.request.user)
-        r = Resume.objects.filter(student=student, is_active=True)
-        if ApplicationUtil.already_applied(student, post):
-            MessageCenter.already_applied(student, post.title)
-            return redirect('post:studentposts', pk=pk, pt=pt)
-        if r.count() > 0:
-            ApplicationUtil.new_application(post, student, r.first())
-            MessageCenter.apply_message(student, post.title)
-            return redirect('post:studentposts', pk=pk, pt=pt)
-        else:
-            MessageCenter.apply_no_resume(student)
-            return redirect('resume:index')
+        r = Resume.objects.filter(student=stu.get_student(), is_active=True)
+
+        try:
+            with transaction.atomic():
+                if not stu.new_application(post, r.first()):
+                    raise IntegrityError
+        except IntegrityError:
+            errs = stu.get_errors()
+            MessageCenter.new_message('student', stu.get_student(), 'danger', str(errs))
+
+        return redirect('post:studentposts', pk=pk, pt=pt)
+
+        #student = Student.objects.get(user=self.request.user)
+
+        #if ApplicationUtil.already_applied(student, post):
+        #    MessageCenter.already_applied(student, post.title)
+        #    return redirect('post:studentposts', pk=pk, pt=pt)
+        #if r.count() > 0:
+        #    ApplicationUtil.new_application(post, student, r.first())
+        #    MessageCenter.apply_message(student, post.title)
+        #    return redirect('post:studentposts', pk=pk, pt=pt)
+        #else:
+        #    MessageCenter.apply_no_resume(student)
+        #    return redirect('resume:index')
 
 
 class PostApplicantsView(View):
