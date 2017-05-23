@@ -1,4 +1,59 @@
-{% extends 'resume/form_base.html' %}
+<div id="resume-modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-zoom w3-card-4">
+        <header class="w3-container primary-color">
+            <span data-id="resume-modal" class="w3-button w3-display-topright close-modal">&times;</span>
+            <h3 class="w3-text-white">Resume Form</h3>
+        </header>
+        <div class="w3-container">
+            {% if resumes %}
+                <div>
+                    <h4 class="secondary-color w3-padding">
+                        Create your new resume based of an existing resume:
+                    </h4>
+                    <ul class="w3-ul">
+                        {% for x in resumes %}
+                            <li>
+                                <a href="{% url 'resume:copy' pk=x.id %}">New resume like {{ x.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <h3 class="w3-padding secondary-color">
+                    Resume Information
+                </h3>
+            {% endif %}
 
-{% block title %}New Resume{% endblock %}
-{% block form_title %}Resume Form:{% endblock %}
+            <div class="w3-padding">
+                <div class="modal-messages"></div>
+                <div class="w3-padding w3-hide first-message w3-pale-blue">
+                    <div>
+                        <p>
+                            Resumes are how you will show off to recruiters. To create your first resume,
+                            fill out the form below and submit it.
+                        </p>
+                    </div>
+                </div>
+                <form id="resume-form" action="{% url 'resume:new' %}" method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="required" for="resume_name">Name:</label>
+                        <input id="resume_name" class="w3-input w3-border" type="text"
+                               name="resume_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="resume_gpa">GPA:</label>
+                        <input id="resume_gpa" class="w3-input w3-border" type="text"
+                               name="resume_gpa">
+                    </div>
+                    <div class="w3-padding">
+                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="resume-modal">
+                            Cancel
+                        </button>
+                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

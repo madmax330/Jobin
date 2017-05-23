@@ -1,0 +1,24 @@
+
+
+.home-section{
+    padding: 0 32px 0 32px;
+}
+
+.home-info-div{
+    padding-top: 5%;
+}
+
+.login-panel{
+    border: 1px solid #255c99;
+    color: #000000;
+    border-radius: 0;
+}
+
+.login-panel .panel-heading{
+    background-color: #255c99;
+    color: #FFFFFF;
+    border-radius: 0;
+}
+
+
+

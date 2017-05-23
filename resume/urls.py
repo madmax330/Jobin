@@ -7,55 +7,43 @@ app_name = 'resume'
 
 urlpatterns = [
     # List views
-    url(r'^$', views.IndexView.as_view(), name='index'),
-    url(r'^list/language/(?P<rk>[0-9]+)/$', views.LanguageList.as_view(), name='languagelist'),
-    url(r'^list/experience/(?P<rk>[0-9]+)/$', views.ExperienceList.as_view(), name='experiencelist'),
-    url(r'^list/award/(?P<rk>[0-9]+)/$', views.AwardList.as_view(), name='awardlist'),
-    url(r'^list/school/(?P<rk>[0-9]+)/$', views.SchoolList.as_view(), name='schoollist'),
-    url(r'^list/skill/(?P<rk>[0-9]+)/$', views.SkillList.as_view(), name='skilllist'),
+    url(r'^$', views.resume_index, name='index'),
 
     # New views
-    url(r'^new/resume/$', views.NewResumeView.as_view(), name='newresume'),
-    url(r'^new/language/(?P<rk>[0-9]+)/$', views.NewLanguageView.as_view(), name='newlanguage'),
-    url(r'^new/experience/(?P<rk>[0-9]+)/$', views.NewExperienceView.as_view(), name='newexperience'),
-    url(r'^new/award/(?P<rk>[0-9]+)/$', views.NewAwardView.as_view(), name='newaward'),
-    url(r'^new/school/(?P<rk>[0-9]+)/$', views.NewSchoolView.as_view(), name='newschool'),
-    url(r'^new/skill/(?P<rk>[0-9]+)/$', views.NewSkillView.as_view(), name='newskill'),
+    url(r'^new/resume/$', views.new_resume, name='new'),
+    url(r'^new/language/(?P<pk>[0-9]+)/$', views.new_language, name='new_language'),
+    url(r'^new/experience/(?P<pk>[0-9]+)/$', views.new_experience, name='new_experience'),
+    url(r'^new/award/(?P<pk>[0-9]+)/$', views.new_award, name='new_award'),
+    url(r'^new/school/(?P<pk>[0-9]+)/$', views.new_school, name='new_school'),
+    url(r'^new/skill/(?P<pk>[0-9]+)/$', views.new_skill, name='new_skill'),
 
     # Update views
-    url(r'^update/resume/(?P<pk>[0-9]+)/$', views.ResumeUpdateView.as_view(), name='updateresume'),
-    url(r'^update/language/(?P<pk>[0-9]+)/$', views.LanguageUpdateView.as_view(), name='updatelanguage'),
-    url(r'^update/experience/(?P<pk>[0-9]+)/$', views.ExperienceUpdateView.as_view(), name='updateexperience'),
-    url(r'^update/award/(?P<pk>[0-9]+)/$', views.AwardUpdateView.as_view(), name='updateaward'),
-    url(r'^update/school/(?P<pk>[0-9]+)/$', views.SchoolUpdateView.as_view(), name='updateschool'),
-    url(r'^update/skill/(?P<pk>[0-9]+)/$', views.SkillUpdateView.as_view(), name='updateskill'),
+    url(r'^edit/resume/(?P<pk>[0-9]+)/$', views.edit_resume, name='edit'),
+    url(r'^edit/language/(?P<pk>[0-9]+)/$', views.edit_language, name='edit_language'),
+    url(r'^edit/experience/(?P<pk>[0-9]+)/$', views.edit_experience, name='edit_experience'),
+    url(r'^edit/award/(?P<pk>[0-9]+)/$', views.edit_award, name='edit_award'),
+    url(r'^edit/school/(?P<pk>[0-9]+)/$', views.edit_school, name='edit_school'),
+    url(r'^edit/skill/(?P<pk>[0-9]+)/$', views.edit_skill, name='edit_skill'),
 
     # Delete views
-    url(r'^delete/resume/(?P<pk>[0-9]+)/$', views.DeleteResume.as_view(), name='deleteresume'),
-    url(r'^delete/language/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteLanguage.as_view(), name='deletelanguage'),
-    url(r'^delete/experience/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteExperience.as_view(), name='deleteexperience'),
-    url(r'^delete/award/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteAward.as_view(), name='deleteaward'),
-    url(r'^delete/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteSchool.as_view(), name='deleteschool'),
-    url(r'^delete/skill/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.DeleteSkill.as_view(), name='deleteskill'),
-
-    # Walkthrough
-    url(r'^nav/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.WalkthrougNav.as_view(), name='nav'),
-    url(r'^walkthrough/first/school/(?P<rk>[0-9]+)/$', views.FirstSchoolWalkthrough.as_view(), name='firstschoolwalk'),
-    url(r'^walkthrough/school/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.SchoolWalkthrough.as_view(), name='schoolwalk'),
-    url(r'^walkthrough/language/(?P<rk>[0-9]+)/(?P<rq>\w+)/$', views.LanguageWalkthrough.as_view(), name='languagewalk'),
-    url(r'^walkthrough/experience/(?P<rk>[0-9]+)/(?P<rq>\w+)/(?P<pk>[0-9]+)/$', views.ExperienceWalkthrough.as_view(), name='experiencewalk'),
+    url(r'^delete/resume/(?P<pk>[0-9]+)/$', views.delete_resume, name='delete'),
+    url(r'^delete/language/(?P<rk>[0-9]+)/(?P<pk>[0-9]+)/$', views.delete_language, name='delete_language'),
+    url(r'^delete/experience/(?P<rk>[0-9]+)/(?P<pk>[0-9]+)/$', views.delete_experience, name='delete_experience'),
+    url(r'^delete/award/(?P<rk>[0-9]+)/(?P<pk>[0-9]+)/$', views.delete_award, name='delete_award'),
+    url(r'^delete/school/(?P<rk>[0-9]+)/(?P<pk>[0-9]+)/$', views.delete_school, name='delete_school'),
+    url(r'^delete/skill/(?P<rk>[0-9]+)/(?P<pk>[0-9]+)/$', views.delete_skill, name='delete_skill'),
 
     # Links
-    url(r'^link/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkschool, name='linkschool'),
-    url(r'^link/skill/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkskill, name='linkskill'),
-    url(r'^link/language/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linklanguage, name='linklanguage'),
-    url(r'^link/experience/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkexperience, name='linkexperience'),
-    url(r'^link/award/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.linkaward, name='linkaward'),
+    url(r'^add/school/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.add_school, name='add_school'),
+    url(r'^add/skill/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.add_skill, name='add_skill'),
+    url(r'^add/language/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.add_language, name='add_language'),
+    url(r'^add/experience/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.add_experience, name='add_experience'),
+    url(r'^add/award/(?P<pk>[0-9]+)/(?P<rk>[0-9]+)/$', views.add_award, name='add_award'),
 
     # Misc
-    url(r'^change/(?P<rk>[0-9]+)/(?P<ak>[0-9]+)/$', views.change_resume, name='change'),
-    url(r'^activate/(?P<pk>[0-9]+)/(?P<rq>\w+)/(?P<fk>[0-9]+)/(?P<pt>\w+)/$', views.MakeActive.as_view(), name='makeactive'),
-    url(r'^details/(?P<pk>[0-9]+)/$', views.ResumeDetailView.as_view(), name='details'),
-    url(r'^copy/resume/(?P<rk>[0-9]+)/$', views.copyresume, name='copy'),
+    url(r'^change/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.change_application_resume, name='change'),
+    url(r'^activate/(?P<pk>[0-9]+)/$', views.change_active_resume, name='activate'),
+    url(r'^details/(?P<pk>[0-9]+)/$', views.resume_detail, name='details'),
+    url(r'^copy/resume/(?P<pk>[0-9]+)/$', views.copy_resume, name='copy'),
 ]
 

@@ -1,0 +1,234 @@
+{% extends 'student/base.html' %}
+
+{% block title %}{{ resume.name }} Overview{% endblock %}
+
+{% load staticfiles %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'resume/resume_util.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <style>
+        h4 {
+            margin: 0;
+        }
+    </style>
+    <div>
+        <div class="w3-center primary-color w3-padding-small">
+            <h3 class="w3-text-white">Resume Overview</h3>
+        </div>
+        <div class="w3-container w3-padding">
+            <label>Name:</label><span> {{ resume.name }}</span><br/>
+            <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
+            <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
+            <label>File:</label>{% if resume.file_resume %}
+            <span> {{ resume.file_resume }}</span>
+        {% else %}
+            <span> No file uploaded</span>
+        {% endif %}
+        </div>
+        <div class="w3-container secondary-color w3-row w3-padding">
+            <div class="w3-col s9">
+                <h4>Experience</h4>
+            </div>
+            <div class="w3-col s3">
+                <button type="button" class="w3-btn new-experience w3-border w3-border-black">New Experience</button>
+            </div>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Company</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if resume.experience %}
+                {% for x in resume.experience %}
+                    <tr class="jobin-experience">
+                        <td class="title">{{ x.title }}</td>
+                        <td class="start">{{ x.start }}</td>
+                        <td class="end">
+                            {% if x.is_current %}Current Job{% else %}{{ x.end }}{% endif %}
+                        </td>
+                        <td class="company">{{ x.company }}</td>
+                        <td>
+                            <a href="#" data-url="{% url 'resume:edit_experience' pk=x.id %}" class="edit-experience">
+                                Edit</a> |
+                            <a href="{% url 'resume:delete_experience' rk=resume.id pk=x.id %}">Delete</a>
+                            <div class="w3-hide">
+                                <p class="description">{{ x.description }}</p>
+                                <p class="type">{{ x.experience_type }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="w3-pale-yellow">You have not added any experience to this resume.</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <div class="w3-container secondary-color w3-row w3-padding">
+            <div class="w3-col s9">
+                <h4>Education</h4>
+            </div>
+            <div class="w3-col s3">
+                <button type="button" class="w3-btn new-school w3-border w3-border-black">New School</button>
+            </div>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Level</th>
+                <th>Program</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for x in resume.schools %}
+                <tr class="jobin-school">
+                    <td class="name">{{ x.name }}</td>
+                    <td class="start">{{ x.start }}</td>
+                    <td class="end">
+                        {% if x.is_current %}Current School{% else %}{{ x.end }}{% endif %}
+                    </td>
+                    <td class="level">{{ x.level }}</td>
+                    <td class="program">{{ x.program }}</td>
+                    <td>
+                        <a href="#" data-url="{% url 'resume:edit_school' pk=x.id %}" class="edit-school">
+                            Edit</a>
+                        | <a href="{% url 'resume:delete_school' rk=resume.id pk=x.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="w3-container secondary-color w3-row w3-padding">
+            <div class="w3-col s9">
+                <h4>Awards/Certifications</h4>
+            </div>
+            <div class="w3-col s3">
+                <button type="button" class="w3-btn new-award  w3-border w3-border-black">New Award</button>
+            </div>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date Received</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if resume.awards %}
+                {% for x in resume.awards %}
+                    <tr class="jobin-award">
+                        <td class="title">{{ x.title }}</td>
+                        <td class="date">{{ x.date }}</td>
+                        <td class="type">{{ x.award_type }}</td>
+                        <td>
+                            <a href="#" data-url="{% url 'resume:edit_award' pk=x.id %}" class="edit-award">
+                                Edit</a>
+                            | <a href="{% url 'resume:delete_award' rk=resume.id pk=x.id %}">Delete</a>
+                            <div class="w3-hide">
+                                <p class="description">{{ x.description }}</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="w3-pale-yellow">You have not added any awards to this resume.</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <div class="w3-container secondary-color w3-row w3-padding">
+            <div class="w3-col s9">
+                <h4>Languages</h4>
+            </div>
+            <div class="w3-col s3">
+                <button type="button" class="w3-btn new-language w3-border w3-border-black">New Language</button>
+            </div>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Level</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for x in resume.languages %}
+                <tr class="jobin-language">
+                    <td class="name">{{ x.name }}</td>
+                    <td class="level">{{ x.level }}</td>
+                    <td>
+                        <a href="#" data-url="{% url 'resume:edit_language' pk=x.id %}" class="edit-language">
+                            Edit</a>
+                        | <a href="{% url 'resume:delete_language' rk=resume.id pk=x.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="w3-container secondary-color w3-row w3-padding">
+            <div class="w3-col s9">
+                <h4>Skills</h4>
+            </div>
+            <div class="w3-col s3">
+                <button type="button" class="w3-btn new-skill w3-border w3-border-black">New Skills</button>
+            </div>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Proficiency</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if resume.skills %}
+                {% for x in resume.skills %}
+                    <tr class="jobin-skill">
+                        <td class="name">{{ x.name }}</td>
+                        <td class="level">{{ x.level }}</td>
+                        <td>
+                            <a href="#" data-url="{% url 'resume:edit_skill' pk=x.id %}" class="edit-skill">
+                                Edit</a>
+                            | <a href="{% url 'resume:delete_skill' rk=resume.id pk=x.id %}">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3" class="w3-pale-yellow">You have not added any skills to this resume.</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <div class="w3-padding-16">
+            <a class="w3-btn w3-border w3-border-black" href="{% url 'resume:index' %}">Back to list</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    {% include 'resume/award_form.html' %}
+    {% include 'resume/experience_form.html' %}
+    {% include 'resume/language_form.html' %}
+    {% include 'resume/school_form.html' %}
+    {% include 'resume/skill_form.html' %}
+{% endblock %}

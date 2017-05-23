@@ -1,0 +1,114 @@
+{% extends 'company/base.html' %}
+
+{% block title %}Company Home{% endblock %}
+
+{% block side_content %}
+    {% include 'company/sides/company_info.html' %}
+    {% include 'company/sides/post_legend.html' %}
+{% endblock %}
+
+{% block scripts %}
+    {% load staticfiles %}
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align: center;">Active Posts</h4>
+        </div>
+        <div class="panel-body">
+            {% if posts %}
+                <table class="table">
+                    <tr>
+                        <th>Title</th>
+                        <th>Openings</th>
+                        <th>Start</th>
+                        <th>Deadline</th>
+                        <th></th>
+                    </tr>
+                    {% for x in posts %}
+                        <tr {% if x.notified %}style="background-color: #c2f9ce"
+                            {% elif x.new_apps %}style="background-color: #c9f3fc;"
+                            {% endif %}>
+                            <td>{{ x.title }}</td>
+                            <td>{{ x.openings }}</td>
+                            <td>{{ x.start_date }}</td>
+                            <td>{{ x.deadline }}</td>
+                            <td><a href="{% url 'post:applicants' pk=x.pk%}">Applicants</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="5">
+                            <span>Page: </span>
+                            {% for x in posts.paginator.page_range %}
+                                {% if x == posts.number %}
+                                    <strong><span>{{ x }} </span></strong>
+                                {% else %}
+                                    <a href="?pp={{ x }}&ep={{ events.number }}">{{ x }}</a>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            {% else %}
+                <div>
+                    <p>
+                        <strong>
+                            No active posts found, go to the posts section to create a new post.
+                        </strong>
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 class="text-center">Upcoming Events</h4>
+        </div>
+        <div class="panel-body">
+            {% if events %}
+                <table class="table">
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Times Saved</th>
+                        <th></th>
+                    </tr>
+                    {% for x in events %}
+                        <tr>
+                            <td>{{ x.title }}</td>
+                            <td>{{ x.start_date }}</td>
+                            <td>{{ x.start_time }}</td>
+                            <td>{{ x.times_saved }}</td>
+                            <td><a href="{% url 'event:details' pk=x.pk%}">Details</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4">
+                            <span>Page: </span>
+                            {% for x in events.paginator.page_range %}
+                                {% if x == events.number %}
+                                    <strong><span>{{ x }} </span></strong>
+                                {% else %}
+                                    <a href="?pp={{ posts.number }}&ep={{ x }}">{{ x }}</a>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            {% else %}
+                <div>
+                    <p>
+                        <strong>
+                            You currently don't have any upcoming events, go to the events section
+                            to create a new event.
+                        </strong>
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_name %}home{% endblock %}

@@ -1,0 +1,84 @@
+body{
+    background-color: #E0E0E0;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6{
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+}
+
+.bg-grey{
+    background-color: #f6f6f6;
+}
+
+.content-container{
+    padding-top: 16px;
+    background-color: #ffffff;
+}
+
+.no-back{
+    background: none!important;
+}
+
+.jobin-nav{
+    background-color: #255c99;
+    border: none;
+    padding-right: 16px;
+}
+
+.jobin-nav img{
+    max-width: 100px;
+}
+
+.jobin-nav .nav-link{
+    padding: 15px 16px;
+    color: #FFFFFF;
+}
+
+.jobin-nav .nav-link:hover{
+    color: #000000!important;
+    font-weight: bold;
+    background-color: #FFFFFF!important;
+}
+
+.nav-header:hover{
+    background-color: #255c99!important;
+}
+
+.required:after{
+    content: '*';
+}
+
+/* COLORS */
+
+.primary-color{
+    background-color: #255c99;
+}
+
+.secondary-color{
+    background-color: #eeeeee;
+}
+
+/* MODALS */
+
+.modal-sm{
+    max-width: 500px;
+}
+
+.modal-md{
+    max-width: 900px;
+}
+
+/* NOTIFICATIONS */
+
+#notifications .w3-button{
+    padding: 8px 0;
+}
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+<div class="panel panel-default secondary-panel filters-side-panel {% if not filters %}hidden{% endif %}">
+    <div class="panel-heading">
+        <h4 class="text-center">Filters</h4>
+    </div>
+    <div class="panel-body">
+        <div class="display-school-filter">
+            <div>
+                <span><strong>Schools:</strong></span>
+                {% for x in filter_schools %}
+                    {% if x %}
+                        <div class="display-filter-value">
+                            <span class="val">{{ x }}</span>
+                            {% if applicants %}
+                                <span class="remove-display-filter right school">&times;</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="display-major-filter">
+            <div>
+                <span><strong>Majors:</strong></span>
+                {% for x in filter_majors %}
+                    {% if x %}
+                        <div class="display-filter-value">
+                            <span class="val">{{ x }}</span>
+                            {% if applicants %}
+                                <span class="remove-display-filter right major">&times;</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="display-gpa-filter">
+            <div>
+                <span><strong>GPA:</strong></span><br/>
+                <span class="gpa-filter-val">
+                    {{ filters.gpa }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

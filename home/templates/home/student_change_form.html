@@ -1,30 +1,59 @@
-{% extends 'student/student_base.html' %}
+{% extends 'student/base.html' %}
 
 {% block title %}User Info Update{% endblock %}
-
-{% block profileactive %}active{% endblock %}
 
 {% block content %}
     <div class="w3-container">
         <div class="w3-card-8">
-            <div class="header-color w3-container w3-text-white">
+            <div class="primary-color w3-container w3-text-white">
                 <h4 class="w3-center">Change User Info</h4>
             </div>
-            <div class="w3-container warning-message">
+            <div class="w3-container w3-pale-yellow">
                 <p>
                     Changing the email attached to this account will result in
-                    your account being blocked until you verifiy the new email
+                    your account being blocked until you verify the new email
                     you have entered. Your school will also be changed to match
                     the new email you provide.
                 </p>
             </div>
             <div class="w3-container">
-                <form method="post" class="w3-form" enctype="multipart/form-data" action="">
+                <form method="post" class="w3-form" enctype="multipart/form-data"
+                      action="{% url 'home:change_info' ut='student' %}">
                     {% csrf_token %}
-                    {% include 'home/form-template-student.html' %}
-                    <div class="w3-padding-16">
-                        <a href="{% url 'student:profile' %}" class="w3-btn regular-btn">Cancel</a>
-                        <button type="submit" class="w3-btn submit-btn">Submit</button>
+                    {% if error %}
+                        <div class="w3-pale-red">
+                            <span>{{ error }}</span>
+                        </div>
+                    {% endif %}
+                    <h4 class="secondary-color w3-container w3-padding">Change Email:</h4>
+                    <div class="form-group">
+                        <label for="new_email" class="required">New Email:</label>
+                        <input id="new_email" class="w3-input w3-border" type="email" name="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_email" class="required">Confirm Email:</label>
+                        <input class="w3-input w3-border" type="email" name="confirm_email" id="confirm_email"/>
+                    </div>
+                    <div>
+                        <a href="{% url 'student:profile' %}" class="w3-btn ">Cancel</a>
+                        <button type="submit" class="w3-btn">Submit</button>
+                    </div>
+                    <h4 class="secondary-color w3-container w3-padding">Change Password:</h4>
+                    <div class="form-group">
+                        <label for="current_password" class="required">Current Password:</label>
+                        <input class="w3-input w3-border" type="password" name="old_password" id="current_password"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password" class="required">New Password:</label>
+                        <input class="w3-input w3-border" type="password" name="password" id="new_password"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password" class="required">Confirm Password:</label>
+                        <input class="w3-input w3-border" type="password" name="confirm_password" id="confirm_password"/>
+                    </div>
+                    <div>
+                        <a href="{% url 'student:profile' %}" class="w3-btn w3-border w3-border-black">Cancel</a>
+                        <button type="submit" class="w3-btn w3-border w3-border-green w3-text-green">Submit</button>
                     </div>
                 </form>
             </div>

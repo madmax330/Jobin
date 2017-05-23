@@ -1,0 +1,195 @@
+/*
+body{
+    font-family: 'Catamaran', sans-serif;
+    font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6{
+    font-family:'Catamaran', sans-serif;
+    font-weight: 700;
+}
+*/
+.right{
+    float: right;
+}
+
+.left{
+    float: left;
+}
+
+.main-container{
+    background-color: #ffffff;
+    padding-top: 20px;
+}
+
+.content-container{
+    padding-bottom: 20px;
+}
+
+.bg-grey{
+    background-color: #f6f6f6;
+}
+
+.primary-color{
+    background-color: #255c99;
+}
+
+.secondary-color{
+    background-color: #eeeeee;
+}
+
+.jobin-nav{
+    border-radius: 0;
+    background-color: #255c99;
+    border: none;
+    margin: 0;
+}
+
+.jobin-nav .navbar-nav>li>a, .jobin-nav h2{
+    color: #FFFFFF;
+}
+
+.navbar-header img{
+    max-width: 100px;
+}
+
+.navbar-brand{
+    padding: 5px 0 0 0;
+    margin-right: 10px;
+}
+
+.jobin-nav .navbar-nav>li>a:hover{
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+footer{
+    padding: 32px;
+}
+
+footer a{
+    color: #2782be;
+}
+
+footer a:hover{
+    color: #2782be;
+    text-decoration: underline;
+}
+
+.required:after{
+    content: '*';
+}
+
+.padding{
+    padding: 8px 0;
+}
+
+.padding-1{
+    padding: 16px 0;
+}
+
+.horizontal-padding{
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.btn{
+    border-radius: 0;
+}
+
+/* PANELS */
+
+.primary-panel{
+    border: 1px solid #255c99;
+    color: #000000;
+    border-radius: 0;
+}
+
+.primary-panel .panel-heading{
+    background-color: #255c99;
+    color: #FFFFFF;
+    border-radius: 0;
+}
+
+.primary-panel .btn, .primary-panel input, .primary-panel textarea{
+    border-radius: 0;
+}
+
+.secondary-panel{
+    border: 1px solid #eeeeee;
+    color: #000000;
+    border-radius: 0;
+}
+
+.secondary-panel .panel-heading{
+    background-color: #eeeeee;
+    color: #000000;
+    border-radius: 0;
+}
+
+.secondary-panel .btn, .secondary-panel input, .secondary-panel textarea{
+    border-radius: 0;
+}
+
+/* MODALS CSS */
+
+#warning-modal .modal-content{
+    border-radius: 0;
+}
+
+
+#warning-modal .modal-header{
+    background-color: #f0ad4e;
+    color: #FFFFFF;
+}
+
+
+/* LEGEND COLORS */
+
+.legend-green{
+    background-color: #c2f9ce;
+    color: #c2f9ce;
+}
+
+.legend-yellow{
+    background-color: #fdffb2;
+    color: #fdffb2;
+}
+
+.legend-light-blue{
+    background-color: #c9f3fc;
+    color: #c9f3fc;
+}
+
+.legend-darker-blue{
+    background-color: #96beff;
+    color: #96beff;
+}
+
+.legend-purple{
+    background-color: #E3DAFF;
+    color: #E3DAFF;
+}
+
+.legend-white{
+    background-color: white;
+    color: white;
+    border: 1px solid black;
+}
+
+/* SEARCH RESULTS CSS */
+
+.search-results{
+    border: 1px solid #aaaaaa;
+    padding: 8px;
+    z-index: 100;
+    width: 100%;
+    position: absolute;
+    background-color: #FFFFFF;
+}
+
+.search-result{
+    padding: 8px;
+    border-bottom: 1px solid #eeeeee;
+    cursor: pointer
+}

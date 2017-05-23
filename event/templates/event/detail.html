@@ -1,0 +1,45 @@
+{% extends 'company/base.html' %}
+
+{% block title %}Event Details{% endblock %}
+
+{% block side_content %}
+    {% include 'company/sides/company_info.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4>{{ event.title }}</h4>
+        </div>
+        <div class="panel-body">
+            <label>Times saved:</label><span>{{ event.times_saved }}</span><br/>
+            <label>Date and Time:</label><span> {{ event.start_date }} at {{ event.start_time }}</span><br/>
+            <label>Address:</label>
+            <span> {{ event.address }}, {{ event.city }}, {{ event.state }}, {{ event.zipcode }}</span><br/>
+            <label>Website:</label><span> {{ event.website }}</span><br/>
+            <label>Description:</label><p>{{ event.description }}</p>
+            <div>
+                <button class="warning-open btn btn-danger" data-id="close-event" data-name="{{ event.title }}"
+                        data-url="{% url 'event:close' pk=event.id %}">
+                    Cancel Event
+                </button>
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'event:company_events' %}" class="btn btn-default">Back to list</a>
+{% endblock %}
+
+
+{% block hidden_block %}
+    <div id="warning-close-event">
+        <p class="message">
+            Are you sure you want to cancel <u><span class="name"></span></u>?
+        </p>
+        <p class="note">
+            This will cancel this event so that it is no longer visible to students.
+            <br/>
+            <b>Note:</b> events are closed automatically when the event date is reached.
+        </p>
+    </div>
+{% endblock %}
+

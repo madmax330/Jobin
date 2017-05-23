@@ -1,68 +1,183 @@
-{% extends 'student/student_base.html' %}
+{% extends 'student/base.html' %}
 
-{% block title %}{% if update %}Update{% else %}New{% endif %} Student Form{% endblock %}
+{% block title %}Student Information Form{% endblock %}
 
-{% block profileactive %}active{% endblock %}
-
+{% load staticfiles %}
 {% block scripts %}
-    {% load staticfiles %}
-    <script src="{% static 'home/zipcode_validation.js' %}"></script>
-    <script src="{% static 'home/change_major_script.js' %}"></script>
-    <script src="{% static 'home/change_state_script.js' %}"></script>
+    <script src="{% static 'home/scripts/form_util.js' %}"></script>
+    <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
+    <script src="{% static 'home/scripts/form_location_script.js' %}"></script>
+    <script src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <div class="w3-container">
-        <div class="w3-container title-color w3-center w3-text-white">
-            {% if update %}
-                <h3 id="form-title">Update Student Form:</h3>
-            {% else %}
-                <h3 id="form-title">New Student Form:</h3>
-            {% endif %}
-
+    <div>
+        <div class="primary-color w3-center w3-text-white w3-padding-small">
+            <h3>
+                Student Information Form
+            </h3>
         </div>
-        <form class="w3-container w3-border-left w3-border-right w3-border-bottom w3-white" action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% include 'student/form_template.html' %}
-            {% if update %}
-                <div class="w3-padding-16">
-                    <a href="{% url 'student:profile' %}" class="w3-btn regular-btn">Cancel</a>
-                    <button type="submit" class="w3-btn submit-btn">Submit</button>
+        <div class="w3-container w3-padding">
+            <form id="student-form"
+                  action="{% if student %}{% url 'student:edit' %}{% else %}{% url 'student:new' %}{% endif %}" method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.firstname.errors }}
+                    </div>
+                    <label class="required" for="student_first_name">First Name:</label>
+                    <input id="student_first_name" class="w3-input w3-border" type="text"
+                           name="student_first_name" value="{{ student.firstname }}">
                 </div>
-            {% else %}
-                <div class="w3-padding-16">
-                    <button type="submit" class="w3-btn submit-btn">Submit</button>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.lastname.errors }}
+                    </div>
+                    <label class="required" for="student_last_name">Last Name:</label>
+                    <input id="student_last_name" class="w3-input w3-border" type="text"
+                           name="student_last_name" value="{{ student.lastname }}">
                 </div>
-            {% endif %}
-        </form>
-
-
-        <script>
-            $(function(){
-
-                var t = $('#form-title').html();
-                var el = $('#id_school');
-                if(t.split(' ')[0].toLowerCase() == 'new' ){
-                    el.parent().hide();
-                    el.parent().siblings('p').html('School: {{ school }}');
-                }
-                if(t.split(' ')[0].toLowerCase() == 'update' ){
-                    var sch = el.val();
-                    el.hide();
-                    var html = el.parent().html();
-                    html += '<span style="margin-left: 10px;">' + sch + '</span>';
-                    el.parent().html(html);
-                }
-
-            });
-        </script>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.dob.errors }}
+                    </div>
+                    <label class="required" for="student_dob">Date of Birth:</label>
+                    <input id="student_dob" class="w3-input w3-border date-input" type="date"
+                           name="student_dob" data-date="{{ student.dob }}">
+                </div>
+                <div class="form-group">
+                    <label for="student_school">School:</label>
+                    <br/>
+                    <div class="w3-padding">
+                        <span>{{ student.school }}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.program.errors }}
+                    </div>
+                    <label class="required" for="student_program">Program:</label>
+                    <select id="student_program" class="w3-input w3-border program-input" name="student_program">
+                        {% if student.program %}
+                            <option value="{{ student.program }}">{{ student.program }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.major.errors }}
+                    </div>
+                    <label class="required" for="student_major">Major:</label>
+                    <select id="student_major" class="w3-input w3-border major-input" name="student_major">
+                        {% if student.major %}
+                            <option value="{{ student.major }}">{{ student.major }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.phone.errors }}
+                    </div>
+                    <label for="student_phone">Phone:</label>
+                    <input id="student_phone" class="w3-input w3-border" type="text"
+                           name="student_phone" value="{{ student.phone }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.address.errors }}
+                    </div>
+                    <label class="required" for="student_address">Address:</label>
+                    <input id="student_address" class="w3-input w3-border" type="text"
+                           name="student_address" value="{{ student.address }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.city.errors }}
+                    </div>
+                    <label class="required" for="student_city">City:</label>
+                    <input id="student_city" class="w3-input w3-border" type="text"
+                           name="student_city" value="{{ student.city }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.state.errors }}
+                    </div>
+                    <label class="required" for="student_state">State:</label>
+                    <select id="student_state" class="w3-input w3-border state-input" name="student_state">
+                        {% if student.state %}
+                            <option value="{{ student.state }}">{{ student.state }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.zipcode.errors }}
+                    </div>
+                    <label class="required zip-label" for="student_zipcode">Zipcode:</label>
+                    <input id="student_zipcode" class="w3-input w3-border" type="text"
+                           name="student_zipcode" value="{{ student.zipcode }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.country.errors }}
+                    </div>
+                    <label class="required" for="student_country">Country:</label>
+                    <select id="student_country" class="w3-input w3-border country-input" name="student_country">
+                        {% if student.country %}
+                            <option value="{{ student.country }}">{{ student.country }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.graduate.errors }}
+                    </div>
+                    <label for="student_graduate">Are you a university graduate?</label>
+                    <p>
+                        <input id="is-grad" class="w3-radio" type="radio" name="student_graduate" value="yes"
+                               {% if student.graduate or not student %}checked="checked"{% endif %}>
+                        <label for="is-grad">Yes</label>
+                    </p>
+                    <p>
+                        <input id="not-grad" class="w3-radio" type="radio" name="student_graduate" value="no"
+                                {% if not student.graduate %}checked="checked"{% endif %}>
+                        <label for="not-grad">No</label>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.linkedin.errors }}
+                    </div>
+                    <label for="student_linkedin">LinkedIn:</label>
+                    <input id="student_linkedin" class="w3-input w3-border" type="text" name="student_linkedin">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.work_eligible.errors }}
+                    </div>
+                    <label for="student_work">
+                        Are you eligible to work in <span class="nsf-country">Canada</span>?
+                    </label>
+                    <p>
+                        <input id="can-work" class="w3-radio" type="radio" name="student_work" value="yes"
+                               checked="checked">
+                        <label for="can-work">Yes</label>
+                    </p>
+                    <p>
+                        <input id="cant-work" class="w3-radio" type="radio" name="student_work" value="no">
+                        <label for="cant-work">No</label>
+                    </p>
+                </div>
+                <div>
+                    <button class="w3-btn" type="button">Cancel</button>
+                    <button class="w3-btn" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
+{% endblock %}
 
-    <div class="page-info-div">
-        {% if update %}
-            update
-        {% else %}
-            new
-        {% endif %}
-    </div>
+{% block hidden_block %}
+    {% include 'home/utils/form_values.html' %}
 {% endblock %}

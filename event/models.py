@@ -6,19 +6,21 @@ from django.core.urlresolvers import reverse
 
 class Event(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    title = models.CharField(max_length=100, null=True)
-    date = models.DateField(null=True)
-    time = models.TimeField(null=True)
+    title = models.CharField(max_length=100)
+    start_date = models.DateField()
+    start_time = models.TimeField()
+    end_date = models.DateField()
+    end_time = models.TimeField()
     active = models.BooleanField(default=True)
-    schools = models.CharField(max_length=200, null=True, default='ALL')
-    programs = models.CharField(max_length=200, null=True, default='ALL')
+    schools = models.CharField(max_length=200, default='ALL')
+    programs = models.CharField(max_length=200, default='ALL')
     website = models.CharField(max_length=100, null=True, blank=True)
-    address = models.CharField(max_length=100, null=True)
-    city = models.CharField(max_length=50, null=True)
-    state = models.CharField(max_length=50, null=True)
-    zipcode = models.CharField(max_length=50, null=True)
-    country = models.CharField(max_length=50, null=True)
-    description = models.TextField(null=True)
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    zipcode = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
+    description = models.TextField()
     times_saved = models.IntegerField(default=0)
 
     def get_absolute_url(self):
@@ -33,7 +35,7 @@ class SavedEvent(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     date = models.DateField()
-    event_name = models.CharField(max_length=100, null=True)
+    event_name = models.CharField(max_length=100)
 
 
 

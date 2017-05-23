@@ -1,24 +1,53 @@
-{% extends 'resume/form_base.html' %}
+<div id="skill-modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-zoom w3-card-4">
+        <header class="w3-container primary-color">
+            <span data-id="skill-modal" class="w3-button w3-display-topright close-modal">&times;</span>
+            <h3 class="w3-text-white">Skill Form</h3>
+        </header>
+        <div class="w3-container">
+            {% if other_skills %}
+                <div>
+                    <h4 class="secondary-color w3-padding">
+                        Add skills from other resumes:
+                    </h4>
+                    <ul class="w3-ul">
+                        {% for x in other_skills %}
+                            <li>
+                                <a href="{% url 'resume:add_skill' pk=x.id rk=resume.id %}">Add {{ x.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <h3 class="w3-padding secondary-color">
+                    Skill Information
+                </h3>
+            {% endif %}
+            <div class="w3-padding">
+                <form id="skill-form" action="{% url 'resume:new_skill' pk=resume.id %}" method="post">
+                    {% csrf_token %}
 
-{% block title %}New Skill{% endblock %}
-
-{% block form_title %}Skill Form:{% endblock %}
-
-{% block side_content %}
-    {% if icount > 0 %}
-        <div class="w3-container w3-col s12 m12 additional-resume-content">
-            <div class="w3-container title-color w3-text-white">
-                <h5>Add Skills from other resumes:</h5>
-            </div>
-            <div class="w3-container">
-                <ul style="margin:0;">
-                    {% for x in items %}
-                        <li style="margin-top:10px;">
-                            <a href="{% url 'resume:linkskill' pk=x.pk rk=rkey %}">Add {{ x.name }} ({{ x.rname }})</a>
-                        </li>
-                {% endfor %}
-                </ul>
+                    <div class="form-group">
+                        <label class="required" for="skill_name">Name:</label>
+                        <input id="skill_name" class="w3-input w3-border" type="text"
+                               name="skill_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="skill_level">Level:</label>
+                        <select id="skill_level" name="skill_level" class="w3-input w3-border">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="w3-padding">
+                        <button class="w3-btn close-modal w3-border w3-border-black" type="button"
+                                data-id="skill-modal">
+                            Cancel
+                        </button>
+                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
-    {% endif %}
-{% endblock %}
+    </div>
+</div>

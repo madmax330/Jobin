@@ -1,0 +1,76 @@
+{% extends 'company/base.html' %}
+
+{% block title %}Post Details{% endblock %}
+
+{% block side_content %}
+    {% include 'company/sides/company_info.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4>{{ post.title }}</h4>
+        </div>
+        <div class="panel-body">
+            <div>
+                <label>Post Status:</label><span> {{ post.status }}</span>
+                {% if post.status == 'open' %}
+                    <a href="#" class="warning-open" data-name="{{ post.title }}"
+                            data-url="{% url 'post:close' pk=post.id %}" data-id="close-post">
+                        Close Post
+                    </a>
+                {% elif post.status == 'closed' %}
+                    <a href="#" class="warning-open" data-name="{{ post.title }}"
+                       data-url="{% url 'post:recover' pk=post.id %}" data-id="open-post">
+                        <strong>Re-Open Post</strong>
+                    </a>
+                {% endif %}
+            </div>
+            <br/>
+            <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
+            <label>End Date: </label><span> {{ post.end_date }}</span><br/>
+            <label>Application Deadline: </label><span> {{ post.deadline }}</span><br/>
+            <label>Wage: </label><span> {{ post.wage }}</span><br/>
+            <label>Openings: </label><span> {{ post.openings }}</span><br/>
+            <label>Description: </label>
+            <p class="formatted-text">{{ post.description | linebreaksbr }}</p>
+            <label>Requirements: </label>
+            <p>{{ post.requirements | linebreaksbr }}</p>
+            <label>Programs: </label>
+            <p>{{ post.programs }}</p>
+            <a class="btn btn-default" href="{% url 'post:company_posts' %}">Back to list</a>
+            <a class="btn btn-default" href="{% url 'post:edit' pk=post.id %}">Edit</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block hidden_block %}
+    <div id="warning-close-post">
+        <p class="message">
+            Are you sure you want to close <u><span class="name"></span></u> post?
+        </p>
+        <p class="note">
+            This will close this post and close all remaining applications.
+            <br/>
+            <b>Note:</b> posts are closed automatically when the start date is reached.
+        </p>
+    </div>
+    <div id="warning-open-post">
+        <p class="message">
+            Are you sure you want to re-activate <u><span class="name"></span></u> post?
+        </p>
+        <p class="note">
+            This will make the post visible to applicants again and bring back all the old
+            applications that you had not discarded.
+            <br/>
+            <b>Note:</b> All resumes will be up to date even on old applications, you will
+            also be able to request a new cover letter.
+        </p>
+    </div>
+{% endblock %}
+
+
+
+
+

@@ -18,11 +18,13 @@ class JobinProgram(models.Model):
     def __str__(self):
         return self.name
 
+
 class JobinInvalidUser(models.Model):
     name = models.CharField(max_length=100, default='user')
     user = models.CharField(max_length=100, null=True)
     category = models.CharField(max_length=100)
-    date = models.DateTimeField(null=True, auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.user
 
@@ -61,9 +63,9 @@ class JobinRequestedEmail(models.Model):
 class Notification(models.Model):
     code = models.IntegerField(default=0)
     message = models.CharField(max_length=250)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
-    date = models.DateTimeField(null=True, auto_now_add=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
     opened = models.BooleanField(default=False)
 
     def __str__(self):
@@ -73,8 +75,8 @@ class Notification(models.Model):
 class Message(models.Model):
     code = models.CharField(max_length=30)
     message = models.CharField(max_length=250)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     internal = models.BooleanField(default=True)
 
     def __str__(self):

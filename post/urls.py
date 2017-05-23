@@ -4,20 +4,25 @@ from . import views
 app_name = 'post'
 
 urlpatterns = [
-    url(r'^company/posts/$', views.CompanyPosts.as_view(), name='companyposts'),
+    url(r'^company/posts/$', views.company_index, name='company_posts'),
+    url(r'^student/posts/(?P<cat>\w+)/(?P<pk>[0-9]+)/$', views.student_index, name='student_posts'),
+
     url(r'^new/$', views.NewPostView.as_view(), name='new'),
-    url(r'^update/(?P<pk>[0-9]+)/$', views.PostUpdateView.as_view(), name='update'),
-    url(r'^close/(?P<pk>[0-9]+)/$', views.ClosePostView.as_view(), name='close'),
-    url(r'^recover/(?P<pk>[0-9]+)/$', views.PostRecoveryView.as_view(), name='recover'),
-    url(r'^recover/old/app/(?P<ak>[0-9]+)/$', views.activate_old_application, name='recover_old_app'),
-    url(r'^remove/old/app/(?P<ak>[0-9]+)/$', views.close_old_application, name='remove_old_app'),
-    url(r'^details/(?P<pk>[0-9]+)/$', views.CompanyPost.as_view(), name='companypost'),
-    url(r'^student/posts/(?P<pk>[0-9]+)/(?P<pt>\w+)/$', views.StudentPosts.as_view(), name='studentposts'),
-    url(r'^apply/(?P<pk>[0-9]+)/(?P<pt>\w+)/$', views.ApplyView.as_view(), name='apply'),
-    url(r'^applicants/(?P<pk>[0-9]+)/$', views.PostApplicantsView.as_view(), name='applicants'),
-    url(r'^applicant/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.SingleApplicantView.as_view(), name='applicant'),
-    url(r'^discard/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.DiscardApplicant.as_view(), name='discard'),
-    url(r'^student/details/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.StudentDetailsView.as_view(), name='studentdetails'),
+    url(r'^edit/(?P<pk>[0-9]+)/$', views.EditPostView.as_view(), name='edit'),
+    url(r'^details/(?P<pk>[0-9]+)/$', views.post_detail, name='company_post'),
+    url(r'^student/details/(?P<pk>[0-9]+)/$', views.student_detail, name='student_details'),
+    url(r'^close/(?P<pk>[0-9]+)/$', views.close_post, name='close'),
+    url(r'^recover/(?P<pk>[0-9]+)/$', views.RecoverPostView.as_view(), name='recover'),
+
+    url(r'^apply/(?P<pk>[0-9]+)/$', views.apply, name='apply'),
+    url(r'^submit/cover/(?P<pk>[0-9]+)/$', views.submit_cover_letter, name='submit_cover'),
+    url(r'^recover/old/app/(?P<pk>[0-9]+)/$', views.activate_application, name='activate'),
+    url(r'^withdraw/app/(?P<pk>[0-9]+)/$', views.withdraw_application, name='withdraw'),
+
+    url(r'^applicants/(?P<pk>[0-9]+)/$', views.post_applicants, name='applicants'),
+    url(r'^applicant/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.single_applicant, name='applicant'),
+    url(r'^request/cover/(?P<pk>[0-9]+)/$', views.request_cover_letter, name='request_cover'),
+    url(r'^discard/(?P<pk>[0-9]+)/$', views.discard_application, name='discard'),
     url(r'^app/(?P<ak>[0-9]+)/pdf/$', views.ApplicantPDF.as_view(), name='app_pdf'),
 ]
 
