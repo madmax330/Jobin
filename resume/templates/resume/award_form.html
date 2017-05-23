@@ -1,24 +1,60 @@
-{% extends 'resume/form_base.html' %}
+<div id="award-modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-zoom w3-card-4">
+        <header class="w3-container primary-color">
+            <span class="w3-button w3-display-topright close-modal" data-id="award-modal">&times;</span>
+            <h3 class="w3-text-white">Award Form</h3>
+        </header>
+        <div class="w3-container">
+            {% if other_awards %}
+                <div>
+                    <h4 class="secondary-color w3-padding">
+                        Add awards from other resumes:
+                    </h4>
+                    <ul class="w3-ul">
+                        {% for x in other_awards %}
+                            <li>
+                                <a href="{% url 'resume:add_award' pk=x.id rk=resume.id %}">Add {{ x.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <h3 class="w3-padding secondary-color">
+                    Award Information
+                </h3>
+            {% endif %}
+            <div class="w3-padding">
+                <form id="award-form" action="{% url 'resume:new_award' pk=resume.id %}" method="post">
+                    {% csrf_token %}
 
-{% block title %}New Award{% endblock %}
+                    <div class="form-group">
+                        <label class="required" for="award_title">Title:</label>
+                        <input id="award_title" class="w3-input w3-border" type="text"
+                               name="award_title">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="award_date">Date Received:</label>
+                        <input id="award_date" class="w3-input w3-border" type="date"
+                               name="award_date">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="award_type">Award Type:</label>
+                        <input id="award_type" class="w3-input w3-border" type="text"
+                               name="award_type">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="award_description">Description</label>
+                        <textarea id="award_description" name="award_description" class="w3-input w3-border"
+                                  rows="5"></textarea>
+                    </div>
+                    <div class="w3-padding">
+                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="award-modal">
+                            Cancel
+                        </button>
+                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                    </div>
 
-{% block form_title %}Award Form:{% endblock %}
-
-{% block side_content %}
-    {% if icount > 0 %}
-        <div class="w3-container w3-col s12 m12 additional-resume-content">
-            <div class="w3-container title-color w3-text-white">
-                <h5>Add Awards from other resumes:</h5>
-            </div>
-            <div class="w3-container">
-                <ul style="margin:0;">
-                    {% for x in items %}
-                        <li style="margin-top:10px;">
-                            <a href="{% url 'resume:linkaward' pk=x.pk rk=rkey %}">Add {{ x.title }} ({{ x.rname }})</a>
-                        </li>
-                {% endfor %}
-                </ul>
+                </form>
             </div>
         </div>
-    {% endif %}
-{% endblock %}
+    </div>
+</div>

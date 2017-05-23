@@ -1,13 +1,11 @@
-{% extends 'company/company_base.html' %}
+{% extends 'company/base.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Company Manual{% endblock %}
 
-{% block manualactive %}active{% endblock %}
-
 {% block side_content %}
-    {% include 'company/company_info.html' %}
+    {% include 'company/sides/company_info.html' %}
 {% endblock %}
 
 

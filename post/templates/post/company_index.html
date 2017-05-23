@@ -1,0 +1,142 @@
+{% extends 'company/base.html' %}
+
+{% block title %}Post List{% endblock %}
+
+{% block postactive %}active{% endblock %}
+
+{% block side_content %}
+    {% include 'company/sides/company_info.html' %}
+    {% include 'company/sides/post_legend.html' %}
+{% endblock %}
+
+{% block scripts %}
+    {% load staticfiles %}
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 class="text-center">Active Posts</h4>
+        </div>
+        <div class="panel-body">
+            {% if posts %}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Wage</th>
+                        <th>Openings</th>
+                        <th>Start Date</th>
+                        <th>Application Deadline</th>
+                        <th></th>
+                        <th><a href="{% url 'post:new' %}">
+                            <button class="btn btn-primary">New Post</button>
+                        </a></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in posts %}
+                        <tr {% if p.notified %}style="background-color: #c2f9ce"
+                            {% elif p.new_apps %}style="background-color: #c9f3fc;"
+                            {% endif %}>
+                            <td>
+                                <a href="{% url 'post:company_post' p.pk %}">
+                                    {{ p.title }}
+                                </a>
+                            </td>
+                            <td>{{ p.wage }}</td>
+                            <td>{{ p.openings }}</td>
+                            <td>{{ p.start_date }}</td>
+                            <td>{{ p.deadline }}</td>
+                            <td><a href="{% url 'post:applicants' p.pk %}">Applicants</a></td>
+                            <td><a href="{% url 'post:edit' p.pk %}">Edit</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="7">
+                            <span>Page: </span>
+                            {% for x in posts.paginator.page_range %}
+                                {% if x == posts.number %}
+                                    <strong><span>{{ x }} </span></strong>
+                                {% else %}
+                                    <a href="?pp={{ x }}&xp={{ expired_posts.number }}">{{ x }}</a>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-warning">
+                    You currently don't have any posts.
+                    <strong>
+                        <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
+                    </strong>
+                    to get started.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 style="text-align:center">Expired Posts</h4>
+        </div>
+        <div class="panel-body">
+            {% if not posts %}
+                <div class="alert warning-message">
+                    You currently don't have any posts.
+                    <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
+                    to get started.
+                </div>
+            {% elif expired_posts %}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Wage</th>
+                        <th>Openings</th>
+                        <th>Start Date</th>
+                        <th>Application Deadline</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in expired_posts %}
+                        <tr {% if p.notified %}style="background-color: #c2f9ce"
+                            {% elif p.new_apps %}style="background-color: #c9f3fc;"
+                            {% endif %}>
+                            <td>
+                                <a href="{% url 'post:company_post' p.pk %}">
+                                    {{ p.title }}
+                                </a>
+                            </td>
+                            <td>{{ p.wage }}</td>
+                            <td>{{ p.openings }}</td>
+                            <td>{{ p.start_date }}</td>
+                            <td>{{ p.deadline }}</td>
+                            <td><a href="{% url 'post:recover' p.pk %}">Reactivate</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="6">
+                            <span>Page: </span>
+                            {% for x in expired_posts.paginator.page_range %}
+                                {% if x == expired_posts.number %}
+                                    <strong><span>{{ x }} </span></strong>
+                                {% else %}
+                                    <a href="?pp={{ posts.number }}&xp={{ x }}">{{ x }}</a>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info">
+                    You don't have any expired posts.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+

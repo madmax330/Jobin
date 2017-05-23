@@ -1,0 +1,143 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Post List{% endblock %}
+
+{% load staticfiles %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'post/post.css' %}">
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'post/student_post_util.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="job-nav">
+        <div class="w3-container secondary-color" style="padding-bottom: 0;">
+            <h3 class="w3-center">({{ count }}) {{ d_category }} Job Posts</h3>
+        </div>
+        <div class="w3-cell-row primary-color w3-text-white">
+            <div class="w3-cell">
+                <a href="{% url 'post:student_posts' cat='volunteer' pk=0 %}"
+                   class="w3-btn w3-hover-white w3-block w3-padding {{ vact }}">
+                    ({{ volunteer_count }}) Volunteer
+                </a>
+            </div>
+            <div class="w3-cell">
+                <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
+                   class="w3-btn w3-hover-white w3-block w3-padding {{ iact }}">
+                    ({{ internship_count }}) Internships
+                </a>
+            </div>
+            <div class="w3-cell">
+                <a href="{% url 'post:student_posts' cat='parttime' pk=0 %}"
+                   class="w3-btn w3-hover-white w3-block w3-padding {{ pact }}">
+                    ({{ part_time_count }}) Part-Time
+                </a>
+            </div>
+            <div class="w3-cell">
+                <a href="{% url 'post:student_posts' cat='startup' pk=0 %}"
+                   class="w3-btn w3-hover-white w3-block w3-padding {{ sact }}">
+                    ({{ startup_count }}) Start Up
+                </a>
+            </div>
+            <div class="w3-cell">
+                <a href="{% url 'post:student_posts' cat='newgrad' pk=0 %}"
+                   class="w3-btn w3-hover-white w3-block w3-padding {{ nact }}">
+                    ({{ new_grad_count }}) New Grad
+                </a>
+            </div>
+        </div>
+        <div class="w3-content w3-container w3-padding-16" style="position:relative">
+            {% if posts %}
+                {% for x in posts %}
+                    <div class="w3-display-container mySlides w3-animate-right  w3-white"
+                         style="margin: 0 30px 0 30px;">
+                        <div class="row">
+                            <div class="w3-col s4" style="min-height:500px">
+                                <div class="w3-container w3-padding secondary-color">
+                                    <h4>Company</h4>
+                                </div>
+                                <div class="w3-container">
+                                    {{ x.logo }}
+                                    <h5>{{ x.name }}</h5>
+                                    <label>Address:</label><span> {{ x.address }}</span><br/>
+                                    <label>Website:</label><a target="_blank"
+                                                              href="http://{{ x.website }}"> {{ x.website }}</a>
+                                </div>
+                                <div class="w3-container secondary-color">
+                                    <h5>Resumes</h5>
+                                </div>
+                                <table class="w3-table w3-bordered">
+                                    {% for y in resumes %}
+                                        <tr>
+                                            {% if y.is_active %}
+                                                <td>
+                                                    <strong>{{ y.name }}</strong>
+                                                </td>
+                                            {% else %}
+                                                <td>
+                                                    <a href="#" class="change-resume"
+                                                        data-url="{% url 'resume:activate' pk=y.id  %}">
+                                                        {{ y.name }}
+                                                    </a>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            <div class="w3-col s8">
+                                <div class="w3-container w3-padding secondary-color">
+                                    <h4>Post Information</h4>
+                                </div>
+                                <div class="slide-container w3-container scrollable">
+                                    <h5>{{ x.title }}</h5>
+                                    <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
+                                    <label>End Date:</label><span> {{ x.end_date }}</span><br/>
+                                    <label>Wage:</label><span> {{ x.wage }}$/hr</span><br/>
+                                    <label>Openings:</label><span> {{ x.openings }}</span><br/>
+                                    <label><strong>Application
+                                        Deadline:</strong></label><span> {{ x.deadline }}</span><br/>
+                                    <label><strong>Requirements:</strong></label><br/>
+                                    <span>{{ x.requirements | linebreaksbr }}</span><br/>
+                                    <label><strong>Description:</strong></label><br/>
+                                    <span>{{ x.description | linebreaksbr }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w3-display-topright w3-medium w3-container w3-padding-16">
+                            {% if not x.applied %}
+                                <button class="w3-btn apply w3-text-black w3-border w3-border-black"
+                                        data-url="{% url 'post:apply' pk=x.pk %}">
+                                    Apply for this post
+                                </button>
+                            {% else %}
+                                <button class="w3-btn w3-text-black w3-border w3-border-black" disabled>
+                                    Already applied.
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="w3-display-container mySlides w3-white" style="margin: 0 30px 0 30px;">
+                    <div class="w3-card-16" style="padding: 100px;">
+                        <h3 class="w3-center">
+                            There are currently no {{ category }} opportunities listed.
+                        </h3>
+                        <h4 class="w3-center">
+                            Check back again later.
+                        </h4>
+                    </div>
+                </div>
+            {% endif %}
+            <a class="w3-btn w3-display-left" style="position:absolute;top:50%;left:0"
+               onclick="plusDivs(-1)">❮</a>
+            <a class="w3-btn w3-display-right" style="position:absolute;top:50%;right:0"
+               onclick="plusDivs(1)">❯</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block page_name %}posts{% endblock %}

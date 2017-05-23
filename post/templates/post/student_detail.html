@@ -1,0 +1,70 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Post Details{% endblock %}
+
+{% block content %}
+    <div>
+        {% if application.cover_requested and not application.cover_submitted %}
+            <div class="w3-padding">
+                <p>
+                    A cover letter was requested for this application! Submit your cover letter using the form below.
+                    Good luck!
+                </p>
+            </div>
+            <div class="w3-card-8 w3-padding">
+                <header>
+                    <h4>Insert your cover letter here:</h4>
+                </header>
+                {% if post.cover_instructions %}
+                    <div class=" w3-container">
+                        <h5>Cover letter instructions:</h5>
+                        <p>
+                            {{ post.cover_instructions | linebreaksbr}}
+                        </p>
+                    </div>
+                {% endif %}
+                <form id="coverForm" class="w3-white" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <textarea rows="15" class="w3-input" name="cover" placeholder="Cover Letter Here..."></textarea>
+                    <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit Cover Letter</button>
+                </form>
+
+            </div>
+        {% endif %}
+        {% if application.cover_submitted %}
+            <div class="w3-container w3-padding">
+                <p>Your cover letter for this post was successfully submitted.</p>
+            </div>
+        {% endif %}
+        <div class="w3-container primary-color w3-text-white">
+            <h4>{{ post.title }}</h4>
+        </div>
+        <div class="w3-container w3-padding-16">
+            <div class="w3-container">
+                <label><u>Company</u>:</label><span> {{ post.company.name }}</span><br/>
+                <label><u>Address</u>:</label>
+                <span> {{ post.company.address }}, {{ post.company.city }}, {{ post.company.state }}</span><br/>
+                <label><u>Website</u>:</label>
+                <span>
+                    <a target="_blank" href="{{ post.company.website }}">{{ post.company.website }}</a>
+                </span>
+                <br/>
+            </div>
+            <hr/>
+            <div class="w3-container">
+                <label><u>Start Date</u>:</label><span> {{ post.start_date }}</span><br/>
+                <label><u>End Date</u>:</label><span> {{ post.end_date }}</span><br/>
+                <label><u>Wage</u>:</label><span> {{ post.wage }}$/hr</span><br/>
+                <label><u>Openings</u>:</label><span> {{ post.openings }}</span><br/>
+                <label><u>Application Deadline</u>:</label><span> {{ post.deadline }}</span><br/>
+                <label><u>Requirements</u>:</label><br/>
+                <span>{{ post.requirements | linebreaksbr}}</span><br/>
+                <label><u>Description</u>:</label><br/>
+                <span>{{ post.description | linebreaksbr}}</span><br/>
+                <div class="w3-padding">
+                    <a href="{% url 'student:index' %}" class="w3-btn w3-border w3-border-black">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

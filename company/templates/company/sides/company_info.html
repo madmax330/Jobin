@@ -1,0 +1,17 @@
+{% if company %}
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h3>{{ company.name }}</h3>
+        </div>
+        <div class="panel-body">
+            <label>{{ company.email }}</label><br/>
+            <span>{{ company.phone }}</span><br/>
+            <label>Address: </label><br/>
+            <span>
+                {{ company.address }}, {{ company.city }},
+                {{ company.state }}, {{ company.zipcode }}
+            </span><br/>
+            <label>{{ company.website }}</label>
+        </div>
+    </div>
+{% endif %}

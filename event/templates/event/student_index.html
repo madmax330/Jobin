@@ -1,0 +1,75 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Event List{% endblock %}
+
+{% load staticfiles %}
+{% block styles %}
+
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'event/student_event_util.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="events-header primary-color w3-padding-small">
+            <h3 class="w3-text-white w3-center">Events ({{ count }})</h3>
+        </div>
+        <div class="w3-content w3-container w3-padding-16" style="position:relative">
+            {% if events %}
+                {% for x in events %}
+                    <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px">
+                        <div class="row">
+                            <div class="w3-col s4">
+                                <div class="w3-container w3-padding secondary-color">
+                                    <h4>Company</h4>
+                                </div>
+                                <div class="w3-container">
+                                    {{ x.logo }}
+                                    <h5>{{ x.name }}</h5>
+                                    <label>Address:</label><span> {{ x.caddr }}</span><br/>
+                                    <label>Website:</label><span> {{ x.cweb }}</span>
+                                </div>
+                            </div>
+                            <div class="w3-col s8">
+                                <div class="w3-container w3-padding secondary-color">
+                                    <h4>Event Information</h4>
+                                    <span style="display: none;" class="pk">{{ x.pk }}</span>
+                                </div>
+                                <div class="slide-container w3-container scrollable">
+                                    <h5>{{ x.title }}</h5>
+                                    <label>Date:</label><span> {{ x.start_date }}</span><br/>
+                                    <label>Time:</label><span> {{ x.start_time }}</span><br/>
+                                    <label>Address:</label><span> {{ x.address }}</span><br/>
+                                    <label>Website:</label><span> {{ x.website }}</span><br/>
+                                    <label>Description:</label><br/>
+                                    <span>{{ x.desc | linebreaksbr }}</span>
+                                </div>
+                                <div class="w3-display-topright w3-medium w3-container w3-padding-16">
+                                    {% if not x.interested %}
+                                        <button class="w3-btn save w3-text-black w3-border w3-border-black"
+                                                data-url="{% url 'event:save' pk=x.pk %}">
+                                            Save Event
+                                        </button>
+                                    {% else %}
+                                        <button class="w3-btn w3-text-black w3-border w3-border-black" disabled>
+                                            Already saved.
+                                        </button>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h3 class="w3-center"> No events found.</h3>
+            {% endif %}
+            <a class="w3-btn w3-display-left" style="position:absolute;top:50%;left:0" onclick="plusDivs(-1)">❮</a>
+            <a class="w3-btn w3-display-right" style="position:absolute;top:50%;right:0" onclick="plusDivs(1)">❯</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block page_name %}events{% endblock %}

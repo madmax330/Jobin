@@ -1,0 +1,144 @@
+{% extends 'student/base.html' %}
+
+{% block title %}{{ student.name }} Resumes{% endblock %}
+
+{% load staticfiles %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'resume/resume_util.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="w3-container w3-padding w3-cell-row w3-text-white primary-color">
+            <div class="w3-cell">
+                <div class="w3-dropdown-hover w3-text-white">
+                    <div class="primary-color">
+                        <i class="fa fa-info-circle w3-xlarge"></i>
+                    </div>
+                    <div class="w3-container">
+                        <div class="w3-dropdown-content" style="width:600px;">
+                            <div class="w3-card">
+                                <header class="w3-container primary-color w3-text-white">
+                                    <h4>Resume information</h4>
+                                </header>
+                                <div class="w3-container">
+                                    <p>
+                                        Resumes will be attached to each of your applications to let the employer see
+                                        your
+                                        qualifications. You can either attach a file resume to this object or use the
+                                        fields
+                                        we provide if you do not want to deal with the hassle of designing a resume or
+                                        are unsure
+                                        of what to put on a resume.<br/>
+                                        <i>Note: you will not be able to apply for posts unless you have at least one
+                                            resume</i><br/>
+                                        <strong>Steps to creating a new resume object:</strong>
+                                    </p>
+                                    <ul>
+                                        <li>Click create a new resume</li>
+                                        <li>Enter the name you would like to give the resume</li>
+                                        <li>Optionally upload a resume file</li>
+                                        <li>Save you resume</li>
+                                        <li>Optionally use the manage button to add information to your resume</li>
+                                    </ul>
+                                </div>
+                                <footer class="w3-container w3-light-grey">
+                                    Any fictive or false information attached to your profile will result in a
+                                    termination of your account.
+                                </footer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w3-cell">
+                <h4>Resume List</h4>
+            </div>
+            <div class="w3-cell w3-padding">
+                <button class="w3-btn w3-border w3-border-white new-resume">
+                    New Resume
+                </button>
+            </div>
+        </div>
+        {% if resumes %}
+            <table class="w3-table w3-bordered w3-white">
+                <tr class="secondary-color">
+                    <th>Name</th>
+                    <th>Last Updated</th>
+                    <th>Is Active</th>
+                    <th></th>
+                </tr>
+                {% for x in resumes %}
+                    <tr class="{% if not x.is_complete %}w3-pale-red{% endif %} jobin-resume">
+                        {% if x.is_complete %}
+                            <td>
+                                <a href="{% url 'resume:details' pk=x.id %}" class="name">{{ x.name }}</a>
+                                <span class="gpa w3-hide">{{ x.gpa }}</span>
+                            </td>
+                            <td>{{ x.last_updated }}</td>
+                            <td>
+                                {% if x.is_active %}
+                                    <strong><span class="is-active">Active Resume</span></strong>
+                                {% else %}
+                                    <a href="#" class="activate-resume is-active"
+                                       data-url="{% url 'resume:activate' pk=x.id %}">
+                                        Make Active Resume
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div>
+                                    <a href="#" class="edit-resume">Edit</a> |
+                                    <a href="#" class="warning-open" data-id="delete-resume"
+                                       data-url="{% url 'resume:delete' pk=x.id %}" data-name="{{ x.name }}">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td>{{ x.name }}</td>
+                            <td class="w3-text-red">Incomplete</td>
+                            <td>
+                                <a class="complete-resume" href="#">Complete</a>
+                            </td>
+                            <td>
+                                <div class="w3-hide">
+                                    <span class="school-url">{% url 'resume:new_school' pk=x.id %}</span>
+                                    <span class="language-url">{% url 'resume:new_language' pk=x.id %}</span>
+                                </div>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <div class="w3-container">
+                <p>
+                    No resumes found. <a href="{% url 'resume:new' %}">Click Here</a> to add a resume.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block modals %}
+    {% include 'resume/resume_form.html' %}
+    {% include 'resume/school_form.html' %}
+    {% include 'resume/language_form.html' %}
+{% endblock %}
+
+
+
+{% block hidden_block %}
+    <div class="student-school">{{ student.school }}</div>
+    <div class="student-program">{{ student.program }}</div>
+    <div class="first-resume">{{ first }}</div>
+    <div id="warning-delete-resume">
+        <p class="message">Are you sure you want to delete <u><span class="name"></span></u> resume?</p>
+        <p class="notes">
+            This will permanently delete this resume from the resume.
+        </p>
+    </div>
+{% endblock %}
+

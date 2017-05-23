@@ -1,17 +1,12 @@
-{% extends 'company/company_base.html' %}
+{% extends 'company/base.html' %}
 
-{% block title %}{% if update %}Update{% else %}New{% endif %} Event Form{% endblock %}
+{% block title %}Event Information Form{% endblock %}
 
-{% block eventactive %}active{% endblock %}
-
+{% load staticfiles %}
 {% block scripts %}
-    {% load staticfiles %}
-    <script src="{% static 'home/zipcode_validation.js' %}"></script>
-    <script src="{% static 'home/change_state_script.js' %}"></script>
-{% endblock %}
-
-{% block side_content %}
-    {% include 'company/company_info.html' %}
+    <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/form_location_script.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -20,22 +15,122 @@
             <h4>Event Information Form</h4>
         </div>
         <div class="panel-body">
-            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            <form id="event-form" method="post"
+                  action="{% if event %}{% url 'event:edit' pk=event.id %}{% else %}{% url 'event:new' %}{% endif %}">
                 {% csrf_token %}
-                {% include 'event/form_template.html' %}
-                <div class="margined">
-                    <a href="{% url 'event:companyevents' %}" class="btn regular-btn">Cancel</a>
-                    <button class="btn submit-btn" type="submit">Submit</button>
+
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.title.errors }}
+                    </div>
+                    <label class="required" for="event_title">Title:</label>
+                    <input id="event_title" class="form-control" type="text" name="event_title"
+                           value="{{ event.title }}">
                 </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.start_date.errors }}
+                    </div>
+                    <label class="required" for="event_start">Start Date:</label>
+                    <input id="event_start" class="form-control date-input" type="date" name="event_start"
+                            value="" data-date="{{ event.start_date }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.start_time.errors }}
+                    </div>
+                    <label class="required" for="event_start_time">Start Time:</label>
+                    <input id="event_start_time" class="form-control time-input" type="time" name="event_start_time"
+                            value="" data-time="{{ event.start_time }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.end_date.errors }}
+                    </div>
+                    <label for="event_end">End Date:</label>
+                    <input id="event_end" class="form-control date-input" type="date" name="event_end"
+                            value="" data-date="{{ event.end_date }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.end_time.errors }}
+                    </div>
+                    <label for="event_end_time">End Time:</label>
+                    <input id="event_end_time" class="form-control time-input" type="time" name="event_end_time"
+                            value="" data-time="{{ event.end_time }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.address.errors }}
+                    </div>
+                    <label class="required" for="event_address">Address:</label>
+                    <input id="event_address" class="form-control" type="text" name="event_address"
+                            value="{{ event.address }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.city.errors }}
+                    </div>
+                    <label class="required" for="event_city">City:</label>
+                    <input id="event_city" class="form-control" type="text" name="event_city"
+                            value="{{ event.city }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.state.errors }}
+                    </div>
+                    <label class="required" for="event_state">State:</label>
+                    <select class="form-control state-input" name="event_state" id="event_state">
+                        {% if event.state %}
+                            <option value="{{ event.state }}">{{ event.state }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.zipcode.errors }}
+                    </div>
+                    <label class="required zip-label" for="event_zipcode">Zipcode:</label>
+                    <input id="event_zipcode" class="form-control zip-input" type="text" name="event_zipcode"
+                            value="{{ event.zipcode }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.country.errors }}
+                    </div>
+                    <label class="required" for="event_country">Country:</label>
+                    <select class="form-control country-input" name="event_country" id="event_country">
+                        {% if event.country %}
+                            <option value="{{ event.country }}">{{ event.country }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.website.errors }}
+                    </div>
+                    <label for="event_website">Website:</label>
+                    <input id="event_website" class="form-control" type="text" name="event_website"
+                        value="{{ event.website }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.description.errors }}
+                    </div>
+                    <label class="required" for="event_description">Description:</label>
+                    <textarea id="event_description" name="event_description" class="form-control"
+                              rows="5">{{ event.description }}</textarea>
+                </div>
+                <div>
+                    <a href="{% url 'event:company_events' %}" class="btn btn-default">Cancel</a>
+                    <button class="btn btn-success" type="submit">Submit</button>
+                </div>
+
             </form>
         </div>
-
-        <div class="page-info-div">
-            {% if update %}
-                update
-            {% else %}
-                new
-            {% endif %}
-        </div>
     </div>
+{% endblock %}
+
+{% block hidden_block %}
+    {% include 'home/utils/form_values.html' %}
 {% endblock %}

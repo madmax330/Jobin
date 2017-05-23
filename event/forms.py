@@ -1,32 +1,28 @@
 from django import forms
-from .models import Event
-from home.models import JobinTerritory
+from .models import Event, SavedEvent
+
+import datetime
 
 
-class NewEventForm(forms.ModelForm):
+class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = [
-            'title', 'date', 'time', 'address', 'city', 'state', 'zipcode', 'country',
-            'website', 'description',
-        ]
-        widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'website': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.TextInput(attrs={'class': 'form-control'}),
-            'city': forms.TextInput(attrs={'class': 'form-control'}),
-            'state': forms.Select(attrs={'class': 'w3-input w3-half'},
-                                  choices=JobinTerritory.objects.values_list('name', 'name')),
-            'zipcode': forms.TextInput(attrs={'class': 'form-control'}),
-            'country': forms.Select(attrs={'class': 'w3-input w3-half'},
-                                    choices=JobinTerritory.objects.values_list('country', 'country').distinct()),
-            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
-        }
+        exclude = ('active', 'schools', 'programs', 'times_saved',)
 
-        labels = {
-            'date': 'Event Date (mm/dd/yyyy)',
-            'time': 'Event Time (hh : mm AM/PM)',
-        }
+    def clean(self):
+        clean_data = super(EventForm, self).clean()
+        date = clean_data.get('date')
+        if date < datetime.datetime.now().date():
+            raise forms.ValidationError({'date': 'The event date must be after today\'s date.'})
+
+
+class NewSavedEventForm(forms.ModelForm):
+
+    class Meta:
+        model = SavedEvent
+        fields = '__all__'
+
+
+
+

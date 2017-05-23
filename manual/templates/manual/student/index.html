@@ -1,16 +1,13 @@
-{% extends 'student/student_base.html' %}
+{% extends 'student/base.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Student Manual{% endblock %}
 
-{% block manualactive %}active{% endblock %}
-
-
 {% block content %}
     <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
     <div class="w3-container">
-        <h4 style="margin:0;" class="title-color w3-center w3-padding-8 w3-text-white">Student Manual</h4>
+        <h4 style="margin:0;" class="primary-color w3-center w3-padding w3-text-white">Student Manual</h4>
         <h6>The student manual assists you in learning how to use the Jobin Platform.</h6>
         <p>
             You can look at the "FAQ" section for a quick answer to your question, look in the "How To" section
@@ -26,7 +23,6 @@
             <li><a href="{% url 'manual:student_profile' %}">Profile Page Manual</a></li>
         </ul>
     </div>
-
 {% endblock %}
 
 {% block page_name %}manual{% endblock %}

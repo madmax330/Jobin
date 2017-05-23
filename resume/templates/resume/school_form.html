@@ -1,28 +1,93 @@
-{% extends 'resume/form_base.html' %}
+<div id="school-modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-zoom w3-card-4">
+        <header class="w3-container primary-color">
+            <span data-id="school-modal" class="w3-button w3-display-topright close-modal">&times;</span>
+            <h3 class="w3-text-white">School Form</h3>
+        </header>
+        <div class="w3-container">
+            {% if other_schools %}
+                <div>
+                    <h4 class="secondary-color w3-padding">
+                        Add schools from other resumes:
+                    </h4>
+                    <ul class="w3-ul">
+                        {% for x in other_schools %}
+                            <li>
+                                <a href="{% url 'resume:add_school' pk=x.id rk=resume.id %}">Add {{ x.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <h3 class="w3-padding secondary-color">
+                    School Information
+                </h3>
+            {% endif %}
+            <div class="w3-padding">
+                <div class="modal-messages"></div>
+                <div class="w3-padding w3-hide first-message w3-pale-blue">
+                    <div>
+                        <p>
+                            Schools are how your education will be represented in your resume. To add your
+                            first school record, fill out the rest of the form below. You can then choose
+                            to save and continue (and add the rest later) or you can add in more schools
+                            right away.
+                        </p>
+                    </div>
+                </div>
+                <form id="school-form"
+                      action="{% if resume %}{% url 'resume:new_school' pk=resume.id %}
+                                {% else %}{% url 'resume:new_school' pk='0' %}{% endif %}"
+                      method="post">
+                    {% csrf_token %}
 
-{% block title %}New School{% endblock %}
-
-{% block form_title %}School Form:{% endblock %}
-
-{% block hidden_block %}
-    <div class="form-script-title">School</div>
-{% endblock %}
-
-{% block side_content %}
-    {% if icount > 0 %}
-        <div class="w3-container w3-col s12 m12 additional-resume-content">
-            <div class="w3-container title-color w3-text-white">
-                <h5>Add Schools from other resumes:</h5>
-            </div>
-            <div class="w3-container">
-                <ul style="margin:0;">
-                    {% for x in items %}
-                        <li style="margin-top:10px;">
-                            <a href="{% url 'resume:linkschool' pk=x.pk rk=rkey %}">Add {{ x.name }} ({{ x.rname }})</a>
-                        </li>
-                {% endfor %}
-                </ul>
+                    <div class="form-group">
+                        <label class="required" for="school_name">School Name:</label>
+                        <input id="school_name" class="w3-input w3-border" type="text"
+                               name="school_name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="school_program">Program:</label>
+                        <input id="school_program" class="w3-input w3-border" type="text"
+                               name="school_program">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="school_start">Start:</label>
+                        <input id="school_start" class="w3-input w3-border" type="date"
+                               name="school_start">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="school_end">End:</label>
+                        <input id="school_end" class="w3-input w3-border" type="date"
+                               name="school_end">
+                    </div>
+                    <div class="form-group">
+                        <label for="school_level">Level:</label>
+                        <select id="school_level" name="school_level" class="w3-input w3-border">
+                            <option value="university">University</option>
+                            <option value="college">College</option>
+                            <option value="high school">High School</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="regular-buttons w3-padding">
+                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="school-modal">
+                            Cancel
+                        </button>
+                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                    </div>
+                    <div class="walk-buttons w3-hide w3-padding">
+                        <button class="w3-btn school-save-another w3-border w3-border-black" type="button">
+                            Save & Add Another
+                        </button>
+                        <button class="w3-btn school-save-continue w3-border w3-border-green w3-text-green" type="button">
+                            Save & Continue
+                        </button>
+                        <button class="w3-btn school-next next-btn w3-hide w3-border w3-border-green w3-text-green" type="button">
+                            Next
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    {% endif %}
-{% endblock %}
+    </div>
+</div>

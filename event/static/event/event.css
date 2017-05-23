@@ -1,0 +1,8 @@
+.mySlides{
+    margin: 0 30px 0 30px;
+    height: 600px;
+}
+
+.scrollable{
+    overflow: scroll;
+}

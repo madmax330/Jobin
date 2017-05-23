@@ -1,0 +1,245 @@
+
+
+.mySlides{
+    display: block;
+    overflow: hidden;
+}
+
+.logo-img{
+    /*margin-left: 45%;*/
+    padding: 10px 0 10px 0;
+}
+
+.logo-img img{
+    margin: 10px 0 10px 0;
+    max-width: 120px;
+}
+
+.slide-container{
+    max-height: 500px!important;
+    min-height: 500px!important;
+}
+
+.presentbtn{
+    margin-left: 10px;
+}
+
+.scrollable{
+    overflow: scroll;
+}
+
+.page-info-div{
+    display: none;
+}
+
+.form-element{
+    margin-top: 8px;
+}
+
+span.required:after{
+    content: '*'
+}
+
+.hide{
+    display:none;
+}
+
+.margined{
+    margin-top: 16px;
+}
+
+.page-number{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.warning-container{
+    background-color: #fbfff1;
+    color: #3c3744;
+    position: fixed;
+    z-index: 1;
+    top: 30%;
+    border-left: 5px solid #f4e04d;
+}
+
+.w3-sidenav{
+    z-index: 0;
+    position: relative!important;
+    height:100%;
+}
+
+.w3-main{
+    background: #FFFFFF;
+    max-width: 1200px;
+    min-width: 400px;
+    margin: 30px auto 30px auto;
+}
+
+@media screen and (max-width: 1280px){
+    .w3-main{
+        background: #FFFFFF;
+        min-width: 400px;
+        margin: 30px 30px 30px 30px;
+    }
+}
+
+@media screen and (max-width: 700px){
+    .w3-main{
+        background: #FFFFFF;
+        min-width: 400px;
+        margin: 30px 0 30px 0;
+    }
+}
+
+/* THEME COLORS */
+
+/* BACKGROUND COLORS */
+
+.student-cover-letter{
+    background-color: #eeeeee;
+}
+
+.student-cover-letter-instructions{
+    background-color: #d3ffe9;
+}
+
+.notifications-background{
+    background-color: #c6e0ff;
+}
+
+.resume-other-items-background{
+    background-color: #f8fcda;
+}
+
+.form-info-div{
+    background-color: #d3ffe9;
+}
+
+/* HEADERS AND TITLES */
+.title-color{
+    background-color: #95A3B3;
+}
+
+.title-two-color{
+    background: #BCCCD1;
+}
+
+.header-color{
+    background-color: #415a77;
+    /*background-color: #6369D1;*/
+}
+
+.student-cover-letter-message{
+    background-color: #8b95c9;
+    font-size: medium;
+}
+
+/* TABLES */
+
+.table-header-color{
+    background-color: #c6e0ff; ;
+}
+
+.posts-active-resume{
+    background-color: #d0ddd7;
+}
+
+
+/* BUTTONS AND LINKS */
+
+.active{
+    border-right: 10px solid #a7bed3;
+    font-size: x-large;
+}
+
+.posts-nav-bar-background{
+    background-color: #A7ADC6;
+}
+
+.posts-nav-active{
+    background-color: #5F4B66;
+}
+
+.apply-btn{
+    background-color: #9ee37d;
+}
+
+.already-applied{
+    background-color: #cffcff;
+}
+
+.resume-new-btn{
+    background-color: #2f4858;
+}
+
+.resume-manage-btn{
+    background-color: #336699;
+}
+
+.regular-btn{
+    background-color: #FFFFFF;
+    border: 1px solid #aaaaaa;
+    color: #000000;
+}
+
+.danger-btn{
+    background-color: #f4442e;
+    color: #FFFFFF;
+}
+
+.note-close-btn{
+    background-color:#d9534f;
+    color: #FFFFFF;
+}
+
+.submit-btn{
+    background-color: #FFFFFF;
+    border: 1px solid #aaaaaa;
+    color: #1FAB54;
+}
+
+/* MESSAGES STYLE */
+
+.form-error ul{
+    margin: 0;
+}
+
+.message{
+    padding: 8px 0 8px 16px;
+    margin-bottom: 8px;
+    color: #3c3744;
+}
+
+.warning-message{
+    border-left: 5px solid #eee82c;
+    background-color: #fffd98;
+}
+
+.info-message{
+    border-left: 5px solid #7a9cc6;
+    background-color: #c6e0ff;
+}
+
+.danger-message{
+    border-left: 5px solid #ff3e41;
+    background-color: #ffccc9;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

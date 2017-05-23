@@ -1,12 +1,10 @@
-{% extends 'company/company_base.html' %}
+{% extends 'company/base.html' %}
 
 {% block title %}Post Applicants{% endblock %}
 
-{% block postactive %}active{% endblock %}
-
 {% load staticfiles %}
 {% block scripts %}
-    <script type="text/javascript" src="{% static 'post/single_applicant_nav.js' %}"></script>
+    <script type="text/javascript" src="{% static 'post/company_post_util.js' %}"></script>
 {% endblock %}
 
 
@@ -16,7 +14,7 @@
             <h3 class="text-center">Student</h3>
         </div>
         <div class="panel-body" style="word-wrap: break-word;">
-            <label>Name:</label><span> {{ app.fname }} {{ app.lname }}</span><br/>
+            <label>Name:</label><span> {{ app.name }}</span><br/>
             <label>Email:</label><span> {{ app.email }}</span><br/>
             <label>Phone:</label><span> {{ app.phone }}</span><br/>
             <label>Address:</label><span> {{ app.address }}</span><br/>
@@ -26,97 +24,201 @@
             <label>GPA:</label><span> {{ app.gpa }}</span>
         </div>
     </div>
-    {% include 'company/post_info.html' %}
+    {% include 'company/sides/applicant_filter.html' %}
+    {% include 'company/sides/post_info.html' %}
 {% endblock %}
 
 {% block content %}
-    <form id="hiddenform" style="display:none;" action="{% url 'post:applicant' pk=post.pk ak=0 %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input id="keep" type="hidden" name="keep" value="True"/>
-        <input id="page" type="hidden" name="page" value="{{ page }}"/>
-        <input id="cover" type="hidden" name="cover" value="False"/>
-
-        <input id="schools" type="hidden" name="schools" value="{{ school_val }}">
-        <input id="majors" type="hidden" name="majors" value="{{ major_val }}">
-        <input type="hidden" name="gpa_filter" value="{{ gpa_val }}">
-    </form>
-    <div class="btn-group btn-group-justified">
-        <div class="btn-group">
-            <a href="#" data-url="{% url 'post:applicants' pk=post.pk %}"
-               class="btn applicant-view-btn multiple-app-view" style="border-right: none;">
-                Multiple Applicants View
-            </a>
-        </div>
-        <div class="btn-group">
-            <button class="btn applicant-view-btn active-applicant-view-btn" style="border-left: none;">
-                Single Applicant View
-            </button>
+    <div>
+        <div class="btn-group btn-group-justified">
+            <div class="btn-group">
+                <button data-url="{% url 'post:applicants' pk=post.id %}"
+                        class="btn btn-default to-multiple-view">
+                    Multiple Applicants View
+                </button>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary">
+                    Single Applicant View
+                </button>
+            </div>
         </div>
     </div>
-    <div class="row margined">
+    <div class="row padding-1">
         <div class="col-md-6">
-            <button id="prevBtn" type="button" class="btn move-btn btn-block">
-                <span class="glyphicon glyphicon-arrow-left" style="float:left"></span>
+            <button class="btn btn-default btn-block single-prev"
+                    data-url="{% url 'post:applicant' pk=post.id ak=prev_app %}">
+                <span class="glyphicon glyphicon-arrow-left left"></span>
                 Previous Applicant
             </button>
         </div>
         <div class="col-md-6">
-            <button id="nBtn" type="button" class="btn move-btn btn-block">
+            <button class="btn btn-default btn-block single-next"
+                    data-url="{% url 'post:applicant' pk=post.id ak=next_app %}">
                 Next Applicant
-                <span class="glyphicon glyphicon-arrow-right" style="float:right"></span>
+                <span class="glyphicon glyphicon-arrow-right right"></span>
             </button>
         </div>
     </div>
 
-    {% include 'post/applicant_info.html' %}
-    <script>
-        $(function(){
-            var form = $('#hiddenform');
+    <div>
+        {% if app.cover %}
+            <div class="panel panel-default secondary-panel">
+                <div class="panel-heading">
+                    Cover Letter
+                </div>
+                <div class="panel-body">
+                    <p>{{ app.cover | linebreaksbr }}</p>
+                </div>
+            </div>
+        {% endif %}
+        {% if resume.file_resume %}
+            <div class="panel panel-default secondary-panel">
+                <div class="panel-heading">
+                    File Resume
+                </div>
+                <div class="panel-body">
+                    {{ resume.file_resume }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="panel panel-default primary-panel">
+            <div class="panel-heading">
+                <h4 class="text-center">Student Resume</h4>
+            </div>
+            <div class="panel-body">
+                {% if app.resume.experience %}
+                    <h3>Experience</h3>
+                    {% for x in app.resume.experience %}
+                        <div>
+                            <div>
+                                <label>Title:</label>
+                                <span class="label-information capital">{{ x.title }}</span>
+                                <br/>
+                                <label>Duration:</label>
+                                <span class="label-information">
+                                    {{ x.start }} to {% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}
+                                </span>
+                                <br/>
+                                <label>Type:</label>
+                                <span class="label-information capital">{{ x.experience_type }}</span>
+                            </div>
+                            <label>Description:</label>
+                            <p>{{ x.description | linebreaksbr }}</p>
+                            <hr/>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if app.resume.schools %}
+                    <h3>Education:</h3>
+                    <table class="table">
+                        <tr>
+                            <th>School Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Level</th>
+                            <th>Program</th>
+                        </tr>
+                        {% for x in app.resume.schools %}
+                            <tr>
+                                <td>{{ x.name }}</td>
+                                <td>{{ x.start }}</td>
+                                <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
+                                <td>{{ x.level }}</td>
+                                <td>{{ x.program }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                {% if app.resume.awards %}
+                    <h3>Awards:</h3>
+                    {% for x in app.resume.awards %}
+                        <div>
+                            <div>
+                                <label>Title:</label><span class="label-information capital">{{ x.title }}</span><br/>
+                                <label>Date Received:</label><span class="label-information">{{ x.date }}</span><br/>
+                                <label>Type:</label><span class="label-information capital">{{ x.award_type }}</span>
+                            </div>
+                            <label>Description:</label>
+                            <p>{{ x.description | linebreaksbr }}</p>
+                            <hr/>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if app.resume.languages %}
+                    <h3>Languages:</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Language</th>
+                            <th>Proficiency</th>
+                        </tr>
+                        {% for x in app.resume.languages %}
+                            <tr>
+                                <td>{{ x.name }}</td>
+                                <td>{{ x.level }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                {% if app.resume.skills %}
+                    <h3>Skills:</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Skill</th>
+                            <th>Proficiency</th>
+                        </tr>
+                        {% for x in app.resume.skills %}
+                            <tr>
+                                <td>{{ x.name }}</td>
+                                <td>{{ x.level }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                <hr/>
+                <div class="container">
+                    {% if app.cover_requested %}
+                        <button disabled class="btn btn-default">
+                            Cover already requested
+                        </button>
+                    {% else %}
+                        <button type="button" class="btn btn-info request-cover"
+                                data-url="{% url 'post:applicant' pk=post.pk ak=app.id %}">
+                            Request Cover Letter
+                        </button>
+                    {% endif %}
+                    <a href="{% url 'post:app_pdf' ak=app.id %}" class="btn btn-info">
+                        Download PDF Resume
+                    </a>
+                    <button type="button" class="warning-open btn btn-danger" data-id="close-app"
+                            data-name="{{ app.name }}" data-url="{% url 'post:discard' pk=app.id %}">
+                        Discard Applicant
+                    </button>
+                </div>
+            </div>
 
-            $("#prevBtn").click(function(){
-                var page = $("#page");
-                page.val(parseInt(page.val()) - 1);
-                form.submit();
-            });
+        </div>
+    </div>
 
-            $("#nBtn").click(function(){
-                var page = $("#page");
-                page.val(parseInt(page.val()) + 1);
-                form.submit();
-            });
+{% endblock %}
 
-            $('body').on('click', '#dBtn', function(){
-                $("#keep").val("Delete");
-                form.attr('action', $(this).data('url'));
-                form.submit();
-            });
 
-            $("#clBtn").click(function(){
-                $("#cover").val("True");
-                form.attr('action', $(this).data('url'));
-                form.submit();
-            });
 
-            $('#hiddenform').submit(function(){
-                var schools = $('#schools');
-                var majors = $('#majors');
+{% block hidden_block %}
+    <form id="filter-form" action="{% url 'post:applicant' pk=post.id ak='0' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="school_filter" name="filter_schools" value="{{ filters.schools }}">
+        <input id="gpa_filter" type="hidden" name="filter_gpa" value="{{ filters.gpa }}">
+        <input type="hidden" id="major_filter" name="filter_majors" value="{{ filters.majors }}">
+        <input type="hidden" name="filter_keep" value="True">
+    </form>
 
-                schools.val(schools.val().substring(0,schools.val().length-1));
-                majors.val(majors.val().substring(0,majors.val().length-1));
-            });
-
-        });
-    </script>
-
-    <div class="hidden">
-        <form id="multiple-view-form" method="post" action="{% url 'post:applicants' pk=post.pk %}">
-            {% csrf_token %}
-            <input type="hidden" name="page" value="0">
-            <input type="hidden" name="keep" value="True">
-
-            <input id="multi-schools" type="hidden" name="schools" value="{{ school_val }}">
-            <input id="multi-majors" type="hidden" name="majors" value="{{ major_val }}">
-            <input type="hidden" name="gpa_filter" value="{{ gpa_val }}">
-        </form>
+    <div id="warning-close-app">
+        <p class="message">
+            Are you sure you want to discard candidate <span class="name"></span>'s application?
+        </p>
+        <p class="note">
+            This will permanently remove him/her from the list of applicants and cancel his/her application.
+        </p>
     </div>
 {% endblock %}

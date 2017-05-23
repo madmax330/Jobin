@@ -1,0 +1,20 @@
+<div>
+    {% for x in countries %}
+        <div class="jobin-country">{{ x }}</div>
+    {% endfor %}
+</div>
+<div>
+    {% for x in states %}
+        <div class="jobin-state" data-country="{{ x.country }}">{{ x.name }}</div>
+    {% endfor %}
+</div>
+<div>
+    {% for x in programs %}
+        <div class="jobin-program">{{ x.name }}</div>
+    {% endfor %}
+</div>
+<div>
+    {% for x in majors %}
+        <div class="jobin-major" data-program="{{ x.program.name }}">{{ x.name }}</div>
+    {% endfor %}
+</div>

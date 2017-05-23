@@ -1,37 +1,20 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.core.exceptions import ObjectDoesNotExist
+
 from .models import Message, Notification
 import datetime
 
 
-class Pagination:
+class Pagination(Paginator):
 
-    @staticmethod
-    def get_pages(l, current_page=0, base=10):
-        max_pages = 20
-        half_base = int(base / 2)
-        count = len(l)
-        start = 0
-        end = 1
-        pages_number = int(count / base)
-        if not (count % base) == 0:
-            pages_number += 1
-        if pages_number > 0:
-            if pages_number > max_pages:
-                if current_page - half_base > 0:
-                    start = current_page - half_base - 1  # -1 to cancel + 1 at end
-                    if current_page + half_base > pages_number:
-                        end = pages_number
-                    else:
-                        end = current_page + half_base
-                else:
-                    end = max_pages
-            else:
-                end = pages_number
-        return range(start+1, end+1)
-
-    @staticmethod
-    def get_page_items(l, cp=0, base=10):
-        start = int(cp * base)
-        return l[start: start + base]
+    def get_page(self, page):
+        try:
+            return self.page(page)
+        except PageNotAnInteger:
+            return self.page(1)
+        except EmptyPage:
+            return self.page(self.num_pages)
 
 
 class MessageCenter:
@@ -76,6 +59,34 @@ class MessageCenter:
             return Notification.objects.filter(student=u, opened=False)
         if t == 'company':
             return Notification.objects.filter(company=u, opened=False)
+
+    @staticmethod
+    def get_all_notifications(t, u):
+        if t == 'student':
+            return Notification.objects.filter(student=u)
+        if t == 'company':
+            return Notification.objects.filter(company=u)
+
+    @staticmethod
+    def close_notification(pk):
+        try:
+            Notification.objects.get(pk=pk).delete()
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    @staticmethod
+    def close_all_notifications(t, u):
+        notifications = []
+        if t == 'company':
+            notifications = list(Notification.objects.filter(company=u, opened=False))
+        if t == 'student':
+            notifications = list(Notification.objects.filter(student=u, opened=False))
+        if notifications:
+            for x in notifications:
+                x.opened = True
+                x.save()
+        return True
 
     #
     #   COMPANY APP MESSAGES
