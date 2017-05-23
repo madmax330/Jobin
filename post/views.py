@@ -1,517 +1,487 @@
-from django.views.generic.edit import CreateView, UpdateView
-from django.views import generic
 from django.views.generic import View
-from django.shortcuts import render, redirect
-from .models import Post, Application
-from .classes import Applicant
-from .forms import NewPostForm
-from .utils import PostContexts, ApplicantUtil, ApplicationUtil, PostUtil
-from student.util_student import StudentContainer
-from home.models import JobinSchool, JobinProgram, JobinMajor
-from home.utils import MessageCenter, Pagination
-from company.models import Company
-from student.models import Student
-from resume.models import Resume
-from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.db import transaction, IntegrityError
-#from wkhtmltopdf.views import PDFTemplateResponse
+
+from company.util_company import CompanyContainer
+from student.util_student import StudentContainer
+from home.utils import MessageCenter, Pagination
+from home.util_request import RequestUtil
+from home.util_home import HomeUtil
+
+from wkhtmltopdf.views import PDFTemplateResponse
 
 
-class CompanyPosts(View):
-    template_name = 'post/company_posts.html'
+def company_index(request):
+
+    if request.method == 'GET':
+        post_page = request.GET.get('pp', 1)
+        ex_post_page = request.GET.get('xp', 1)
+        company = CompanyContainer(request.user)
+        msgs = MessageCenter.get_messages('company', company.get_company())
+        posts = Pagination(company.get_posts(), 15)
+        expired_posts = Pagination(company.get_expired_posts(), 15)
+        context = {
+            'company': company.get_company(),
+            'posts': posts.get_page(post_page),
+            'expired_posts': expired_posts.get_page(ex_post_page),
+            'messages': msgs,
+        }
+        MessageCenter.clear_msgs(msgs)
+        return render(request, 'post/company_index.html', context)
+
+    raise Http404
+
+
+class NewPostView(View):
+    template_name = 'post/post_form.html'
 
     def get(self, request):
-        company = Company.objects.get(user=self.request.user)
-        posts = Post.objects.filter(company=company, status='open')
-        msgs = MessageCenter.get_messages('company', company)
-        ex_posts = Post.objects.filter(company=company, status='closed')
-        temp = PostUtil.do_post_notifications(posts)
-        if len(temp) > 0:
-            MessageCenter.new_applicants_message(company, temp)
         context = {
-            'posts': Pagination.get_page_items(posts),
-            'expired_posts': Pagination.get_page_items(ex_posts),
-            'company': company,
-            'msgs': msgs,
-            'ppages': Pagination.get_pages(posts),
-            'ppage': 1,
-            'xpages': Pagination.get_pages(ex_posts),
-            'xpage': 1,
+            'programs': HomeUtil.get_programs()
         }
-        for x in msgs:
-            x.delete()
         return render(request, self.template_name, context)
 
     def post(self, request):
-        company = Company.objects.get(user=self.request.user)
-        ppage = int(request.POST.get('post_page'))
-        xpage = int(request.POST.get('xpost_page'))
-        posts = Post.objects.filter(company=company, status='open')
-        msgs = MessageCenter.get_messages('company', company)
-        ex_posts = Post.objects.filter(company=company, status='closed')
-        temp = PostUtil.do_post_notifications(posts)
-        if len(temp) > 0:
-            MessageCenter.new_applicants_message(company, temp)
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_post_info(request)
         context = {
-            'posts': Pagination.get_page_items(posts, ppage),
-            'expired_posts': Pagination.get_page_items(ex_posts, xpage),
-            'company': company,
-            'msgs': msgs,
-            'ppages': Pagination.get_pages(posts, ppage),
-            'ppage': ppage + 1,
-            'xpages': Pagination.get_pages(ex_posts, xpage),
-            'xpage': xpage + 1,
+            'programs': HomeUtil.get_programs(),
         }
-        for x in msgs:
-            x.delete()
-        return render(request, self.template_name, context)
+        if i:
 
+            try:
+                with transaction.atomic():
+                    if company.new_post(i):
+                        m = 'New post created successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('post:company_index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
 
-class NewPostView(CreateView):
-    model = Post
-    form_class = NewPostForm
-
-    def get_context_data(self, **kwargs):
-        context = super(NewPostView, self).get_context_data(**kwargs)
-        company = Company.objects.get(user=self.request.user)
-        context['company'] = company
-        return context
-
-    def form_valid(self, form):
-        company = Company.objects.get(user=self.request.user)
-        post = form.save(commit=False)
-        post.schools = 'ALL'
-        post.company = company
-        post.is_startup_post = company.is_startup
-        MessageCenter.post_created(company, post.title)
-        return super(NewPostView, self).form_valid(form)
-
-
-class PostUpdateView(UpdateView):
-    model = Post
-    form_class = NewPostForm
-
-    def get_context_data(self, **kwargs):
-        context = super(PostUpdateView, self).get_context_data(**kwargs)
-        company = Company.objects.get(user=self.request.user)
-        context['company'] = company
-        context['update'] = 'True'
-        return context
-
-    def form_valid(self, form):
-        company = Company.objects.get(user=self.request.user)
-        post = form.save(commit=False)
-        MessageCenter.post_updated(company, post.title)
-        return super(PostUpdateView, self).form_valid(form)
-
-
-class ClosePostView(View):
-
-    def get(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        post.status = 'closed'
-        post.notified = False
-        post.save()
-        MessageCenter.post_closed(post.company, post.title)
-        MessageCenter.post_closed_notification(post.company, post.title)
-        apps = ApplicationUtil.get_post_applications(post)
-        for x in apps:
-            x.status = 'hold'
-            x.save()
-            MessageCenter.post_closed_student_notification(x.student, x.post_title)
-        return redirect('post:companyposts')
-
-
-class CompanyPost(View):
-    template_name = 'post/company_post.html'
-
-    def get(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        l = ApplicantUtil.get_post_applicants(post)
-        msgs = MessageCenter.get_messages('company', post.company)
-        context = {
-            'company': post.company,
-            'post': post,
-            'applicants': l[0:10],
-            'msgs': msgs,
-            'count': len(l)
-        }
-        for x in msgs:
-            x.delete()
-        return render(request, self.template_name, context)
-
-
-class StudentPosts(View):
-    template_name = 'post/student_posts.html'
-
-    def get(self, request, pk, pt):
-        try:
-            student = Student.objects.get(user=self.request.user)
-            resumes = Resume.objects.filter(student=student, is_complete=True, status='open')
-            l = PostUtil.get_student_posts(student, pt, pk)
-            rkey = 0
-            for r in resumes:
-                if r.is_active:
-                    rkey = r.pk
-            msgs = MessageCenter.get_messages('student', student)
-            notes = MessageCenter.get_notifications('student', student)
-            context = PostContexts.get_student_posts_context(pt, student, l, resumes, rkey)
-            context['msgs'] = msgs
-            context['notifications'] = notes
-            for x in msgs:
-                x.delete()
-            return render(request, self.template_name, context)
-        except ObjectDoesNotExist:
-            return redirect('student:new')
-
-    def post(self, request, pk, pt):
-        r = request.POST.get('rk')
-        student = Student.objects.get(user=self.request.user)
-        resumes = Resume.objects.filter(student=student, is_complete=True, status='open')
-        for x in resumes:
-            x.is_active = False
-            if x.pk == r:
-                x.is_active = True
-            x.save()
-        return self.get(request, pk=pk, pt=pt)
-
-
-class StudentDetailsView(View):
-    template_name = 'post/student_post_details.html'
-
-    def get(self, request, pk, ak):
-        post = Post.objects.get(pk=pk)
-        app = Application.objects.get(pk=ak)
-        student = app.student
-        if len(student.email) > 30:
-            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-        msgs = MessageCenter.get_messages('student', student)
-        context = {
-            'post': post,
-            'comp': post.company,
-            'app': app,
-            'msgs': msgs,
-            'nav_student': student,
-        }
-        for x in msgs:
-            x.delete()
-        return render(request, self.template_name, context)
-
-    def post(self, request, pk, ak):
-        cover = request.POST.get('cover')
-        post = Post.objects.get(pk=pk)
-        app = Application.objects.get(pk=ak)
-        if cover is not None:
-            app.cover = cover
-            app.cover_submitted = True
-            app.save()
-            MessageCenter.cover_letter_submitted(app.student, app.post_title)
-            MessageCenter.cover_letter_received(post.company, app.post_title, app.student_name)
-            return redirect('student:index')
-        MessageCenter.cover_letter_blank(app.student)
-        msgs = MessageCenter.get_messages('student', app.student)
-        student = app.student
-        if len(student.email) > 30:
-            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-        context = {
-            'post': post,
-            'app': app,
-            'msgs': msgs,
-            'nav_student': student
-        }
-        for x in msgs:
-            x.delete()
-        return render(request, self.template_name, context)
-
-
-class ApplyView(View):
-
-    def get(self, request, pk, pt):
-        stu = StudentContainer(self.request.user)
-        post = Post.objects.get(pk=pk)
-        r = Resume.objects.filter(student=stu.get_student(), is_active=True)
-
-        try:
-            with transaction.atomic():
-                if not stu.new_application(post, r.first()):
-                    raise IntegrityError
-        except IntegrityError:
-            errs = stu.get_errors()
-            MessageCenter.new_message('student', stu.get_student(), 'danger', str(errs))
-
-        return redirect('post:studentposts', pk=pk, pt=pt)
-
-        #student = Student.objects.get(user=self.request.user)
-
-        #if ApplicationUtil.already_applied(student, post):
-        #    MessageCenter.already_applied(student, post.title)
-        #    return redirect('post:studentposts', pk=pk, pt=pt)
-        #if r.count() > 0:
-        #    ApplicationUtil.new_application(post, student, r.first())
-        #    MessageCenter.apply_message(student, post.title)
-        #    return redirect('post:studentposts', pk=pk, pt=pt)
-        #else:
-        #    MessageCenter.apply_no_resume(student)
-        #    return redirect('resume:index')
-
-
-class PostApplicantsView(View):
-    template_name = 'post/post_applicants.html'
-
-    def get(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        l = ApplicantUtil.get_post_applicants(post)
-        msgs = MessageCenter.get_messages('company', post.company)
-        program = JobinProgram.objects.filter(name=post.programs)
-        context = {
-            'post': post,
-            'list': Pagination.get_page_items(l, 0, 50),
-            'msgs': msgs,
-            'schools': JobinSchool.objects.all(),
-            'majors': JobinMajor.objects.filter(program=program),
-            'count': len(l),
-            'pages': Pagination.get_pages(l, 0, 50),
-            'page': 1,
-        }
-        for x in msgs:
-            x.delete()
-        return render(request, self.template_name, context)
-
-    def post(self, request, pk):
-        page = int(request.POST.get('page'))
-        post = Post.objects.get(pk=pk)
-        program = JobinProgram.objects.filter(name=post.programs)
-        apps = ApplicantUtil.get_post_applicants(post)
-        filters = ApplicantUtil.prep_app_filters(request, post)
-        l = ApplicantUtil.apply_filters(filters, apps, post)
-        msgs = MessageCenter.get_messages('company', post.company)
-        school_val = ''
-        major_val = ''
-        gpa_val = 0
-        if filters:
-            for x in filters['schools']:
-                school_val += x + ','
-            for x in filters['majors']:
-                major_val += x + ','
-            gpa_val = filters['gpa']
-        context = {
-            'post': post,
-            'list': Pagination.get_page_items(l, page, 50),
-            'msgs': msgs,
-            'schools': JobinSchool.objects.all(),
-            'majors': JobinMajor.objects.filter(program=program),
-            'count': len(l),
-            'pages': Pagination.get_pages(l, page, 50),
-            'page': page + 1,
-            'gpa_val': (gpa_val if gpa_val > 0 else ''),
-            'major_val': major_val,
-            'school_val': school_val,
-        }
-        for m in msgs:
-            m.delete()
-        return render(request, self.template_name, context)
-
-
-class SingleApplicantView(View):
-    template_name = 'post/post_applicant.html'
-
-    def get(self, request, pk, ak):
-        post = Post.objects.get(pk=pk)
-        apps = ApplicantUtil.get_post_applicants(post)
-        if len(apps) > 0:
-            app = apps[0]
         else:
-            MessageCenter.no_applicants_left(post.company)
-            return redirect('post:applicants', pk=post.pk)
-        page = 0
-        if not int(ak) == 0:
-            for x in apps:
-                if int(x.pk) == int(ak):
-                    app = x
-                    break
-                page += 1
-        ApplicationUtil.update_opened_application(app.pk)
-        context = PostContexts.get_applicant_context(app)
-        msgs = MessageCenter.get_messages('company', post.company)
-        context['msgs'] = msgs
-        context['page'] = page
-        for m in msgs:
-            m.delete()
+            context['errors'] = rq.get_errors()
+
         return render(request, self.template_name, context)
 
-    def post(self, request, pk, ak):
-        post = Post.objects.get(pk=pk)
-        keep = request.POST.get('keep')
-        page = int(request.POST.get('page'))
-        cover = request.POST.get('cover')
-        if keep == 'Delete':
-            x = Application.objects.get(pk=ak)
-            x.status = 'closed'
-            x.save()
-            MessageCenter.applicant_removed(post.company, x.student_name)
-            MessageCenter.application_discontinued(x.student, x.post_title)
-        if cover == 'True':
-            a = Application.objects.get(pk=ak)
-            if not a.cover_requested:
-                MessageCenter.cover_letter_request(post.company, a.student_name)
-                MessageCenter.cover_letter_notification(a.student, post.company.name, post.title)
-                a.cover_requested = True
-                a.cover_submitted = False
-                a.cover_opened = False
-                a.save()
-            else:
-                MessageCenter.cover_letter_already_requested(post.company)
 
-        apps = ApplicantUtil.get_post_applicants(post)
-        filters = ApplicantUtil.prep_app_filters(request, post)
-        if filters:
-            apps = ApplicantUtil.apply_filters(filters, apps, post)
-
-        if len(apps) > 0:
-            if page >= len(apps):
-                page = 0
-            elif page < 0:
-                page = len(apps) - 1
-
-            if not int(ak) == 0 and not keep == 'Delete':
-                page = 0
-                for x in apps:
-                    if int(x.pk) == int(ak):
-                        break
-                    page += 1
-
-            app = apps[page]
-            ApplicationUtil.update_opened_application(app.pk)
-            context = PostContexts.get_applicant_context(app)
-            msgs = MessageCenter.get_messages('company', post.company)
-            context['msgs'] = msgs
-            context['page'] = page
-            school_val = ''
-            major_val = ''
-            gpa_val = 0
-            if filters:
-                for x in filters['schools']:
-                    school_val += x + ','
-                for x in filters['majors']:
-                    major_val += x + ','
-                    gpa_val = filters['gpa']
-            context['gpa_val'] = (gpa_val if gpa_val > 0 else '')
-            context['major_val'] = major_val
-            context['school_val'] = school_val
-            for m in msgs:
-                m.delete()
-            return render(request, self.template_name, context)
-        else:
-            MessageCenter.no_applicants_left(post.company)
-            return redirect('post:applicants', pk=pk)
-
-
-class PostRecoveryView(View):
-    form_class = NewPostForm
+class EditPostView(View):
     template_name = 'post/post_form.html'
 
     def get(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        company = post.company
-        MessageCenter.post_reactivate_info_message(company)
-        form = self.form_class(instance=post)
-        msgs = MessageCenter.get_messages('company', company)
+        company = CompanyContainer(request.user)
         context = {
-            'form': form,
-            'company': company,
-            'msgs': msgs,
+            'company': company.get_company(),
+            'post': company.get_post(pk),
+            'programs': HomeUtil.get_programs(),
         }
-        for x in msgs:
-            x.delete()
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
-        company = Company.objects.get(user=self.request.user)
-        p = Post.objects.get(pk=pk)
-        form = self.form_class(request.POST, instance=p)
-
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.company = company
-            post.is_startup_post = company.is_startup
-            post.schools = 'ALL'
-            post.status = 'open'
-            post.save()
-            MessageCenter.post_reactivated(company, post.title)
-            apps = ApplicationUtil.get_held_applications(post)
-            for x in apps:
-                MessageCenter.post_reactivated_notification(x.student, post.title, company)
-                x.cover_requested = False
-                x.save()
-            return redirect('post:companyposts')
-        msgs = MessageCenter.get_messages('company', company)
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_post_info(request)
         context = {
             'company': company,
-            'msgs': msgs,
-            'form': form,
+            'programs': HomeUtil.get_programs(),
         }
-        for x in msgs:
-            x.delete()
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if company.edit_post(pk, i):
+                        m = 'Post edited successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('post:company_index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
+
+        else:
+            context['errors'] = rq.get_errors()
+
+        context['post'] = company.get_post(pk)
         return render(request, self.template_name, context)
 
 
-def close_old_application(request, ak):
+def close_post(request, pk):
 
     if request.method == 'GET':
-        app = ApplicationUtil.get_application(ak)
-        app.status = 'closed'
-        app.save()
-        MessageCenter.application_withdrew(app.student, app.post_title)
-        return redirect('student:index')
-    return redirect('home:index')
+        company = CompanyContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if company.close_post(pk):
+                    m = 'Post closed successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return redirect('post:company_index')
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(company.get_errors())
+            MessageCenter.new_message('company', company.get_company(), 'danger', m)
+
+        return redirect('post:detail')
+
+    raise Http404
 
 
-def activate_old_application(request, ak):
+def post_detail(request, pk):
 
     if request.method == 'GET':
-        app = ApplicationUtil.get_application(ak)
-        app.status = 'active'
-        app.save()
-        MessageCenter.application_continued(app.student, app.post_title)
-        return redirect('student:index')
-    return redirect('home:index')
+        company = CompanyContainer(request.user)
+        msgs = MessageCenter.get_messages('company', company.get_company())
+        context = {
+            'company': company.get_company(),
+            'post': company.get_post(pk),
+            'app_count': company.application_count(pk),
+            'messages': msgs,
+        }
+        MessageCenter.clear_msgs(msgs)
+        return render(request, 'post/detail.html', context)
+
+    raise Http404
 
 
-class DiscardApplicant(View):
+POST_CATEGORIES = {
+    'internship': 'Internship',
+    'parttime': 'Part Time',
+    'newgrad': 'New Grad',
+    'volunteer': 'Volunteer',
+    'startup': 'Startup',
+}
 
-    def get(self, request, pk, ak):
-        x = Application.objects.get(pk=ak)
-        x.status = 'closed'
-        x.save()
-        MessageCenter.applicant_removed(x.post.company, x.student_name)
-        MessageCenter.application_discontinued(x.student, x.post_title)
+
+def student_index(request, cat, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+        msgs = MessageCenter.get_messages('student', student.get_student())
+        notes = MessageCenter.get_notifications('student', student.get_student())
+        posts = student.get_posts(cat, pk)
+        context = {
+            'student': student.get_student(),
+            'resumes': student.get_resumes(),
+            'posts': posts,
+            'count': len(posts),
+            'category': cat,
+            'd_category': POST_CATEGORIES[cat],
+            'internship_count': student.get_internship_count(),
+            'volunteer_count': student.get_volunteer_count(),
+            'part_time_count': student.get_part_time_count(),
+            'new_grad_count': student.get_new_grad_count(),
+            'startup_count': student.get_startup_count(),
+            'messages': msgs,
+            'notifications': notes,
+        }
+        MessageCenter.clear_msgs(msgs)
+        return render(request, 'post/student_index.html', context)
+
+    raise Http404
+
+
+def student_detail(request, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+        msgs = MessageCenter.get_messages('student', student.get_student())
+        app = student.get_application(pk)
+        context = {
+            'post': app.post,
+            'application': app,
+            'messages': msgs,
+            'student': student.get_student(),
+        }
+        MessageCenter.clear_msgs(msgs)
+        return render(request, 'post/student_detail.html', context)
+
+    raise Http404
+
+
+def request_cover_letter(request, pk):
+
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if company.request_cover_letter(pk):
+                    m = 'Cover letter requested successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return HttpResponse('success', status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(company.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
+
+
+def submit_cover_letter(request, pk):
+
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_cover_letter(request)
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if student.submit_cover_letter(pk, i):
+                        m = 'Cover letter submitted successfully.'
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
+                        return HttpResponse('success', status=200)
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                m = str(student.get_errors())
+                return HttpResponse(m, status=400)
+
+        else:
+            m = str(rq.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
+
+
+def apply(request, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.new_application(pk):
+                    m = 'Application successful.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    return HttpResponse('success', status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
+
+
+def post_applicants(request, pk):
+
+    if request.method == 'GET' or request.method == 'POST':
+        page = request.GET.get('page')
+        company = CompanyContainer(request.user)
+        post = company.get_post(pk)
+        program = HomeUtil.get_program(post.programs)
+        msgs = MessageCenter.get_messages('company', company.get_company())
+        filters = None
+        if request.method == 'GET':
+            apps = Pagination(company.get_applications(pk), 25)
+        elif request.method == 'POST':
+            rq = RequestUtil()
+            filters = rq.get_applications_filter(request)
+            apps = Pagination(company.get_applications(pk, filters=filters), 25)
+        else:
+            apps = None
+        context = {
+            'post': post,
+            'applications': (apps.get_page(page) if apps else None),
+            'count': (apps.count if apps else 0),
+            'schools': HomeUtil.get_schools(),
+            'majors': HomeUtil.get_program_majors(program),
+            'filters': filters if filters else None,
+            'filter_schools': filters['schools'].split(',') if filters and filters['schools'] else None,
+            'filter_majors': filters['majors'].split(',') if filters and filters['majors'] else None,
+            'messages': msgs,
+            'applicants': 'True',
+        }
+        MessageCenter.clear_msgs(msgs)
+        return render(request, 'post/post_applicants.html', context)
+
+    raise Http404
+
+
+def single_applicant(request, pk, ak):
+
+    if request.method == 'POST':
+        company = CompanyContainer(request.user)
+        post = company.get_post(pk)
+        rq = RequestUtil()
+        filters = rq.get_applications_filter(request)
+
+        if filters is None:
+            MessageCenter.new_message('company', company.get_company(), 'danger', str(rq.get_errors()))
+
+        apps = company.get_applications(pk, ak=ak, filters=filters)
+        next_app = None
+        prev_app = None
+        app = None
+        if apps and len(apps) > 0:
+            if ak == '0':
+                prev_app = apps[len(apps)-1]
+                app = apps[0]
+                next_app = apps[(1 if 1 < len(apps) else 0)]
+            else:
+                for i in range(0, len(apps)):
+                    print('appid: ' + str(apps[i].id) + ' ak: ' + ak)
+                    if str(apps[i].id) == ak:
+                        prev_app = apps[i-1] if i-1 >= 0 else apps[len(apps)-1]
+                        app = apps[i]
+                        next_app = apps[i+1] if i+1 < len(apps) else apps[0]
+
+            msgs = MessageCenter.get_messages('company', company.get_company())
+            context = {
+                'messages': msgs,
+                'app': company.get_extended_application(app),
+                'next_app': next_app.id,
+                'prev_app': prev_app.id,
+                'post': post,
+                'company': company.get_company(),
+                'filters': filters,
+                'filter_schools': filters['schools'].split(',') if filters and filters['schools'] else None,
+                'filter_majors': filters['majors'].split(',') if filters and filters['majors'] else None,
+            }
+            MessageCenter.clear_msgs(msgs)
+            return render(request, 'post/post_applicant.html', context)
+
+        if filters:
+            m = 'There are no more candidates in this filter.'
+        else:
+            m = 'There are no more applications for this post.'
+        MessageCenter.new_message('company', company.get_company(), 'warning', m)
         return redirect('post:applicants', pk=pk)
+
+    raise Http404
+
+
+class RecoverPostView(View):
+    template_name = 'post/post_form.html'
+
+    def get(self, request, pk):
+        company = CompanyContainer(self.request.user)
+        post = company.get_post(pk)
+        context = {
+            'company': company.get_company(),
+            'post': post,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        company = CompanyContainer(self.request.user)
+        rq = RequestUtil()
+        i = rq.get_post_info(request)
+        context = {'company': company.get_company()}
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if company.recover_post(pk, i):
+                        m = 'Post recovered successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('post:company_index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
+
+        else:
+            context['errors'] = rq.get_errors()
+
+        context['post'] = company.get_post(pk)
+        return render(request, self.template_name, context)
+
+
+def withdraw_application(request, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.withdraw_application(pk):
+                    m = 'Application successfully withdrawn.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('student:index')
+
+    raise Http404
+
+
+def activate_application(request, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.activate_application(pk):
+                    m = 'Application successfully activated.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('student:index')
+
+    raise Http404
+
+
+def discard_application(request, pk):
+
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if company.close_application(pk):
+                    m = 'Application closed successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return HttpResponse(status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(company.get_errors())
+            MessageCenter.new_message('company', company.get_company(), 'danger', m)
+            return HttpResponse(status=400)
+
+        raise Http404
+    
+    raise Http404
 
 
 class ApplicantPDF(View):
     template_name = 'post/applicant_resume_pdf.html'
 
     def get(self, request, ak):
-        a = Application.objects.get(pk=ak)
-        app = Applicant(a, a.student)
-        filename = app.fname + app.lname + 'Resume.pdf'
-        context = PostContexts.get_applicant_context(app)
-        reponse = 'none'
-        # response = PDFTemplateResponse(
-        #     request=request,
-        #     template=self.template_name,
-        #     filename=filename,
-        #     context=context,
-        #     show_content_in_browser=False,
-        #     cmd_options={
-        #         'page-size': 'A4',
-        #         'orientation': 'portrait',
-        #         'disable-smart-shrinking': True,
-        #     },
-        # )
-        #return response
-        context = PostContexts.get_applicant_context(app)
-        return render(request, self.template_name, context)
+        company = CompanyContainer(self.request.user)
+        app = company.get_extended_application(company.get_application(ak))
+        filename = app.name + 'Resume.pdf'
+        context = {'app': app}
+        # response = 'none'
+        response = PDFTemplateResponse(
+            request=request,
+            template=self.template_name,
+            filename=filename,
+            context=context,
+            show_content_in_browser=False,
+            cmd_options={
+                'page-size': 'A4',
+                'orientation': 'portrait',
+                'disable-smart-shrinking': True,
+            },
+        )
+        return response
+        # context = PostContexts.get_applicant_context(app)
+        # return render(request, self.template_name, context)
 
 
 

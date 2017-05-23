@@ -2,7 +2,6 @@ from django.db import models
 from company.models import Company
 from student.models import Student
 from resume.models import Resume
-from django.core.urlresolvers import reverse
 
 
 class Post(models.Model):
@@ -24,9 +23,6 @@ class Post(models.Model):
     new_apps = models.BooleanField(default=False)
     cover_instructions = models.TextField(null=True, blank=True)
     is_startup_post = models.BooleanField(default=False)
-
-    def get_absolute_url(self):
-        return reverse('post:companypost', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title

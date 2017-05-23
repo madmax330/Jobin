@@ -1,127 +1,121 @@
-from django.views import generic
-from django.views.generic.edit import CreateView, UpdateView
-from django.shortcuts import render, redirect
-from .models import Company
-from event.models import Event
-from home.models import JobinTerritory
-from home.utils import MessageCenter, Pagination
-from .forms import NewCompanyForm
-from post.models import Post
-from post.utils import PostUtil
 from django.views.generic import View
-import simplejson
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, Http404
+from django.db import transaction, IntegrityError
+
+from .util_company import CompanyContainer
+
+from home.util_request import RequestUtil
+from home.utils import MessageCenter, Pagination
+from home.util_home import HomeUtil
 
 
-class IndexView(View):
-    template_name = 'company/company_home.html'
+def index_view(request):
+
+    if request.method == 'GET':
+        post_page = request.GET.get('pp', 1)
+        event_page = request.GET.get('ep', 1)
+        company = CompanyContainer(request.user)
+        msgs = MessageCenter.get_messages('company', company.get_company())
+        posts = Pagination(company.get_posts(), 15)
+        events = Pagination(company.get_events(), 15)
+        context = {
+            'company': company.get_company(),
+            'posts': posts.get_page(post_page),
+            'events': events.get_page(event_page),
+            'messages': msgs,
+            'notifications': MessageCenter.get_notifications('company', company.get_company()),
+        }
+        return render(request, 'company/index.html', context)
+
+    raise Http404
+
+
+class NewCompanyView(View):
+    template_name = 'company/company_form.html'
 
     def get(self, request):
-        user = self.request.user
-        res = Company.objects.filter(user=user)
-        if res.count() > 0:
-            posts = Post.objects.filter(company=res.first(), status='open')
-            temp = PostUtil.do_post_notifications(posts)
-            if len(temp) > 0:
-                MessageCenter.new_applicants_message(res.first(), temp)
-            msgs = MessageCenter.get_messages('company', res.first())
-            events = Event.objects.filter(company=res.first(), active=True)
-            ppages = Pagination.get_pages(posts)
-            epages = Pagination.get_pages(events)
-            context = {
-                'company': res.first(),
-                'posts': Pagination.get_page_items(posts),
-                'events': Pagination.get_page_items(events),
-                'msgs': msgs,
-                'notifications': MessageCenter.get_notifications('company', res.first()),
-                'ppages': ppages,
-                'ppage': 1,
-                'epages': epages,
-                'epage': 1,
-            }
-            for x in msgs:
-                x.delete()
-            return render(request, self.template_name, context)
-        else:
-            return redirect('company:new')
+        context = {
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+        }
+        return render(request, self.template_name, context)
 
     def post(self, request):
-        company = Company.objects.get(user=self.request.user)
-        ppage = int(request.POST.get('post_page'))
-        epage = int(request.POST.get('event_page'))
-        print('epage: ' + str(epage))
-        print('ppage: ' + str(ppage))
-        posts = Post.objects.filter(company=company, status='open')
-        temp = PostUtil.do_post_notifications(posts)
-        if len(temp) > 0:
-            MessageCenter.new_applicants_message(company, temp)
-        msgs = MessageCenter.get_messages('company', company)
-        events = Event.objects.filter(company=company, active=True)
-        ppages = Pagination.get_pages(posts)
-        epages = Pagination.get_pages(events)
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_company_info(request)
         context = {
-            'company': company,
-            'posts': Pagination.get_page_items(posts, ppage),
-            'events': Pagination.get_page_items(events, epage),
-            'msgs': msgs,
-            'notifications': MessageCenter.get_notifications('company', company),
-            'ppages': ppages,
-            'ppage': ppage + 1,
-            'epages': epages,
-            'epage': epage + 1,
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
         }
-        for x in msgs:
-            x.delete()
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if company.new_company(i, request.user):
+                        m = 'Company profile created successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('company:index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
+
+        else:
+            context['errors'] = rq.get_errors()
+
         return render(request, self.template_name, context)
 
 
-class NewCompanyView(CreateView):
-    model = Company
-    form_class = NewCompanyForm
-
-    def form_valid(self, form):
-        company = form.save(commit=False)
-        company.user = self.request.user
-        company.points = 0
-        company.email = self.request.user.email
-        return super(NewCompanyView, self).form_valid(form)
-
-
-class UpdateCompanyView(UpdateView):
-    model = Company
-    form_class = NewCompanyForm
-
-    def get_context_data(self, **kwargs):
-        context = super(UpdateCompanyView, self).get_context_data(**kwargs)
-        context['update'] = 'True'
-        return context
-
-    def form_valid(self, form):
-        company = Company.objects.get(user=self.request.user)
-        MessageCenter.company_updated(company)
-        return super(UpdateCompanyView, self).form_valid(form)
-
-
-class DetailsView(generic.DetailView):
-    model = Company
-    template_name = 'company/company_details.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(DetailsView, self).get_context_data(**kwargs)
-        company = Company.objects.get(user=self.request.user)
-        company.is_new = False
-        company.save()
-        MessageCenter.company_created(company)
-        return context
-
-
-class ProfileView(View):
-    template_name = 'company/company_profile.html'
+class EditCompanyView(View):
+    template_name = 'company/company_form.html'
 
     def get(self, request):
-        user = self.request.user
-        company = Company.objects.filter(user=user).first()
-        return render(request, self.template_name, {'company': company, 'user': user})
+        company = CompanyContainer(request.user)
+        context = {
+            'company': company.get_company(),
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_company_info(request)
+        context = {
+            'company': company.get_company(),
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+        }
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if company.edit_company(i):
+                        m = 'Company profile edited successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('company:index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
+
+        else:
+            context['errors'] = rq.get_errors()
+
+        return render(request, self.template_name, context)
+
+
+def profile_view(request):
+
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+        context = {
+            'user': company.get_user(),
+            'company': company.get_company(),
+        }
+        return render(request, 'company/profile.html', context)
 
 
 

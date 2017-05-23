@@ -1,8 +1,6 @@
-{% extends 'company/company_base.html' %}
+{% extends 'company/base.html' %}
 
 {% block title %}{% endblock %}
-
-{% block profileactive %}active{% endblock %}
 
 {% block side_content %}
     <div class="panel panel-default secondary-panel">
@@ -20,13 +18,57 @@
 {% block content %}
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">
-            <h4 style="text-align:center">Change User Info</h4>
+            <h4 class="text-center">Change User Info</h4>
         </div>
         <div class="panel-body">
-            <form class="form form-horizontal" action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {% include 'home/form-template-company.html' %}
-            </form>
+            <div>
+                <form class="form" action="{% url 'home:change_info' ut='company' %}"
+                      method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="padding secondary-color horizontal-padding">
+                        <h4>Change Email/Username:</h4>
+                    </div>
+                    <div class="padding">
+                        <div class="form-group">
+                            <label class="required">Email:</label>
+                            <input class="form-control" type="email" name="email" placeholder="New Email"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Confirm Email:</label>
+                            <input class="form-control" type="email" name="confirm_email"
+                                   placeholder="Confirm New Email"/>
+                        </div>
+                        <div>
+                            <a href="{% url 'company:profile' %}" class="btn btn-default">Cancel</a>
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
+                    <div class="padding secondary-color horizontal-padding">
+                        <h4>Change Password:</h4>
+                    </div>
+                    <div class="padding">
+                        <div class="form-group">
+                            <label class="required">Current Password:</label>
+                            <input class="form-control" type="password" name="old_password" value=""
+                                   placeholder="Current Password"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">New Password:</label>
+                            <input class="form-control" type="password" name="password"
+                                   placeholder="New Password"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Confirm Password:</label>
+                            <input class="form-control" type="password" name="confirm_password"
+                                   placeholder="Confirm New Password"/>
+                        </div>
+                        <div>
+                            <a href="{% url 'company:profile' %}" class="btn btn-default">Cancel</a>
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

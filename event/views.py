@@ -1,229 +1,242 @@
-from django.views.generic.edit import CreateView, UpdateView
-from django.views import generic
 from django.views.generic import View
-from django.shortcuts import redirect, render
-from .models import Event, SavedEvent
+from django.shortcuts import redirect, render, Http404, HttpResponse
+from django.db import transaction, IntegrityError
+
 from home.utils import MessageCenter, Pagination
-from .forms import NewEventForm
-from company.models import Company
-from student.models import Student
+from home.util_home import HomeUtil
+from home.util_request import RequestUtil
+
+from company.util_company import CompanyContainer
+from student.util_student import StudentContainer
 
 
-class CompanyEvents(View):
-    template_name = 'event/company_events.html'
+def company_index(request):
+    if request.method == 'GET':
+        event_page = request.GET.get('ep', 1)
+        ex_event_page = request.GET.get('xep', 1)
+        company = CompanyContainer(request.user)
+        msgs = MessageCenter.get_messages('company', company.get_company())
+        events = Pagination(company.get_events(), 10)
+        ex_events = Pagination(company.get_expired_events(), 10)
+        context = {
+            'company': company.get_company(),
+            'events': events.get_page(event_page),
+            'expired_events': ex_events.get_page(ex_event_page),
+            'messages': msgs,
+        }
+        return render(request, 'event/company_index.html', context)
+
+    raise Http404
+
+
+class NewEventView(View):
+    template_name = 'event/event_form.html'
 
     def get(self, request):
-        company = Company.objects.get(user=self.request.user)
-        events = Event.objects.filter(company=Company.objects.get(user=self.request.user), active=True)
-        ex_events = Event.objects.filter(company=company, active=False)
-        msgs = MessageCenter.get_messages('company', company)
         context = {
-            'events': Pagination.get_page_items(events),
-            'expired_events': Pagination.get_page_items(ex_events),
-            'msgs': msgs,
-            'company': company,
-            'epages': Pagination.get_pages(events),
-            'epage': 1,
-            'xepages': Pagination.get_pages(ex_events),
-            'xepage': 1,
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
         }
-        for x in msgs:
-            x.delete()
         return render(request, self.template_name, context)
 
     def post(self, request):
-        company = Company.objects.get(user=self.request.user)
-        epage = int(request.POST.get('event_page'))
-        xepage = int(request.POST.get('xevent_page'))
-        events = Event.objects.filter(company=Company.objects.get(user=self.request.user), active=True)
-        ex_events = Event.objects.filter(company=company, active=False)
-        msgs = MessageCenter.get_messages('company', company)
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_event_info(request)
         context = {
-            'events': Pagination.get_page_items(events, epage),
-            'expired_events': Pagination.get_page_items(ex_events, xepage),
-            'msgs': msgs,
-            'company': company,
-            'epages': Pagination.get_pages(events, epage),
-            'epage': epage + 1,
-            'xepages': Pagination.get_pages(ex_events, xepage),
-            'xepage': xepage + 1,
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
         }
-        for x in msgs:
-            x.delete()
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if company.new_event(i):
+                        m = 'New event created successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('event:company_index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
+
+        else:
+            context['errors'] = rq.get_errors()
+
         return render(request, self.template_name, context)
 
 
-class NewEventView(CreateView):
-    model = Event
-    form_class = NewEventForm
+class EditEventView(View):
+    template_name = 'event/event_form.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(NewEventView, self).get_context_data(**kwargs)
-        company = Company.objects.get(user=self.request.user)
-        context['company'] = company
-        return context
+    def get(self, request, pk):
+        company = CompanyContainer(request.user)
+        context = {
+            'event': company.get_event(pk),
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+        }
+        return render(request, self.template_name, context)
 
-    def form_valid(self, form):
-        company = Company.objects.get(user=self.request.user)
-        event = form.save(commit=False)
-        event.company = company
-        MessageCenter.event_created(company, event.title)
-        return super(NewEventView, self).form_valid(form)
+    def post(self, request, pk):
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_event_info(request)
+        context = {
+            'event': company.get_event(pk),
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+        }
+        if i:
 
+            try:
+                with transaction.atomic():
+                    if company.edit_event(pk, i):
+                        m = 'Event edited successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('event:company_index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
 
-class EventUpdateView(UpdateView):
-    model = Event
-    form_class = NewEventForm
+        else:
+            context['errors'] = rq.get_errors()
 
-    def get_context_data(self, **kwargs):
-        context = super(EventUpdateView, self).get_context_data(**kwargs)
-        company = Company.objects.get(user=self.request.user)
-        context['company'] = company
-        context['update'] = 'True'
-        return context
-
-    def form_valid(self, form):
-        event = form.save(commit=False)
-        MessageCenter.event_updated(event.company, event.title)
-        return super(EventUpdateView, self).form_valid(form)
+        return render(request, self.template_name, context)
 
 
 def close_event(request, pk):
 
     if request.method == 'GET':
-        event = Event.objects.get(pk=pk)
-        event.active = False
-        event.save()
-    return redirect('event:companyevents')
+        company = CompanyContainer(request.user)
+        context = {
+            'event': company.get_event(pk),
+            'company': company.get_company(),
+        }
+        try:
+            with transaction.atomic():
+                if company.close_event(pk):
+                    m = 'Event successfully closed.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    redirect('event:company_index')
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            context['errors'] = company.get_errors()
+
+        return render(request, 'event/detail.html', context)
+
+    raise Http404
 
 
-class CompanyEvent(generic.DetailView):
-    model = Event
-    template_name = 'event/company_event.html'
+def detail_view(request, pk):
 
-    def get_context_data(self, **kwargs):
-        context = super(CompanyEvent, self).get_context_data(**kwargs)
-        company = Company.objects.get(user=self.request.user)
-        context['company'] = company
-        return context
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+        context = {
+            'event': company.get_event(pk),
+            'company': company.get_company(),
+        }
+        return render(request, 'event/detail.html', context)
 
-
-class StudentEvents(generic.ListView):
-    template_name = 'event/student_events.html'
-    context_object_name = 'list'
-
-    def get_queryset(self):
-        student = Student.objects.filter(user=self.request.user).first()
-        pk = self.kwargs['pk']
-        l = []
-        es = Event.objects.filter(active=True)
-        templ = []
-        flag = False
-        for x in es:
-            if int(x.pk) == int(pk) > 0:
-                flag = True
-            xx = x.company
-            xxx = CustomEvent(x, xx, student)
-            if flag:
-                l.append(xxx)
-            else:
-                templ.append(xxx)
-        l.extend(templ)
-        return l
-
-    def get_context_data(self, **kwargs):
-        student = Student.objects.get(user=self.request.user)
-        context = super(StudentEvents, self).get_context_data(**kwargs)
-        context['count'] = Event.objects.count()
-        msgs = MessageCenter.get_messages('student', student)
-        notes = MessageCenter.get_notifications('student', student)
-        if len(student.email) > 30:
-            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-        context['msgs'] = msgs
-        context['nav_student'] = student
-        context['notifications'] = notes
-        for x in msgs:
-            x.delete()
-        return context
+    raise Http404
 
 
-class EventRecovery(View):
-    form_class = NewEventForm
-    template_name = 'event/event_form.html'
+def student_index(request, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+        msgs = MessageCenter.get_messages('student', student.get_student())
+        notes = MessageCenter.get_notifications('student', student.get_student())
+        events = student.get_events(pk)
+        context = {
+            'student': student.get_student(),
+            'events': events,
+            'count': len(events),
+            'messages': msgs,
+            'notifications': notes,
+        }
+        return render(request, 'event/student_index.html', context)
+
+    raise Http404
+
+
+class RecoverEventView(View):
+    template_name = 'event/edit_event.html'
 
     def get(self, request, pk):
-        event = Event.objects.get(pk=pk)
-        company = event.company
-        MessageCenter.event_reactivate_info_message(company)
-        form = self.form_class(instance=event)
-        msgs = MessageCenter.get_messages('company', company)
+        company = CompanyContainer(request.user)
         context = {
-            'form': form,
-            'company': company,
-            'msgs': msgs,
+            'event': company.get_event(pk),
+            'company': company.get_company(),
         }
-        for x in msgs:
-            x.delete()
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
-        company = Company.objects.get(user=self.request.user)
-        e = Event.objects.get(pk=pk)
-        form = self.form_class(request.POST, instance=e)
-
-        if form.is_valid():
-            event = form.save(commit=False)
-            event.company = company
-            event.is_startup_post = company.is_startup
-            event.schools = 'ALL'
-            event.active = True
-            event.save()
-            MessageCenter.event_reactivated(company, event.title)
-            return redirect('event:companyevents')
-        msgs = MessageCenter.get_messages('company', company)
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_event_info(request)
         context = {
-            'company': company,
-            'msgs': msgs,
-            'form': form,
+            'company': company.get_company(),
         }
-        for x in msgs:
-            x.delete()
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if company.recover_event(pk, i):
+                        m = 'Event recovered successfully.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return redirect('event:company_index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = company.get_errors()
+
+        else:
+            context['errors'] = rq.get_errors()
+
+        context['event'] = company.get_event(pk)
         return render(request, self.template_name, context)
 
 
-class SaveEvent(View):
+def save_event(request, pk):
 
-    def get(self, request, pk):
-        student = Student.objects.filter(user=self.request.user).first()
-        event = Event.objects.get(pk=pk)
-        save = SavedEvent()
-        save.student = student
-        save.event = event
-        save.date = event.date
-        save.save()
-        event.times_saved += 1
-        event.save()
-        MessageCenter.saved_event_notice(student, event.title)
-        return redirect('event:studentevents', pk=pk)
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.save_event(pk):
+                    m = 'Event saved successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    return HttpResponse('success', status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
 
 
-class CustomEvent:
+def remove_saved_event(request, pk):
 
-    def __init__(self, e, c, s):
-        self.pk = e.pk
-        self.name = c.name
-        self.cweb = c.website
-        self.caddr = c.address + ', ' + c.city + ', ' + c.state + ', ' + c.zipcode
-        self.logo = c.logo
-        self.title = e.title
-        self.address = e.address + ', ' + e.city + ', ' + e.state + ', ' + e.zipcode
-        self.date = e.date
-        self.time = e.time
-        self.website = e.website
-        self.desc = e.description
-        if SavedEvent.objects.filter(student=s, event=e).count() > 0:
-            self.interested = True
-        else:
-            self.interested = False
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.remove_saved_event(pk):
+                    m = 'Event successfully removed.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    return HttpResponse('success', status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
 
 

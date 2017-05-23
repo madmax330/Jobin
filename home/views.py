@@ -1,454 +1,255 @@
-from django.http import HttpRequest
-from django.shortcuts import render, redirect, Http404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group, User
-from .forms import NewUserForm
-from .forms import ForgetFormUSer
-from .models import JobinSchool, Notification, JobinRequestedEmail, Message, JobinBlockedEmail, JobinInvalidUser, JobinProgram, JobinTerritory, JobinMajor
-from .content_gen import ContentGen
-from student.models import Student
-from company.models import Company
+from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.views.generic import View
-import simplejson
-from django.http import HttpResponse
 from django.db import transaction, IntegrityError
 
+from .content_gen import ContentGen
+from .utils import MessageCenter
+from .util_home import HomeUtil
+from .util_user import UserUtil
+from .util_request import RequestUtil
+from company.util_company import CompanyContainer
+from student.util_student import StudentContainer
 
-from datetime import datetime
-from home.token import generate_confirmation_token, confirm_token
-from home.email import send_email
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-import string
-import random
 
-#request = HttpRequest()
 class IndexView(View):
-    template_name = 'home/home.html'
+    template_name = 'home/index_page/home.html'
 
-    # not logged in
     def get(self, request):
-        context = {
-            'page': 'home'
-        }
-        if request.user.is_authenticated():
-            comp = Company.objects.filter(user=request.user)
-            stu = Student.objects.filter(user=request.user)
-            if comp.count() > 0:
+        user = UserUtil(self.request.user)
+        context = {}
+        if user.is_logged_in():
+            if user.get_user_type() == 'company':
+                company = CompanyContainer(user.get_user())
                 context['logged'] = 'company'
-                context['user_name'] = comp.first().name
-            elif stu.count() > 0:
+                context['user_name'] = company.get_company().name
+            elif user.get_user_type() == 'student':
+                student = StudentContainer(user.get_user())
                 context['logged'] = 'student'
-                context['user_name'] = stu.first().firstname + ' ' + stu.first().lastname
+                context['user_name'] = student.get_student().name
         return render(request, self.template_name, context)
 
     def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                if user.groups.filter(name='company_user').exists():
+        user = UserUtil(self.request.user)
+        rq = RequestUtil()
+        i = rq.get_login_info(self.request)
+        if i:
+            if user.log_user_in(self.request, i):
+                if user.get_user_type() == 'company':
                     return redirect('company:index')
-                elif user.groups.filter(name='student_user').exists():
+                elif user.get_user_type() == 'student':
+                    if not HomeUtil.open_school(user.get_user().email):
+                        return redirect('home:closed')
                     return redirect('student:index')
-                elif user.groups.filter(name='invalid_user').exists():
-                    infos = 'Your account is not verified yet, please confirm your account with' \
-                            ' the link sent to you by mail.'
-                    return redirect('home:invalid_user', Infos=infos)
                 else:
-                    return redirect('home:index')
-        return render(request, self.template_name, {'error': 'Username or password is incorrect.'})
+                    return render(request, self.template_name, {'error': 'Invalid user type.'})
+            else:
+                return render(request, self.template_name, {'error': str(user.get_errors())})
+        else:
+            return render(request, self.template_name, {'error': str(rq.get_errors())})
 
 
-def section_view(request, section):
+def user_logout(request):
 
     if request.method == 'GET':
-        return render(request, 'home/home.html', {'page': section})
+        user = UserUtil(request.user)
+        if user.log_user_out(request):
+            return redirect('home:index')
+        return redirect('home:index')
+
     raise Http404
 
 
 class RegisterView(View):
-    form_class = NewUserForm
     template_name = 'home/register.html'
 
-    # blank form
-    def get(self, request, utype):
-        form = self.form_class(None)
+    def get(self, request, ut):
         context = {
-            'form': form,
-            'type': utype
+            'type': ut
         }
         return render(request, self.template_name, context)
 
+    def post(self, request, ut):
+        user = UserUtil(self.request.user)
+        rq = RequestUtil()
+        i = rq.get_user_info(self.request)
+        if i:
 
-    # process form data
-    def post(self, request, utype):
-        form = self.form_class(request.POST, utype=utype)
+            try:
+                with transaction.atomic():
+                    if user.new_user(i, ut == 'student'):
+                        return redirect('home:verify')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                return render(request, self.template_name, {'error': str(user.get_errors())})
 
-        if form.is_valid():
-            user = form.save(commit=False)
-            # clean data
-            password = form.cleaned_data['password']
-            user.set_password(password)
-            user.save()
+        else:
+            return render(request, self.template_name, {'error': str(rq.get_errors())})
 
-            if utype == 'company':
-                g = Group.objects.get(name='company_user')
-                g.user_set.add(user)
-                return redirect('home:index')
-            elif utype == 'student':
-                g = Group.objects.get(name='student_user')
-                g.user_set.add(user)
-                ext = user.email.split('@', 1)[1]
-                ems = JobinSchool.objects.filter(email=ext.lower())
-                if ems.count() == 0:
-                    x = JobinRequestedEmail()
-                    x.extension = ext.lower()
-                    x.save()
-                return redirect('home:index')
-        return render(request, self.template_name, {'form': form})
 
-            #Temp user create
-            #temp_user =  JobinInvalidUser()
+def verify(request):
 
-            #if utype == 'company':
-             #   temp_user.user = user
-              #  temp_user.category = 'company'
-               # temp_user.date = datetime.now()
-                #temp_user.save()
-                #token = generate_confirmation_token(user.email)
-                #url = request.build_absolute_uri()
-                #confirm_url = url + 'confirm_email/' + token
-                #html = render_to_string('home/active.html', {'confirm_url': confirm_url})
-                #text_content = strip_tags(html)
-                #subject = "Please confirm your email"
-                #send_email(user.email, subject, html, text_content)
-                #g = Group.objects.get(name='invalid_user')
-                #g.user_set.add(user)
+    if request.method == 'GET':
+        return render(request, 'home/verify.html')
 
-            #elif utype == 'student':
-             #   temp_user.user = user
-              #  temp_user.category ='student'
-               # temp_user.date = datetime.now()
-                #temp_user.save()
-                #token = generate_confirmation_token(user.email)
-                #url = request.build_absolute_uri()
-                #confirm_url = url + 'confirm_email/' + token
-                #html = render_to_string('home/active.html', {'confirm_url': confirm_url})
-                #text_content = strip_tags(html)
-                #subject = "Please confirm your email"
-                #send_email(user.email, subject, html,text_content )
-                #g = Group.objects.get(name='invalid_user')
-                #g.user_set.add(user)
+    raise Http404
 
-            #else:
-             #   return redirect('home:index')
-            #return redirect('home:verify')
+
+def school_closed(request):
+
+    if request.method == 'GET':
+        return render(request, 'home/school_not_open.html')
+
+    raise Http404
 
 
 class ChangeUserInfo(View):
-    template_name = 'home/user_info_change.html'
+    template_name = 'home/student_change_form.html'
 
-    def get(self, request, utype):
-        if utype == 'company':
-            return render(request, self.template_name,
-                          {
-                              'user': self.request.user,
-                              'type': utype,
-                          })
-        elif utype == 'student':
-            return render(request, self.template_name,
-                          {
-                              'user': self.request.user,
-                              'type': utype,
-                          })
+    def get(self, request, ut):
+        if ut == 'company':
+            return render(request, 'home/company_change_form.html', {'user': self.request.user, 'type': ut})
+        elif ut == 'student':
+            return render(request, 'home/student_change_form.html', {'user': self.request.user, 'type': ut})
         else:
             return redirect('home:index')
 
-    def post(self, request, utype):
-        user = self.request.user
-        email = request.POST.get('email')
-        cemail = request.POST.get('cemail')
-        old_password = request.POST.get('old_pass')
-        password = request.POST.get('pass')
-        cpassword = request.POST.get('cpass')
-        context = {
-            'user': user,
-            'type': utype
-        }
-        if email and password:
-            context['error'] = 'You cannot change email and password at the same time.'
-            return render(request, self.template_name, context)
-        if email:
-            if not email == cemail:
-                context['error'] = 'Email fields do not match.'
-                return render(request, self.template_name, context)
-            if utype == 'company':
-                company = Company.objects.get(user=user)
-                company.email = email
-                company.save()
-            if utype == 'student':
-                ext = email.split('@', 1)[1]
-                ems = JobinBlockedEmail.objects.filter(extension=ext.lower())
-                if ems.count() > 0:
-                    context['error'] = 'This email is not a valid email.'
-                    return render(request, self.template_name, context)
-                student = Student.objects.get(user=user)
-                es = JobinSchool.objects.filter(email=ext.lower())
-                if es.count() == 0:
-                    jre = JobinRequestedEmail()
-                    jre.extension = ext.lower()
-                    jre.save()
-                elif es.count() > 0:
-                    school = es.first().name
-                    student.school = school
-                student.email = email
-                student.save()
-            user.email = email
-            user.username = email
-            user.save()
-            logout(request)
-            return redirect('home:verify')
-        if password:
-            if not password == cpassword:
-                context['error'] = 'Password fields do not match.'
-                return render(request, self.template_name, context)
-            if not user.check_password(old_password):
-                context['error'] = 'Current password is incorrect.'
-                return render(request, self.template_name, context)
-            user.set_password(password)
-            user.save()
-            x = Message()
-            x.code = 'info'
-            x.message = 'Your password was successfully changed.'
-            xx = Notification()
-            xx.code = 0
-            xx.message = 'You password was successfully changed.'
-            if utype == 'company':
-                company = Company.objects.get(user=user)
-                x.company = company
-                xx.company = company
-                x.save()
-                xx.save()
-                logout(request)
-                new_user = authenticate(username=user.username, password=password)
-                if user is not None:
-                    login(request, new_user)
-                    return redirect('company:index')
-            elif utype == 'student':
-                student = Student.objects.get(user=user)
-                x.student = student
-                xx.student = student
-                x.save()
-                xx.save()
-                logout(request)
-                new_user = authenticate(username=user.username, password=password)
-                if user is not None:
-                    login(request, new_user)
-                    return redirect('student:index')
-        context['error'] = 'Fields cannot be left blank.'
-        return render(request, self.template_name, context)
+    def post(self, request, ut):
+        user = UserUtil(self.request.user)
+        rq = RequestUtil()
+        i = rq.get_user_change_info(self.request)
+        if ut == 'company':
+            self.template_name = 'home/company_change_form.html'
+        elif ut == 'student':
+            self.template_name = 'home/student_change_form.html'
+        if i:
 
+            if user.get_user().check_password(i['old_password']):
+                try:
+                    with transaction.atomic():
+                        if i['email']:
+                            if ut == 'student':
+                                student = StudentContainer(user.get_user())
+                                if user.change_user_email(i, student=student.get_student()):
+                                    return redirect('home:verify')
+                                else:
+                                    raise IntegrityError
+                            elif ut == 'company':
+                                company = CompanyContainer(user.get_user())
+                                if user.change_user_email(i, company=company.get_company()):
+                                    return redirect('home:verify')
+                                else:
+                                    raise IntegrityError
+                            else:
+                                return render(request, self.template_name, {'error': 'Invalid request.'})
+                        elif i['password']:
+                            if user.change_user_password(i):
+                                if user.log_user_out(self.request):
+                                    if user.log_user_in(
+                                            self.request,
+                                            {
+                                                'username': user.get_user().email,
+                                                'password': i['password']
+                                            }
+                                    ):
+                                        m = 'Password changed successfully.'
+                                        if ut == 'student':
+                                            student = StudentContainer(user.get_user())
+                                            MessageCenter.new_notification('student', student.get_student(), 100, m)
+                                            return redirect('student:index')
+                                        elif ut == 'company':
+                                            company = CompanyContainer(user.get_user())
+                                            MessageCenter.new_notification('company', company.get_company(), 100, m)
+                                            return redirect('company:index')
+                                        else:
+                                            return redirect('home:index')
+                            raise IntegrityError
 
-class VerifyView(View):
-    template_name = 'home/verify.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-
-class UnvalidUser(View):
-    template_name = 'home/invalid_user.html'
-
-    def get(self, request,Infos):
-        return render(request, self.template_name, {'Infos': Infos})
-
-
-class NotOpenView(View):
-    template_name = 'home/notopen.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-
-class LogoutView(View):
-
-    def get(self, request):
-        logout(request)
-        return redirect('home:index')
-
-
-class CloseNotification(View):
-
-    def get(self, request, u, nk, page, pk, pt):
-        n = Notification.objects.get(pk=nk)
-        n.opened = True
-        n.save()
-        if u == 'company':
-            return redirect('company:index')
-        elif u == 'student':
-            if page == 'home':
-                return redirect('student:index')
-            elif page == 'posts':
-                return redirect('post:studentposts', pk=pk, pt=pt)
-            elif page == 'events':
-                return redirect('event:studentevents', pk=pk)
-            elif page == 'resumes':
-                return redirect('resume:index')
-            elif page == 'profile':
-                return redirect('student:profile')
-            elif page == 'history':
-                return redirect('student:history')
-            elif page == 'manual':
-                return redirect('manual:student_index')
-        logout(request)
-        return redirect('home:index')
-
-
-class CloseAllNotifications(View):
-
-    def get(self, request, u, page, pk, pt):
-        if u == 'company':
-            ns = Notification.objects.filter(company=Company.objects.get(user=self.request.user))
-            for x in ns:
-                x.opened = True
-                x.save()
-            return redirect('company:index')
-        elif u == 'student':
-            ns = Notification.objects.filter(student=Student.objects.get(user=self.request.user))
-            for x in ns:
-                x.opened = True
-                x.save()
-            if page == 'home':
-                return redirect('student:index')
-            elif page == 'posts':
-                return redirect('post:studentposts', pk=pk, pt=pt)
-            elif page == 'events':
-                return redirect('event:studentevents', pk=pk)
-            elif page == 'resumes':
-                return redirect('resume:index')
-            elif page == 'profile':
-                return redirect('student:profile')
-            elif page == 'manual':
-                return redirect('manual:student_index')
-            elif page == 'history':
-                return redirect('student:history')
-        logout(request)
-        return redirect('home:index')
-
-
-def Reset_password(request):
-    template_name = 'home/password_forget.html'
-
-    return render(request,template_name,)
-
-
-class Change_password(View):
-    form_class = ForgetFormUSer
-    template_name = 'home/invalid_user.html'
-    def post(self, request):
-        form = self.form_class(request.POST)
-        Infos = 'Error with the form'
-        if form.is_valid():
-            # clean data
-            email = form.data['email']
-            user_auth = User.objects.get(username=email)
-            Infos = 'An email has been send with a new password. Note you can change it afterwards'
-            if user_auth.groups.filter(name='student_user').exists() or user_auth.groups.filter(name='company_user').exists() :
-                # Just alphanumeric characters
-                chars = string.ascii_letters + string.digits
-
-                sizeOfPass = 10
-                password = ''.join((random.choice(chars)) for x in range(sizeOfPass))
-                user_auth.set_password(password)
-                user_auth.save()
-                Infos_email =  password
-                html = render_to_string('home/password_changed_confirmation.html', {'Infos': Infos_email})
-                text_content = strip_tags(html)
-                subject = "Password change request"
-                send_email(email, subject, html,text_content)
+                except IntegrityError:
+                    return render(request, self.template_name, {'error': str(user.get_errors())})
             else:
-                Infos = 'The email entered does not appear in our database'
+                return render(request, self.template_name, {'error': 'Incorrect password.'})
 
-        return render(request,self.template_name,{'Infos': Infos})
+        else:
+            return render(request, self.template_name, {'error': str(rq.get_errors())})
 
 
-def confirm_email(request, token):
-    try:
-        email = confirm_token(token)
-    except:
-        infos = 'The confirmation link is invalid or has expired.'
-        return redirect('home:invalid_user', Infos=infos)
-    user_auth = User.objects.get(username=email)
-    if not user_auth.groups.filter(name='invalid_user').exists():
-        infos = 'Account already confirmed. Please login.'
-        return redirect('home:invalid_user', Infos=infos)
-    else:
+def close_notification(request, pk):
+
+    if request.method == 'GET':
 
         try:
-          user = JobinInvalidUser.objects.get(user=email)
-        except:
-            infos = 'User cannot be found!'
-            return redirect('home:invalid_user', Infos=infos)
+            with transaction.atomic():
+                if MessageCenter.close_notification(pk):
+                    return HttpResponse('Notification closed', status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            return HttpResponse('Invalid notification code.', status=400)
 
-        if user.category == 'company':
-         g = Group.objects.get(name='company_user')
-         g.user_set.add(user_auth)
-        elif user.category == 'student':
-            g = Group.objects.get(name='student_user')
-            g.user_set.add(user_auth)
-            ext = user_auth.email.split('@', 1)[1]
-            ems = JobinSchool.objects.filter(email=ext.lower())
-            if ems.count() == 0:
-                x = JobinRequestedEmail()
-                x.extension = ext.lower()
-                x.save()
-        g = Group.objects.get(name='invalid_user')
-        g.user_set.remove(user_auth)
-        infos = 'You have confirmed your account. Thanks!'
+    raise Http404
 
-    return redirect('home:invalid_user', Infos=infos)
+
+def close_notifications(request, u):
+
+    if request.method == 'GET':
+        user = None
+        if u == 'company':
+            user = CompanyContainer(request.user).get_company()
+        elif u == 'student':
+            user = StudentContainer(request.user).get_student()
+
+        if user:
+
+            try:
+                with transaction.atomic():
+                    if MessageCenter.close_all_notifications(u, user):
+                        return HttpResponse('Notifications closed.', status=200)
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                return HttpResponse('No notifications found.', status=400)
+
+        return HttpResponse('Invalid user request.', status=400)
+
+    raise Http404
 
 
 def terms_and_conditions(request):
 
     if request.method == 'GET':
-        context = {
-            'page': 'policy'
-        }
-        if request.user.is_authenticated():
-            comp = Company.objects.filter(user=request.user)
-            stu = Student.objects.filter(user=request.user)
-            if comp.count() > 0:
+        user = UserUtil(request.user)
+        context = {}
+        if user.is_logged_in():
+            if user.get_user_type() == 'company':
+                company = CompanyContainer(user.get_user())
                 context['logged'] = 'company'
-                context['user_name'] = comp.first().name
-            elif stu.count() > 0:
+                context['user_name'] = company.get_company().name
+            elif user.get_user_type() == 'student':
+                student = StudentContainer(user.get_user())
                 context['logged'] = 'student'
-                context['user_name'] = stu.first().firstname + ' ' + stu.first().lastname
+                context['user_name'] = student.get_student().name
         return render(request, 'home/terms_and_conditions.html', context)
+
     raise Http404
 
 
 def privacy_policy(request):
 
     if request.method == 'GET':
-        context = {
-            'page': 'terms'
-        }
-        if request.user.is_authenticated():
-            comp = Company.objects.filter(user=request.user)
-            stu = Student.objects.filter(user=request.user)
-            if comp.count() > 0:
+        user = UserUtil(request.user)
+        context = {}
+        if user.is_logged_in():
+            if user.get_user_type() == 'company':
+                company = CompanyContainer(user.get_user())
                 context['logged'] = 'company'
-                context['user_name'] = comp.first().name
-            elif stu.count() > 0:
+                context['user_name'] = company.get_company().name
+            elif user.get_user_type() == 'student':
+                student = StudentContainer(user.get_user())
                 context['logged'] = 'student'
-                context['user_name'] = stu.first().firstname + ' ' + stu.first().lastname
+                context['user_name'] = student.get_student().name
         return render(request, 'home/privacy_policy.html', context)
+
     raise Http404
 
 
@@ -475,59 +276,6 @@ def clear_test_content(request):
         except IntegrityError as e:
             print(str(e))
         return redirect('home:index')
-    raise Http404
-
-
-def get_states(request, country, state):
-
-    if request.method == 'GET':
-
-        if state == 'none':
-            states = JobinTerritory.objects.filter(country=country)
-            state_dic = {}
-            for state in states:
-                state_dic[state.name] = state.name
-            state_dic = sorted(state_dic)
-            return HttpResponse(simplejson.dumps(state_dic), content_type='application/json')
-        else:
-            current_state = JobinTerritory.objects.get(name=state)
-            states = JobinTerritory.objects.filter(country=current_state.country)
-            state_list = [current_state.name]
-            state_dic = {}
-            for x in states:
-                if not x.name == current_state.name:
-                    state_dic[x.name] = x.name
-            state_dic = sorted(state_dic)
-            state_list.extend(state_dic)
-            return HttpResponse(simplejson.dumps(state_list), content_type='application/json')
-
-    raise Http404
-
-
-def get_majors(request, program, major):
-
-    if request.method == 'GET':
-
-        if major == 'none':
-            program = JobinProgram.objects.get(name=program)
-            majors = JobinMajor.objects.filter(program=program)
-            major_dic = {}
-            for major in majors:
-                major_dic[major.name] = major.name
-            major_dic = sorted(major_dic)
-            return HttpResponse(simplejson.dumps(major_dic), content_type='application/json')
-        else:
-            current_major = JobinMajor.objects.get(name=major)
-            majors = JobinMajor.objects.filter(program=current_major.program)
-            major_list = [current_major.name]
-            major_dic = {}
-            for x in majors:
-                if not x.name == current_major.name:
-                    major_dic[x.name] = x.name
-            major_dic = sorted(major_dic)
-            major_list.extend(major_dic)
-            return HttpResponse(simplejson.dumps(major_list), content_type='application/json')
-
     raise Http404
 
 

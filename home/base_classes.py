@@ -8,6 +8,7 @@ class BaseContainer:
         self._container_name = 'Base Container'
         self._form = None
         self._codes = ['success', 'warning', 'danger']
+        self.__form = None
 
     def get_errors(self):  # return list of errors
         return self.__errors
@@ -25,6 +26,12 @@ class BaseContainer:
             for x in value:
                 msg = key + ': ' + x
                 self.add_error(msg)
+
+    def save_form(self, form=None):
+        self.__form = (form if form else self._form)
+
+    def get_form(self):
+        return self.__form
 
     def add_error_list(self, l):  # add a list of errors (used to add errors from another container class)
         self.__errors.extend(l)

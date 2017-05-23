@@ -1,0 +1,143 @@
+{% extends 'student/base.html' %}
+
+{% block title %}User History{% endblock %}
+
+{% block scripts %}
+    {% load staticfiles %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="w3-padding">
+        <div class="w3-card-4 w3-white">
+            <header class="w3-container primary-color w3-text-white">
+                <h4 class="w3-center">Applications History</h4>
+            </header>
+            {% if applications %}
+                <table class="w3-table w3-bordered">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Company</th>
+                        <th>Post</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in applications %}
+                            <tr>
+                                <td>{{ x.date }}</td>
+                                <td>{{ x.post.company }}</td>
+                                <td>{{ x.post_title }}</td>
+                                <td>{{ x.status }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4">
+                                <span>Page: </span>
+                                {% for x in applications.paginator.page_range %}
+                                    {% if x == applications.number %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <a class="w3-text-black"
+                                           href="?ap={{ x }}&ep={{ events.number }}&np={{ all_notifications.number }}">
+                                            {{ x }}
+                                        </a>
+                                    {% endif %}|
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="warning-message message">
+                    <p>You currently don't have any applications <a href="{% url 'post:studentposts' pk=0 pt='internship'%}">Click Here</a>
+                        to apply for jobs of your choice.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="w3-padding">
+        <div class="w3-card-4 w3-white">
+            <header class="w3-container primary-color w3-text-white">
+                <h4 class="w3-center">Events History</h4>
+            </header>
+            {% if events %}
+                <table class="w3-table w3-bordered">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Company</th>
+                        <th>Title</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in events %}
+                            <tr>
+                                <td>{{ x.date }}</td>
+                                <td>{{ x.company }}</td>
+                                <td>{{ x.title }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4">
+                                <span>Page: </span>
+                                {% for x in events.paginator.page_range %}
+                                    {% if x == events.number %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <a class="w3-text-black"
+                                            href="?ap={{ applications.number }}&ep={{ x }}&np={{ all_notifications.number }}">
+                                            {{ x }}
+                                        </a>
+                                    {% endif %}|
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="warning-message message">
+                    <p>You haven't expressed interest in any events <a href="{% url 'event:studentevents' pk=0%}">Click Here</a>
+                        to check out some events.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="w3-padding">
+        <div class="w3-card-4">
+            <header class="w3-container primary-color w3-text-white">
+                <h5 class="w3-center">Notification History</h5>
+            </header>
+            {% if all_notifications %}
+                <ul class="w3-ul">
+                    {% for x in all_notifications %}
+                        <li>
+                        <span>{{ x.date }}</span><br/>
+                        <span>{{ x.message }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="w3-container">
+                    <span>Page: </span>
+                    {% for x in all_notifications.paginator.page_range %}
+                        {% if x == all_notifications.number %}
+                            <strong><span>{{ x }} </span></strong>
+                        {% else %}
+                            <a class="w3-text-black"
+                                href="?ap={{ applications.number }}&ep={{ events.number }}&np={{ x }}">
+                                {{ x }}
+                            </a>
+                        {% endif %}|
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="warning-message message">
+                    <p>You have no notifications in your notification history.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_name %}history{% endblock %}

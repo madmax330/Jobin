@@ -1,189 +1,145 @@
-from django.views import generic
-from django.views.generic.edit import CreateView, UpdateView
-from django.shortcuts import render, redirect
-from django.contrib.auth import logout
-from .models import Student
-from .utils import StudentUtil
-from .util_student import StudentContainer
-from post.models import Application
-from event.models import SavedEvent
-from home.models import JobinSchool, Notification
-from home.utils import MessageCenter, Pagination
-from .forms import NewStudentForm
 from django.views.generic import View
-from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render, redirect, Http404
+from django.db import transaction, IntegrityError
+
+from home.util_home import HomeUtil
+from home.util_request import RequestUtil
+from home.utils import MessageCenter, Pagination
+
+from .util_student import StudentContainer
 
 
-class IndexView(View):
-    template_name = 'student/student_home.html'
+def index_view(request):
 
-    def get(self, request):
-        stu = StudentContainer(request.user)
-        apps = stu.get_applications()
-        context = {'apps': apps}
-        res = Student.objects.filter(user=request.user)
-        if res.count() > 0:
-            student = res.first()
-            msgs = MessageCenter.get_messages('student', student)
-            notifications = MessageCenter.get_notifications('student', student)
-            if len(student.email) > 30:
-                student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-            context = StudentUtil.get_home_context(student, 0, 0)
-            context['msgs'] = msgs
-            context['notifications'] = notifications
-            for x in msgs:
-                x.delete()
-            return render(request, self.template_name, context)
-        else:
-            ext = self.request.user.email.split('@', 1)
-            s = JobinSchool.objects.filter(email=ext[1].lower())
-            if s.count() == 0:
-                logout(request)
-                return redirect('home:closed')
-            return redirect('student:new')
-
-    def post(self, request):
-        student = Student.objects.get(user=self.request.user)
-        app_page = int(request.POST.get('app_page'))
-        event_page = int(request.POST.get('event_page'))
-        msgs = MessageCenter.get_messages('student', student)
-        notifications = MessageCenter.get_notifications('student', student)
-        if len(student.email) > 30:
-            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-        context = StudentUtil.get_home_context(student, app_page, event_page)
-        context['msgs'] = msgs
-        context['notifications'] = notifications
-        for x in msgs:
-            x.delete()
-        return render(request, self.template_name, context)
-
-
-class NewStudentView(CreateView):
-    model = Student
-    form_class = NewStudentForm
-
-    def get_context_data(self, **kwargs):
-        context = super(NewStudentView, self).get_context_data(**kwargs)
-        ext = self.request.user.email.split('@', 1)
-        school = JobinSchool.objects.filter(email=ext[1].lower())
-        context['school'] = school.first()
-        return context
-
-    def form_valid(self, form):
-        student = form.save(commit=False)
-        student.user = self.request.user
-        student.email = self.request.user.email
-        ext = student.email.split('@', 1)
-        school = JobinSchool.objects.filter(email=ext[1].lower())
-        if school.count() == 0:
-            logout(self.request)
+    if request.method == 'GET':
+        app_page = request.GET.get('ap', 1)
+        e_page = request.GET.get('ep', 1)
+        student = StudentContainer(request.user)
+        if not HomeUtil.open_school(student.get_user().email):
             return redirect('home:index')
-        elif school.count() > 0:
-            student.school = school.first().name
-        return super(NewStudentView, self).form_valid(form)
+        if student.get_student() is None:
+            return redirect('student:new')
+        msgs = MessageCenter.get_messages('student', student.get_student())
+        a = student.get_applications()
+        apps = Pagination(a if a else [], 15)
+        events = Pagination(student.get_saved_events(), 15)
+        context = {
+            'student': student.get_student(),
+            'applications': apps.get_page(app_page),
+            'old_apps': student.get_old_applications(),
+            'events': events.get_page(e_page),
+            'resumes': student.get_resumes(),
+            'messages': msgs,
+            'notifications': MessageCenter.get_notifications('student', student.get_student()),
+        }
+        MessageCenter.clear_msgs(msgs)
+        return render(request, 'student/index.html', context)
+
+    raise Http404
 
 
-class UpdateStudentView(UpdateView):
-    model = Student
-    form_class = NewStudentForm
-
-    def get_context_data(self, **kwargs):
-        context = super(UpdateStudentView, self).get_context_data(**kwargs)
-        context['update'] = 'True'
-        return context
-
-    def form_valid(self, form):
-        student = Student.objects.get(user=self.request.user)
-        MessageCenter.student_updated(student)
-        return super(UpdateStudentView, self).form_valid(form)
-
-
-class DetailsView(generic.DetailView):
-    model = Student
-    template_name = 'student/student_details.html'
-
-
-class HistoryView(View):
-    template_name = 'student/student_activity.html'
+class NewStudentView(View):
+    template_name = 'student/student_form.html'
 
     def get(self, request):
-        try:
-            student = Student.objects.get(user=self.request.user)
-            apps = Application.objects.filter(student=student)
-            es = SavedEvent.objects.filter(student=student)
-            events = []
-            for x in es:
-                events.append(x.event)
-            notes = Notification.objects.filter(student=student)
-            npages = Pagination.get_pages(notes)
-            apages = Pagination.get_pages(apps)
-            epages = Pagination.get_pages(events)
-            if len(student.email) > 30:
-                student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-            context = {
-                'nav_student': student,
-                'all_notifications': Pagination.get_page_items(notes),
-                'notifications': notes.filter(opened=False),
-                'applications': Pagination.get_page_items(apps),
-                'events': Pagination.get_page_items(events),
-                'ncount': notes.count(),
-                'acount': apps.count(),
-                'ecount': len(events),
-                'npages': npages,
-                'apages': apages,
-                'epages': epages,
-                'npage': 1,
-                'apage': 1,
-                'epage': 1,
-            }
-            return render(request, self.template_name, context)
-        except ObjectDoesNotExist:
-            return redirect('student:new')
+        return render(request, self.template_name)
 
     def post(self, request):
-        student = Student.objects.get(user=self.request.user)
-        note_page = int(request.POST.get('note_page'))
-        app_page = int(request.POST.get('app_page'))
-        event_page = int(request.POST.get('event_page'))
-        apps = Application.objects.filter(student=student)
-        es = SavedEvent.objects.filter(student=student)
-        events = []
-        for x in es:
-            events.append(x.event)
-        notes = Notification.objects.filter(student=student)
-        npages = Pagination.get_pages(notes, note_page)
-        apages = Pagination.get_pages(apps, app_page)
-        epages = Pagination.get_pages(events, event_page)
-        if len(student.email) > 30:
-            student.email = student.email[0:5] + '...@' + student.email.split('@', 1)[1]
-        context = {
-            'nav_student': student,
-            'all_notifications': Pagination.get_page_items(notes, note_page),
-            'notifications': notes.filter(opened=False),
-            'applications': Pagination.get_page_items(apps, app_page),
-            'events': Pagination.get_page_items(events, event_page),
-            'ncount': notes.count(),
-            'acount': apps.count(),
-            'ecount': len(events),
-            'npages': npages,
-            'apages': apages,
-            'epages': epages,
-            'npage': note_page + 1,
-            'apage': app_page + 1,
-            'epage': event_page + 1,
-        }
+        student = StudentContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_student_info(request)
+        context = {}
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if student.new_student(i, request.user):
+                        m = 'Student profile created successfully.'
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
+                        return redirect('student:index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = student.get_errors()
+
+        else:
+            context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
 
 
-class ProfileView(View):
-    template_name = 'student/student_profile.html'
+class EditStudentView(View):
+    template_name = 'student/student_form.html'
 
     def get(self, request):
-        try:
-            student = Student.objects.get(user=self.request.user)
-            notes = MessageCenter.get_notifications('student', student)
-            return render(request, self.template_name, {'student': student, 'user': student.user, 'notifications': notes})
-        except ObjectDoesNotExist:
-            return redirect('student:new')
+        student = StudentContainer(request.user)
+        context = {
+            'student': student.get_student(),
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+            'programs': HomeUtil.get_programs(),
+            'majors': HomeUtil.get_majors(),
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        student = StudentContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_student_info(request)
+        context = {'student': student.get_student()}
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if student.edit_student(i):
+                        m = 'Student profile edited successfully.'
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
+                        return redirect('student:index')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                context['errors'] = student.get_errors()
+
+        else:
+            context['errors'] = student.get_errors()
+
+        return render(request, self.template_name, context)
+
+
+def history_view(request):
+
+    if request.method == 'GET':
+        app_page = request.GET.get('ap', 1)
+        e_page = request.GET.get('ep', 1)
+        n_page = request.GET.get('np', 1)
+        student = StudentContainer(request.user)
+        ap = Pagination(student.get_all_applications(), 10)
+        ep = Pagination(student.get_all_saved_events(), 10)
+        np = Pagination(list(MessageCenter.get_all_notifications('student', student.get_student())), 10)
+        context = {
+            'student': student.get_student(),
+            'all_notifications': np.get_page(n_page),
+            'applications': ap.get_page(app_page),
+            'events': ep.get_page(e_page),
+        }
+        return render(request, 'student/history.html', context)
+
+    raise Http404
+
+
+def profile_view(request):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+        s = student.get_student()
+        if s is not None:
+            context = {
+                'student': s,
+                'user': student.get_user(),
+                'notifications': MessageCenter.get_notifications('student', s)
+            }
+            return render(request, 'student/profile.html', context)
+
+    raise Http404
+
 

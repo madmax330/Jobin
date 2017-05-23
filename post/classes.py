@@ -1,9 +1,8 @@
-from post.models import Application
 
 
-class CustomPost:
+class ExtendedPost:
 
-    def __init__(self, post, company, student):
+    def __init__(self, post, company, applied):
         self.pk = post.pk
         self.name = company.name
         self.address = company.address + ', ' + company.city + ', ' + company.state + ', ' + company.zipcode
@@ -17,25 +16,21 @@ class CustomPost:
         self.openings = post.openings
         self.requirements = post.requirements
         self.description = post.description
-        if Application.objects.filter(post=post, student=student).count() > 0:
-            self.applied = True
-        else:
-            self.applied = False
+        self.applied = applied
 
 
-class Applicant:
+class ExtendedApplication:
 
-    def __init__(self, app, stu):
-        self.pk = app.pk
-        self.fname = stu.firstname
-        self.lname = stu.lastname
+    def __init__(self, app, stu, resume):
+        self.id = app.id
+        self.name = stu.name
         self.email = stu.email
         self.phone = stu.phone
         self.address = stu.address + ' ' + stu.city + ' ' + stu.state + ' ' + stu.zipcode
         self.school = stu.school
         self.program = stu.program
         self.major = stu.major
-        self.resume = app.resume
+        self.resume = resume
         self.gpa = app.resume.gpa
         self.post = app.post
         self.cover = app.cover

@@ -1,0 +1,121 @@
+{% extends 'company/base.html' %}
+
+{% block title %}Event List{% endblock %}
+
+{% block side_content %}
+    {% include 'company/sides/company_info.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading">
+            <h4 class="text-center">Active Events</h4>
+        </div>
+        <div class="panel-body">
+            {% if events %}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date and Time</th>
+                        <th>Active</th>
+                        <th>Website</th>
+                        <th>Times Saved</th>
+                        <th></th>
+                        <th>
+                            <a href="{% url 'event:new' %}">
+                                <button class="btn btn-primary">New Event</button>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for x in events %}
+                        <tr>
+                            <td>{{ x.title }}</td>
+                            <td>{{ x.start_date }} {{ x.start_time }}</td>
+                            <td>{{ x.active }}</td>
+                            <td>{{ x.website }}</td>
+                            <td>{{ x.times_saved }}</td>
+                            <td><a href="{% url 'event:edit' pk=x.pk %}">Edit</a> |
+                                <a href="{% url 'event:details' pk=x.pk %}">Details</a></td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="7">
+                            <span>Page: </span>
+                            {% for x in events.paginator.page_range %}
+                                {% if x == events.number %}
+                                    <strong><span>{{ x }} </span></strong>
+                                {% else %}
+                                    <a href="?ep={{ x }}&xep={{ expired_events.number }}">{{ x }}</a>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-warning">
+                    <p>
+                        You currently don't have any events.
+                        <strong>
+                            <a href="{% url 'event:new' %}">Create a event</a>
+                        </strong>
+                        to get started.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 class="text-center">Expired Events</h4>
+        </div>
+        <div class="panel-body">
+            {% if expired_events %}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date and Time</th>
+                        <th>Active</th>
+                        <th>Website</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for x in expired_events %}
+                        <tr>
+                            <td>{{ x.title }}</td>
+                            <td>{{ x.date }} {{ x.time }}</td>
+                            <td>{{ x.active }}</td>
+                            <td>{{ x.website }}</td>
+                            <td><a href="{% url 'event:recover' pk=x.pk %}">Re-activate</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="5">
+                            <span>Page: </span><span class="hidden page-object">xevent_page</span>
+                            {% for x in expired_events.paginator.page_range %}
+                                {% if x == expired_events.number %}
+                                    <strong><span>{{ x }} </span></strong>
+                                {% else %}
+                                    <a href="?ep={{ events.number }}&xep={{ x }}">{{ x }}</a>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info">
+                    <p>
+                        You don't have any expired events.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

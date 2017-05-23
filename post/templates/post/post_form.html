@@ -1,11 +1,15 @@
-{% extends 'company/company_base.html' %}
+{% extends 'company/base.html' %}
 
-{% block title %}{% if update %}Update{% else %}New{% endif %} Post Form{% endblock %}
+{% block title %}Post Information Form{% endblock %}
 
-{% block postactive %}active{% endblock %}
+{% load staticfiles %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
+{% endblock %}
 
 {% block side_content %}
-    {% include 'company/company_info.html' %}
+    {% include 'company/sides/company_info.html' %}
 {% endblock %}
 
 {% block content %}
@@ -14,20 +18,116 @@
             <h4>Post Information Form</h4>
         </div>
         <div class="panel-body">
-            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            <form id="post-form" method="post"
+                  action="{% if post %}{% url 'post:edit' pk=post.id %}{% else %}{% url 'post:new' %}{% endif %}">
                 {% csrf_token %}
-                {% include 'post/form_template.html' %}
-                <a class="btn regular-btn" href="{% url 'post:companyposts' %}">Cancel</a>
-                <button class="btn submit-btn" type="submit">Save</button>
+
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.title.errors }}
+                    </div>
+                    <label class="required" for="post_title">Title:</label>
+                    <input id="post_title" class="form-control" type="text" name="post_title"
+                           value="{{ post.title }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.programs.errors }}
+                    </div>
+                    <label for="post_programs">Programs:</label>
+                    <select id="post_programs" class="form-control program-input" name="post_programs">
+                        {% if post.programs %}
+                            <option value="{{ post.programs }}">{{ post.programs }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.type.errors }}
+                    </div>
+                    <label class="required" for="post_type">Type:</label>
+                    <select id="post_type" class="form-control" name="post_type">
+                        <option value="internship">Internship</option>
+                        <option value="newgrad">New Grad</option>
+                        <option value="parttime">Part Time</option>
+                        <option value="fulltime">Full Time</option>
+                        <option value="volunteer">Volunteer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.wage.errors }}
+                    </div>
+                    <label class="required" for="post_wage">Wage:</label>
+                    <input id="post_wage" class="form-control" type="text" name="post_wage"
+                           value="{{ post.wage }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.openings.errors }}
+                    </div>
+                    <label class="required" for="post_openings">Number of positions:</label>
+                    <input id="post_openings" class="form-control" type="number" name="post_openings"
+                           value="{{ post.openings }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.start_date.errors }}
+                    </div>
+                    <label class="required" for="post_start">Start Date:</label>
+                    <input id="post_start" class="form-control date-input" data-date="{{ post.start_date }}"
+                           type="date" name="post_start" value="">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.end_date.errors }}
+                    </div>
+                    <label for="post_end">End Date:</label>
+                    <input id="post_end" class="form-control date-input" type="date" name="post_end"
+                            value="" data-date="{{ post.end_date }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.deadline.errors }}
+                    </div>
+                    <label class="required" for="post_deadline">Application Deadline:</label>
+                    <input id="post_deadline" class="form-control date-input" type="date"
+                           name="post_deadline" value="" data-date="{{ post.deadline }}">
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.description.errors }}
+                    </div>
+                    <label class="required" for="post_description">Description:</label>
+                    <textarea id="post_description" name="post_description" class="form-control"
+                              rows="5">{{ post.description }}</textarea>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.requirements.errors }}
+                    </div>
+                    <label class="required" for="post_requirements">Requirements:</label>
+                    <textarea id="post_requirements" name="post_requirements" class="form-control"
+                              rows="5">{{ post.requirements }}</textarea>
+                </div>
+                <div class="form-group">
+                    <div class="form-error">
+                        {{ form.description.errors }}
+                    </div>
+                    <label for="post_instructions">Cover letter instructions:</label>
+                    <textarea id="post_instructions" name="post_instructions" class="form-control"
+                              rows="5">{{ post.cover_instructions }}</textarea>
+                </div>
+                <div>
+                    <a href="{% url 'post:company_posts' %}" class="btn btn-default">Cancel</a>
+                    <button class="btn btn-success" type="submit">Submit</button>
+                </div>
+
             </form>
         </div>
-
-        <div class="page-info-div">
-            {% if update %}
-                update
-            {% else %}
-                new
-            {% endif %}
-        </div>
     </div>
+{% endblock %}
+
+{% block hidden_block %}
+    {% include 'home/utils/form_values.html' %}
 {% endblock %}

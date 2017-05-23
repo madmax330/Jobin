@@ -1,101 +1,78 @@
 {% extends 'home/base.html' %}
 
-{% load staticfiles %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static 'home/css_register.css' %}">
-{% endblock %}
-
-
 {% block title %}User Registration{% endblock %}
-{% block homeactive %}active{% endblock %}
 
 {% block content %}
 
-    <div class="register-container">
-
-        <div class="container">
-
-            <div class="panel panel-default register-panel">
-                <div class="panel-heading">
-                    <h3>New {{ type }} registration:</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="alert alert-info">
-                        <p>
-                            <strong>Note:</strong> Use your email address for the username.
-                            The email field will be used to verify your email address, it
-                            is where the verification will be sent.
-                            {% if type == 'student' %}
-                                <strong><u>You must use your school email.</u></strong>
-                            {% endif %}
-                        </p>
+    <div class="container">
+        <div class="panel panel-default primary-panel">
+            <div class="panel-heading">
+                <h3>New {{ type }} registration:</h3>
+            </div>
+            <div class="panel-body">
+                <form id="register-form" action="{% url 'home:register' ut='student' %}" method="post"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-error {% if not error %}hidden{% endif %} alert alert-danger">
+                        {{ error }}
                     </div>
-                    <form id="register-form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {% include 'home/form-template.html' %}
-                        <div id="pass_verify" class="form-group">
-                            <div class="col-md-offset-2 col-md-10">
-                                <span id="pass_verify_error" class="text-danger"></span>
-                            </div>
-                            <label class="control-label col-md-2">
-                                Verify Password: *
-                            </label>
-                            <div class="col-md-6">
-                                <input id="pass_verify_val" placeholder="Verify Password" name="passv" class="form-control" type="password"/>
-                            </div>
-                            <div class="col-md-4"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <a href="{% url 'home:index' %}" class="btn btn-default">Cancel</a>
-                            </div>
-                            <div class="col-md-10">
-                                <button class="btn btn-primary" type="submit">Sign Up</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="panel-footer">
-                    <p>
-                        Once you signup you will be sent an email where
-                        you can verify your account to activate it.
-                    </p>
-                </div>
+                    <div class="form-group">
+                        <label class="required">Email:</label>
+                        <input id="email" placeholder="Email"
+                               name="email" class="form-control" type="email"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Confirm Email:</label>
+                        <input id="confirm_email" placeholder="Confirm Email"
+                               name="confirm_email" class="form-control" type="email"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Password:</label>
+                        <input id="password" placeholder="Password"
+                               name="password" class="form-control" type="password"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Confirm Password:</label>
+                        <input id="confirm_password" placeholder="Confirm Password"
+                               name="confirm_password" class="form-control" type="password"/>
+                    </div>
+                    <div>
+                        <a href="{% url 'home:index' %}" class="btn btn-default">Cancel</a>
+                        <button class="btn btn-primary" type="submit">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer">
+                <p>
+                    Once you signup you will be sent an email where
+                    you can verify your account to activate it.
+                    {% if type == 'student' %}
+                        <br/>
+                        <strong>Make sure you use your school email.</strong>
+                    {% endif %}
+                </p>
             </div>
         </div>
     </div>
 
 
     <script>
-        $(function(){
-            $('#id_username')[0].maxLength = 100;
+        $(function () {
+            $('#email')[0].maxLength = 100;
 
-            $('#register-form').submit(function(){
-
-                var user_in = $('#id_username');
-                var p = $('#id_password');
-
-                var pp = $('#pass_verify_val');
-
-                if(p.val() == pp.val()){
-
-                    $('#pass_verify').html("");
-
-
-                    var currval = user_in.val();
-                    if( currval.length > 30){
-                        user_in.val(currval.substring(0,30));
-                    }
-
-                    return true;
-                }
-                else{
-                    user_in.val($('#id_email').val());
-                    $('#pass_verify_error').html('Passwords do not match.');
+            $('#register-form').submit(function () {
+                let email = $('#email').val();
+                let c_email = $('#confirm_email').val();
+                if (email !== c_email) {
+                    $('.form-error').append('<br/>Emails do not match.<br/>');
                     return false;
                 }
-
+                let pass = $('#password').val();
+                let c_pass = $('#confirm_password').val();
+                if (pass !== c_pass) {
+                    $('.form-error').append('Passwords do not match.');
+                    return false;
+                }
             });
         });
     </script>
