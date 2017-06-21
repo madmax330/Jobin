@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 
 
 class Company(models.Model):
@@ -18,12 +17,25 @@ class Company(models.Model):
     website = models.CharField(max_length=256, null=True, blank=True)
     is_new = models.BooleanField(default=True)
     is_startup = models.BooleanField(default=False)
-
-    def get_absolute_url(self):
-        if self.is_new:
-            return reverse('company:details', kwargs={'pk': self.pk})
-        else:
-            return reverse('company:index')
+    industry = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
+
+class Suggestion(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    topic = models.CharField(max_length=100)
+    suggestion = models.TextField()
+    importance = models.IntegerField()
+    comments = models.TextField(null=True, blank=True)
+    date = models.DateField(auto_now_add=True)
+    priority = models.IntegerField(null=True, blank=True)
+    resolved = models.BooleanField(default=False)
+    message = models.TextField(null=True, blank=True)
+    resolution_date = models.DateField(null=True, blank=True)
+    accepted = models.BooleanField(default=False)
+    open = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.topic

@@ -40,9 +40,6 @@ function showDivs(n) {
 
 $(function () {
     showDivs(slideIndex);
-    $('html, body').animate({
-        scrollTop: $('.events-header').offset().top
-    }, 'slow');
 
     $('.save').click(function () {
         save($(this).data('url'), $('.viewed-event'));
@@ -59,7 +56,7 @@ function save(url, event) {
             let btn = event.find('.save');
             btn.prop('disabled', true);
             btn.html('Already saved.');
-            display_message('Event saved successfully.', 'pale-green');
+            display_message('Event saved successfully.', 'success');
             $('html, body').animate({
                 scrollTop: $('body').offset().top
             }, 'slow');
@@ -68,7 +65,7 @@ function save(url, event) {
 
     })
         .fail(function (jqXHR) {
-            display_message(jqXHR.responseText, 'pale-red');
+            display_message(jqXHR.responseText, 'danger');
         });
 
 }

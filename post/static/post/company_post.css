@@ -1,0 +1,16 @@
+.save-btn, .remove-save{
+    cursor: pointer;
+    color: green;
+}
+
+.save-btn:hover, .remove-save:hover{
+    text-decoration: underline;
+}
+
+.filter-btn{
+    min-width: 200px;
+}
+
+.pointer{
+    cursor: pointer;
+}

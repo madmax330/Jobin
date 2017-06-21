@@ -103,6 +103,7 @@ class RequestUtil(BaseContainer):
         phone = request.POST.get('company_phone')
         website = request.POST.get('company_website')
         startup = request.POST.get('company_startup')
+        industry = request.POST.get('company_industry')
 
         info = {
             'name': name,
@@ -114,9 +115,33 @@ class RequestUtil(BaseContainer):
             'phone': phone,
             'website': website,
             'is_startup': (True if startup == 'True' else False),
+            'industry': industry
         }
 
         return self.__check_company_info(info)
+
+    def get_suggestion_info(self, request):
+        topic = request.POST.get('suggestion_topic')
+        suggestion = request.POST.get('suggestion')
+        importance = request.POST.get('suggestion_importance')
+
+        if topic and suggestion and importance:
+            try:
+                temp = int(importance)
+                if not(0 < temp < 10):
+                    self.add_error('Importance must be between 0 and 10.')
+                    return None
+            except ValueError:
+                self.add_error('Importance must be a numerical value.')
+                return None
+            return {
+                'topic': topic,
+                'suggestion': suggestion,
+                'importance': int(importance),
+            }
+        else:
+            self.add_error('All fields are required.')
+            return None
 
     def __check_company_info(self, info):
         flag = True
@@ -151,8 +176,8 @@ class RequestUtil(BaseContainer):
     #
 
     def get_student_info(self, request):
-        first = request.POST.get('student_firstname')
-        last = request.POST.get('student_lastname')
+        first = request.POST.get('student_first_name')
+        last = request.POST.get('student_last_name')
         dob = request.POST.get('student_dob')
         address = request.POST.get('student_address')
         city = request.POST.get('student_city')
@@ -232,6 +257,7 @@ class RequestUtil(BaseContainer):
     def get_post_info(self, request):
         title = request.POST.get('post_title')
         wage = request.POST.get('post_wage')
+        wage_interval = request.POST.get('post_wage_interval')
         openings = request.POST.get('post_openings')
         start = request.POST.get('post_start')
         end = request.POST.get('post_end')
@@ -245,6 +271,7 @@ class RequestUtil(BaseContainer):
         info = {
             'title': title,
             'wage': wage,
+            'wage_interval': wage_interval,
             'openings': openings,
             'start_date': start,
             'end_date': end,
@@ -258,6 +285,19 @@ class RequestUtil(BaseContainer):
 
         return self.__check_post_info(info)
 
+    def get_student_post_filter(self, request):
+        location = request.GET.get('location_filter')
+        keyword = request.GET.get('keyword_filter')
+
+        if location or keyword:
+            return {
+                'location': location,
+                'keyword': keyword
+            }
+        else:
+            self.add_error('Filter values are empty.')
+            return None
+
     def get_cover_letter(self, request):
         letter = request.POST.get('cover_letter')
 
@@ -270,9 +310,10 @@ class RequestUtil(BaseContainer):
         schools = request.POST.get('filter_schools')
         majors = request.POST.get('filter_majors')
         gpa = request.POST.get('filter_gpa')
+        saved = request.POST.get('filter_saved')
         keep = request.POST.get('filter_keep')
 
-        if not(majors or schools or gpa):
+        if not(majors or schools or gpa or (saved == 'True')):
             return {}
         else:
             if gpa:
@@ -288,6 +329,7 @@ class RequestUtil(BaseContainer):
                 'schools': schools if schools else '',
                 'majors': majors if majors else '',
                 'gpa': gpa if gpa else '',
+                'saved': True if saved == 'True' else False,
                 'keep': False if keep == 'False' else True,
             }
 
@@ -319,8 +361,8 @@ class RequestUtil(BaseContainer):
 
     def get_event_info(self, request):
         title = request.POST.get('event_title')
-        start = request.POST.get('event_start_date')
-        end = request.POST.get('event_end_date')
+        start = request.POST.get('event_start')
+        end = request.POST.get('event_end')
         st = request.POST.get('event_start_time')
         et = request.POST.get('event_end_time')
         web = request.POST.get('event_website')
@@ -474,5 +516,19 @@ class RequestUtil(BaseContainer):
             self.add_error('Skill name and level cannot be empty.')
             return None
 
+    def get_reference_info(self, request):
+        name = request.POST.get('reference_name')
+        affiliation = request.POST.get('reference_affiliation')
+        email = request.POST.get('reference_email')
+
+        if name and affiliation and email:
+            return {
+                'name': name,
+                'affiliation': affiliation,
+                'email': email
+            }
+        else:
+            self.add_error('All reference fields are required.')
+            return None
 
 

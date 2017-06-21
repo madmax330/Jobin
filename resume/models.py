@@ -82,6 +82,16 @@ class Skill(models.Model):
         return self.name
 
 
+class Reference(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    affiliation = models.CharField(max_length=200)
+    email = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class SchoolLink(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
@@ -121,3 +131,11 @@ class LanguageLink(models.Model):
 
     class Meta:
         unique_together = ('resume', 'language')
+
+
+class ReferenceLink(models.Model):
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('resume', 'reference')

@@ -11,6 +11,7 @@
 let slideIndex = 1;
 
 function plusDivs(n) {
+    increment_post_count($('.viewed-post').find('.increment-url').html().toString().trim());
     showDivs(slideIndex += n);
 }
 
@@ -40,9 +41,6 @@ function showDivs(n) {
 
 $(function () {
     showDivs(slideIndex);
-    $('html, body').animate({
-        scrollTop: $('.job-nav').offset().top
-    }, 'slow');
 
     $('.change-resume').click(function ( event ) {
         event.preventDefault();
@@ -51,6 +49,17 @@ $(function () {
 
     $('.apply').click(function () {
         apply($(this).data('url'), $('.viewed-post'));
+    });
+
+    $('.page-link').click(function ( event ) {
+        let loc = $('#location_filter').val();
+        let key = $('#keyword_filter').val();
+        if(loc || key){
+            event.preventDefault();
+            let form = $('#post-filter-form');
+            form.attr('action', $(this).attr('href'));
+            form.submit();
+        }
     });
 
 });
@@ -64,18 +73,24 @@ function apply(url, post) {
             let btn = post.find('.apply');
             btn.prop('disabled', true);
             btn.html('Already applied.');
-            display_message('Application successful.', 'pale-green');
-            $('html, body').animate({
-                scrollTop: $('body').offset().top
-            }, 'slow');
+            display_message('Application successful.', 'success');
             plusDivs(1);
         }
 
     })
         .fail(function(jqXHR){
-            display_message(jqXHR.responseText, 'pale-red');
+            display_message(jqXHR.responseText, 'danger');
         });
 
+
+}
+
+
+function increment_post_count(url){
+
+    $.get(url, function(data, status){
+        console.log('count incremented');
+    });
 
 }
 

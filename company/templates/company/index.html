@@ -2,26 +2,27 @@
 
 {% block title %}Company Home{% endblock %}
 
+{% load staticfiles %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'company/scripts/index_script.js' %}"></script>
+{% endblock %}
+
 {% block side_content %}
     {% include 'company/sides/company_info.html' %}
     {% include 'company/sides/post_legend.html' %}
 {% endblock %}
 
-{% block scripts %}
-    {% load staticfiles %}
-{% endblock %}
-
 {% block content %}
     <div class="panel panel-default primary-panel">
-        <div class="panel-heading">
-            <h4 style="text-align: center;">Active Posts</h4>
+        <div class="panel-heading active-posts">
+            <h4 class="text-center">Active Posts</h4>
         </div>
         <div class="panel-body">
             {% if posts %}
                 <table class="table">
                     <tr>
                         <th>Title</th>
-                        <th>Openings</th>
+                        <th>Number of positions</th>
                         <th>Start</th>
                         <th>Deadline</th>
                         <th></th>
@@ -34,7 +35,7 @@
                             <td>{{ x.openings }}</td>
                             <td>{{ x.start_date }}</td>
                             <td>{{ x.deadline }}</td>
-                            <td><a href="{% url 'post:applicants' pk=x.pk%}">Applicants</a></td>
+                            <td><a href="{% url 'post:applicants' pk=x.id%}">Applicants ({{ x.app_count }})</a></td>
                         </tr>
                     {% endfor %}
                     <tr>
@@ -62,7 +63,7 @@
         </div>
     </div>
     <div class="panel panel-default primary-panel">
-        <div class="panel-heading">
+        <div class="panel-heading upcoming-events">
             <h4 class="text-center">Upcoming Events</h4>
         </div>
         <div class="panel-body">
@@ -70,22 +71,22 @@
                 <table class="table">
                     <tr>
                         <th>Title</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Times Saved</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Location</th>
                         <th></th>
                     </tr>
                     {% for x in events %}
                         <tr>
                             <td>{{ x.title }}</td>
-                            <td>{{ x.start_date }}</td>
-                            <td>{{ x.start_time }}</td>
-                            <td>{{ x.times_saved }}</td>
-                            <td><a href="{% url 'event:details' pk=x.pk%}">Details</a></td>
+                            <td>{{ x.start_date }} - {{ x.start_time }}</td>
+                            <td>{{ x.end_date }} - {{ x.end_time }}</td>
+                            <td>{{ x.address }}, {{ x.city }},<br/> {{ x.state }}, {{ x.zipcode }}</td>
+                            <td><a href="{% url 'event:details' pk=x.id%}">Details</a></td>
                         </tr>
                     {% endfor %}
                     <tr>
-                        <td colspan="4">
+                        <td colspan="5">
                             <span>Page: </span>
                             {% for x in events.paginator.page_range %}
                                 {% if x == events.number %}
@@ -109,6 +110,34 @@
             {% endif %}
         </div>
     </div>
+    <div class="modal fade" id="welcome-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header primary-color">
+                    <h4>Welcome to Jobin!</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Welcome to Jobin! Click next for a quick tutorial around the platform!
+                    </p>
+                    <div>
+                        <button type="button" data-dismiss="modal" class="btn btn-primary start-walk">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
+{% block walkthroughs %}
+    {% include 'company/walkthrough/home.html' %}
+{% endblock %}
+
+{% block hidden_block %}
+    <div class="new-company">{% if company.is_new %}true{% else %}false{% endif %}</div>
+{% endblock %}
+
 
 {% block page_name %}home{% endblock %}

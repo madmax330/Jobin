@@ -1,5 +1,5 @@
 from django.views.generic import View
-from django.shortcuts import render, redirect, Http404
+from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.db import transaction, IntegrityError
 
 from .util_company import CompanyContainer
@@ -15,8 +15,10 @@ def index_view(request):
         post_page = request.GET.get('pp', 1)
         event_page = request.GET.get('ep', 1)
         company = CompanyContainer(request.user)
+        if company.get_company() is None:
+            return redirect('company:new')
         msgs = MessageCenter.get_messages('company', company.get_company())
-        posts = Pagination(company.get_posts(), 15)
+        posts = Pagination(company.get_home_posts(), 15)
         events = Pagination(company.get_events(), 15)
         context = {
             'company': company.get_company(),
@@ -24,7 +26,9 @@ def index_view(request):
             'events': events.get_page(event_page),
             'messages': msgs,
             'notifications': MessageCenter.get_notifications('company', company.get_company()),
+            'tab': 'home',
         }
+        MessageCenter.clear_msgs(msgs)
         return render(request, 'company/index.html', context)
 
     raise Http404
@@ -59,7 +63,8 @@ class NewCompanyView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = company.get_errors()
+                context['company'] = i
+                context['errors'] = company.get_form().errors
 
         else:
             context['errors'] = rq.get_errors()
@@ -76,6 +81,7 @@ class EditCompanyView(View):
             'company': company.get_company(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'tab': 'profile',
         }
         return render(request, self.template_name, context)
 
@@ -87,6 +93,7 @@ class EditCompanyView(View):
             'company': company.get_company(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'tab': 'profile',
         }
         if i:
 
@@ -99,7 +106,7 @@ class EditCompanyView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = company.get_errors()
+                context['errors'] = company.get_form().errors
 
         else:
             context['errors'] = rq.get_errors()
@@ -114,9 +121,88 @@ def profile_view(request):
         context = {
             'user': company.get_user(),
             'company': company.get_company(),
+            'tab': 'profile',
         }
         return render(request, 'company/profile.html', context)
 
+    raise Http404
 
+
+def suggestions_view(request):
+
+    if request.method == 'GET':
+        page = request.GET.get('page', 1)
+        company = CompanyContainer(request.user)
+        suggestions = Pagination(company.get_suggestions(), 10)
+        msgs = MessageCenter.get_messages('company', company.get_company())
+        context = {
+            'suggestions': suggestions.get_page(page),
+            'company': company.get_company(),
+            'messages': msgs,
+            'tab': 'suggestions',
+        }
+        MessageCenter.clear_msgs(msgs)
+        return render(request, 'company/suggestions.html', context)
+
+    raise Http404
+
+
+def new_suggestion(request):
+
+    if request.method == 'POST':
+        company = CompanyContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_suggestion_info(request)
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if company.new_suggestion(i):
+                        m = 'Suggestion successfully submitted.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return HttpResponse(status=200)
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                return HttpResponse(str(company.get_errors()), status=400)
+
+        else:
+            return HttpResponse(str(rq.get_errors()), status=400)
+
+    raise Http404
+
+
+def company_not_new(request):
+
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+        if company.not_new():
+            return HttpResponse('good', status=200)
+        else:
+            return HttpResponse(str(company.get_errors()), status=400)
+
+    raise Http404
+
+
+def comment_suggestion(request, pk):
+
+    if request.method == 'POST':
+        company = CompanyContainer(request.user)
+        comment = request.POST.get('suggestion_comment')
+        if comment:
+
+            try:
+                with transaction.atomic():
+                    if company.comment_suggestion(pk, comment):
+                        m = 'Comment successfully added.'
+                        MessageCenter.new_message('company', company.get_company(), 'success', m)
+                        return HttpResponse(status=200)
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                return HttpResponse(str(company.get_errors()), status=400)
+
+        else:
+            return HttpResponse('Comment field cannot be empty', status=400)
 
 

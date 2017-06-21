@@ -13,6 +13,8 @@ from event.util_event import StudentEventContainer, CompanyEventContainer
 
 from resume.classes import ExtendedResume
 
+import datetime
+
 
 class StudentContainer(BaseContainer):
 
@@ -38,6 +40,7 @@ class StudentContainer(BaseContainer):
             return False
         info = {
             'user': user.id,
+            'last_login': datetime.datetime.now().date(),
             'name': s_info['firstname'] + ' ' + s_info['lastname'],
             'firstname': s_info['firstname'],
             'lastname': s_info['lastname'],
@@ -61,6 +64,7 @@ class StudentContainer(BaseContainer):
             self.__student = self._form.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -78,7 +82,6 @@ class StudentContainer(BaseContainer):
             'program': s_info['program'],
             'major': s_info['major'],
             'graduate': s_info['graduate'],
-            'email': s_info['email'],
             'phone': s_info['phone'],
             'linkedin': s_info['linkedin'],
             'work_eligible': s_info['work_eligible'],
@@ -88,6 +91,7 @@ class StudentContainer(BaseContainer):
             self.__student = self._form.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -100,6 +104,11 @@ class StudentContainer(BaseContainer):
         return self.__user
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
+
+    def not_new(self):
+        self.__student.is_new = False
+        self.__student.save()
+        return True
 
     #
     #
@@ -129,23 +138,14 @@ class StudentContainer(BaseContainer):
     def get_post(self, pk):
         return self.__post_container.get_post(pk)
 
-    def get_posts(self, cat, pk):
-        return self.__post_container.get_posts(cat, pk)
+    def get_posts(self, cat, pk, filters=None):
+        return self.__post_container.get_posts(cat, pk, filters)
 
-    def get_internship_count(self):
-        return self.__post_container.get_internship_count()
+    def get_post_count(self, category, filters=None):
+        return self.__post_container.get_post_count(category, filters)
 
-    def get_volunteer_count(self):
-        return self.__post_container.get_volunteer_count()
-
-    def get_part_time_count(self):
-        return self.__post_container.get_part_time_count()
-
-    def get_new_grad_count(self):
-        return self.__post_container.get_new_grad_count()
-
-    def get_startup_count(self):
-        return self.__post_container.get_startup_count()
+    def get_newest_posts(self):
+        return self.__post_container.get_newest_posts()
 
     def get_application(self, pk):
         a = self.__post_container.get_application(pk)
@@ -165,6 +165,13 @@ class StudentContainer(BaseContainer):
         return self.__post_container.get_all_applications()
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
+
+    def increment_view_count(self, pk):
+        if self.__post_container.get_post(pk):
+            if self.__post_container.increment_view_count():
+                return True
+        self.add_error_list(self.__post_container.get_errors())
+        return False
 
     def change_application_resume(self, pk, ak):
         if self.__post_container.get_application(ak):
@@ -424,6 +431,38 @@ class StudentContainer(BaseContainer):
         self.add_error_list(self.__resume_container.get_errors())
         return False
 
+    def new_reference(self, pk, info):
+        if self.__resume_container.get_resume(pk):
+            if self.__resume_container.new_reference(info):
+                return True
+        self.add_error_list(self.__resume_container.get_errors())
+        return False
+
+    def add_reference(self, pk, ok):
+        o = self.__resume_container.get_reference(ok)
+        if o and self.__resume_container.get_resume(pk):
+            if self.__resume_container.link_reference(o):
+                return True
+        self.add_error_list(self.__resume_container.get_errors())
+        return False
+
+    def edit_reference(self, pk, info):
+        o = self.__resume_container.get_reference(pk)
+        if o:
+            if self.__resume_container.edit_reference(o, info):
+                return True
+        self.add_error_list(self.__resume_container.get_errors())
+        return False
+
+    def delete_reference(self, rk, pk):
+        if self.__resume_container.get_resume(rk):
+            o = self.__resume_container.get_reference(pk)
+            if o:
+                if self.__resume_container.delete_reference(o):
+                    return True
+        self.add_error_list(self.__resume_container.get_errors())
+        return False
+
     # DATA FETCH FUNCTIONS (GETTERS)
 
     def get_display_resume(self, pk):
@@ -437,7 +476,8 @@ class StudentContainer(BaseContainer):
                 self.__resume_container.get_schools(),
                 self.__resume_container.get_experience_list(),
                 self.__resume_container.get_awards(),
-                self.__resume_container.get_skills()
+                self.__resume_container.get_skills(),
+                self.__resume_container.get_references(),
             )
         self.add_error_list(self.__resume_container.get_errors())
         return None
@@ -496,6 +536,16 @@ class StudentContainer(BaseContainer):
     def get_other_skills(self, pk=None):
         if self.__resume_container.get_resume(pk):
             return self.__resume_container.get_other_skills()
+        return []
+
+    def get_references(self, pk=None):
+        if self.__resume_container.get_resume(pk):
+            return self.__resume_container.get_references()
+        return []
+
+    def get_other_references(self, pk=None):
+        if self.__resume_container.get_resume(pk):
+            return self.__resume_container.get_other_references()
         return []
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)

@@ -3,7 +3,7 @@
 class ExtendedPost:
 
     def __init__(self, post, company, applied):
-        self.pk = post.pk
+        self.id = post.id
         self.name = company.name
         self.address = company.address + ', ' + company.city + ', ' + company.state + ', ' + company.zipcode
         self.website = company.website
@@ -17,6 +17,19 @@ class ExtendedPost:
         self.requirements = post.requirements
         self.description = post.description
         self.applied = applied
+
+
+class HomePagePost:
+
+    def __init__(self, post, count):
+        self.id = post.id
+        self.title = post.title
+        self.deadline = post.deadline
+        self.start_date = post.start_date
+        self.openings = post.openings
+        self.notified = post.notified
+        self.new_apps = post.new_apps
+        self.app_count = count
 
 
 class ExtendedApplication:
@@ -40,3 +53,4 @@ class ExtendedApplication:
         self.date_applied = app.date
         self.app_opened = app.opened
         self.resume_notified = app.resume_notified
+        self.saved = app.saved

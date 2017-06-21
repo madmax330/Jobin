@@ -35,7 +35,7 @@
         <h5>{{ app.address }}</h5>
     </div>
     <hr/>
-    {% if ecount > 0 %}
+    {% if app.resume.experience %}
         <h3>Experience</h3>
         {% for x in app.resume.experience %}
             <div>
@@ -50,7 +50,7 @@
             <hr/>
         {% endfor %}
     {% endif %}
-    {% if scount > 0 %}
+    {% if app.resume.schools %}
         <h3>Education:</h3>
         <table class="table">
             <tr>
@@ -71,7 +71,7 @@
             {% endfor %}
         </table>
     {% endif %}
-    {% if acount > 0 %}
+    {% if app.resume.awards %}
         <h3>Awards:</h3>
         {% for x in app.resume.awards %}
             <div>
@@ -84,7 +84,7 @@
             <hr/>
         {% endfor %}
     {% endif %}
-    {% if lcount > 0 %}
+    {% if app.resume.languages %}
         <h3>Languages:</h3>
         <table class="table">
             <tr>
@@ -99,7 +99,7 @@
             {% endfor %}
         </table>
     {% endif %}
-    {% if kcount > 0 %}
+    {% if app.resume.skills %}
         <h3>Skills:</h3>
         <table class="table">
             <tr>
@@ -110,6 +110,23 @@
                 <tr>
                     <td class="capital">{{ x.name }}</td>
                     <td class="capital">{{ x.level }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if app.resume.references %}
+        <h3>References:</h3>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Affiliation</th>
+                <th>Email</th>
+            </tr>
+            {% for x in app.resume.references %}
+                <tr>
+                    <td class="capital">{{ x.name }}</td>
+                    <td class="capital">{{ x.affiliation }}</td>
+                    <td class="capital">{{ x.email }}</td>
                 </tr>
             {% endfor %}
         </table>

@@ -10,7 +10,7 @@
                 <h3>New {{ type }} registration:</h3>
             </div>
             <div class="panel-body">
-                <form id="register-form" action="{% url 'home:register' ut='student' %}" method="post"
+                <form id="register-form" action="{% url 'home:register' ut=type %}" method="post"
                       enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-error {% if not error %}hidden{% endif %} alert alert-danger">

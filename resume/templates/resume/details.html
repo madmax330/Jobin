@@ -9,16 +9,17 @@
 
 {% block content %}
     <style>
-        h4 {
+        .resume-details h4 {
             margin: 0;
         }
     </style>
-    <div>
+    <div class="resume-details">
         <div class="w3-center primary-color w3-padding-small">
-            <h3 class="w3-text-white">Resume Overview</h3>
+            <h3 class="w3-text-white resume-overview">Resume Overview</h3>
         </div>
-        <div class="w3-container w3-padding">
+        <div class="w3-container w3-padding resume-info">
             <label>Name:</label><span> {{ resume.name }}</span><br/>
+            <label>GPA:</label><span> {{ resume.gpa }}</span><br/>
             <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
             <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
             <label>File:</label>{% if resume.file_resume %}
@@ -187,7 +188,7 @@
                 <h4>Skills</h4>
             </div>
             <div class="w3-col s3">
-                <button type="button" class="w3-btn new-skill w3-border w3-border-black">New Skills</button>
+                <button type="button" class="w3-btn new-skill w3-border w3-border-black">New Skill</button>
             </div>
         </div>
         <table class="w3-table w3-white w3-bordered">
@@ -218,6 +219,44 @@
             {% endif %}
             </tbody>
         </table>
+        <div class="w3-container secondary-color w3-row w3-padding">
+            <div class="w3-col s9">
+                <h4>References</h4>
+            </div>
+            <div class="w3-col s3">
+                <button type="button" class="w3-btn new-reference w3-border w3-border-black">New Reference</button>
+            </div>
+        </div>
+        <table class="w3-table w3-white w3-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Affiliation</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if resume.references %}
+                {% for x in resume.references %}
+                    <tr class="jobin-reference">
+                        <td class="name">{{ x.name }}</td>
+                        <td class="affiliation">{{ x.affiliation }}</td>
+                        <td class="email">{{ x.email }}</td>
+                        <td>
+                            <a href="#" data-url="{% url 'resume:edit_reference' pk=x.id %}" class="edit-reference">
+                                Edit</a>
+                            | <a href="{% url 'resume:delete_reference' rk=resume.id pk=x.id %}">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3" class="w3-pale-yellow">You have not added any references to this resume.</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
         <div class="w3-padding-16">
             <a class="w3-btn w3-border w3-border-black" href="{% url 'resume:index' %}">Back to list</a>
         </div>
@@ -231,4 +270,9 @@
     {% include 'resume/language_form.html' %}
     {% include 'resume/school_form.html' %}
     {% include 'resume/skill_form.html' %}
+    {% include 'resume/reference_form.html' %}
+{% endblock %}
+
+{% block walkthroughs %}
+    {% include 'student/walkthrough/resume.html' %}
 {% endblock %}

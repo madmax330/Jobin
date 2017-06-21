@@ -1,5 +1,5 @@
 from django.views.generic import View
-from django.shortcuts import render, redirect, Http404
+from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.db import transaction, IntegrityError
 
 from home.util_home import HomeUtil
@@ -14,6 +14,7 @@ def index_view(request):
     if request.method == 'GET':
         app_page = request.GET.get('ap', 1)
         e_page = request.GET.get('ep', 1)
+        p_page = request.GET.get('pp', 1)
         student = StudentContainer(request.user)
         if not HomeUtil.open_school(student.get_user().email):
             return redirect('home:index')
@@ -23,14 +24,17 @@ def index_view(request):
         a = student.get_applications()
         apps = Pagination(a if a else [], 15)
         events = Pagination(student.get_saved_events(), 15)
+        posts = Pagination(student.get_newest_posts(), 5)
         context = {
             'student': student.get_student(),
             'applications': apps.get_page(app_page),
             'old_apps': student.get_old_applications(),
             'events': events.get_page(e_page),
+            'posts': posts.get_page(p_page),
             'resumes': student.get_resumes(),
             'messages': msgs,
             'notifications': MessageCenter.get_notifications('student', student.get_student()),
+            'tab': 'home',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'student/index.html', context)
@@ -42,13 +46,24 @@ class NewStudentView(View):
     template_name = 'student/student_form.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        context = {
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+            'programs': HomeUtil.get_programs(),
+            'majors': HomeUtil.get_majors(),
+        }
+        return render(request, self.template_name, context)
 
     def post(self, request):
         student = StudentContainer(request.user)
         rq = RequestUtil()
         i = rq.get_student_info(request)
-        context = {}
+        context = {
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+            'programs': HomeUtil.get_programs(),
+            'majors': HomeUtil.get_majors(),
+        }
         if i:
 
             try:
@@ -60,7 +75,8 @@ class NewStudentView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = student.get_errors()
+                context['student'] = i
+                context['errors'] = student.get_form().errors
 
         else:
             context['errors'] = rq.get_errors()
@@ -79,6 +95,7 @@ class EditStudentView(View):
             'states': HomeUtil.get_states(),
             'programs': HomeUtil.get_programs(),
             'majors': HomeUtil.get_majors(),
+            'tab': 'profile',
         }
         return render(request, self.template_name, context)
 
@@ -86,7 +103,14 @@ class EditStudentView(View):
         student = StudentContainer(request.user)
         rq = RequestUtil()
         i = rq.get_student_info(request)
-        context = {'student': student.get_student()}
+        context = {
+            'student': student.get_student(),
+            'countries': HomeUtil.get_countries(),
+            'states': HomeUtil.get_states(),
+            'programs': HomeUtil.get_programs(),
+            'majors': HomeUtil.get_majors(),
+            'tab': 'profile',
+        }
         if i:
 
             try:
@@ -98,10 +122,10 @@ class EditStudentView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = student.get_errors()
+                context['errors'] = student.get_form().errors
 
         else:
-            context['errors'] = student.get_errors()
+            context['errors'] = str(rq.get_errors())
 
         return render(request, self.template_name, context)
 
@@ -121,6 +145,7 @@ def history_view(request):
             'all_notifications': np.get_page(n_page),
             'applications': ap.get_page(app_page),
             'events': ep.get_page(e_page),
+            'tab': 'history',
         }
         return render(request, 'student/history.html', context)
 
@@ -136,10 +161,22 @@ def profile_view(request):
             context = {
                 'student': s,
                 'user': student.get_user(),
-                'notifications': MessageCenter.get_notifications('student', s)
+                'notifications': MessageCenter.get_notifications('student', s),
+                'tab': 'profile'
             }
             return render(request, 'student/profile.html', context)
 
     raise Http404
 
+
+def student_not_new(request):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+        if student.not_new():
+            return HttpResponse('good', status=200)
+        else:
+            return HttpResponse(str(student.get_errors()), status=400)
+
+    raise Http404
 

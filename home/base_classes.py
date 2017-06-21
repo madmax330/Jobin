@@ -36,13 +36,13 @@ class BaseContainer:
     def add_error_list(self, l):  # add a list of errors (used to add errors from another container class)
         self.__errors.extend(l)
 
-    def new_message(self, stu, user, msg, code):
+    def new_message(self, is_student, user, msg, code):
         if not self.__check_code(code):
             return False
         info = {
             'code': self._codes[code],
-            'student': (user.id if stu else None),
-            'company': (None if stu else user.id),
+            'student': (user.id if is_student else None),
+            'company': (None if is_student else user.id),
             'message': (msg if msg else 'Invalid Request.'),
         }
         form = NewMessageForm(info)
@@ -53,11 +53,11 @@ class BaseContainer:
             self.add_form_errors(form)
             return False
 
-    def new_notification(self, stu, user, msg, code):
+    def new_notification(self, is_student, user, msg, code):
         info = {
             'code': code,
-            'student': (user.id if stu else None),
-            'company': (None if stu else user.id),
+            'student': (user.id if is_student else None),
+            'company': (None if is_student else user.id),
             'message': (msg if msg else 'Invalid Request.'),
         }
         form = NewNotificationForm(info)

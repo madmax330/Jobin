@@ -20,7 +20,7 @@
             <label>Description:</label><p>{{ event.description }}</p>
             <div>
                 <button class="warning-open btn btn-danger" data-id="close-event" data-name="{{ event.title }}"
-                        data-url="{% url 'event:close' pk=event.id %}">
+                        data-url="{% url 'event:close' pk=event.id %}" data-redirect="{% url 'event:company_events' %}">
                     Cancel Event
                 </button>
             </div>

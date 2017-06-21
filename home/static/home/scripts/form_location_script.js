@@ -29,10 +29,12 @@ function update_states(country, state){
     let state_in = $('.state-input');
 
     if(country === 'Canada') {
+        $('.nsf-country').html('Canada');
         state_in.siblings('label').html('Province:');
         $('.zip-label').html('Postal Code:');
     }
     else {
+        $('.nsf-country').html('the United States');
         state_in.siblings('label').html('State:');
         $('.zip-label').html('Zipcode:');
     }

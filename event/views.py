@@ -23,7 +23,9 @@ def company_index(request):
             'events': events.get_page(event_page),
             'expired_events': ex_events.get_page(ex_event_page),
             'messages': msgs,
+            'tab': 'events',
         }
+        MessageCenter.clear_msgs(msgs)
         return render(request, 'event/company_index.html', context)
 
     raise Http404
@@ -33,9 +35,12 @@ class NewEventView(View):
     template_name = 'event/event_form.html'
 
     def get(self, request):
+        company = CompanyContainer(request.user)
         context = {
+            'company': company.get_company(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'tab': 'events',
         }
         return render(request, self.template_name, context)
 
@@ -44,8 +49,10 @@ class NewEventView(View):
         rq = RequestUtil()
         i = rq.get_event_info(request)
         context = {
+            'company': company.get_company(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'tab': 'events',
         }
         if i:
 
@@ -54,13 +61,15 @@ class NewEventView(View):
                     if company.new_event(i):
                         m = 'New event created successfully.'
                         MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('event:company_index')
+                        return redirect('event:company_events')
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = company.get_errors()
+                context['event'] = i
+                context['errors'] = company.get_form().errors
 
         else:
+            context['event'] = i
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
@@ -72,9 +81,11 @@ class EditEventView(View):
     def get(self, request, pk):
         company = CompanyContainer(request.user)
         context = {
+            'company': company.get_company(),
             'event': company.get_event(pk),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'tab': 'events',
         }
         return render(request, self.template_name, context)
 
@@ -83,9 +94,11 @@ class EditEventView(View):
         rq = RequestUtil()
         i = rq.get_event_info(request)
         context = {
+            'company': company.get_company(),
             'event': company.get_event(pk),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'tab': 'events',
         }
         if i:
 
@@ -94,13 +107,15 @@ class EditEventView(View):
                     if company.edit_event(pk, i):
                         m = 'Event edited successfully.'
                         MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('event:company_index')
+                        return redirect('event:company_events')
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = company.get_errors()
+                context['event'] = i
+                context['errors'] = company.get_form().errors
 
         else:
+            context['event'] = i
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
@@ -113,17 +128,18 @@ def close_event(request, pk):
         context = {
             'event': company.get_event(pk),
             'company': company.get_company(),
+            'tab': 'events',
         }
         try:
             with transaction.atomic():
                 if company.close_event(pk):
                     m = 'Event successfully closed.'
                     MessageCenter.new_message('company', company.get_company(), 'success', m)
-                    redirect('event:company_index')
+                    return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
         except IntegrityError:
-            context['errors'] = company.get_errors()
+            return HttpResponse(str(company.get_errors()), status=400)
 
         return render(request, 'event/detail.html', context)
 
@@ -137,6 +153,7 @@ def detail_view(request, pk):
         context = {
             'event': company.get_event(pk),
             'company': company.get_company(),
+            'tab': 'events',
         }
         return render(request, 'event/detail.html', context)
 
@@ -156,6 +173,7 @@ def student_index(request, pk):
             'count': len(events),
             'messages': msgs,
             'notifications': notes,
+            'tab': 'events',
         }
         return render(request, 'event/student_index.html', context)
 
@@ -163,13 +181,14 @@ def student_index(request, pk):
 
 
 class RecoverEventView(View):
-    template_name = 'event/edit_event.html'
+    template_name = 'event/event_form.html'
 
     def get(self, request, pk):
         company = CompanyContainer(request.user)
         context = {
             'event': company.get_event(pk),
             'company': company.get_company(),
+            'tab': 'events',
         }
         return render(request, self.template_name, context)
 
@@ -179,6 +198,7 @@ class RecoverEventView(View):
         i = rq.get_event_info(request)
         context = {
             'company': company.get_company(),
+            'tab': 'events',
         }
         if i:
 
@@ -187,11 +207,12 @@ class RecoverEventView(View):
                     if company.recover_event(pk, i):
                         m = 'Event recovered successfully.'
                         MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('event:company_index')
+                        return redirect('event:company_events')
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = company.get_errors()
+                context['event'] = i
+                context['errors'] = company.get_form().errors
 
         else:
             context['errors'] = rq.get_errors()
@@ -208,8 +229,6 @@ def save_event(request, pk):
         try:
             with transaction.atomic():
                 if student.save_event(pk):
-                    m = 'Event saved successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError

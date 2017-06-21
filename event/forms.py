@@ -12,9 +12,9 @@ class EventForm(forms.ModelForm):
 
     def clean(self):
         clean_data = super(EventForm, self).clean()
-        date = clean_data.get('date')
+        date = clean_data.get('start_date')
         if date < datetime.datetime.now().date():
-            raise forms.ValidationError({'date': 'The event date must be after today\'s date.'})
+            raise forms.ValidationError({'start_date': 'The event start date must be after today\'s date.'})
 
 
 class NewSavedEventForm(forms.ModelForm):

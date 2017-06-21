@@ -1,6 +1,10 @@
 {% extends 'company/base.html' %}
 
 {% load staticfiles %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'post/company_post.css' %}">
+{% endblock %}
+
 {% block scripts %}
     <script type="text/javascript" src="{% static 'post/company_post_util.js' %}"></script>
 {% endblock %}
@@ -15,7 +19,7 @@
 
 {% block content %}
     <div>
-        <div class="btn-group btn-group-justified">
+        <div class="btn-group btn-group-justified view-buttons">
             <div class="btn-group">
                 <button class="btn btn-primary">
                     Multiple Applicants View
@@ -23,7 +27,7 @@
             </div>
             <div class="btn-group">
                 <button data-url="{% url 'post:applicant' pk=post.pk ak='0' %}"
-                   class="btn btn-default to-single-view">
+                        class="btn btn-default to-single-view">
                     Single Applicant View
                 </button>
             </div>
@@ -31,12 +35,12 @@
     </div>
     <div class="padding-1">
         <div class="panel panel-default primary-panel">
-            <div class="panel-heading">
+            <div class="panel-heading post-apps">
                 <h3 class="text-center">Post Applicants ({{ count }}):</h3>
             </div>
             <div class="panel-body">
                 <div class="panel panel-default secondary-panel">
-                    <div class="panel-heading">
+                    <div class="panel-heading app-filters">
                         <h4 class="text-center">Filters</h4>
                     </div>
                     <div class="panel-body">
@@ -61,7 +65,7 @@
                                             GPA value must be a number
                                         </span>
                                         <input class="form-control" id="gpa_filter" type="text" name="filter_gpa"
-                                                value="{{ filters.gpa }}">
+                                               value="{{ filters.gpa }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -75,7 +79,7 @@
                                     <div class="form-group">
                                         <label for="major-select">Majors Filter:</label>
                                         <input type="hidden" id="major_filter" name="filter_majors"
-                                                value="{{ filters.majors }}">
+                                               value="{{ filters.majors }}">
                                         <select id="major-select" class="form-control">
                                             {% if majors %}
                                                 <option value="">Select a major</option>
@@ -109,16 +113,36 @@
                                 <div class="col-sm-4">
                                     <div>
                                         <a href="{% url 'post:applicants' pk=post.id %}"
-                                           class="btn btn-default btn-block clear-filter">
+                                           class="btn btn-default clear-filter btn-block">
                                             Clear Filter
                                         </a>
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <div class="form-group">
+                                    <label>
+                                        Only show saved applications?
+                                    </label>
+                                    <br/>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="filter_saved" id="filter_saved_true"
+                                               value="True"
+                                                {% if filters.saved %}checked="checked"{% endif %}>
+                                        Yes
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="filter_saved" id="filter_saved_false"
+                                               value="False"
+                                               {% if not filters.saved %}checked="checked"{% endif %}>
+                                        No
+                                    </label>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
-                <table class="table">
+                <table class="table app-list">
                     <tr>
                         <th>Name</th>
                         <th>School</th>
@@ -140,8 +164,8 @@
                             <td>
                                 <a href="#" data-url="{% url 'post:applicant' pk=post.pk ak=x.pk %}"
                                    class="to-single-view">
+                                    {% if not x.opened %} <b>-</b> {% endif %}
                                     {{ x.student.name }}
-                                    {% if not x.opened %} (<b>new</b>){% endif %}
                                 </a>
                             </td>
                             <td>{{ x.student.school }}</td>
@@ -149,6 +173,12 @@
                             <td>{{ x.student.major }}</td>
                             <td>{{ x.date }}</td>
                             <td>
+
+                                {% if x.saved %}
+                                    <span class="remove-save" data-url="{% url 'post:remove_save' pk=x.id %}">
+                                        <span class="glyphicon glyphicon-check text-success"></span> Saved
+                                    </span> |
+                                {% else %} <span class="save-btn" data-url="{% url 'post:save' pk=x.id %}">Save</span> |{% endif %}
                                 <a href="#" class="warning-open" data-id="close-app" data-name="{{ x.student.name }}"
                                    data-url="{% url 'post:discard' pk=x.id %}">
                                     Discard
@@ -201,5 +231,8 @@
 
 {% endblock %}
 
+{% block walkthroughs %}
+    {% include 'company/walkthrough/applications.html' %}
+{% endblock %}
 
 

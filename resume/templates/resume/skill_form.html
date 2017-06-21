@@ -13,7 +13,7 @@
                     <ul class="w3-ul">
                         {% for x in other_skills %}
                             <li>
-                                <a href="{% url 'resume:add_skill' pk=x.id rk=resume.id %}">Add {{ x.title }}</a>
+                                <a href="{% url 'resume:add_skill' pk=x.id rk=resume.id %}">Add {{ x.name }}</a>
                             </li>
                         {% endfor %}
                     </ul>

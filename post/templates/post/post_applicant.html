@@ -55,8 +55,8 @@
         <div class="col-md-6">
             <button class="btn btn-default btn-block single-next"
                     data-url="{% url 'post:applicant' pk=post.id ak=next_app %}">
-                Next Applicant
                 <span class="glyphicon glyphicon-arrow-right right"></span>
+                Next Applicant
             </button>
         </div>
     </div>
@@ -175,28 +175,85 @@
                         {% endfor %}
                     </table>
                 {% endif %}
+                {% if app.resume.references %}
+                    <h3>References:</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Affiliation</th>
+                            <th>Email</th>
+                        </tr>
+                        {% for x in app.resume.references %}
+                            <tr>
+                                <td>{{ x.name }}</td>
+                                <td>{{ x.affiliation }}</td>
+                                <td>{{ x.email }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
                 <hr/>
                 <div class="container">
+                    {% if app.saved %}
+                        <button class="btn btn-warning remove-save" data-url="{% url 'post:remove_save' pk=app.id %}">
+                            Remove from saved
+                        </button>
+                    {% else %}
+                        <button class="btn btn-info save-btn" data-url="{% url 'post:save' pk=app.id %}">
+                            Save Application
+                        </button>
+                    {% endif %}
                     {% if app.cover_requested %}
-                        <button disabled class="btn btn-default">
+                        <button disabled class="btn btn-default-info">
                             Cover already requested
                         </button>
                     {% else %}
                         <button type="button" class="btn btn-info request-cover"
-                                data-url="{% url 'post:applicant' pk=post.pk ak=app.id %}">
+                                data-url="{% url 'post:request_cover' pk=app.id %}">
                             Request Cover Letter
                         </button>
                     {% endif %}
-                    <a href="{% url 'post:app_pdf' ak=app.id %}" class="btn btn-info">
+                    <a href="{% url 'post:app_pdf' ak=app.id %}" class="btn btn-default">
                         Download PDF Resume
                     </a>
-                    <button type="button" class="warning-open btn btn-danger" data-id="close-app"
+                    <button type="button" class="discard-single-applicant btn btn-danger"
                             data-name="{{ app.name }}" data-url="{% url 'post:discard' pk=app.id %}">
                         Discard Applicant
                     </button>
                 </div>
             </div>
+        </div>
 
+        <div id="discard-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                            <span class="glyphicon glyphicon-warning-sign"></span>
+                            Warning!
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="warning-message">
+                            Are you sure you want to discard applicant:
+                            <span class="name"></span>?
+                        </h4>
+                        <p class="warning-note">
+                            <strong>Note: </strong><span> This application will be discarded permanently.</span>
+                        </p>
+                        <div>
+                            <button class="btn btn-default" data-dismiss="modal" type="button">
+                                Cancel
+                            </button>
+                            <button class="btn btn-warning discard-accepted" type="button">
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -210,6 +267,7 @@
         <input type="hidden" id="school_filter" name="filter_schools" value="{{ filters.schools }}">
         <input id="gpa_filter" type="hidden" name="filter_gpa" value="{{ filters.gpa }}">
         <input type="hidden" id="major_filter" name="filter_majors" value="{{ filters.majors }}">
+        <input type="hidden" id="filter_saved" name="filter_saved" value="{{ filters.saved }}">
         <input type="hidden" name="filter_keep" value="True">
     </form>
 

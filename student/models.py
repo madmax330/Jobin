@@ -19,7 +19,7 @@ class Student(models.Model):
     major = models.CharField(max_length=100)
     graduate = models.BooleanField(default=False)
     email = models.CharField(max_length=100)
-    phone = models.CharField(max_length=30)
+    phone = models.CharField(max_length=30, null=True, blank=True)
     linkedin = models.CharField(max_length=200, null=True, blank=True)
     work_eligible = models.BooleanField(default=True)
     is_new = models.BooleanField(default=True)
