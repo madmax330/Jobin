@@ -14,17 +14,6 @@
         <div class="panel-body">
             <div>
                 <label>Post Status:</label><span> {{ post.status }}</span>
-                {% if post.status == 'open' %}
-                    <a href="#" class="warning-open" data-name="{{ post.title }}"
-                            data-url="{% url 'post:close' pk=post.id %}" data-id="close-post">
-                        Close Post
-                    </a>
-                {% elif post.status == 'closed' %}
-                    <a href="#" class="warning-open" data-name="{{ post.title }}"
-                       data-url="{% url 'post:recover' pk=post.id %}" data-id="open-post">
-                        <strong>Re-Open Post</strong>
-                    </a>
-                {% endif %}
             </div>
             <br/>
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
@@ -38,6 +27,17 @@
             <p>{{ post.requirements | linebreaksbr }}</p>
             <label>Programs: </label>
             <p>{{ post.programs }}</p>
+            {% if post.status == 'open' %}
+                <a href="#" class="btn btn-danger warning-open" data-name="{{ post.title }}"
+                   data-url="{% url 'post:close' pk=post.id %}" data-id="close-post" data-redirect="{% url 'post:company_posts' %}">
+                    Close Post
+                </a>
+            {% elif post.status == 'closed' %}
+                <a href="#" class="btn btn-warning warning-open" data-name="{{ post.title }}"
+                   data-url="{% url 'post:recover' pk=post.id %}" data-id="open-post" data-redirect="{% url 'post:company_posts' %}">
+                    <strong>Re-Open Post</strong>
+                </a>
+            {% endif %}
             <a class="btn btn-default" href="{% url 'post:company_posts' %}">Back to list</a>
             <a class="btn btn-default" href="{% url 'post:edit' pk=post.id %}">Edit</a>
         </div>

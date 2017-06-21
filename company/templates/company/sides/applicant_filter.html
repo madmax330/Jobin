@@ -11,7 +11,7 @@
                         <div class="display-filter-value">
                             <span class="val">{{ x }}</span>
                             {% if applicants %}
-                                <span class="remove-display-filter right school">&times;</span>
+                                <span class="remove-display-filter right school pointer">&times;</span>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -26,7 +26,7 @@
                         <div class="display-filter-value">
                             <span class="val">{{ x }}</span>
                             {% if applicants %}
-                                <span class="remove-display-filter right major">&times;</span>
+                                <span class="remove-display-filter right major pointer">&times;</span>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -40,6 +40,12 @@
                     {{ filters.gpa }}
                 </span>
             </div>
+        </div>
+        <div class="display-saved-filter {% if not filters.saved %}hidden{% endif %}">
+            <strong><span>Only saved applications.</span></strong>
+            {% if applicants %}
+                <span class="remove-saved-only right pointer">&times;</span>
+            {% endif %}
         </div>
     </div>
 </div>

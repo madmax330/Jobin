@@ -10,6 +10,11 @@
 
 {% block side_content %}
     {% include 'company/sides/company_info.html' %}
+    {% if errors %}
+        <div class="alert alert-danger">
+            {{ errors }}
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -19,22 +24,26 @@
         </div>
         <div class="panel-body">
             <form id="post-form" method="post"
-                  action="{% if post %}{% url 'post:edit' pk=post.id %}{% else %}{% url 'post:new' %}{% endif %}">
+                  action="">
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.title.errors }}
-                    </div>
                     <label class="required" for="post_title">Title:</label>
+                    {% if errors.title %}
+                        <div class="alert alert-danger">
+                            {{ errors.title }}
+                        </div>
+                    {% endif %}
                     <input id="post_title" class="form-control" type="text" name="post_title"
                            value="{{ post.title }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.programs.errors }}
-                    </div>
                     <label for="post_programs">Programs:</label>
+                    {% if errors.programs %}
+                        <div class="alert alert-danger">
+                            {{ errors.programs }}
+                        </div>
+                    {% endif %}
                     <select id="post_programs" class="form-control program-input" name="post_programs">
                         {% if post.programs %}
                             <option value="{{ post.programs }}">{{ post.programs }}</option>
@@ -42,87 +51,117 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.type.errors }}
-                    </div>
                     <label class="required" for="post_type">Type:</label>
+                    {% if errors.type %}
+                        <div class="alert alert-danger">
+                            {{ errors.type }}
+                        </div>
+                    {% endif %}
                     <select id="post_type" class="form-control" name="post_type">
                         <option value="internship">Internship</option>
-                        <option value="newgrad">New Grad</option>
-                        <option value="parttime">Part Time</option>
-                        <option value="fulltime">Full Time</option>
+                        <option value="full_time">Full Time</option>
+                        <option value="part_time">Part Time</option>
                         <option value="volunteer">Volunteer</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.wage.errors }}
-                    </div>
                     <label class="required" for="post_wage">Wage:</label>
+                    {% if errors.wage %}
+                        <div class="alert alert-danger">
+                            {{ errors.wage }}
+                        </div>
+                    {% endif %}
                     <input id="post_wage" class="form-control" type="text" name="post_wage"
                            value="{{ post.wage }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.openings.errors }}
-                    </div>
+                    <label for="post_wage_interval">Payment Interval:</label>
+                    {% if errors.wage_interval %}
+                        <div class="alert alert-danger">
+                            {{ errors.wage_interval }}
+                        </div>
+                    {% endif %}
+                    <select id="post_wage_interval" class="form-control" name="post_wage_interval">
+                        <option value="hr">Hourly</option>
+                        <option value="mth">Monthly</option>
+                        <option value="yr">Yearly</option>
+                        <option value="single">One time</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label class="required" for="post_openings">Number of positions:</label>
+                    {% if errors.openings %}
+                        <div class="alert alert-danger">
+                            {{ errors.openings }}
+                        </div>
+                    {% endif %}
                     <input id="post_openings" class="form-control" type="number" name="post_openings"
                            value="{{ post.openings }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.start_date.errors }}
-                    </div>
                     <label class="required" for="post_start">Start Date:</label>
+                    {% if errors.start_date %}
+                        <div class="alert alert-danger">
+                            {{ errors.start_date }}
+                        </div>
+                    {% endif %}
                     <input id="post_start" class="form-control date-input" data-date="{{ post.start_date }}"
                            type="date" name="post_start" value="">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.end_date.errors }}
-                    </div>
                     <label for="post_end">End Date:</label>
+                    {% if errors.end_date %}
+                        <div class="alert alert-danger">
+                            {{ errors.end_date }}
+                        </div>
+                    {% endif %}
                     <input id="post_end" class="form-control date-input" type="date" name="post_end"
                             value="" data-date="{{ post.end_date }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.deadline.errors }}
-                    </div>
                     <label class="required" for="post_deadline">Application Deadline:</label>
+                    {% if errors.deadline %}
+                        <div class="alert alert-danger">
+                            {{ errors.deadline }}
+                        </div>
+                    {% endif %}
                     <input id="post_deadline" class="form-control date-input" type="date"
                            name="post_deadline" value="" data-date="{{ post.deadline }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.description.errors }}
-                    </div>
                     <label class="required" for="post_description">Description:</label>
+                    {% if errors.description %}
+                        <div class="alert alert-danger">
+                            {{ errors.description }}
+                        </div>
+                    {% endif %}
                     <textarea id="post_description" name="post_description" class="form-control"
                               rows="5">{{ post.description }}</textarea>
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.requirements.errors }}
-                    </div>
                     <label class="required" for="post_requirements">Requirements:</label>
+                    {% if errors.requirements %}
+                        <div class="alert alert-danger">
+                            {{ errors.requirements }}
+                        </div>
+                    {% endif %}
                     <textarea id="post_requirements" name="post_requirements" class="form-control"
                               rows="5">{{ post.requirements }}</textarea>
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.description.errors }}
-                    </div>
                     <label for="post_instructions">Cover letter instructions:</label>
+                    {% if errors.cover_instructions %}
+                        <div class="alert alert-danger">
+                            {{ errors.cover_instructions }}
+                        </div>
+                    {% endif %}
                     <textarea id="post_instructions" name="post_instructions" class="form-control"
-                              rows="5">{{ post.cover_instructions }}</textarea>
+                              rows="5">{% if post.cover_instructions %}{{ post.cover_instructions }}{% endif %}</textarea>
                 </div>
                 <div>
                     <a href="{% url 'post:company_posts' %}" class="btn btn-default">Cancel</a>
                     <button class="btn btn-success" type="submit">Submit</button>
                 </div>
-
             </form>
         </div>
     </div>

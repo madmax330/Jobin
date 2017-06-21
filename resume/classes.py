@@ -2,7 +2,7 @@
 
 class ExtendedResume:
 
-    def __init__(self, resume, languages, schools, experience, awards, skills):
+    def __init__(self, resume, languages, schools, experience, awards, skills, references):
         self.id = resume.id
         self.name = resume.name
         self.file_resume = resume.file_resume
@@ -14,6 +14,7 @@ class ExtendedResume:
         self.experience = experience
         self.awards = awards
         self.skills = skills
+        self.references = references
 
 
 

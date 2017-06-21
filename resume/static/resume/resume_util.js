@@ -16,11 +16,11 @@ function send_walkthrough(url, form, info) {
                 clear_form('resume-form');
                 close_modal('resume-modal');
                 open_modal('school-modal');
-                display_modal_message('New resume created successfully.', 'pale-green');
+                display_modal_message('New resume created successfully.', 'success');
             }
             else if (info['caller'] === 'school') {
                 clear_form('school-form');
-                display_modal_message('School successfully added to resume.', 'pale-green');
+                display_modal_message('School successfully added to resume.', 'success');
                 if (info['action'] === 'continue') {
                     close_modal('school-modal');
                     open_modal('language-modal');
@@ -31,7 +31,7 @@ function send_walkthrough(url, form, info) {
             }
             else if (info['caller'] === 'language') {
                 clear_form('language-form');
-                display_modal_message('Language successfully added to resume.', 'pale-green');
+                display_modal_message('Language successfully added to resume.', 'success');
                 if (info['action'] === 'continue') {
                     close_modal('language-modal');
                     location.reload()
@@ -96,6 +96,7 @@ $(function () {
     /* RESUME FUNCTIONS */
 
     $('.new-resume').click(function () {
+        show($('.other-resumes'));
         open_modal('resume-modal');
     });
 
@@ -110,7 +111,7 @@ $(function () {
             $('#resume_gpa').val(gpa.toString().trim());
 
         $('#resume-form').attr('action', $(this).data('url'));
-
+        hide($('.other-resumes'));
         open_modal('resume-modal');
     });
 
@@ -234,7 +235,7 @@ $(function () {
     $('#school-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this), null);
+        send_post($(this).attr('action'), $(this));
 
         close_modal('school-modal');
     });
@@ -279,7 +280,7 @@ $(function () {
     $('#experience-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this), null);
+        send_post($(this).attr('action'), $(this));
 
         close_modal('experience-modal');
     });
@@ -312,7 +313,7 @@ $(function () {
     $('#award-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this), null);
+        send_post($(this).attr('action'), $(this));
 
         close_modal('award-modal');
     });
@@ -341,9 +342,40 @@ $(function () {
     $('#skill-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this), null);
+        send_post($(this).attr('action'), $(this));
 
         close_modal('skill-modal');
+    });
+
+    /* REFERENCES FUNCTIONS */
+
+    $('.new-reference').click(function() {
+        open_modal('reference-modal');
+    });
+
+    $('.edit-reference').click(function() {
+        let parent = $(this).parents('.jobin-reference');
+
+        let name = parent.find('.name').html().toString().trim();
+        let affiliation = parent.find('.affiliation').html().toString().trim();
+        let email = parent.find('.email').html().toString().trim();
+
+        $('#reference_name').val(name);
+        $('#reference_affiliation').val(affiliation);
+        $('#reference_email').val(email);
+
+        $('#reference-form').attr('action', $(this).data('url'));
+
+        open_modal('reference-modal');
+
+    });
+
+    $('#reference-form').submit(function (event) {
+        event.preventDefault();
+
+        send_post($(this).attr('action'), $(this));
+
+        close_modal('reference-modal');
     });
 
 });

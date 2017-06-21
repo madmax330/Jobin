@@ -9,6 +9,15 @@
     <script type="text/javascript" src="{% static 'home/scripts/form_location_script.js' %}"></script>
 {% endblock %}
 
+{% block side_content %}
+    {% include 'company/sides/company_info.html' %}
+    {% if errors %}
+        <div class="alert alert-danger">
+            {{ errors }}
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">
@@ -16,70 +25,89 @@
         </div>
         <div class="panel-body">
             <form id="event-form" method="post"
-                  action="{% if event %}{% url 'event:edit' pk=event.id %}{% else %}{% url 'event:new' %}{% endif %}">
+                  action="">
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.title.errors }}
-                    </div>
                     <label class="required" for="event_title">Title:</label>
+                    {% if errors.title %}
+                        <div class="alert alert-danger">
+                            {{ errors.title }}
+                        </div>
+                    {% endif %}
                     <input id="event_title" class="form-control" type="text" name="event_title"
                            value="{{ event.title }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.start_date.errors }}
-                    </div>
                     <label class="required" for="event_start">Start Date:</label>
+                    {% if errors.start_date %}
+                        <div class="alert alert-danger">
+                            {{ errors.start_date }}
+                        </div>
+                    {% endif %}
                     <input id="event_start" class="form-control date-input" type="date" name="event_start"
                             value="" data-date="{{ event.start_date }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.start_time.errors }}
-                    </div>
                     <label class="required" for="event_start_time">Start Time:</label>
+                    {% if errors.start_time %}
+                        <div class="alert alert-danger">
+                            {{ errors.start_time }}
+                        </div>
+                    {% endif %}
                     <input id="event_start_time" class="form-control time-input" type="time" name="event_start_time"
                             value="" data-time="{{ event.start_time }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.end_date.errors }}
-                    </div>
                     <label for="event_end">End Date:</label>
+                    {% if errors.end_date %}
+                        <div class="alert alert-danger">
+                            {{ errors.end_date }}
+                        </div>
+                    {% endif %}
                     <input id="event_end" class="form-control date-input" type="date" name="event_end"
                             value="" data-date="{{ event.end_date }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.end_time.errors }}
-                    </div>
                     <label for="event_end_time">End Time:</label>
+                    {% if errors.end_time %}
+                        <div class="alert alert-danger">
+                            {{ errors.end_time }}
+                        </div>
+                    {% endif %}
                     <input id="event_end_time" class="form-control time-input" type="time" name="event_end_time"
                             value="" data-time="{{ event.end_time }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.address.errors }}
-                    </div>
                     <label class="required" for="event_address">Address:</label>
+                    {% if errors.address %}
+                        <div class="alert alert-danger">
+                            {{ errors.address }}
+                        </div>
+                    {% endif %}
+                    <div class="checkbox">
+                        <label><input id="event-address-checkbox" type="checkbox">Use company address</label>
+                    </div>
                     <input id="event_address" class="form-control" type="text" name="event_address"
                             value="{{ event.address }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.city.errors }}
-                    </div>
                     <label class="required" for="event_city">City:</label>
+                    {% if errors.city %}
+                        <div class="alert alert-danger">
+                            {{ errors.city }}
+                        </div>
+                    {% endif %}
                     <input id="event_city" class="form-control" type="text" name="event_city"
                             value="{{ event.city }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.state.errors }}
-                    </div>
                     <label class="required" for="event_state">State:</label>
+                    {% if errors.state %}
+                        <div class="alert alert-danger">
+                            {{ errors.state }}
+                        </div>
+                    {% endif %}
                     <select class="form-control state-input" name="event_state" id="event_state">
                         {% if event.state %}
                             <option value="{{ event.state }}">{{ event.state }}</option>
@@ -87,18 +115,23 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.zipcode.errors }}
-                    </div>
                     <label class="required zip-label" for="event_zipcode">Zipcode:</label>
+                    {% if errors.zipcode %}
+                        <div class="alert alert-danger">
+                            {{ errors.zipcode }}
+                        </div>
+                    {% endif %}
+                    <div class="form-error"></div>
                     <input id="event_zipcode" class="form-control zip-input" type="text" name="event_zipcode"
                             value="{{ event.zipcode }}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.country.errors }}
-                    </div>
                     <label class="required" for="event_country">Country:</label>
+                    {% if errors.country %}
+                        <div class="alert alert-danger">
+                            {{ errors.country }}
+                        </div>
+                    {% endif %}
                     <select class="form-control country-input" name="event_country" id="event_country">
                         {% if event.country %}
                             <option value="{{ event.country }}">{{ event.country }}</option>
@@ -106,18 +139,22 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.website.errors }}
-                    </div>
                     <label for="event_website">Website:</label>
+                    {% if errors.website %}
+                        <div class="alert alert-danger">
+                            {{ errors.website }}
+                        </div>
+                    {% endif %}
                     <input id="event_website" class="form-control" type="text" name="event_website"
-                        value="{{ event.website }}">
+                        value="{% if event.website %}{{ event.website }}{% endif %}">
                 </div>
                 <div class="form-group">
-                    <div class="form-error">
-                        {{ form.description.errors }}
-                    </div>
                     <label class="required" for="event_description">Description:</label>
+                    {% if errors.description %}
+                        <div class="alert alert-danger">
+                            {{ errors.description }}
+                        </div>
+                    {% endif %}
                     <textarea id="event_description" name="event_description" class="form-control"
                               rows="5">{{ event.description }}</textarea>
                 </div>
@@ -132,5 +169,32 @@
 {% endblock %}
 
 {% block hidden_block %}
+    <script>
+        $(function(){
+
+            $('input#event-address-checkbox').change(function(){
+                if(this.checked){
+                    $('#event_address').val($('.company_address').html().toString().trim());
+                    $('#event_city').val($('.company_city').html().toString().trim());
+                    $('#event_state').val($('.company_state').html().toString().trim());
+                    $('#event_zipcode').val($('.company_zipcode').html().toString().trim());
+                    $('#event_country').val($('.company_country').html().toString().trim());
+                }
+                else{
+                    $('#event_address').val('');
+                    $('#event_city').val('');
+                    $('#event_zipcode').val('');
+                }
+            });
+
+        });
+    </script>
+    <div>
+        <span class="company_address">{{ company.address }}</span>
+        <span class="company_city">{{ company.city }}</span>
+        <span class="company_state">{{ company.state }}</span>
+        <span class="company_zipcode">{{ company.zipcode }}</span>
+        <span class="company_country">{{ company.country }}</span>
+    </div>
     {% include 'home/utils/form_values.html' %}
 {% endblock %}

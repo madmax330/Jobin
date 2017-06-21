@@ -1,8 +1,15 @@
 .mySlides{
     margin: 0 30px 0 30px;
     height: 600px;
+    min-height: 600px;
+    max-height: 600px;
 }
 
 .scrollable{
     overflow: scroll;
+}
+
+.filter-btn{
+    min-width: 150px;
+    padding: 4px 16px;
 }

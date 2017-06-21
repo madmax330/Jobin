@@ -7,22 +7,27 @@
     {% load staticfiles %}
     <!--<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">-->
     <link rel="stylesheet" href="{% static 'student/css/w3.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'student/css/student.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700" rel="stylesheet">
+    <!--<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700" rel="stylesheet">-->
     {% block styles %}{% endblock %}
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
     <script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'home/scripts/resize_script.js' %}"></script>
+    <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/user_utils.js' %}"></script>
     <script type="text/javascript" src="{% static 'student/scripts/util_script.js' %}"></script>
     <script type="text/javascript" src="{% static 'student/scripts/warning_script.js' %}"></script>
-    <script type="text/javascript" src="{% static 'student/scripts/notification_script.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/notification_script.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/walkthrough.js' %}"></script>
     {% block scripts %}{% endblock %}
     <style>
         body {
             background-image: url("{% static 'home/images/pattern_max_finshed8.png' %}");
             background-size: 120px 120px;
+        }
+        .close-notification:hover {
+            background-color: transparent!important;
         }
     </style>
 </head>
@@ -33,19 +38,28 @@
         <a href="{% url 'home:index' %}" class="w3-bar-item w3-button nav-header">
             <img class="w3-center" src="{% static 'home/images/jobinblue.gif' %}">
         </a>
-        <a href="{% url 'student:index' %}" class="w3-bar-item w3-button w3-hide-medium nav-link">Home</a>
+        <a href="{% url 'student:index' %}"
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'home' %}active{% endif %}">Home</a>
         <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
-           class="w3-bar-item w3-button w3-hide-medium nav-link">Posts</a>
-        <a href="{% url 'event:student_events' pk=0 %}" class="w3-bar-item w3-button w3-hide-medium nav-link">Events</a>
-        <a href="{% url 'resume:index' %}" class="w3-bar-item w3-button w3-hide-medium nav-link">Resumes</a>
-        <a href="{% url 'student:history' %}" class="w3-bar-item w3-button w3-hide-medium nav-link">History</a>
-        <a href="{% url 'student:profile' %}" class="w3-bar-item w3-button w3-hide-medium nav-link">Profile</a>
-        <a href="{% url 'manual:student_index' %}" class="w3-bar-item w3-button w3-hide-medium nav-link">Help</a>
-        <a href="{% url 'home:logout' %}" class="w3-bar-item w3-button w3-right w3-hide-medium nav-link">
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'posts' %}active{% endif %}">Posts</a>
+        <a href="{% url 'event:student_events' pk=0 %}"
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'events' %}active{% endif %}">Events</a>
+        <a href="{% url 'resume:index' %}"
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'resume' %}active{% endif %}">Resumes</a>
+        <a href="{% url 'student:history' %}"
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'history' %}active{% endif %}">History</a>
+        <a href="{% url 'student:profile' %}"
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'profile' %}active{% endif %}">Profile</a>
+        <a href="{% url 'manual:student_index' %}"
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'manual' %}active{% endif %}">Help</a>
+        <a href="{% url 'home:logout' %}" class="w3-bar-item w3-button w3-right w3-hide-small w3-hide-medium nav-link">
             <i class="fa fa-sign-out"></i>
             Logout
         </a>
-        <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-large nav-link"
+        <a href="#" class="w3-bar-item w3-button w3-right w3-hide-small w3-hide-medium nav-link start-walk walkthrough">
+            <i class="fa fa-question-circle"></i>
+        </a>
+        <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large nav-link"
            onclick="myFunction()">&#9776;</a>
     </div>
 
@@ -78,6 +92,7 @@
     <div class="content-container">
         <div class="w3-row w3-padding-16">
             <div id="navCol" class="w3-col s12 m12 l3 w3-container">
+                {% block sideContent %}{% endblock %}
                 <div id="notifications">
                     {% if notifications %}
                         <div class="w3-card-2 w3-white">
@@ -136,19 +151,25 @@
                         <div>
                             {% for x in messages %}
                                 {% if x.code == 'danger' %}
-                                    <div class="w3-container w3-pale-red w3-display-container">
+                                    <div class="w3-container message-danger w3-padding w3-display-container">
                                         <span onclick="this.parentElement.style.display='none'"
                                               class="w3-button w3-display-topright">&times;</span>
                                         <p>{{ x.message }}</p>
                                     </div>
                                 {% elif x.code == 'warning' %}
-                                    <div class="w3-container w3-pale-yellow w3-display-container">
+                                    <div class="w3-container w3-padding message-warning w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                                        <p>{{ x.message }}</p>
+                                    </div>
+                                {% elif x.code == 'success' %}
+                                    <div class="w3-container w3-padding message-success w3-display-container">
                                         <span onclick="this.parentElement.style.display='none'"
                                               class="w3-button w3-display-topright">&times;</span>
                                         <p>{{ x.message }}</p>
                                     </div>
                                 {% else %}
-                                    <div class="w3-container w3-pale-blue w3-display-container">
+                                    <div class="w3-container w3-padding message-info w3-display-container">
                                         <span onclick="this.parentElement.style.display='none'"
                                               class="w3-button w3-display-topright">&times;</span>
                                         <p>{{ x.message }}</p>
@@ -174,6 +195,9 @@
                         </p>
                     </div>
                     {% block hidden_block %}{% endblock %}
+                    {% block walkthroughs %}
+                        {% include 'company/walkthrough/no_walk.html' %}
+                    {% endblock %}
                 </div>
             </div>
         </div>

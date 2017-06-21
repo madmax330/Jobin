@@ -1,0 +1,55 @@
+<div id="reference-modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-zoom w3-card-4">
+        <header class="w3-container primary-color">
+            <span class="w3-button w3-display-topright close-modal" data-id="reference-modal">&times;</span>
+            <h3 class="w3-text-white">Reference Form</h3>
+        </header>
+        <div class="w3-container">
+            {% if other_references %}
+                <div>
+                    <h4 class="secondary-color w3-padding">
+                        Add references from other resumes:
+                    </h4>
+                    <ul class="w3-ul">
+                        {% for x in other_references %}
+                            <li>
+                                <a href="{% url 'resume:add_reference' pk=x.id rk=resume.id %}">Add {{ x.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <h3 class="w3-padding secondary-color">
+                    Reference Information
+                </h3>
+            {% endif %}
+            <div class="w3-padding">
+                <form id="reference-form" action="{% url 'resume:new_reference' pk=resume.id %}" method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="required" for="reference_name">Full Name:</label>
+                        <input id="reference_name" class="w3-input w3-border" type="text"
+                               name="reference_name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="reference_affiliation">Affiliation:</label>
+                        <input id="reference_affiliation" class="w3-input w3-border" type="text"
+                               name="reference_affiliation">
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="reference_email">Email:</label>
+                        <input id="reference_email" class="w3-input w3-border" type="text"
+                               name="reference_email">
+                    </div>
+                    <div class="w3-padding">
+                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="reference-modal">
+                            Cancel
+                        </button>
+                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

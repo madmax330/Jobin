@@ -38,6 +38,9 @@ class StudentPostContainer(BaseContainer):
         self._form = NewApplicationForm(info)
         if self._form.is_valid():
             self.__application = self._form.save()
+            if not post.new_apps:
+                post.new_apps = True
+                post.save()
             m = 'Application for post ' + post.title + ' successful.'
             if self.new_message(True, self.__student, m, 0):
                 return True
@@ -52,17 +55,23 @@ class StudentPostContainer(BaseContainer):
     def get_post(self, pk=None):
         if pk:
             try:
-                return Post.objects.get(pk=pk)
+                self.__post = Post.objects.get(pk=pk)
+                return self.__post
             except ObjectDoesNotExist:
                 self.add_error('Post not found.')
                 return False
         else:
             return self.__post
 
-    def get_posts(self, cat, pk):
+    def get_posts(self, cat, pk, filters):
         ops = [Q(programs='All Programs'), Q(programs=self.__student.program)]
-        # ads = [Q(status='open'), Q(deadline__gte=self.TODAY)]
-        ads = [Q(status='open')]
+        ads = [Q(status='open'), Q(deadline__gte=self.TODAY)]
+        fls = []
+        if filters:
+            if filters['location']:
+                fls.append(Q(location__contains=filters['location']))
+            if filters['keyword']:
+                fls.append(Q(title__contains=filters['keyword']))
         if cat == 'startup':
             ads.append(Q(is_startup_post=True))
         else:
@@ -73,6 +82,11 @@ class StudentPostContainer(BaseContainer):
         ad = Q()
         for x in ads:
             ad &= x
+        if filters:
+            f = Q()
+            for x in fls:
+                f |= x
+            op &= f
         op &= ad
         posts = Post.objects.filter(op)
         if posts.count() > 0:
@@ -94,44 +108,47 @@ class StudentPostContainer(BaseContainer):
             self.add_error('No posts found.')
             return []
 
-    def get_internship_count(self):
-        return Post.objects.filter(Q(programs='All Programs') |
-                                   Q(programs=self.__student.program),
-                                   type='internship',
-                                   status='open'
-                                   ).count()
+    def get_post_count(self, category, filters=None):
+        ops = [Q(programs='All Programs'), Q(programs=self.__student.program)]
+        ads = [
+            (Q(is_startup_post=True) if category == 'startup' else Q(type=category)),
+            Q(deadline__gte=self.TODAY),
+            Q(status='open')
+        ]
+        fls = []
+        if filters:
+            if filters['location']:
+                fls.append(Q(location__contains=filters['location']))
+            if filters['keyword']:
+                fls.append(Q(title__contains=filters['keyword']))
+        op = Q()
+        for x in ops:
+            op |= x
+        ad = Q()
+        for x in ads:
+            ad &= x
+        if filters:
+            f = Q()
+            for x in fls:
+                f |= x
+            op &= f
+        op &= ad
+        return Post.objects.filter(op).count()
 
-    def get_part_time_count(self):
-        return Post.objects.filter(Q(programs='All Programs') |
-                                   Q(programs=self.__student.program),
-                                   type='parttime',
-                                   status='open',
-                                   deadline__gte=self.TODAY
-                                   ).count()
-
-    def get_new_grad_count(self):
-        return Post.objects.filter(Q(programs='All Programs') |
-                                   Q(programs=self.__student.program),
-                                   type='newgrad',
-                                   status='open',
-                                   deadline__gte=self.TODAY
-                                   ).count()
-
-    def get_startup_count(self):
-        return Post.objects.filter(Q(programs='All Programs') |
-                                   Q(programs=self.__student.program),
-                                   is_startup_post=True,
-                                   status='open',
-                                   deadline__gte=self.TODAY
-                                   ).count()
-
-    def get_volunteer_count(self):
-        return Post.objects.filter(Q(programs='All Programs') |
-                                   Q(programs=self.__student.program),
-                                   type='volunteer',
-                                   status='open',
-                                   deadline__gte=self.TODAY
-                                   ).count()
+    def get_newest_posts(self):
+        ops = [Q(programs='All Programs'), Q(programs=self.__student.program)]
+        ads = [Q(deadline__gte=self.TODAY), Q(status='open')]
+        op = Q()
+        for x in ops:
+            op |= x
+        ad = Q()
+        for x in ads:
+            ad &= x
+        op &= ad
+        posts = Post.objects.filter(op).order_by('-id')[:15]
+        if posts.count() > 0:
+            return list(posts)
+        return []
 
     def get_application(self, pk):
         try:
@@ -160,7 +177,7 @@ class StudentPostContainer(BaseContainer):
         return []
 
     def get_all_applications(self):
-        apps = Application.objects.filter(student=self.__student)
+        apps = Application.objects.filter(student=self.__student).order_by('-id')
         if apps.count() > 0:
             return list(apps)
         self.add_error('No applications found.')
@@ -174,6 +191,11 @@ class StudentPostContainer(BaseContainer):
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
 
+    def increment_view_count(self):
+        self.__post.views = self.__post.views + 1
+        self.__post.save()
+        return True
+
     def submit_cover_letter(self, letter):
         info = {
             'cover': letter,
@@ -184,8 +206,8 @@ class StudentPostContainer(BaseContainer):
             self.__application = self._form.save()
             m = 'Cover letter for "' + self.__application.post_title + '" successfully submitted.'
             if self.new_message(True, self.__student, m, 0):
-                m = 'Cover letter received from ' + self.__student.get_name() + ' for post '
-                m += self.__post.title + '.'
+                m = 'Cover letter received from ' + self.__student.name + ' for post '
+                m += self.__application.post.title + '.'
                 if self.new_notification(False, self.__application.post.company, m, 100):
                     return True
             return False
@@ -194,6 +216,9 @@ class StudentPostContainer(BaseContainer):
             return False
 
     def change_application_resume(self, r):
+        if self.__application.resume == r:
+            self.add_error(r.name + ' is already the resume for this application.' + self.__application.post_title)
+            return False
         self._form = ChangeResumeForm({'resume': r.id}, instance=self.__application)
         if self._form.is_valid():
             self._form.save()
@@ -227,8 +252,10 @@ class CompanyPostContainer(BaseContainer):
         info = {
             'company': self.__company.id,
             'is_startup_post': self.__company.is_startup,
+            'location': self.__company.city + ' ' + self.__company.state + ' ' + self.__company.country,
             'title': post_info['title'],
             'wage': post_info['wage'],
+            'wage_interval': post_info['wage_interval'],
             'openings': post_info['openings'],
             'start_date': post_info['start_date'],
             'end_date': post_info['end_date'],
@@ -243,11 +270,12 @@ class CompanyPostContainer(BaseContainer):
         if self._form.is_valid():
             self.__post = self._form.save()
             m = 'New Post: ' + self.__post.title + ' successfully created.'
-            if self.new_message(True, self.__company, m, 0):
+            if self.new_message(False, self.__company, m, 0):
                 return True
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -255,6 +283,7 @@ class CompanyPostContainer(BaseContainer):
         info = {
             'title': post_info['title'],
             'wage': post_info['wage'],
+            'wage_interval': post_info['wage_interval'],
             'openings': post_info['openings'],
             'start_date': post_info['start_date'],
             'end_date': post_info['end_date'],
@@ -298,6 +327,7 @@ class CompanyPostContainer(BaseContainer):
         info = {
             'title': post_info['title'],
             'wage': post_info['wage'],
+            'wage_interval': post_info['wage_interval'],
             'openings': post_info['openings'],
             'start_date': post_info['start_date'],
             'end_date': post_info['end_date'],
@@ -455,6 +485,8 @@ class CompanyPostContainer(BaseContainer):
             ops.append(Q(student__major__in=filters['majors'].split(',')))
         if filters['gpa']:
             ops.append(Q(resume__gpa__gte=filters['gpa']))
+        if filters['saved']:
+            ops.append(Q(saved=True))
 
         if len(ops) > 0:
             op = Q()
@@ -470,6 +502,22 @@ class CompanyPostContainer(BaseContainer):
             return self.get_applications()
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
+
+    def save_application(self):
+        if self.__application.saved:
+            self.add_error('Application already saved.')
+            return False
+        self.__application.saved = True
+        self.__application.save()
+        return True
+
+    def remove_application_save(self):
+        if self.__application.saved:
+            self.__application.saved = False
+            self.__application.save()
+            return True
+        self.add_error('Application not saved.')
+        return False
 
     def request_cover(self):
         if self.__application.cover_requested:
@@ -493,4 +541,24 @@ class CompanyPostContainer(BaseContainer):
             if self.new_message(False, self.__company, m, 2):
                 return True
         return False
+
+    def app_opened(self, app=None):
+        if app:
+            self.__application = app
+        edited = False
+        if not self.__application.opened:
+            self.__application.opened = True
+            edited = True
+        if self.__application.cover_submitted and not self.__application.cover_opened:
+            self.__application.cover_opened = True
+            edited = True
+        if edited:
+            self.__application.save()
+
+    def no_new_apps(self, post=None):
+        if post:
+            self.__post = post
+        if self.__post.new_apps:
+            self.__post.new_apps = False
+            self.__post.save()
 

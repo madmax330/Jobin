@@ -2,10 +2,14 @@
 
 {% block title %}Student Home{% endblock %}
 
+{% load staticfiles %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'student/scripts/index_script.js' %}"></script>
+{% endblock %}
 
 {% block content %}
     <div class="w3-row">
-        <div class="w3-col s12 m12 l12">
+        <div class="w3-col s12">
             {% if old_apps %}
                 <div>
                     <div class="message info-message">
@@ -26,7 +30,7 @@
                 </div>
             {% endif %}
             <div>
-                <div class="primary-color w3-padding-small">
+                <div class="primary-color w3-padding-small active-applications">
                     <h4 class="w3-center w3-text-white">Active Applications</h4>
                 </div>
                 {% if applications %}
@@ -90,22 +94,25 @@
                                     {% if x == applications.number %}
                                         <strong><span>{{ x }} </span></strong>
                                     {% else %}
-                                        <a class="w3-text-black" href="?ap={{ x }}&ep={{ events.number }}">{{ x }} </a>
+                                        <a class="w3-text-black"
+                                           href="?ap={{ x }}&ep={{ events.number }}&pp={{ posts.number }}">
+                                            {{ x }}
+                                        </a>
                                     {% endif %}|
                                 {% endfor %}
                             </td>
                         </tr>
                     </table>
                 {% else %}
-                    <div class="warning-message message">
+                    <div class="w3-container w3-padding message-info">
                         You currently have no active applications.
-                        <a href="{% url 'post:student_posts' pk=0 pt='internship' %}">Browse the posts</a>
+                        <a href="{% url 'post:student_posts' cat='internship' pk=0 %}">Browse the posts</a>
                         to apply.
                     </div>
                 {% endif %}
             </div>
             <div class="w3-padding-16">
-                <div class="w3-padding-small primary-color">
+                <div class="w3-padding-small primary-color saved-events">
                     <h4 class="w3-center w3-text-white">Saved Events</h4>
                 </div>
                 {% if events %}
@@ -137,7 +144,49 @@
                                     {% if x == events.number %}
                                         <strong><span>{{ x }} </span></strong>
                                     {% else %}
-                                        <a href="?ap={{ applications.number }}&ep={{ x }}"
+                                        <a href="?ap={{ applications.number }}&ep={{ x }}&pp={{ posts.number }}"
+                                           class="w3-text-black">{{ x }} </a>
+                                    {% endif %}|
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </table>
+                {% else %}
+                    <div class="w3-container w3-padding message-info">
+                        You currently have shown no interest in any events.
+                        <a href="{% url 'event:student_events' pk=0 %}">Browse the events</a>
+                        to see which ones interest you.
+                    </div>
+                {% endif %}
+            </div>
+            <div class="w3-padding-16">
+                <div class="w3-padding-small primary-color latest-posts">
+                    <h4 class="w3-center w3-text-white">Latest Posts</h4>
+                </div>
+                {% if posts %}
+                    <table class="w3-table w3-bordered w3-white">
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Application Deadline</th>
+                            <th>Location</th>
+                        </tr>
+                        {% for x in posts %}
+                            <tr>
+                                <td><a href="{% url 'post:student_posts' cat=x.type pk=x.id %}">{{ x.title }}</a></td>
+                                <td>{{ x.company }}</td>
+                                <td>{{ x.deadline }}</td>
+                                <td>{{ x.company.address }}, {{ x.company.city }}, {{ x.company.state }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4">
+                                <span>Page: </span>
+                                {% for x in posts.paginator.page_range %}
+                                    {% if x == posts.number %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <a href="?ap={{ applications.number }}&ep={{ events.number }}&pp={{ x }}"
                                            class="w3-text-black">{{ x }} </a>
                                     {% endif %}|
                                 {% endfor %}
@@ -146,14 +195,35 @@
                     </table>
                 {% else %}
                     <div class="warning-message message">
-                        You currently have shown no interest in any events.
-                        <a href="{% url 'event:student_events' pk=0 %}">Browse the events</a>
-                        to see which ones interest you.
+                        There are no posts available for you right now.
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
+    <div>
+        <div id="welcome-modal" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom w3-card-4 modal-sm">
+                <header class="w3-container primary-color w3-text-white">
+                    <span data-id="welcome-modal" class="w3-button w3-display-topright close-modal">&times;</span>
+                    <h3>Welcome to Jobin!</h3>
+                </header>
+                <div class="w3-container w3-padding-16">
+                    <p>
+                        Welcome to Jobin and thanks for signing up. To get started quickly click on the
+                        continue button for a quick tutorial on how to use the platform, then start applying
+                        for jobs!
+                    </p>
+                    <div>
+                        <button class="w3-btn w3-border w3-border-black close-modal start-walk" data-id="welcome-modal">
+                            Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 
@@ -177,6 +247,11 @@
             when the date for this event approaches.
         </p>
     </div>
+    <div class="new-student">{% if student.is_new %}true{% else %}false{% endif %}</div>
+{% endblock %}
+
+{% block walkthroughs %}
+    {% include 'student/walkthrough/home.html' %}
 {% endblock %}
 
 

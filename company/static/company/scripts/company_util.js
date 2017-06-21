@@ -22,7 +22,9 @@ function display_message(msg, code){
                 </div>`;
 
     msgs.append(html);
-
+    $('html, body').animate({
+        scrollTop: $('body').offset().top
+    }, 'fast');
 }
 
 
