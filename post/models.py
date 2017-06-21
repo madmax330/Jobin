@@ -8,6 +8,7 @@ class Post(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     title = models.CharField(max_length=100)
     wage = models.IntegerField(null=True, blank=True)
+    wage_interval = models.CharField(max_length=20)
     openings = models.IntegerField(null=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
@@ -23,6 +24,9 @@ class Post(models.Model):
     new_apps = models.BooleanField(default=False)
     cover_instructions = models.TextField(null=True, blank=True)
     is_startup_post = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
+    date_posted = models.DateField(auto_now_add=True)
+    location = models.CharField(max_length=200)
 
     def __str__(self):
         return self.title
@@ -42,6 +46,7 @@ class Application(models.Model):
     post_title = models.CharField(max_length=100)
     student_name = models.CharField(max_length=100)
     resume_notified = models.BooleanField(default=False)
+    saved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.status

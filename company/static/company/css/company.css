@@ -22,6 +22,10 @@ h1, h2, h3, h4, h5, h6{
     padding-top: 20px;
 }
 
+.walk-container{
+    padding: 8px 20px 8px 0;
+}
+
 .content-container{
     padding-bottom: 20px;
 }
@@ -45,6 +49,10 @@ h1, h2, h3, h4, h5, h6{
     margin: 0;
 }
 
+.jobin-nav .navbar-nav>li>a{
+    border-bottom: 4px solid transparent;
+}
+
 .jobin-nav .navbar-nav>li>a, .jobin-nav h2{
     color: #FFFFFF;
 }
@@ -58,9 +66,9 @@ h1, h2, h3, h4, h5, h6{
     margin-right: 10px;
 }
 
-.jobin-nav .navbar-nav>li>a:hover{
-    background-color: #FFFFFF;
-    color: #000000;
+.jobin-nav .navbar-nav>li>a:hover, .jobin-nav .navbar-nav>li>a.active{
+    color: #efefef;
+    border-bottom: 4px solid #FFFFFF;
 }
 
 footer{
@@ -133,7 +141,7 @@ footer a:hover{
 
 /* MODALS CSS */
 
-#warning-modal .modal-content{
+#warning-modal .modal-content, #welcome-modal .modal-content{
     border-radius: 0;
 }
 
@@ -141,6 +149,14 @@ footer a:hover{
 #warning-modal .modal-header{
     background-color: #f0ad4e;
     color: #FFFFFF;
+}
+
+#welcome-modal .modal-header{
+    color: #FFFFFF;
+}
+
+.popover-content{
+    min-width: 300px;
 }
 
 

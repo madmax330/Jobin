@@ -17,7 +17,7 @@ $(function(){
     });
 
     $('.warning-accepted').click(function(){
-        send_get($(this).data('url'), null);
+        send_get($(this).data('url'));
         close_modal('warning-modal');
     });
 

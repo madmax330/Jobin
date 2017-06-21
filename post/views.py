@@ -25,6 +25,7 @@ def company_index(request):
             'posts': posts.get_page(post_page),
             'expired_posts': expired_posts.get_page(ex_post_page),
             'messages': msgs,
+            'tab': 'posts',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'post/company_index.html', context)
@@ -36,8 +37,11 @@ class NewPostView(View):
     template_name = 'post/post_form.html'
 
     def get(self, request):
+        company = CompanyContainer(request.user)
         context = {
-            'programs': HomeUtil.get_programs()
+            'programs': HomeUtil.get_programs(),
+            'company': company.get_company(),
+            'tab': 'posts',
         }
         return render(request, self.template_name, context)
 
@@ -47,6 +51,8 @@ class NewPostView(View):
         i = rq.get_post_info(request)
         context = {
             'programs': HomeUtil.get_programs(),
+            'company': company.get_company(),
+            'tab': 'posts',
         }
         if i:
 
@@ -55,11 +61,12 @@ class NewPostView(View):
                     if company.new_post(i):
                         m = 'New post created successfully.'
                         MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('post:company_index')
+                        return redirect('post:company_posts')
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = company.get_errors()
+                context['post'] = i
+                context['errors'] = company.get_form().errors
 
         else:
             context['errors'] = rq.get_errors()
@@ -76,6 +83,7 @@ class EditPostView(View):
             'company': company.get_company(),
             'post': company.get_post(pk),
             'programs': HomeUtil.get_programs(),
+            'tab': 'posts',
         }
         return render(request, self.template_name, context)
 
@@ -84,8 +92,9 @@ class EditPostView(View):
         rq = RequestUtil()
         i = rq.get_post_info(request)
         context = {
-            'company': company,
+            'company': company.get_company(),
             'programs': HomeUtil.get_programs(),
+            'tab': 'posts',
         }
         if i:
 
@@ -94,7 +103,7 @@ class EditPostView(View):
                     if company.edit_post(pk, i):
                         m = 'Post edited successfully.'
                         MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('post:company_index')
+                        return redirect('post:company_post', pk=pk)
                     else:
                         raise IntegrityError
             except IntegrityError:
@@ -117,14 +126,12 @@ def close_post(request, pk):
                 if company.close_post(pk):
                     m = 'Post closed successfully.'
                     MessageCenter.new_message('company', company.get_company(), 'success', m)
-                    return redirect('post:company_index')
+                    return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
         except IntegrityError:
             m = str(company.get_errors())
-            MessageCenter.new_message('company', company.get_company(), 'danger', m)
-
-        return redirect('post:detail')
+            return HttpResponse(m, status=400)
 
     raise Http404
 
@@ -139,6 +146,7 @@ def post_detail(request, pk):
             'post': company.get_post(pk),
             'app_count': company.application_count(pk),
             'messages': msgs,
+            'tab': 'posts',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'post/detail.html', context)
@@ -148,8 +156,8 @@ def post_detail(request, pk):
 
 POST_CATEGORIES = {
     'internship': 'Internship',
-    'parttime': 'Part Time',
-    'newgrad': 'New Grad',
+    'part_time': 'Part Time',
+    'full_time': 'Full Time',
     'volunteer': 'Volunteer',
     'startup': 'Startup',
 }
@@ -161,7 +169,9 @@ def student_index(request, cat, pk):
         student = StudentContainer(request.user)
         msgs = MessageCenter.get_messages('student', student.get_student())
         notes = MessageCenter.get_notifications('student', student.get_student())
-        posts = student.get_posts(cat, pk)
+        rq = RequestUtil()
+        filters = rq.get_student_post_filter(request)
+        posts = student.get_posts(cat, pk, filters)
         context = {
             'student': student.get_student(),
             'resumes': student.get_resumes(),
@@ -169,13 +179,15 @@ def student_index(request, cat, pk):
             'count': len(posts),
             'category': cat,
             'd_category': POST_CATEGORIES[cat],
-            'internship_count': student.get_internship_count(),
-            'volunteer_count': student.get_volunteer_count(),
-            'part_time_count': student.get_part_time_count(),
-            'new_grad_count': student.get_new_grad_count(),
-            'startup_count': student.get_startup_count(),
+            'internship_count': student.get_post_count('internship', filters),
+            'volunteer_count': student.get_post_count('volunteer', filters),
+            'part_time_count': student.get_post_count('part_time', filters),
+            'full_time_count': student.get_post_count('full_time', filters),
+            'startup_count': student.get_post_count('startup', filters),
             'messages': msgs,
             'notifications': notes,
+            'filters': filters,
+            'tab': 'posts',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'post/student_index.html', context)
@@ -194,6 +206,7 @@ def student_detail(request, pk):
             'application': app,
             'messages': msgs,
             'student': student.get_student(),
+            'tab': 'posts',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'post/student_detail.html', context)
@@ -256,8 +269,6 @@ def apply(request, pk):
         try:
             with transaction.atomic():
                 if student.new_application(pk):
-                    m = 'Application successful.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
@@ -274,6 +285,7 @@ def post_applicants(request, pk):
         page = request.GET.get('page')
         company = CompanyContainer(request.user)
         post = company.get_post(pk)
+        company.no_new_apps(post)
         program = HomeUtil.get_program(post.programs)
         msgs = MessageCenter.get_messages('company', company.get_company())
         filters = None
@@ -296,6 +308,7 @@ def post_applicants(request, pk):
             'filter_majors': filters['majors'].split(',') if filters and filters['majors'] else None,
             'messages': msgs,
             'applicants': 'True',
+            'tab': 'posts',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'post/post_applicants.html', context)
@@ -313,24 +326,17 @@ def single_applicant(request, pk, ak):
 
         if filters is None:
             MessageCenter.new_message('company', company.get_company(), 'danger', str(rq.get_errors()))
-
         apps = company.get_applications(pk, ak=ak, filters=filters)
-        next_app = None
-        prev_app = None
-        app = None
         if apps and len(apps) > 0:
-            if ak == '0':
-                prev_app = apps[len(apps)-1]
-                app = apps[0]
-                next_app = apps[(1 if 1 < len(apps) else 0)]
-            else:
+            prev_app = apps[len(apps)-1]
+            app = apps[0]
+            next_app = apps[(1 if 1 < len(apps) else 0)]
+            if not ak == '0':
                 for i in range(0, len(apps)):
-                    print('appid: ' + str(apps[i].id) + ' ak: ' + ak)
                     if str(apps[i].id) == ak:
                         prev_app = apps[i-1] if i-1 >= 0 else apps[len(apps)-1]
                         app = apps[i]
                         next_app = apps[i+1] if i+1 < len(apps) else apps[0]
-
             msgs = MessageCenter.get_messages('company', company.get_company())
             context = {
                 'messages': msgs,
@@ -342,6 +348,7 @@ def single_applicant(request, pk, ak):
                 'filters': filters,
                 'filter_schools': filters['schools'].split(',') if filters and filters['schools'] else None,
                 'filter_majors': filters['majors'].split(',') if filters and filters['majors'] else None,
+                'tab': 'posts',
             }
             MessageCenter.clear_msgs(msgs)
             return render(request, 'post/post_applicant.html', context)
@@ -365,6 +372,7 @@ class RecoverPostView(View):
         context = {
             'company': company.get_company(),
             'post': post,
+            'tab': 'posts',
         }
         return render(request, self.template_name, context)
 
@@ -372,7 +380,10 @@ class RecoverPostView(View):
         company = CompanyContainer(self.request.user)
         rq = RequestUtil()
         i = rq.get_post_info(request)
-        context = {'company': company.get_company()}
+        context = {
+            'company': company.get_company(),
+            'tab': 'posts',
+        }
         if i:
 
             try:
@@ -380,7 +391,7 @@ class RecoverPostView(View):
                     if company.recover_post(pk, i):
                         m = 'Post recovered successfully.'
                         MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('post:company_index')
+                        return redirect('post:company_posts')
                     else:
                         raise IntegrityError
             except IntegrityError:
@@ -450,11 +461,63 @@ def discard_application(request, pk):
                     raise IntegrityError
         except IntegrityError:
             m = str(company.get_errors())
-            MessageCenter.new_message('company', company.get_company(), 'danger', m)
-            return HttpResponse(status=400)
+            return HttpResponse(m, status=400)
 
         raise Http404
     
+    raise Http404
+
+
+def save_application(request, pk):
+
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if company.save_application(pk):
+                    m = 'Application saved successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return HttpResponse(status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(company.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
+
+
+def remove_application_save(request, pk):
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if company.remove_application_save(pk):
+                    m = 'Application no longer saved.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return HttpResponse(status=200)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(company.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
+
+
+def increment_count(request, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        if student.increment_view_count(pk):
+            return HttpResponse(status=200)
+        else:
+            m = str(student.get_errors())
+            return HttpResponse(m, status=400)
+
     raise Http404
 
 

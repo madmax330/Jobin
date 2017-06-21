@@ -2,20 +2,18 @@
 
 {% block title %}Post List{% endblock %}
 
-{% block postactive %}active{% endblock %}
+{% load staticfiles %}
+{% block scripts %}
+{% endblock %}
 
 {% block side_content %}
     {% include 'company/sides/company_info.html' %}
     {% include 'company/sides/post_legend.html' %}
 {% endblock %}
 
-{% block scripts %}
-    {% load staticfiles %}
-{% endblock %}
-
 {% block content %}
     <div class="panel panel-default primary-panel">
-        <div class="panel-heading">
+        <div class="panel-heading active-posts">
             <h4 class="text-center">Active Posts</h4>
         </div>
         <div class="panel-body">
@@ -25,11 +23,12 @@
                     <tr>
                         <th>Title</th>
                         <th>Wage</th>
-                        <th>Openings</th>
+                        <th>Number of positions</th>
                         <th>Start Date</th>
                         <th>Application Deadline</th>
+                        <th>View Count</th>
                         <th></th>
-                        <th><a href="{% url 'post:new' %}">
+                        <th><a href="{% url 'post:new' %}" class="new-post">
                             <button class="btn btn-primary">New Post</button>
                         </a></th>
                     </tr>
@@ -48,12 +47,13 @@
                             <td>{{ p.openings }}</td>
                             <td>{{ p.start_date }}</td>
                             <td>{{ p.deadline }}</td>
+                            <td>{{ p.views }}</td>
                             <td><a href="{% url 'post:applicants' p.pk %}">Applicants</a></td>
                             <td><a href="{% url 'post:edit' p.pk %}">Edit</a></td>
                         </tr>
                     {% endfor %}
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <span>Page: </span>
                             {% for x in posts.paginator.page_range %}
                                 {% if x == posts.number %}
@@ -67,7 +67,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <div class="alert alert-warning">
+                <div class="alert alert-info">
                     You currently don't have any posts.
                     <strong>
                         <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
@@ -78,12 +78,12 @@
         </div>
     </div>
     <div class="panel panel-default secondary-panel">
-        <div class="panel-heading">
-            <h4 style="text-align:center">Expired Posts</h4>
+        <div class="panel-heading expired-posts">
+            <h4 class="text-center">Expired Posts</h4>
         </div>
         <div class="panel-body">
-            {% if not posts %}
-                <div class="alert warning-message">
+            {% if not expired_posts and not posts %}
+                <div class="alert alert-info">
                     You currently don't have any posts.
                     <a class="alert-link" href="{% url 'post:new' %}">Create a post</a>
                     to get started.
@@ -94,7 +94,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Wage</th>
-                        <th>Openings</th>
+                        <th>Number of positions</th>
                         <th>Start Date</th>
                         <th>Application Deadline</th>
                         <th></th>
@@ -110,7 +110,9 @@
                                     {{ p.title }}
                                 </a>
                             </td>
-                            <td>{{ p.wage }}</td>
+                            <td>
+                                {{ p.wage }}{% if not p.wage_interval == 'single' %}/{{ p.wage_interval }}{% endif %}
+                            </td>
                             <td>{{ p.openings }}</td>
                             <td>{{ p.start_date }}</td>
                             <td>{{ p.deadline }}</td>
@@ -140,3 +142,6 @@
     </div>
 {% endblock %}
 
+{% block walkthroughs %}
+    {% include 'company/walkthrough/posts.html' %}
+{% endblock %}

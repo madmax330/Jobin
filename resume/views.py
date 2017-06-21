@@ -20,6 +20,7 @@ def resume_index(request):
             'messages': msgs,
             'first': 'false' if resumes.count > 0 else 'true',
             'notifications': notes,
+            'tab': 'resume',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'resume/index.html', context)
@@ -45,6 +46,8 @@ def resume_detail(request, pk):
             'other_experience': student.get_other_experience(),
             'other_awards': student.get_other_awards(),
             'other_skills': student.get_other_skills(),
+            'other_references': student.get_other_references(),
+            'tab': 'resume',
         }
         MessageCenter.clear_msgs(msgs)
         return render(request, 'resume/details.html', context)
@@ -140,13 +143,13 @@ def change_application_resume(request, pk, ak):
                 if student.change_application_resume(pk, ak):
                     m = 'Resume changed successfully.'
                     MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    return HttpResponse(m, status=200)
                 else:
                     raise IntegrityError
         except IntegrityError:
             m = str(student.get_errors())
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
-
-        return redirect('student:index')
+            return HttpResponse(m, status=400)
 
     raise Http404
 
@@ -218,6 +221,7 @@ def new_language(request, pk):
 
 
 def add_language(request, pk, rk):
+
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -238,6 +242,7 @@ def add_language(request, pk, rk):
 
 
 def edit_language(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -285,6 +290,7 @@ def delete_language(request, rk, pk):
 
 
 def new_experience(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -311,6 +317,7 @@ def new_experience(request, pk):
 
 
 def add_experience(request, pk, rk):
+
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -331,6 +338,7 @@ def add_experience(request, pk, rk):
 
 
 def edit_experience(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -378,6 +386,7 @@ def delete_experience(request, rk, pk):
 
 
 def new_award(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -404,6 +413,7 @@ def new_award(request, pk):
 
 
 def add_award(request, pk, rk):
+
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -424,6 +434,7 @@ def add_award(request, pk, rk):
 
 
 def edit_award(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -471,6 +482,7 @@ def delete_award(request, rk, pk):
 
 
 def new_school(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -497,6 +509,7 @@ def new_school(request, pk):
 
 
 def add_school(request, pk, rk):
+
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -517,6 +530,7 @@ def add_school(request, pk, rk):
 
 
 def edit_school(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -564,6 +578,7 @@ def delete_school(request, rk, pk):
 
 
 def new_skill(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -590,6 +605,7 @@ def new_skill(request, pk):
 
 
 def add_skill(request, pk, rk):
+
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -610,6 +626,7 @@ def add_skill(request, pk, rk):
 
 
 def edit_skill(request, pk):
+
     if request.method == 'POST':
         student = StudentContainer(request.user)
         rq = RequestUtil()
@@ -656,4 +673,97 @@ def delete_skill(request, rk, pk):
     raise Http404
 
 
+def new_reference(request, pk):
+
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_reference_info(request)
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if student.new_reference(pk, i):
+                        m = 'New reference added successfully.'
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
+                        return HttpResponse(m, status=200)
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                m = str(student.get_errors())
+                return HttpResponse(m, status=400)
+
+        else:
+            m = str(rq.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
+
+
+def add_reference(request, pk, rk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.add_reference(rk, pk):
+                    m = 'Reference added successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('resume:details', pk=rk)
+
+    raise Http404
+
+
+def edit_reference(request, pk):
+
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+        rq = RequestUtil()
+        i = rq.get_reference_info(request)
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if student.edit_reference(pk, i):
+                        m = 'Reference edited successfully.'
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
+                        return HttpResponse(m, status=200)
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                m = str(student.get_errors())
+                return HttpResponse(m, status=400)
+
+        else:
+            m = str(rq.get_errors())
+            return HttpResponse(m, status=400)
+
+    raise Http404
+
+
+def delete_reference(request, rk, pk):
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.delete_reference(rk, pk):
+                    m = 'Reference deleted successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('resume:details', pk=rk)
+
+    raise Http404
 

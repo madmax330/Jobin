@@ -33,6 +33,9 @@ function update_programs(program){
 
 function update_majors(program, major){
     let major_in = $('.major-input');
+    if(!program){
+        program = $('.program-input').val();
+    }
 
     $('.jobin-major').each(function(){
         let val = $(this).html().toString().trim();

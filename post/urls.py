@@ -5,7 +5,8 @@ app_name = 'post'
 
 urlpatterns = [
     url(r'^company/posts/$', views.company_index, name='company_posts'),
-    url(r'^student/posts/(?P<cat>\w+)/(?P<pk>[0-9]+)/$', views.student_index, name='student_posts'),
+    url(r'^student/posts/(?P<cat>[a-zA-Z_]+)/(?P<pk>[0-9]+)/$', views.student_index, name='student_posts'),
+    url(r'^increment/(?P<pk>[0-9]+)/$', views.increment_count, name='increment'),
 
     url(r'^new/$', views.NewPostView.as_view(), name='new'),
     url(r'^edit/(?P<pk>[0-9]+)/$', views.EditPostView.as_view(), name='edit'),
@@ -23,6 +24,8 @@ urlpatterns = [
     url(r'^applicant/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.single_applicant, name='applicant'),
     url(r'^request/cover/(?P<pk>[0-9]+)/$', views.request_cover_letter, name='request_cover'),
     url(r'^discard/(?P<pk>[0-9]+)/$', views.discard_application, name='discard'),
+    url(r'^save/(?P<pk>[0-9]+)/$', views.save_application, name='save'),
+    url(r'^remove/save/(?P<pk>[0-9]+)/$', views.remove_application_save, name='remove_save'),
     url(r'^app/(?P<ak>[0-9]+)/pdf/$', views.ApplicantPDF.as_view(), name='app_pdf'),
 ]
 

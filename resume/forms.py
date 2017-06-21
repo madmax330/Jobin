@@ -1,6 +1,6 @@
 from django import forms
-from .models import Resume, Language, Experience, Award, School, Skill
-from .models import SkillLink, LanguageLink, ExperienceLink, AwardLink, SchoolLink
+from .models import Resume, Language, Experience, Award, School, Skill, Reference
+from .models import SkillLink, LanguageLink, ExperienceLink, AwardLink, SchoolLink, ReferenceLink
 
 
 class ResumeForm(forms.ModelForm):
@@ -160,3 +160,27 @@ class NewSkillLinkForm(forms.ModelForm):
     class Meta:
         model = SkillLink
         fields = '__all__'
+
+
+class NewReferenceForm(forms.ModelForm):
+
+    class Meta:
+        model = Reference
+        fields = '__all__'
+
+
+class EditReferenceForm(forms.ModelForm):
+
+    class Meta:
+        model = Reference
+        exclude = ('student',)
+
+
+class NewReferenceLinkForm(forms.ModelForm):
+
+    class Meta:
+        model = ReferenceLink
+        fields = '__all__'
+
+
+

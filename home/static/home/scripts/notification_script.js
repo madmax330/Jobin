@@ -5,11 +5,11 @@
 $(function(){
 
     $('#close-all-notes').click(function(){
-        send_get($(this).data('url'), null);
+        send_get($(this).data('url'));
     });
 
     $('.close-note').click(function(){
-        send_get($(this).data('url'), null);
+        send_get($(this).data('url'));
     });
 
 });

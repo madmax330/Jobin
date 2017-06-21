@@ -63,10 +63,10 @@
         {% if resumes %}
             <table class="w3-table w3-bordered w3-white">
                 <tr class="secondary-color">
-                    <th>Name</th>
+                    <th class="resume-detail">Name</th>
                     <th>Last Updated</th>
                     <th>Is Active</th>
-                    <th></th>
+                    <th class="resume-actions">Actions</th>
                 </tr>
                 {% for x in resumes %}
                     <tr class="{% if not x.is_complete %}w3-pale-red{% endif %} jobin-resume">
@@ -88,7 +88,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <a href="#" class="edit-resume">Edit</a> |
+                                    <a href="#" class="edit-resume" data-url="{% url 'resume:edit' pk=x.id %}">Edit</a> |
                                     <a href="#" class="warning-open" data-id="delete-resume"
                                        data-url="{% url 'resume:delete' pk=x.id %}" data-name="{{ x.name }}">
                                         Delete
@@ -140,5 +140,9 @@
             This will permanently delete this resume from the resume.
         </p>
     </div>
+{% endblock %}
+
+{% block walkthroughs %}
+    {% include 'student/walkthrough/resumes.html' %}
 {% endblock %}
 

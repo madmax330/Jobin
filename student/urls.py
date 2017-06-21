@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^profile/$', views.profile_view, name='profile'),
     url(r'^history/$', views.history_view, name='history'),
     url(r'^edit/$', views.EditStudentView.as_view(), name='edit'),
+    url(r'^not/new/$', views.student_not_new, name='not_new'),
 ]
 

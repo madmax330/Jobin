@@ -23,7 +23,10 @@ class StudentEventContainer(BaseContainer):
         info = {
             'student': self.__student.id,
             'event': event.id,
-            'date': event.date,
+            'start_date': event.start_date,
+            'start_time': event.start_time,
+            'end_date': event.end_date,
+            'end_time': event.end_time,
             'event_name': event.title,
             'active': True,
         }
@@ -74,7 +77,7 @@ class StudentEventContainer(BaseContainer):
         return []
 
     def get_all_saved_events(self):
-        es = SavedEvent.objects.filter(student=self.__student)
+        es = SavedEvent.objects.filter(student=self.__student).order_by('-id')
         if es.count() > 0:
             l = []
             for x in es:
@@ -117,8 +120,10 @@ class CompanyEventContainer(BaseContainer):
         info = {
             'company': self.__company.id,
             'title': event_info['title'],
-            'date': event_info['date'],
-            'time': event_info['time'],
+            'start_date': event_info['start_date'],
+            'start_time': event_info['start_time'],
+            'end_date': event_info['end_date'],
+            'end_time': event_info['end_time'],
             'website': event_info['website'],
             'address': event_info['address'],
             'city': event_info['city'],
@@ -131,11 +136,12 @@ class CompanyEventContainer(BaseContainer):
         if self._form.is_valid():
             self.__event = self._form.save()
             m = 'New Event: ' + self.__event.title + ' successfully created.'
-            if self.new_message(True, self.__company, m, 0):
+            if self.new_message(False, self.__company, m, 0):
                 return True
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -143,8 +149,10 @@ class CompanyEventContainer(BaseContainer):
         info = {
             'company': self.__company.id,
             'title': event_info['title'],
-            'date': event_info['date'],
-            'time': event_info['time'],
+            'start_date': event_info['start_date'],
+            'start_time': event_info['start_time'],
+            'end_date': event_info['end_date'],
+            'end_time': event_info['end_time'],
             'website': event_info['website'],
             'address': event_info['address'],
             'city': event_info['city'],
@@ -178,8 +186,10 @@ class CompanyEventContainer(BaseContainer):
         info = {
             'company': self.__company.id,
             'title': event_info['title'],
-            'date': event_info['date'],
-            'time': event_info['time'],
+            'start_date': event_info['start_date'],
+            'start_time': event_info['start_time'],
+            'end_date': event_info['end_date'],
+            'end_time': event_info['end_time'],
             'website': event_info['website'],
             'address': event_info['address'],
             'city': event_info['city'],

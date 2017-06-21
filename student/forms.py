@@ -13,4 +13,4 @@ class EditStudentForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        exclude = ('is_new', 'user', 'school',)
+        exclude = ('is_new', 'user', 'school', 'email')

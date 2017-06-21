@@ -1,0 +1,152 @@
+{% extends 'company/base.html' %}
+
+{% block title %}Jobin Suggestions{% endblock %}
+
+{% load staticfiles %}
+{% block scripts %}
+    <script src="{% static 'company/scripts/suggestion_util.js' %}"></script>
+{% endblock %}
+
+{% block side_content %}
+    {% include 'company/sides/company_info.html' %}
+    <div class="panel panel-default secondary-panel">
+        <div class="panel-heading">
+            <h4 class="text-center">Info</h4>
+        </div>
+        <div class="panel-body">
+            Suggestions are ways for you to let us know of some features that
+            you might want to see added to the platform, or some features that brought
+            confusion to you while using the platform.
+            <br/>
+            You suggestions will be sent to the Jobin Team upon submission of the beside form.
+            <br/>
+            All your suggestions are greatly appreciated as they will hopefully help make your
+            experience better as well as our product.
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default primary-panel">
+        <div class="panel-heading suggestion-form">
+            <h4>Suggestion Form</h4>
+        </div>
+        <div class="panel-body">
+            <form id="suggestion-form" action="{% url 'company:new_suggestion' %}"
+                  method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="required" for="suggestion_topic">Topic:</label>
+                    <select id="suggestion_topic" name="suggestion_topic" class="form-control">
+                        <option value="posts">Posts</option>
+                        <option value="applications">Applications</option>
+                        <option value="events">Events</option>
+                        <option value="home page">Home Page</option>
+                        <option value="post pages">Post Pages</option>
+                        <option value="application pages">Application Pages</option>
+                        <option value="event pages">Event Pages</option>
+                        <option value="general">General</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="suggestion">Suggestion:</label>
+                    <textarea name="suggestion" id="suggestion" rows="5"
+                              class="form-control" placeholder="Suggestion here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="suggestion_importance">How important do you think this suggestion
+                        is?</label>
+                    <input id="suggestion_importance" type="range" min="1" max="10" name="suggestion_importance"/>
+                    <div style="width:100%;">
+                        <span class="left">0</span>
+                        <span class="right">10</span>
+                    </div>
+                </div>
+                <div class="padding-1">
+                    <a href="{% url 'company:profile' %}" class="btn btn-default">Cancel</a>
+                    <button class="btn btn-success" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading suggestions-list">
+            <h4>Previous Suggestions</h4>
+        </div>
+        <div class="panel-body">
+            {% if suggestions %}
+                <table class="table">
+                    <tr>
+                        <th>Date</th>
+                        <th>Topic</th>
+                        <th>Importance</th>
+                        <th></th>
+                    </tr>
+                    {% for x in suggestions %}
+                        <tr class="jobin-suggestion">
+                            <td>{{ x.date }}</td>
+                            <td>{{ x.topic }}</td>
+                            <td>{{ x.importance }}/10</td>
+                            <td>
+                                <a data-url="{% url 'company:comment_suggestion' pk=x.id %}"
+                                   href="#" class="suggestion-comment">
+                                    Add Comment
+                                </a>
+                                <span class="hidden suggestion">{{ x.suggestion }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4">
+                            <span>Page: </span>
+                            {% for x in suggestions.paginator.page_range %}
+                                {% if x == suggestions.number %}
+                                    <strong><span>{{ x }}</span></strong>
+                                {% else %}
+                                    <a href="?page={{ x }}">{{ x }}</a>
+                                {% endif %}|
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+    <div id="suggestion-comment-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        Add Comment to Suggestion
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Suggestion:</h4>
+                    <p class="suggestion"></p>
+                    <form class="form" id="comment-form" action="" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <textarea rows="5" title="" name="suggestion_comment" class="form-control"
+                                      placeholder="Type comment here..."></textarea>
+                        </div>
+                        <div>
+                            <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
+                            <button class="btn btn-success" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block walkthroughs %}
+    {% include 'company/walkthrough/suggestions.html' %}
+{% endblock %}
+

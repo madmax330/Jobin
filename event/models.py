@@ -1,7 +1,6 @@
 from django.db import models
 from company.models import Company
 from student.models import Student
-from django.core.urlresolvers import reverse
 
 
 class Event(models.Model):
@@ -23,9 +22,6 @@ class Event(models.Model):
     description = models.TextField()
     times_saved = models.IntegerField(default=0)
 
-    def get_absolute_url(self):
-        return reverse('event:companyevent', kwargs={'pk': self.pk})
-
     def __str__(self):
         return self.title
 
@@ -34,7 +30,10 @@ class SavedEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
-    date = models.DateField()
+    start_date = models.DateField()
+    start_time = models.TimeField()
+    end_date = models.DateField()
+    end_time = models.TimeField()
     event_name = models.CharField(max_length=100)
 
 

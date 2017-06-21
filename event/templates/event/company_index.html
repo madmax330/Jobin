@@ -2,13 +2,17 @@
 
 {% block title %}Event List{% endblock %}
 
+{% load staticfiles %}
+{% block scripts %}
+{% endblock %}
+
 {% block side_content %}
     {% include 'company/sides/company_info.html' %}
 {% endblock %}
 
 {% block content %}
     <div class="panel panel-default primary-panel">
-        <div class="panel-heading">
+        <div class="panel-heading active-events">
             <h4 class="text-center">Active Events</h4>
         </div>
         <div class="panel-body">
@@ -23,7 +27,7 @@
                         <th>Times Saved</th>
                         <th></th>
                         <th>
-                            <a href="{% url 'event:new' %}">
+                            <a href="{% url 'event:new' %}" class="new-event">
                                 <button class="btn btn-primary">New Event</button>
                             </a>
                         </th>
@@ -57,7 +61,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <div class="alert alert-warning">
+                <div class="alert alert-info">
                     <p>
                         You currently don't have any events.
                         <strong>
@@ -70,7 +74,7 @@
         </div>
     </div>
     <div class="panel panel-default secondary-panel">
-        <div class="panel-heading">
+        <div class="panel-heading expired-events">
             <h4 class="text-center">Expired Events</h4>
         </div>
         <div class="panel-body">
@@ -119,3 +123,8 @@
         </div>
     </div>
 {% endblock %}
+
+{% block walkthroughs %}
+    {% include 'company/walkthrough/events.html' %}
+{% endblock %}
+

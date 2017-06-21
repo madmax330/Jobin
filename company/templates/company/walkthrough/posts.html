@@ -1,0 +1,42 @@
+<div>
+    <div id="active-posts-walkthrough" class="first-walk"
+         data-walk="active-posts" data-pos="left">
+        <div class="walk-container">
+            <p>
+                Here you can view a list of all your active posts.
+                <br/>
+                For each post there is a quick link to view its applicants, edit it or view the posts' detail.
+            </p>
+            <div>
+                <button class="next-walk btn btn-primary" data-next="expired-posts"
+                        data-pos="left" type="button">Next</button>
+                <button class="skip-walk btn btn-default" type="button">Skip</button>
+            </div>
+        </div>
+    </div>
+    <div id="expired-posts-walkthrough" class="walkthrough-message">
+        <div class="walk-container">
+            <p>
+                Here you can view posts that you made in the past. If you can also re-open the position, it saves
+                you the hassle of having to recreate the post.
+            </p>
+            <div>
+                <button class="next-walk btn btn-primary" data-next="new-post"
+                        data-pos="top" type="button">Next</button>
+                <button class="skip-walk btn btn-default" type="button">Skip</button>
+            </div>
+        </div>
+    </div>
+    <div id="new-post-walkthrough" class="walkthrough-message">
+        <div class="walk-container">
+            <p>
+                Use this button to create a new post.
+            </p>
+            <div>
+                <button class="next-walk btn btn-default" data-next="active-posts"
+                        data-pos="left" type="button">Restart</button>
+                <button class="skip-walk btn btn-success" type="button">Got It</button>
+            </div>
+        </div>
+    </div>
+</div>

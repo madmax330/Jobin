@@ -63,9 +63,9 @@ class MessageCenter:
     @staticmethod
     def get_all_notifications(t, u):
         if t == 'student':
-            return Notification.objects.filter(student=u)
+            return Notification.objects.filter(student=u).order_by('-id')
         if t == 'company':
-            return Notification.objects.filter(company=u)
+            return Notification.objects.filter(company=u).order_by('-id')
 
     @staticmethod
     def close_notification(pk):
