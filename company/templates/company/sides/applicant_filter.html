@@ -35,10 +35,13 @@
         </div>
         <div class="display-gpa-filter">
             <div>
-                <span><strong>GPA:</strong></span><br/>
-                <span class="gpa-filter-val">
-                    {{ filters.gpa }}
-                </span>
+                <span><strong>GPA:</strong></span>
+                <div>
+                    <span class="gpa-filter-val">
+                        {{ filters.gpa }}
+                    </span>
+                    <span class="remove-gpa-filter right pointer {% if not filters.gpa %}hidden{% endif %}">&times;</span>
+                </div>
             </div>
         </div>
         <div class="display-saved-filter {% if not filters.saved %}hidden{% endif %}">

@@ -443,7 +443,7 @@ class RequestUtil(BaseContainer):
                 'program': program,
                 'level': level,
                 'start': start,
-                'end': end,
+                'end': (end if not current == 'True' else ''),
                 'is_current': (True if current == 'True' else False),
             }
         else:
@@ -476,7 +476,7 @@ class RequestUtil(BaseContainer):
             return {
                 'title': title,
                 'start': start,
-                'end': end,
+                'end': (end if not current == 'True' else ''),
                 'is_current': (True if current == 'True' else False),
                 'description': description,
                 'company': company,

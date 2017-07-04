@@ -143,13 +143,24 @@ $(function () {
         let gpa_error = $('.gpa-error');
         hide(gpa_error);
         let val = $(this).val();
-        if (val && isNaN(val)) {
+        if(!val){
+            hide($('.remove-gpa-filter'));
+        }
+        else if (val && isNaN(val)) {
             show(gpa_error);
         }
         else {
             show($('.filters-side-panel'));
             $('.display-gpa-filter').find('.gpa-filter-val').html($(this).val());
+            show($('.gpa-filter-val'));
+            show($('.remove-gpa-filter'));
         }
+    });
+
+    $('.remove-gpa-filter').click(function() {
+        hide($('.gpa-filter-val'));
+        $('#gpa_filter').val('');
+        hide($(this));
     });
 
     $('input#filter_saved_true').on('change', function () {

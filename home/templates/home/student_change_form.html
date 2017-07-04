@@ -17,14 +17,17 @@
                 </p>
             </div>
             <div class="w3-container">
+            {% if error %}
+                <div class="w3-container w3-padding message-danger w3-display-container">{{ error }}</div>
+            {% endif %}
                 <form method="post" class="w3-form" enctype="multipart/form-data"
                       action="{% url 'home:change_info' ut='student' %}">
                     {% csrf_token %}
-                    {% if error %}
-                        <div class="w3-pale-red">
-                            <span>{{ error }}</span>
-                        </div>
-                    {% endif %}
+                    <h4 class="secondary-color w3-container w3-padding">Enter Current Password:</h4>
+                    <div class="form-group">
+                        <label for="current_password" class="required">Current Password:</label>
+                        <input class="w3-input w3-border" type="password" name="old_password" id="current_password"/>
+                    </div>
                     <h4 class="secondary-color w3-container w3-padding">Change Email:</h4>
                     <div class="form-group">
                         <label for="new_email" class="required">New Email:</label>
@@ -35,14 +38,11 @@
                         <input class="w3-input w3-border" type="email" name="confirm_email" id="confirm_email"/>
                     </div>
                     <div>
-                        <a href="{% url 'student:profile' %}" class="w3-btn ">Cancel</a>
-                        <button type="submit" class="w3-btn">Submit</button>
+                        <a href="{% url 'student:profile' %}" class="w3-btn w3-border w3-border-black">Cancel</a>
+                        <button type="submit" class="w3-btn w3-border w3-border-green w3-text-green">Submit</button>
                     </div>
                     <h4 class="secondary-color w3-container w3-padding">Change Password:</h4>
-                    <div class="form-group">
-                        <label for="current_password" class="required">Current Password:</label>
-                        <input class="w3-input w3-border" type="password" name="old_password" id="current_password"/>
-                    </div>
+
                     <div class="form-group">
                         <label for="new_password" class="required">New Password:</label>
                         <input class="w3-input w3-border" type="password" name="password" id="new_password"/>

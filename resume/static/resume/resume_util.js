@@ -240,6 +240,17 @@ $(function () {
         close_modal('school-modal');
     });
 
+    $('#school_current').on('change', function() {
+        let s = $('#school_end');
+        if($(this).prop('checked')){
+            s.val('');
+            s.prop('disabled', true);
+        }
+        else{
+            s.prop('disabled', false);
+        }
+    });
+
     /* EXPERIENCE FUNCTIONS */
 
     $('.new-experience').click(function () {
@@ -283,6 +294,17 @@ $(function () {
         send_post($(this).attr('action'), $(this));
 
         close_modal('experience-modal');
+    });
+
+    $('#experience_current').on('change', function() {
+        let e = $('#experience_end');
+        if($(this).prop('checked')){
+            e.val('');
+            e.prop('disabled', true);
+        }
+        else{
+            e.prop('disabled', false);
+        }
     });
 
     /* AWARD FUNCTIONS */

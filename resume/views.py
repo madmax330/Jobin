@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, Http404, HttpResponse
+from django.http import JsonResponse
 from django.db import transaction, IntegrityError
 from home.utils import MessageCenter, Pagination
 
@@ -749,6 +750,7 @@ def edit_reference(request, pk):
 
 
 def delete_reference(request, rk, pk):
+
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -766,4 +768,48 @@ def delete_reference(request, rk, pk):
         return redirect('resume:details', pk=rk)
 
     raise Http404
+
+
+def add_file_resume(request, pk):
+
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.add_file_resume(pk, request.POST, request.FILES):
+                    m = 'File uploaded successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    data = {'is_valid': True}
+                    return JsonResponse(data)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            data = {'is_valid': False, 'error': str(student.get_errors())}
+            return JsonResponse(data)
+
+    raise Http404
+
+
+def delete_file_resume(request, pk):
+
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.delete_file_resume(pk):
+                    m = 'File resume deleted successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('resume:details', pk=pk)
+
+    raise Http404
+
+
 
