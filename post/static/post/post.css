@@ -13,3 +13,16 @@
     min-width: 150px;
     padding: 4px 16px;
 }
+
+.logo-container {
+    display: block;
+    overflow: hidden;
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.logo-container img {
+    max-width: 100%;
+    width: 100%;
+}
+

@@ -4,10 +4,15 @@
 
 {% load staticfiles %}
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/jquery.fileupload.js' %}"></script>
+    <script type="text/javascript" src="{% static 'company/scripts/logo_upload.js' %}"></script>
     <script type="text/javascript" src="{% static 'company/scripts/index_script.js' %}"></script>
 {% endblock %}
 
 {% block side_content %}
+    {% include 'company/sides/logo.html' %}
     {% include 'company/sides/company_info.html' %}
     {% include 'company/sides/post_legend.html' %}
 {% endblock %}

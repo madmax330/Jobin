@@ -5,7 +5,8 @@ from home.base_classes import BaseContainer
 from .models import Resume, Language, LanguageLink, School, SchoolLink, Reference, ReferenceLink
 from .models import Experience, ExperienceLink, Skill, SkillLink, Award, AwardLink
 
-from .forms import ResumeForm, NewLanguageForm, EditLanguageForm, NewLanguageLinkForm
+from .forms import ResumeForm, FileResumeForm
+from .forms import NewLanguageForm, EditLanguageForm, NewLanguageLinkForm
 from .forms import NewExperienceForm, EditExperienceForm, NewExperienceLinkForm
 from .forms import NewAwardForm, EditAwardForm, NewAwardLinkForm
 from .forms import NewSchoolForm, EditSchoolForm, NewSchoolLinkForm
@@ -798,6 +799,20 @@ class ResumeContainer(BaseContainer):
             return []
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
+
+    def add_file_resume(self, post, file):
+        if self.delete_file_resume():
+            self._form = FileResumeForm(post, file, instance=self.__resume)
+            if self._form.is_valid():
+                self._form.save()
+                return True
+            self.add_form_errors()
+        return False
+
+    def delete_file_resume(self):
+        if self.__resume.file_resume:
+            self.__resume.file_resume.delete()
+        return True
 
     def make_active_resume(self):
         if not self.__resume.is_complete:

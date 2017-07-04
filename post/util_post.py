@@ -118,9 +118,9 @@ class StudentPostContainer(BaseContainer):
         fls = []
         if filters:
             if filters['location']:
-                fls.append(Q(location__contains=filters['location']))
+                fls.append(Q(location__icontains=filters['location']))
             if filters['keyword']:
-                fls.append(Q(title__contains=filters['keyword']))
+                fls.append(Q(title__icontains=filters['keyword']))
         op = Q()
         for x in ops:
             op |= x
@@ -160,7 +160,11 @@ class StudentPostContainer(BaseContainer):
 
     def get_applications(self):
         first_apps = Application.objects.filter(student=self.__student, status='active', cover_requested=True)
-        last_apps = Application.objects.filter(student=self.__student, status='active', cover_requested=False)
+        last_apps = Application.objects.filter(
+            student=self.__student,
+            status='active',
+            cover_requested=False
+        ).order_by('-id')
         if first_apps.count() > 0 or last_apps.count() > 0:
             l = []
             l.extend(list(first_apps))
@@ -204,6 +208,10 @@ class StudentPostContainer(BaseContainer):
         self._form = AddCoverLetterForm(info, instance=self.__application)
         if self._form.is_valid():
             self.__application = self._form.save()
+            post = self.__application.post
+            if not post.notified:
+                post.notified = True
+                post.save()
             m = 'Cover letter for "' + self.__application.post_title + '" successfully submitted.'
             if self.new_message(True, self.__student, m, 0):
                 m = 'Cover letter received from ' + self.__student.name + ' for post '

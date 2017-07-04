@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from home.base_classes import BaseContainer
 
 from .models import Company, Suggestion
-from .forms import NewCompanyForm, EditCompanyForm, NewSuggestionForm
+from .forms import NewCompanyForm, EditCompanyForm, UploadLogoForm, NewSuggestionForm
 
 from post.util_post import CompanyPostContainer
 from event.util_event import CompanyEventContainer
@@ -112,6 +112,20 @@ class CompanyContainer(BaseContainer):
         self.__company.save()
         return True
 
+    def upload_logo(self, post, file):
+        if self.delete_logo():
+            self._form = UploadLogoForm(post, file, instance=self.__company)
+            if self._form.is_valid():
+                self._form.save()
+                return True
+            self.add_form_errors()
+        return False
+
+    def delete_logo(self):
+        if self.__company.logo:
+            self.__company.logo.delete()
+        return True
+
     def comment_suggestion(self, pk, comment):
         try:
             suggestion = Suggestion.objects.get(pk=pk)
@@ -165,7 +179,13 @@ class CompanyContainer(BaseContainer):
     # DATA FETCH FUNCTIONS (GETTERS)
 
     def get_post(self, pk):
-        return self.__post_container.get_post(pk)
+        post = self.__post_container.get_post(pk)
+        if post:
+            if post.notified:
+                post.notified = False
+                post.save()
+            return post
+        return None
 
     def get_posts(self):
         return self.__post_container.get_posts()
