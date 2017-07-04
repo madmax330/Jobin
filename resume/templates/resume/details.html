@@ -4,7 +4,11 @@
 
 {% load staticfiles %}
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/jquery.fileupload.js' %}"></script>
     <script type="text/javascript" src="{% static 'resume/resume_util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'resume/file_upload.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,11 +26,31 @@
             <label>GPA:</label><span> {{ resume.gpa }}</span><br/>
             <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
             <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
-            <label>File:</label>{% if resume.file_resume %}
-            <span> {{ resume.file_resume }}</span>
-        {% else %}
-            <span> No file uploaded</span>
-        {% endif %}
+            <label>File:</label>
+            {% if resume.file_resume %}
+                <a href="{{ resume.file_resume.url }}" target="_blank">{{ resume.file_resume.name }}</a>
+                <br/>
+                <a href="{% url 'resume:delete_file' pk=resume.id %}" class="w3-btn w3-border w3-border-red w3-text-red">
+                    Delete File Resume
+                </a>
+            {% else %}
+                <span> No file uploaded</span>
+                <form class="w3-hide">
+                    {% csrf_token %}
+                    <input id="resumeupload" type="file" name="file_resume"
+                       data-url="{% url 'resume:add_file' pk=resume.id %}">
+                </form>
+                <div style="display: block; overflow: hidden;">
+                    <div class="w3-half w3-border file-progress w3-hide">
+                        <div class="w3-center primary-color progress-bar" style="height:24px; width:0;">0%</div>
+                    </div>
+                </div>
+                <div>
+                    <button class="w3-btn w3-border w3-border-black upload-file-resume" type="button">
+                        Upload File Resume
+                    </button>
+                </div>
+            {% endif %}
         </div>
         <div class="w3-container secondary-color w3-row w3-padding">
             <div class="w3-col s9">

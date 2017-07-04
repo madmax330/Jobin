@@ -32,9 +32,13 @@ h1, h2, h3, h4, h5, h6{
     margin-right: 10px;
 }
 
+.jobin-nav .navbar-nav>li>a {
+    border-bottom: 4px solid transparent;
+}
+
 .jobin-nav .navbar-nav>li>a:hover{
-    background-color: #FFFFFF;
-    color: #000000;
+    border-bottom: 4px solid #FFFFFF;
+    color: #FFFFFF;
 }
 
 .section{

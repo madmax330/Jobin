@@ -550,6 +550,20 @@ class StudentContainer(BaseContainer):
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
 
+    def add_file_resume(self, pk, post, file):
+        if self.__resume_container.get_resume(pk):
+            if self.__resume_container.add_file_resume(post, file):
+                return True
+        self.add_error_list(self.__resume_container.get_errors())
+        return False
+
+    def delete_file_resume(self, pk):
+        if self.__resume_container.get_resume(pk):
+            if self.__resume_container.delete_file_resume():
+                return True
+        self.add_error_list(self.__resume_container.get_errors())
+        return False
+
     def copy_resume(self, pk):
         if self.get_resume(pk):
             if self.__resume_container.copy_resume():

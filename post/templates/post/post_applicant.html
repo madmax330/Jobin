@@ -87,6 +87,13 @@
                 <h4 class="text-center">Student Resume</h4>
             </div>
             <div class="panel-body">
+                {% if app.resume.file_resume %}
+                    <h3>File Resume</h3>
+                    <div>
+                        <a href="{{ app.resume.file_resume.url }}" target="_blank">Click Here</a> to
+                        view the file resume uploaded by {{ app.name }}.
+                    </div>
+                {% endif %}
                 {% if app.resume.experience %}
                     <h3>Experience</h3>
                     {% for x in app.resume.experience %}

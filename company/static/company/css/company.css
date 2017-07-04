@@ -209,3 +209,22 @@ footer a:hover{
     border-bottom: 1px solid #eeeeee;
     cursor: pointer
 }
+
+/*  LOGO IMAGE */
+
+.logo-side {
+    display: block;
+    overflow: hidden;
+}
+
+.logo-container {
+    display: block;
+    overflow: hidden;
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.logo-container img {
+    width: 100%;
+    max-width: 100%;
+}

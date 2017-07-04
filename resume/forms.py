@@ -10,6 +10,13 @@ class ResumeForm(forms.ModelForm):
         exclude = ('is_complete', 'status',)
 
 
+class FileResumeForm(forms.ModelForm):
+
+    class Meta:
+        model = Resume
+        fields = ('file_resume',)
+
+
 class NewLanguageForm(forms.ModelForm):
 
     class Meta:

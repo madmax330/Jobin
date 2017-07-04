@@ -1,5 +1,6 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect, Http404, HttpResponse
+from django.http import JsonResponse
 from django.db import transaction, IntegrityError
 
 from .util_company import CompanyContainer
@@ -180,6 +181,48 @@ def company_not_new(request):
             return HttpResponse('good', status=200)
         else:
             return HttpResponse(str(company.get_errors()), status=400)
+
+    raise Http404
+
+
+def upload_logo(request):
+
+    if request.method == 'POST':
+        company = CompanyContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if company.upload_logo(request.POST, request.FILES):
+                    m = 'Logo uploaded successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    data = {'is_valid': True}
+                    return JsonResponse(data)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            data = {'is_valid': False, 'error': str(company.get_errors())}
+            return JsonResponse(data)
+
+    raise Http404
+
+
+def delete_logo(request):
+
+    if request.method == 'GET':
+        company = CompanyContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if company.delete_logo():
+                    m = 'Logo delete successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(company.get_errors())
+            MessageCenter.new_message('company', company.get_company(), 'danger', m)
+
+        return redirect('company:index')
 
     raise Http404
 

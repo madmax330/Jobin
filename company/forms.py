@@ -16,6 +16,13 @@ class EditCompanyForm(forms.ModelForm):
         exclude = ('is_new', 'logo', 'user', 'email', 'points')
 
 
+class UploadLogoForm(forms.ModelForm):
+
+    class Meta:
+        model = Company
+        fields = ('logo',)
+
+
 class NewSuggestionForm(forms.ModelForm):
 
     class Meta:

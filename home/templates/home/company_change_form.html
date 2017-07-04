@@ -21,10 +21,21 @@
             <h4 class="text-center">Change User Info</h4>
         </div>
         <div class="panel-body">
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
             <div>
                 <form class="form" action="{% url 'home:change_info' ut='company' %}"
                       method="post" enctype="multipart/form-data">
                     {% csrf_token %}
+                    <div class="padding secondary-color horizontal-padding">
+                        <h4>Enter Current Password:</h4>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Current Password:</label>
+                        <input class="form-control" type="password" name="old_password" value=""
+                               placeholder="Current Password"/>
+                    </div>
                     <div class="padding secondary-color horizontal-padding">
                         <h4>Change Email/Username:</h4>
                     </div>
@@ -47,11 +58,6 @@
                         <h4>Change Password:</h4>
                     </div>
                     <div class="padding">
-                        <div class="form-group">
-                            <label class="required">Current Password:</label>
-                            <input class="form-control" type="password" name="old_password" value=""
-                                   placeholder="Current Password"/>
-                        </div>
                         <div class="form-group">
                             <label class="required">New Password:</label>
                             <input class="form-control" type="password" name="password"

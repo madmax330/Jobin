@@ -77,7 +77,11 @@
                                     <h4>Company</h4>
                                 </div>
                                 <div class="w3-container">
-                                    {{ x.logo }}
+                                    {% if x.logo %}
+                                        <div class="logo-container">
+                                            <img src="{{ x.logo.url }}">
+                                        </div>
+                                    {% endif %}
                                     <h5>{{ x.name }}</h5>
                                     <label>Address:</label><span> {{ x.address }}</span><br/>
                                     <label>Website:</label><a target="_blank"

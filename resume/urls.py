@@ -6,8 +6,8 @@ app_name = 'resume'
 
 
 urlpatterns = [
-    # List views
     url(r'^$', views.resume_index, name='index'),
+    url(r'^details/(?P<pk>[0-9]+)/$', views.resume_detail, name='details'),
 
     # New views
     url(r'^new/resume/$', views.new_resume, name='new'),
@@ -47,7 +47,8 @@ urlpatterns = [
     # Misc
     url(r'^change/(?P<pk>[0-9]+)/(?P<ak>[0-9]+)/$', views.change_application_resume, name='change'),
     url(r'^activate/(?P<pk>[0-9]+)/$', views.change_active_resume, name='activate'),
-    url(r'^details/(?P<pk>[0-9]+)/$', views.resume_detail, name='details'),
     url(r'^copy/resume/(?P<pk>[0-9]+)/$', views.copy_resume, name='copy'),
+    url(r'^add/file/(?P<pk>[0-9]+)/$', views.add_file_resume, name='add_file'),
+    url(r'^delete/file/(?P<pk>[0-9]+)/$', views.delete_file_resume, name='delete_file'),
 ]
 
