@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Message, Notification
+from .models import Message, Notification, JobinActivation
 
 
 class NewUserForm(forms.ModelForm):
@@ -36,4 +36,10 @@ class NewNotificationForm(forms.ModelForm):
         model = Notification
         exclude = ('date', 'opened',)
 
+
+class NewActivationForm(forms.ModelForm):
+
+    class Meta:
+        model = JobinActivation
+        fields = '__all__'
 

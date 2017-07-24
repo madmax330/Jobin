@@ -33,7 +33,8 @@ class IndexView(View):
         rq = RequestUtil()
         i = rq.get_login_info(self.request)
         if i:
-            if user.log_user_in(self.request, i):
+            t = user.log_user_in(self.request, i)
+            if t > 0:
                 if user.get_user_type() == 'company':
                     return redirect('company:index')
                 elif user.get_user_type() == 'student':
@@ -42,6 +43,8 @@ class IndexView(View):
                     return redirect('student:index')
                 else:
                     return render(request, self.template_name, {'error': 'Invalid user type.'})
+            elif t < 0:
+                return redirect('home:verify')
             else:
                 return render(request, self.template_name, {'error': str(user.get_errors())})
         else:
@@ -72,6 +75,9 @@ class RegisterView(View):
         user = UserUtil(self.request.user)
         rq = RequestUtil()
         i = rq.get_user_info(self.request)
+        context = {
+            'type': ut
+        }
         if i:
 
             try:
@@ -81,16 +87,59 @@ class RegisterView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
-                return render(request, self.template_name, {'error': str(user.get_errors())})
+                context['error'] = str(user.get_errors())
+                return render(request, self.template_name, context)
 
         else:
-            return render(request, self.template_name, {'error': str(rq.get_errors())})
+            context['error'] = str(rq.get_errors())
+            return render(request, self.template_name, context)
 
 
 def verify(request):
 
     if request.method == 'GET':
-        return render(request, 'home/verify.html')
+        return render(request, 'home/utils/email/verify.html')
+
+    raise Http404
+
+
+def activate(request, key):
+
+    if request.method == 'GET':
+        user = UserUtil(request.user)
+
+        try:
+            with transaction.atomic():
+                if user.activate_user(key):
+                    return render(request, 'home/utils/email/activate.html')
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            errs = str(user.get_errors())
+            return render(request, 'home/utils/email/activate.html', {'errors': errs})
+
+    raise Http404
+
+
+def new_verification(request):
+
+    if request.method == 'POST':
+        user = UserUtil(request.user)
+        rq = RequestUtil()
+        i = rq.get_login_info(request)
+        if i:
+
+            try:
+                with transaction.atomic():
+                    if user.new_activation_key(request, i):
+                        return redirect('home:verify')
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                return render(request, 'home/utils/email/activate.html', {'errors': str(user.get_errors())})
+
+        else:
+            return render(request, 'home/utils/email/activate.html', {'errors': str(rq.get_errors())})
 
     raise Http404
 

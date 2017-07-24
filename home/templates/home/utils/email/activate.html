@@ -1,0 +1,23 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{% if errors %}Activation{% else %}Activation Successful{% endif %}{% endblock %}
+
+{% block content %}
+    {% if errors %}
+        <div style="padding:128px" class="text-center">
+            <h3>
+                Problem activating your account.
+            </h3>
+            <div class="text-center alert alert-danger">
+                {{ errors }}
+            </div>
+        </div>
+    {% else %}
+        <div style="padding:128px" class="text-center">
+            <h3>
+                Account activation successful, you can now login with your username and password and start
+                using Jobin!
+            </h3>
+        </div>
+    {% endif %}
+{% endblock %}
