@@ -59,8 +59,6 @@ class NewPostView(View):
             try:
                 with transaction.atomic():
                     if company.new_post(i):
-                        m = 'New post created successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
                         return redirect('post:company_posts')
                     else:
                         raise IntegrityError
@@ -101,8 +99,6 @@ class EditPostView(View):
             try:
                 with transaction.atomic():
                     if company.edit_post(pk, i):
-                        m = 'Post edited successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
                         return redirect('post:company_post', pk=pk)
                     else:
                         raise IntegrityError
@@ -124,8 +120,6 @@ def close_post(request, pk):
         try:
             with transaction.atomic():
                 if company.close_post(pk):
-                    m = 'Post closed successfully.'
-                    MessageCenter.new_message('company', company.get_company(), 'success', m)
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
@@ -245,8 +239,6 @@ def submit_cover_letter(request, pk):
             try:
                 with transaction.atomic():
                     if student.submit_cover_letter(pk, i):
-                        m = 'Cover letter submitted successfully.'
-                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                         return HttpResponse('success', status=200)
                     else:
                         raise IntegrityError
@@ -389,8 +381,6 @@ class RecoverPostView(View):
             try:
                 with transaction.atomic():
                     if company.recover_post(pk, i):
-                        m = 'Post recovered successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
                         return redirect('post:company_posts')
                     else:
                         raise IntegrityError
@@ -454,8 +444,6 @@ def discard_application(request, pk):
         try:
             with transaction.atomic():
                 if company.close_application(pk):
-                    m = 'Application closed successfully.'
-                    MessageCenter.new_message('company', company.get_company(), 'success', m)
                     return HttpResponse(status=200)
                 else:
                     raise IntegrityError

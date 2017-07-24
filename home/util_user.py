@@ -1,10 +1,11 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ObjectDoesNotExist
 
 from home.base_classes import BaseContainer
+from .util_activation import ActivationUtil
 
 from .models import JobinSchool, JobinBlockedEmail, JobinRequestedEmail
-
 from .forms import NewUserForm, ChangeEmailForm, ChangePasswordForm
 
 
@@ -24,13 +25,14 @@ class UserUtil(BaseContainer):
         if self.__user is not None:
             if self.__user.is_active:
                 login(request, self.__user)
-                return True
+                return 1
             else:
+                login(request, self.__user)
                 self.add_error('User not active.')
-                return False
+                return -1
         else:
             self.add_error('Invalid login credentials.')
-            return False
+            return 0
 
     def log_user_out(self, request):
         logout(request)
@@ -53,6 +55,7 @@ class UserUtil(BaseContainer):
                     return False
             self.__user = self._form.save(commit=False)
             self.__user.set_password(self._form.cleaned_data['password'])
+            self.__user.is_active = False
             self.__user.save()
 
             if student:
@@ -65,7 +68,12 @@ class UserUtil(BaseContainer):
             else:
                 g = Group.objects.get(name='company_user')
                 g.user_set.add(self.__user)
-            return True
+            activation = ActivationUtil(self.__user)
+            if activation.send_activation_email():
+                return True
+            else:
+                self.add_error_list(activation.get_errors())
+                return False
         else:
             self.add_form_errors()
             return False
@@ -124,15 +132,34 @@ class UserUtil(BaseContainer):
             return 'company'
         elif self.__user.groups.filter(name='student_user').exists():
             return 'student'
-        elif self.__user.groups.filter(name='invalid_user').exists():
-            return 'inactive'
         else:
             self.add_error('No user type found.')
             return ''
 
+    #
+    #   USER CHANGE FUNCTIONS
+    #
 
+    def activate_user(self, key):
+        activation = ActivationUtil(self.__user)
+        if activation.activate_user(key):
+            return True
+        self.add_error_list(activation.get_errors())
+        return False
 
-
+    def new_activation_key(self, request, info):
+        logged = self.log_user_in(request, info)
+        if logged > 0:
+            self.add_error('User already activated.')
+            return False
+        if logged < 0:
+            activation = ActivationUtil(self.__user)
+            if activation.send_activation_email():
+                return True
+            self.add_error_list(activation.get_errors())
+            return False
+        else:
+            return False
 
 
 

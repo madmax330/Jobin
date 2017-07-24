@@ -15,6 +15,8 @@ function send_walkthrough(url, form, info) {
                     location.reload();
                 clear_form('resume-form');
                 close_modal('resume-modal');
+                $('#school-form').attr('action', '/resume/new/school/' + data + '/');
+                $('#language-form').attr('action', '/resume/new/language/' + data + '/');
                 open_modal('school-modal');
                 display_modal_message('New resume created successfully.', 'success');
             }
