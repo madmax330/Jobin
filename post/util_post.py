@@ -69,9 +69,9 @@ class StudentPostContainer(BaseContainer):
         fls = []
         if filters:
             if filters['location']:
-                fls.append(Q(location__contains=filters['location']))
+                fls.append(Q(location__icontains=filters['location']))
             if filters['keyword']:
-                fls.append(Q(title__contains=filters['keyword']))
+                fls.append(Q(title__icontains=filters['keyword']))
         if cat == 'startup':
             ads.append(Q(is_startup_post=True))
         else:

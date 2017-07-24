@@ -59,8 +59,6 @@ class NewEventView(View):
             try:
                 with transaction.atomic():
                     if company.new_event(i):
-                        m = 'New event created successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
                         return redirect('event:company_events')
                     else:
                         raise IntegrityError
@@ -105,8 +103,6 @@ class EditEventView(View):
             try:
                 with transaction.atomic():
                     if company.edit_event(pk, i):
-                        m = 'Event edited successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
                         return redirect('event:company_events')
                     else:
                         raise IntegrityError
@@ -133,8 +129,6 @@ def close_event(request, pk):
         try:
             with transaction.atomic():
                 if company.close_event(pk):
-                    m = 'Event successfully closed.'
-                    MessageCenter.new_message('company', company.get_company(), 'success', m)
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
@@ -205,8 +199,6 @@ class RecoverEventView(View):
             try:
                 with transaction.atomic():
                     if company.recover_event(pk, i):
-                        m = 'Event recovered successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
                         return redirect('event:company_events')
                     else:
                         raise IntegrityError

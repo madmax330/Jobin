@@ -1,6 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 from student.models import Student
 from company.models import Company
+
+
+class JobinActivation(models.Model):
+    key = models.CharField(max_length=100, unique=True)
+    user = models.ForeignKey(User, on_delete=None)
+    expiration = models.DateTimeField()
 
 
 class JobinSchool(models.Model):

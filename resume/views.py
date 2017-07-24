@@ -67,12 +67,15 @@ def new_resume(request):
             try:
                 with transaction.atomic():
                     if student.new_resume(i):
-                        m = 'New resume created successfully.'
-                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                         r = student.get_resume()
                         if r.is_complete:
+                            m = 'New resume created successfully.'
+                            MessageCenter.new_message('student', student.get_student(), 'success', m)
                             m = 'resume complete'
-                        return HttpResponse(m, status=200)
+                            return HttpResponse(m, status=200)
+                        else:
+                            m = r.id
+                            return HttpResponse(m, status=200)
                     else:
                         raise IntegrityError
             except IntegrityError:
