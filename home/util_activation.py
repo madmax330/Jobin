@@ -62,6 +62,30 @@ class ActivationUtil(BaseContainer):
         else:
             return False
 
+    def send_new_password(self, password):
+        subject = 'Password Reset'
+        template = 'home/utils/email/new_password.html'
+        html = render_to_string(template, {'password': password})
+        text_val = strip_tags(html)
+
+        from_email = 'signup@jobin.com'
+        msg = EmailMultiAlternatives(subject, text_val, from_email, [self.__user.email])
+        msg.attach_alternative(html, "text/html")
+        try:
+            msg.send(fail_silently=False)
+            return True
+        except SMTPException as e:
+            self.add_error('Error sending email: ' + str(e))
+            return False
+
+    def get_password(self):
+        return self.__create_activation_key()[:25]
+
+    def clear_codes(self):
+        codes = JobinActivation.objects.filter(user=self.__user)
+        for x in codes:
+            x.delete()
+
     def __create_activation_key(self):
         chars = 'igvbjk,dsaf21905273+_)(*^%%%@^&*(..,,djfgh226'
         secret_key = get_random_string(20, chars)

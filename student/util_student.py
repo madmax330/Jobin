@@ -175,11 +175,17 @@ class StudentContainer(BaseContainer):
 
     def change_application_resume(self, pk, ak):
         if self.__post_container.get_application(ak):
-            if self.__post_container.change_application_resume(self.__resume_container.get_resume(pk)):
-                return True
-        self.add_error_list(self.__post_container.get_errors())
-        self.add_error_list(self.__resume_container.get_errors())
-        return False
+            if self.__resume_container.get_resume(pk):
+                if self.__post_container.change_application_resume(self.__resume_container.get_resume()):
+                    return True
+                else:
+                    self.add_error_list(self.__post_container.get_errors())
+                    return False
+            self.add_error_list(self.__resume_container.get_errors())
+            return False
+        else:
+            self.add_error_list(self.__post_container.get_errors())
+            return False
 
     def submit_cover_letter(self, pk, letter):
         if self.__post_container.get_application(pk):

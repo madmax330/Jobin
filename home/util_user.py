@@ -31,6 +31,13 @@ class UserUtil(BaseContainer):
                 self.add_error('User not active.')
                 return -1
         else:
+            try:
+                u = User.objects.get(email=info['email'])
+                if u.check_password(info['password']):
+                    return -1
+            except ObjectDoesNotExist:
+                self.add_error('Invalid login credentials.')
+                return 0
             self.add_error('Invalid login credentials.')
             return 0
 
@@ -84,7 +91,7 @@ class UserUtil(BaseContainer):
             ext = info['email'].split('@', 1)[1].lower()
             if student:
                 if JobinBlockedEmail.objects.filter(extension=ext).count() > 0:
-                    self.add_error("This email extension '" + ext + "' is not recognized.")
+                    self.add_error("The email extension '" + ext + "' is not recognized.")
                     return False
                 schools = JobinSchool.objects.filter(email=ext)
                 if schools.count() == 0:
@@ -95,13 +102,27 @@ class UserUtil(BaseContainer):
                     student.school = schools.first().name
                     student.email = info['email']
                     student.save()
-                self._form.save()
-                return True
+                self.__user = self._form.save(commit=False)
+                self.__user.is_active = False
+                self.__user.save()
+                activation = ActivationUtil(self.__user)
+                if activation.send_activation_email():
+                    return True
+                else:
+                    self.add_error_list(activation.get_errors())
+                    return False
             elif company:
                 company.email = info['email']
                 company.save()
-                self._form.save()
-                return True
+                self.__user = self._form.save(commit=False)
+                self.__user.is_active = False
+                self.__user.save()
+                activation = ActivationUtil(self.__user)
+                if activation.send_activation_email():
+                    return True
+                else:
+                    self.add_error_list(activation.get_errors())
+                    return False
             else:
                 self.add_error('Invalid request.')
                 return False
@@ -147,19 +168,38 @@ class UserUtil(BaseContainer):
         self.add_error_list(activation.get_errors())
         return False
 
-    def new_activation_key(self, request, info):
-        logged = self.log_user_in(request, info)
-        if logged > 0:
+    def new_activation_key(self, info):
+        try:
+            self.__user = User.objects.get(email=info['email'])
+        except ObjectDoesNotExist:
+            self.add_error('Invalid email.')
+            return False
+        if self.__user.is_active:
             self.add_error('User already activated.')
             return False
-        if logged < 0:
+        else:
             activation = ActivationUtil(self.__user)
+            activation.clear_codes()
             if activation.send_activation_email():
                 return True
             self.add_error_list(activation.get_errors())
             return False
-        else:
+
+    def new_password(self, mail):
+        try:
+            self.__user = User.objects.get(email=mail)
+        except ObjectDoesNotExist:
+            self.add_error('Invalid email.')
             return False
+        activation = ActivationUtil(self.__user)
+        password = activation.get_password()
+        self.__user.set_password(password)
+        self.__user.save()
+        if activation.send_new_password(password):
+            return True
+        self.add_error_list(activation.get_errors())
+        return False
+
 
 
 

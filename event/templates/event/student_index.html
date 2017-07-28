@@ -4,10 +4,16 @@
 
 {% load staticfiles %}
 {% block styles %}
-
+    <link rel="stylesheet" href="{% static 'event/event.css' %}">
 {% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="{% static 'event/student_event_util.js' %}"></script>
+    <script>
+        $(function(){
+            hide($('.event-loader-icon'));
+            show($('.main-event-container'));
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -15,7 +21,10 @@
         <div class="events-header primary-color w3-padding-small">
             <h3 class="w3-text-white w3-center">Events ({{ count }})</h3>
         </div>
-        <div class="w3-content w3-container w3-padding-16" style="position:relative">
+        <div class="event-loader-icon">
+            <h2 class="w3-center"><i class="fa fa-spinner fa-spin"></i> Loading events...</h2>
+        </div>
+        <div class="w3-content w3-container w3-padding-16 main-event-container w3-hide" style="position:relative">
             {% if events %}
                 {% for x in events %}
                     <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px">
@@ -25,7 +34,11 @@
                                     <h4>Company</h4>
                                 </div>
                                 <div class="w3-container">
-                                    {{ x.logo }}
+                                    {% if x.logo %}
+                                        <div class="logo-container">
+                                            <img src="{{ x.logo.url }}">
+                                        </div>
+                                    {% endif %}
                                     <h5>{{ x.name }}</h5>
                                     <label>Address:</label><span> {{ x.caddr }}</span><br/>
                                     <label>Website:</label><span> {{ x.cweb }}</span>
@@ -65,8 +78,8 @@
             {% else %}
                 <h3 class="w3-center"> No events found.</h3>
             {% endif %}
-            <a class="w3-btn w3-display-left" style="position:absolute;top:50%;left:0" onclick="plusDivs(-1)">❮</a>
-            <a class="w3-btn w3-display-right" style="position:absolute;top:50%;right:0" onclick="plusDivs(1)">❯</a>
+            <a class="w3-btn w3-display-left" style="position:absolute;top:290px;left:0" onclick="plusDivs(-1)">❮</a>
+            <a class="w3-btn w3-display-right" style="position:absolute;top:290px;right:0" onclick="plusDivs(1)">❯</a>
         </div>
     </div>
 

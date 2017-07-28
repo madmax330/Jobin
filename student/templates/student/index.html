@@ -52,12 +52,12 @@
                                         <div class="w3-dropdown-content w3-bar-block w3-border">
                                             {% for r in resumes %}
                                                 <div class="w3-bar-item">
-                                                    <a href="#" class="warning-open" data-id="change-resume-{{ r.id }}"
+                                                    <a href="#" class="warning-open" data-id="change-resume-{{ r.id }}{{ x.id }}"
                                                        data-name="{{ r.name }}"
                                                        data-url="{% url 'resume:change' pk=r.id ak=x.id %}">
                                                         {{ r.name }}
                                                     </a>
-                                                    <div id="warning-change-resume-{{ r.id }}" class="w3-hide">
+                                                    <div id="warning-change-resume-{{ r.id }}{{ x.id }}" class="w3-hide">
                                                         <p class="message">
                                                             Change resume for {{ x.post_title }} to
                                                             <span class="name"></span>?

@@ -12,22 +12,14 @@
     <link rel="stylesheet" type="text/css" href="{% static 'student/css/student.css' %}">
     <!--<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700" rel="stylesheet">-->
     {% block styles %}{% endblock %}
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-    <script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
-    <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'home/scripts/user_utils.js' %}"></script>
-    <script type="text/javascript" src="{% static 'student/scripts/util_script.js' %}"></script>
-    <script type="text/javascript" src="{% static 'student/scripts/warning_script.js' %}"></script>
-    <script type="text/javascript" src="{% static 'home/scripts/notification_script.js' %}"></script>
-    <script type="text/javascript" src="{% static 'home/scripts/walkthrough.js' %}"></script>
-    {% block scripts %}{% endblock %}
     <style>
         body {
             background-image: url("{% static 'home/images/pattern_max_finshed8.png' %}");
             background-size: 120px 120px;
         }
+
         .close-notification:hover {
-            background-color: transparent!important;
+            background-color: transparent !important;
         }
     </style>
 </head>
@@ -41,11 +33,11 @@
         <a href="{% url 'student:index' %}"
            class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'home' %}active{% endif %}">Home</a>
         <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'posts' %}active{% endif %}">Posts</a>
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link posts-nav {% if tab == 'posts' %}active{% endif %}">Posts</a>
         <a href="{% url 'event:student_events' pk=0 %}"
            class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'events' %}active{% endif %}">Events</a>
         <a href="{% url 'resume:index' %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'resume' %}active{% endif %}">Resumes</a>
+           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link  resumes-nav {% if tab == 'resume' %}active{% endif %}">Resumes</a>
         <a href="{% url 'student:history' %}"
            class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'history' %}active{% endif %}">History</a>
         <a href="{% url 'student:profile' %}"
@@ -202,7 +194,6 @@
             </div>
         </div>
         <footer class="w3-container secondary-color">
-            <h5>Footer</h5>
             <p>
                 This platform is brought to you by JobIn Solutions. Your use of the platform confirms that you are in
                 agreement with our <a target="_blank" href="{% url 'home:terms' %}">Terms and Conditions</a>
@@ -216,5 +207,14 @@
     </div>
 </div>
 
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+<script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'home/scripts/user_utils.js' %}"></script>
+<script type="text/javascript" src="{% static 'student/scripts/util_script.js' %}"></script>
+<script type="text/javascript" src="{% static 'student/scripts/warning_script.js' %}"></script>
+<script type="text/javascript" src="{% static 'home/scripts/notification_script.js' %}"></script>
+<script type="text/javascript" src="{% static 'home/scripts/walkthrough.js' %}"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

@@ -170,6 +170,7 @@ class CompanyEventContainer(BaseContainer):
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
