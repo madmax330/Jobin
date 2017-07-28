@@ -30,7 +30,11 @@
             </div>
 
             <div class="panel-body">
-                {{ company.logo }}
+                {% if company.logo %}
+                    <div class="logo-container">
+                        <img src="{{ company.logo.url }}">
+                    </div>
+                {% endif %}
                 <label>Name:</label><span> {{ company.name }}</span><br/>
                 <label>Email:</label><span> {{ company.email }}</span><br/>
                 <label>Phone:</label><span> {{ company.phone }}</span><br/>

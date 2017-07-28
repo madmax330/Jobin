@@ -26,9 +26,8 @@
                             <h3>At Jobin, we bring the jobs to you!</h3>
                             We give you access to the many jobs that are posted and all you have to do is decide
                             whether you want to apply or not. We want to make the job searching and application
-                            simpler and faster.
+                            process simpler and faster.
                         </div>
-
                     </div>
                 </div>
                 <div class="col-sm-6 col-md-5 col-lg-4">
@@ -40,6 +39,11 @@
                             {% if error %}
                                 <div class="alert alert-danger">
                                     {{ error }}
+                                </div>
+                            {% endif %}
+                            {% if success_msg %}
+                                <div class="alert alert-success">
+                                    {{ success_msg }}
                                 </div>
                             {% endif %}
                             <div class="">
@@ -58,7 +62,7 @@
                                 </form>
                             </div>
                             <div class="padding">
-                                <a href="#">Forgot your password?</a>
+                                <a href="{% url 'home:new_password' %}">Forgot your password?</a>
                             </div>
                             <hr/>
                             <h4>Don't have an account?</h4>
@@ -86,7 +90,7 @@
 
     </div>
 
-    {% include 'home/index_page/about.html' %}
+    {% include 'home/index_page/what.html' %}
     {% include 'home/index_page/contact.html' %}
 
 {% endblock %}

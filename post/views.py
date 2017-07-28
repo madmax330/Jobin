@@ -103,12 +103,13 @@ class EditPostView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
-                context['errors'] = company.get_errors()
+                context['post'] = i
+                context['errors'] = company.get_form().errors
 
         else:
+            context['post'] = i
             context['errors'] = rq.get_errors()
 
-        context['post'] = company.get_post(pk)
         return render(request, self.template_name, context)
 
 
@@ -444,6 +445,8 @@ def discard_application(request, pk):
         try:
             with transaction.atomic():
                 if company.close_application(pk):
+                    m = 'Application successfully closed.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
                     return HttpResponse(status=200)
                 else:
                     raise IntegrityError

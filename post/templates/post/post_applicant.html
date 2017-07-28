@@ -128,11 +128,11 @@
                         </tr>
                         {% for x in app.resume.schools %}
                             <tr>
-                                <td>{{ x.name }}</td>
+                                <td class="capital">{{ x.name }}</td>
                                 <td>{{ x.start }}</td>
                                 <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
-                                <td>{{ x.level }}</td>
-                                <td>{{ x.program }}</td>
+                                <td class="capital">{{ x.level }}</td>
+                                <td class="capital">{{ x.program }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -142,9 +142,9 @@
                     {% for x in app.resume.awards %}
                         <div>
                             <div>
-                                <label>Title:</label><span class="label-information capital">{{ x.title }}</span><br/>
-                                <label>Date Received:</label><span class="label-information">{{ x.date }}</span><br/>
-                                <label>Type:</label><span class="label-information capital">{{ x.award_type }}</span>
+                                <label>Title:</label><span class="label-information capital"> {{ x.title }}</span><br/>
+                                <label>Date Received:</label><span class="label-information"> {{ x.date }}</span><br/>
+                                <label>Type:</label><span class="label-information capital"> {{ x.award_type }}</span>
                             </div>
                             <label>Description:</label>
                             <p>{{ x.description | linebreaksbr }}</p>
@@ -161,8 +161,8 @@
                         </tr>
                         {% for x in app.resume.languages %}
                             <tr>
-                                <td>{{ x.name }}</td>
-                                <td>{{ x.level }}</td>
+                                <td class="capital">{{ x.name }}</td>
+                                <td class="capital">{{ x.level }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -176,8 +176,8 @@
                         </tr>
                         {% for x in app.resume.skills %}
                             <tr>
-                                <td>{{ x.name }}</td>
-                                <td>{{ x.level }}</td>
+                                <td class="capital">{{ x.name }}</td>
+                                <td class="capital">{{ x.level }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -192,8 +192,8 @@
                         </tr>
                         {% for x in app.resume.references %}
                             <tr>
-                                <td>{{ x.name }}</td>
-                                <td>{{ x.affiliation }}</td>
+                                <td class="capital">{{ x.name }}</td>
+                                <td class="capital">{{ x.affiliation }}</td>
                                 <td>{{ x.email }}</td>
                             </tr>
                         {% endfor %}

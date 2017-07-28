@@ -44,7 +44,7 @@ class IndexView(View):
                 else:
                     return render(request, self.template_name, {'error': 'Invalid user type.'})
             elif t < 0:
-                return redirect('home:verify')
+                return render(request, 'home/utils/email/verify.html', i)
             else:
                 return render(request, self.template_name, {'error': str(user.get_errors())})
         else:
@@ -131,15 +131,15 @@ def new_verification(request):
 
             try:
                 with transaction.atomic():
-                    if user.new_activation_key(request, i):
-                        return redirect('home:verify')
+                    if user.new_activation_key(i):
+                        return render(request, 'home/utils/email/verify.html', {'msg': 'New link sent successfully.'})
                     else:
                         raise IntegrityError
             except IntegrityError:
-                return render(request, 'home/utils/email/activate.html', {'errors': str(user.get_errors())})
+                return render(request, 'home/utils/email/verify.html', {'errors': str(user.get_errors())})
 
         else:
-            return render(request, 'home/utils/email/activate.html', {'errors': str(rq.get_errors())})
+            return render(request, 'home/utils/email/verify.html', {'errors': str(rq.get_errors())})
 
     raise Http404
 
@@ -186,7 +186,9 @@ class ChangeUserInfo(View):
                             elif ut == 'company':
                                 company = CompanyContainer(user.get_user())
                                 if user.change_user_email(i, company=company.get_company()):
-                                    return redirect('home:verify')
+                                    if user.log_user_out(request):
+                                        return redirect('home:verify')
+                                    raise IntegrityError
                                 else:
                                     raise IntegrityError
                             else:
@@ -197,7 +199,7 @@ class ChangeUserInfo(View):
                                     if user.log_user_in(
                                             self.request,
                                             {
-                                                'username': user.get_user().email,
+                                                'email': user.get_user().email,
                                                 'password': i['password']
                                             }
                                     ):
@@ -221,6 +223,33 @@ class ChangeUserInfo(View):
 
         else:
             return render(request, self.template_name, {'error': str(rq.get_errors())})
+
+
+class NewPasswordView(View):
+    template_name = 'home/utils/email/change_password.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        user = UserUtil(request.user)
+        mail = request.POST.get('email')
+        if mail:
+
+            try:
+                with transaction.atomic():
+                    if user.new_password(mail):
+                        print('all good.')
+                        return render(request, 'home/index_page/home.html', {'success_msg': 'Password changed successfully.'})
+                    else:
+                        raise IntegrityError
+            except IntegrityError:
+                print('errors: ' + str(user.get_errors()))
+                return render(request, self.template_name, {'errors': user.get_errors()})
+
+        else:
+            print('invalid email')
+            return render(request, self.template_name, {'errors': 'Invalid email.'})
 
 
 def close_notification(request, pk):
