@@ -152,7 +152,6 @@ def change_application_resume(request, pk, ak):
                     raise IntegrityError
         except IntegrityError:
             m = str(student.get_errors())
-            MessageCenter.new_message('student', student.get_student(), 'danger', m)
             return HttpResponse(m, status=400)
 
     raise Http404

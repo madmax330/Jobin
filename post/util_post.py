@@ -41,11 +41,7 @@ class StudentPostContainer(BaseContainer):
             if not post.new_apps:
                 post.new_apps = True
                 post.save()
-            m = 'Application for post ' + post.title + ' successful.'
-            if self.new_message(True, self.__student, m, 0):
-                return True
-            else:
-                return False
+            return True
         else:
             self.add_form_errors()
             return False
@@ -230,8 +226,11 @@ class StudentPostContainer(BaseContainer):
         self._form = ChangeResumeForm({'resume': r.id}, instance=self.__application)
         if self._form.is_valid():
             self._form.save()
+            self.__application.resume_notified = True
+            self.__application.save()
             return True
         else:
+            self.add_form_errors()
             return False
 
     def withdraw_application(self):
@@ -311,6 +310,7 @@ class CompanyPostContainer(BaseContainer):
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -545,9 +545,7 @@ class CompanyPostContainer(BaseContainer):
         self.__application.save()
         m = 'Your application for the post "' + self.__application.post.title + '" was closed.'
         if self.new_notification(True, self.__application.student, m, 100):
-            m = 'Application successfully closed.'
-            if self.new_message(False, self.__company, m, 2):
-                return True
+            return True
         return False
 
     def app_opened(self, app=None):

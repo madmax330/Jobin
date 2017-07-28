@@ -5,8 +5,27 @@
 {% block content %}
     <div style="padding:128px" class="text-center">
         <h3>
-            Your registration was successful, check you email to find the activation link for your account
+            Your registration was successful, check your email to find the activation link for your account
             so you can get started using Jobin right away!
         </h3>
+        {% if errors %}
+            <div class="alert alert-danger">
+                {{ errors }}
+            </div>
+        {% endif %}
+        {% if msg %}
+            <div class="alert alert-info">
+                {{ msg }}
+            </div>
+        {% endif %}
+        <form action="{% url 'home:new_activation' %}" method="post">
+            {% csrf_token %}
+            <p>
+                If you didn't get an activation key <button class="btn btn-default"><strong>Click Here</strong></button> to have a new one
+                emailed to you.
+            </p>
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="password" value="pass">
+        </form>
     </div>
 {% endblock %}

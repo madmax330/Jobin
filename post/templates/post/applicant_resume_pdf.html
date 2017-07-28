@@ -5,7 +5,7 @@
     <title>PDF RESUME</title>
     {% load staticfiles %}
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'company/css/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'company/css/company.css' %}"/>
     <link href="https://fonts.googleapis.com/css?family=Catamaran:400,700,800" rel="stylesheet">
     <style>
         body {
@@ -21,9 +21,6 @@
             margin-left: 2em;
         }
 
-        .capital{
-            text-transform: capitalize;
-        }
     </style>
 </head>
 <body>
@@ -62,11 +59,11 @@
             </tr>
             {% for x in app.resume.schools %}
                 <tr>
-                    <td>{{ x.name }}</td>
+                    <td class="capital">{{ x.name }}</td>
                     <td>{{ x.start }}</td>
                     <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
                     <td class="capital">{{ x.level }}</td>
-                    <td>{{ x.program }}</td>
+                    <td class="capital">{{ x.program }}</td>
                 </tr>
             {% endfor %}
         </table>

@@ -13,12 +13,16 @@ $(function(){
         modal.find('.warning-message').html(warning.find('.message').html());
         modal.find('.warning-notes').html(warning.find('.notes').html());
         modal.find('.warning-accepted').attr('data-url', $(this).data('url'));
+        modal.find('.warning-accepted').data('url', $(this).data('url'));
         open_modal('warning-modal');
     });
 
     $('.warning-accepted').click(function(){
         send_get($(this).data('url'));
         close_modal('warning-modal');
+        let modal = $('#warning-modal');
+        modal.find('.warning-accepted').data('url', '');
+        modal.find('.warning-accepted').attr('data-url', '');
     });
 
 });

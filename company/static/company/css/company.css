@@ -9,6 +9,11 @@ h1, h2, h3, h4, h5, h6{
     font-weight: 700;
 }
 */
+
+.capital{
+    text-transform: capitalize;
+}
+
 .right{
     float: right;
 }
@@ -145,13 +150,7 @@ footer a:hover{
     border-radius: 0;
 }
 
-
-#warning-modal .modal-header{
-    background-color: #f0ad4e;
-    color: #FFFFFF;
-}
-
-#welcome-modal .modal-header{
+#welcome-modal .modal-header {
     color: #FFFFFF;
 }
 
