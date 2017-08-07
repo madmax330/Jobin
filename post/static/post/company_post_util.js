@@ -76,6 +76,24 @@ $(function () {
      *   FILTER RELATED FUNCTIONS
      */
 
+    $('input#filter_keep_false').change(function() {
+        if($(this).is(':checked')){
+            show($('.delete-non-filtered'));
+        }
+        else{
+            hide($('.delete-non-filtered'));
+        }
+    });
+
+    $('input#filter_keep_true').change(function() {
+        if($(this).is(':checked')){
+            hide($('.delete-non-filtered'));
+        }
+        else{
+            show($('.delete-non-filtered'));
+        }
+    });
+
     $('.clear-filter').click(function () {
         location.reload();
     });

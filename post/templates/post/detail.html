@@ -15,7 +15,7 @@
             <div>
                 <label>Post Status:</label><span> {{ post.status }}</span>
             </div>
-            <br/>
+            <label>Post Type: </label><span> {{ post.type }}</span><br/>
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
             <label>End Date: </label><span> {{ post.end_date }}</span><br/>
             <label>Application Deadline: </label><span> {{ post.deadline }}</span><br/>
@@ -25,6 +25,10 @@
             <p class="formatted-text">{{ post.description | linebreaksbr }}</p>
             <label>Requirements: </label>
             <p>{{ post.requirements | linebreaksbr }}</p>
+            {% if post.cover_instructions %}
+                <label>Cover Letter Instructions:</label>
+                <p>{{ post.cover_instructions }}</p>
+            {% endif %}
             <label>Programs: </label>
             <p>{{ post.programs }}</p>
             {% if post.status == 'open' %}

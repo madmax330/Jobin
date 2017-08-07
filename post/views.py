@@ -136,9 +136,11 @@ def post_detail(request, pk):
     if request.method == 'GET':
         company = CompanyContainer(request.user)
         msgs = MessageCenter.get_messages('company', company.get_company())
+        post = company.get_post(pk)
+        post.type = POST_CATEGORIES[post.type]
         context = {
             'company': company.get_company(),
-            'post': company.get_post(pk),
+            'post': post,
             'app_count': company.application_count(pk),
             'messages': msgs,
             'tab': 'posts',
@@ -538,7 +540,11 @@ class ApplicantPDF(View):
         # return render(request, self.template_name, context)
 
 
-
+#
+#
+#   API VIEWS
+#
+#
 
 
 

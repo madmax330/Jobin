@@ -102,7 +102,7 @@ class RequestUtil(BaseContainer):
         country = request.POST.get('company_country')
         phone = request.POST.get('company_phone')
         website = request.POST.get('company_website')
-        startup = request.POST.get('company_startup')
+        startup = request.POST.get('company_is_startup')
         industry = request.POST.get('company_industry')
 
         info = {
@@ -186,7 +186,7 @@ class RequestUtil(BaseContainer):
         country = request.POST.get('student_country')
         program = request.POST.get('student_program')
         major = request.POST.get('student_major')
-        graduate = request.POST.get('student_grad')
+        graduate = request.POST.get('student_graduate')
         phone = request.POST.get('student_phone')
         lin = request.POST.get('student_linked')
         work = request.POST.get('student_work')
@@ -420,13 +420,13 @@ class RequestUtil(BaseContainer):
         name = request.POST.get('resume_name')
         gpa = request.POST.get('resume_gpa')
 
-        if name and gpa:
+        if name:
             return {
                 'name': name,
-                'gpa': gpa,
+                'gpa': gpa if gpa else 0,
             }
         else:
-            self.add_error('Resume name and GPA cannot be empty.')
+            self.add_error('Resume name cannot be empty.')
             return None
 
     def get_school_info(self, request):

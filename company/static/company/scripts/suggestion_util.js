@@ -6,6 +6,18 @@
 
 $(function(){
 
+    $('.view-suggestion').click(function ( event ) {
+        event.preventDefault();
+
+        let parent = $(this).parents('.jobin-suggestion');
+        let modal = $('#suggestion-info-modal');
+
+        modal.find('.suggestion-info-date').html(parent.find('.date').html().toString().trim());
+        modal.find('.suggestion-info-topic').html(parent.find('.topic').html().toString().trim());
+        modal.find('.suggestion-info-suggestion').html(parent.find('.suggestion').html().toString().trim());
+        modal.modal('toggle');
+    });
+
     $('#suggestion-form').submit(function( event ) {
          event.preventDefault();
 
@@ -17,7 +29,7 @@ $(function(){
         let parent = $(this).parents('.jobin-suggestion');
         let modal = $('#suggestion-comment-modal');
         modal.find('.suggestion').html(parent.find('.suggestion').html().toString().trim());
-        $('#suggestion-form').attr('action', $(this).data('url'));
+        $('#comment-form').attr('action', $(this).data('url'));
         modal.modal('toggle');
     });
 

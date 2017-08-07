@@ -84,6 +84,7 @@ class EditCompanyView(View):
             'states': HomeUtil.get_states(),
             'tab': 'profile',
         }
+        print(str(company.get_company().is_startup))
         return render(request, self.template_name, context)
 
     def post(self, request):
