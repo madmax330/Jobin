@@ -144,7 +144,7 @@
                             {{ errors.website }}
                         </div>
                     {% endif %}
-                    <input class="form-control" id="company_website" type="text" name="company_website" value="{{ company.website }}"/>
+                    <input class="form-control" id="company_website" type="text" name="company_website" value="{% if company.website %}{{ company.website }}{% endif %}"/>
                 </div>
                 <div class="form-group">
                     <label>Are you a startup?</label><br/>

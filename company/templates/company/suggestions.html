@@ -54,7 +54,7 @@
                     <textarea name="suggestion" id="suggestion" rows="5"
                               class="form-control" placeholder="Suggestion here..."></textarea>
                 </div>
-                <div class="form-group">
+                <div class="form-group hidden">
                     <label class="required" for="suggestion_importance">How important do you think this suggestion
                         is?</label>
                     <input id="suggestion_importance" type="range" min="1" max="10" name="suggestion_importance"/>
@@ -80,15 +80,14 @@
                     <tr>
                         <th>Date</th>
                         <th>Topic</th>
-                        <th>Importance</th>
                         <th></th>
                     </tr>
                     {% for x in suggestions %}
                         <tr class="jobin-suggestion">
-                            <td>{{ x.date }}</td>
-                            <td>{{ x.topic }}</td>
-                            <td>{{ x.importance }}/10</td>
+                            <td class="date">{{ x.date }}</td>
+                            <td class="topic">{{ x.topic }}</td>
                             <td>
+                                <a href="#" class="view-suggestion">View</a> |
                                 <a data-url="{% url 'company:comment_suggestion' pk=x.id %}"
                                    href="#" class="suggestion-comment">
                                     Add Comment
@@ -142,6 +141,23 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+    <div id="suggestion-info-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4>Suggestion Information</h4>
+                </div>
+                <div class="modal-body">
+                    <label>Date:</label><span class="suggestion-info-date"></span><br/>
+                    <label>Topic:</label><span class="suggestion-info-topic"></span><br/>
+                    <label>Suggestion:</label>
+                    <p class="suggestion-info-suggestion"></p>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

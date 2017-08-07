@@ -160,12 +160,12 @@
                         </div>
                     {% endif %}
                     <p>
-                        <input id="is-grad" class="w3-radio" type="radio" name="student_graduate" value="yes"
+                        <input id="is-grad" class="w3-radio" type="radio" name="student_graduate" value="True"
                                {% if student.graduate or not student %}checked="checked"{% endif %}>
                         <label for="is-grad">Yes</label>
                     </p>
                     <p>
-                        <input id="not-grad" class="w3-radio" type="radio" name="student_graduate" value="no"
+                        <input id="not-grad" class="w3-radio" type="radio" name="student_graduate" value="False"
                                 {% if not student.graduate %}checked="checked"{% endif %}>
                         <label for="not-grad">No</label>
                     </p>
@@ -184,12 +184,13 @@
                         Are you eligible to work in <span class="nsf-country">Canada</span>?
                     </label>
                     <p>
-                        <input id="can-work" class="w3-radio" type="radio" name="student_work" value="yes"
-                               checked="checked">
+                        <input id="can-work" class="w3-radio" type="radio" name="student_work" value="True"
+                               {% if student.work_eligible or not student %}checked="checked"{% endif %}>
                         <label for="can-work">Yes</label>
                     </p>
                     <p>
-                        <input id="cant-work" class="w3-radio" type="radio" name="student_work" value="no">
+                        <input id="cant-work" class="w3-radio" type="radio" name="student_work" value="False"
+                                {% if not student.work_eligible %}checked="checked"{% endif %}>
                         <label for="cant-work">No</label>
                     </p>
                 </div>
