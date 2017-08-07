@@ -814,4 +814,9 @@ def delete_file_resume(request, pk):
     raise Http404
 
 
+#
+#
+#   API VIEWS
+#
+#
 

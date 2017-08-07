@@ -16,6 +16,18 @@ class FileResumeForm(forms.ModelForm):
         model = Resume
         fields = ('file_resume',)
 
+    def clean(self):
+        clean_data = super(FileResumeForm, self).clean()
+        file = clean_data['file_resume']
+        if file.size > 4 * 1024 * 1024:
+            raise forms.ValidationError({'file_resume': 'The file size for your file resume cannot exceed 4MB.'})
+        arr = file.name.split('.')
+        ext = arr[len(arr)-1]
+        if not len(arr) > 1:
+            raise forms.ValidationError({'file_resume': 'The file extension is not recognized. (It must be a PDF)'})
+        if not ext.lower() == 'pdf':
+            raise forms.ValidationError({'file_resume': 'The file must be a PDF.'})
+
 
 class NewLanguageForm(forms.ModelForm):
 

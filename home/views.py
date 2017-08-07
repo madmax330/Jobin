@@ -20,12 +20,14 @@ class IndexView(View):
         if user.is_logged_in():
             if user.get_user_type() == 'company':
                 company = CompanyContainer(user.get_user())
-                context['logged'] = 'company'
-                context['user_name'] = company.get_company().name
+                if company.get_company():
+                    context['logged'] = 'company'
+                    context['user_name'] = company.get_company().name
             elif user.get_user_type() == 'student':
                 student = StudentContainer(user.get_user())
-                context['logged'] = 'student'
-                context['user_name'] = student.get_student().name
+                if student.get_student():
+                    context['logged'] = 'student'
+                    context['user_name'] = student.get_student().name
         return render(request, self.template_name, context)
 
     def post(self, request):
@@ -207,10 +209,12 @@ class ChangeUserInfo(View):
                                         if ut == 'student':
                                             student = StudentContainer(user.get_user())
                                             MessageCenter.new_notification('student', student.get_student(), 100, m)
+                                            MessageCenter.new_message('student', student.get_student(), 'success', m)
                                             return redirect('student:index')
                                         elif ut == 'company':
                                             company = CompanyContainer(user.get_user())
                                             MessageCenter.new_notification('company', company.get_company(), 100, m)
+                                            MessageCenter.new_message('company', company.get_company(), 'success', m)
                                             return redirect('company:index')
                                         else:
                                             return redirect('home:index')
@@ -357,4 +361,8 @@ def clear_test_content(request):
     raise Http404
 
 
-
+#
+#
+#   API VIEWS
+#
+#

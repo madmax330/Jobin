@@ -46,6 +46,12 @@
                     <div class="panel-body">
                         <form id="filter-form" action="{% url 'post:applicants' pk=post.id %}" method="post">
                             {% csrf_token %}
+                            <div class="delete-non-filtered hidden text-center padding" style="color:red;">
+                                <strong>
+                                    If you opt not to keep applicants outside of the filter, all the applications
+                                    that do not meet the filter criteria will be closed permanently.
+                                </strong>
+                            </div>
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group">
