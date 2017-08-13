@@ -75,18 +75,24 @@
                            value="{{ post.wage }}">
                 </div>
                 <div class="form-group">
-                    <label for="post_wage_interval">Payment Interval:</label>
-                    {% if errors.wage_interval %}
-                        <div class="alert alert-danger">
-                            {{ errors.wage_interval }}
-                        </div>
-                    {% endif %}
-                    <select id="post_wage_interval" class="form-control" name="post_wage_interval">
-                        <option value="hr">Hourly</option>
-                        <option value="mth">Monthly</option>
-                        <option value="yr">Yearly</option>
-                        <option value="single">One time</option>
-                    </select>
+                    <label class="radio-inline">
+                        <input type="radio" name="post_wage_interval"
+                               {% if post.wage_interval == 'hr' or not post %}checked="checked"{% endif %}
+                                value="hr">
+                        Hourly
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="post_wage_interval"
+                               {% if post.wage_interval == 'mth' %}checked="checked"{% endif %}
+                                value="mth">
+                        Monthly
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="post_wage_interval"
+                               {% if post.wage_interval == 'yr' %}checked="checked"{% endif %}
+                                value="yr">
+                        Yearly
+                    </label>
                 </div>
                 <div class="form-group">
                     <label class="required" for="post_openings">Number of positions:</label>
