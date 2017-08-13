@@ -47,7 +47,7 @@ function send_get(url){
 function get_input_date(val){
 
     let temp = new Date(val);
-    let day = ("0" + temp.getDate()).slice(-2);
+    let day = ("0" + temp.getUTCDate()).slice(-2);
     let month = ("0" + (temp.getMonth() + 1)).slice(-2);
     return temp.getFullYear()+"-"+(month)+"-"+(day)
 
