@@ -13,6 +13,7 @@ class ExtendedPost:
         self.end_date = post.end_date
         self.deadline = post.deadline
         self.wage = post.wage
+        self.wage_interval = post.wage_interval
         self.openings = post.openings
         self.requirements = post.requirements
         self.description = post.description

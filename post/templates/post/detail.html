@@ -19,7 +19,7 @@
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
             <label>End Date: </label><span> {{ post.end_date }}</span><br/>
             <label>Application Deadline: </label><span> {{ post.deadline }}</span><br/>
-            <label>Wage: </label><span> {{ post.wage }}</span><br/>
+            <label>Wage: </label><span> ${{ post.wage }}/{{ post.wage_interval }}</span><br/>
             <label>Openings: </label><span> {{ post.openings }}</span><br/>
             <label>Description: </label>
             <p class="formatted-text">{{ post.description | linebreaksbr }}</p>

@@ -393,7 +393,7 @@ class RecoverPostView(View):
         else:
             context['errors'] = rq.get_errors()
 
-        context['post'] = company.get_post(pk)
+        context['post'] = i
         return render(request, self.template_name, context)
 
 
