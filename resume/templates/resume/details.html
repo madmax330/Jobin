@@ -29,8 +29,10 @@
             <label>File:</label>
             {% if resume.file_resume %}
                 <a href="{{ resume.file_resume.url }}" target="_blank">{{ resume.file_resume.name }}</a>
+                <span class="spinner w3-hide"><i class="fa fa-spinner fa-spin"></i></span>
                 <br/>
-                <a href="{% url 'resume:delete_file' pk=resume.id %}" class="w3-btn w3-border w3-border-red w3-text-red">
+                <a href="{% url 'resume:delete_file' pk=resume.id %}"
+                   class="w3-btn w3-border w3-border-red w3-text-red delete-file-resume">
                     Delete File Resume
                 </a>
             {% else %}
@@ -42,6 +44,7 @@
                 </form>
                 <div style="display: block; overflow: hidden;">
                     <div class="w3-half w3-border file-progress w3-hide">
+                        <div><i class="fa fa-spinner fa-spin"></i></div>
                         <div class="w3-center primary-color progress-bar" style="height:24px; width:0;">0%</div>
                     </div>
                 </div>

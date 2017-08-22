@@ -48,6 +48,10 @@ $(function () {
         }
     });
 
+    $('.delete-logo').click(function () {
+        show($('.spinner'));
+    });
+
 });
 
 
