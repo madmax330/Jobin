@@ -227,6 +227,7 @@ class StudentContainer(BaseContainer):
         if self.__event_container.save_event(e):
             return True
         else:
+            self.add_error_list(self.__event_container.get_errors())
             return False
 
     # DATA FETCH FUNCTIONS (GETTERS)

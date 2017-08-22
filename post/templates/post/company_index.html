@@ -43,7 +43,7 @@
                                     {{ p.title }}
                                 </a>
                             </td>
-                            <td>${{ p.wage }}/{{ p.wage_interval }}</td>
+                            <td>{% if p.wage %}${{ p.wage }}/{{ p.wage_interval }}{% else %}N/A{% endif %}</td>
                             <td>{{ p.openings }}</td>
                             <td>{{ p.start_date }}</td>
                             <td>{{ p.deadline }}</td>

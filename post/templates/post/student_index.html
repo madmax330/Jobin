@@ -126,7 +126,13 @@
                                     <h5>{{ x.title }}</h5>
                                     <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
                                     <label>End Date:</label><span> {{ x.end_date }}</span><br/>
-                                    <label>Wage:</label><span> {{ x.wage }}$/{{ x.wage_interval }}</span><br/>
+                                    <label>Wage:</label>
+                                    {% if x.wage and x.wage > 0 %}
+                                        <span> {{ x.wage }}$/{{ x.wage_interval }}</span>
+                                    {% else %}
+                                        <span> N/A</span>
+                                    {% endif %}
+                                    <br/>
                                     <label>Number of positions:</label><span> {{ x.openings }}</span><br/>
                                     <label>
                                         <strong>Application Deadline:</strong>

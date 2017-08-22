@@ -41,7 +41,7 @@
                                     {% endif %}
                                     <h5>{{ x.name }}</h5>
                                     <label>Address:</label><span> {{ x.caddr }}</span><br/>
-                                    <label>Website:</label><span> {{ x.cweb }}</span>
+                                    <label>Website:</label><span> <a href="http://{{ x.cweb }}" target="_blank">{{ x.cweb }}</a></span>
                                 </div>
                             </div>
                             <div class="w3-col s8">
@@ -54,7 +54,7 @@
                                     <label>Date:</label><span> {{ x.start_date }}</span><br/>
                                     <label>Time:</label><span> {{ x.start_time }}</span><br/>
                                     <label>Address:</label><span> {{ x.address }}</span><br/>
-                                    <label>Website:</label><span> {{ x.website }}</span><br/>
+                                    <label>Website:</label><span> <a href="http://{{ x.website }}" target="_blank">{{ x.website }}</a></span><br/>
                                     <label>Description:</label><br/>
                                     <span>{{ x.desc | linebreaksbr }}</span>
                                 </div>

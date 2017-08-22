@@ -65,14 +65,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="required" for="post_wage">Wage:</label>
+                    <label for="post_wage">Wage:</label>
                     {% if errors.wage %}
                         <div class="alert alert-danger">
                             {{ errors.wage }}
                         </div>
                     {% endif %}
                     <input id="post_wage" class="form-control" type="text" name="post_wage"
-                           value="{{ post.wage }}">
+                           value="{% if post.wage %}{{ post.wage }}{% endif %}">
                 </div>
                 <div class="form-group">
                     <label class="radio-inline">

@@ -32,8 +32,8 @@ class SavedEvent(models.Model):
     active = models.BooleanField(default=True)
     start_date = models.DateField()
     start_time = models.TimeField()
-    end_date = models.DateField()
-    end_time = models.TimeField()
+    end_date = models.DateField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
     event_name = models.CharField(max_length=100)
 
 

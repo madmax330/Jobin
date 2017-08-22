@@ -270,7 +270,7 @@ class RequestUtil(BaseContainer):
 
         info = {
             'title': title,
-            'wage': wage,
+            'wage': wage if wage and self.__isnum(wage) > 0 else None,
             'wage_interval': wage_interval,
             'openings': openings,
             'start_date': start,
@@ -284,6 +284,12 @@ class RequestUtil(BaseContainer):
         }
 
         return self.__check_post_info(info)
+
+    def __isnum(self, num):
+        try:
+            return int(num)
+        except ValueError:
+            return -1
 
     def get_student_post_filter(self, request):
         location = request.GET.get('location_filter')
