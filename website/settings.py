@@ -17,6 +17,16 @@ EMAIL_HOST_USER = "jobinproject2016@gmail.com"
 EMAIL_HOST_PASSWORD = "In2016JobIn"
 EMAIL_PORT = 587
 
+AWS_ACCESS_KEY_ID = 'AKIAIT2Z5TDYPX3ARJBA'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'sibtc-static'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+
+#DEFAULT_FILE_STORAGE = 'website.storage_backends.MediaStorage'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -53,6 +63,7 @@ INSTALLED_APPS = [
     'simplejson',
     'itsdangerous',
     'wkhtmltopdf',
+    'storages',
 ]
 
 WKHTMLTOPDF_CMD = '/usr/local/bin/wkhtmltopdf'
