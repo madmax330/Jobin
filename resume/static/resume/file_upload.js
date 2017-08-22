@@ -48,6 +48,10 @@ $(function () {
         }
     });
 
+    $('.delete-file-resume').click(function () {
+        show($('.spinner'));
+    });
+
 });
 
 
