@@ -84,7 +84,7 @@ class StudentPostContainer(BaseContainer):
                 f |= x
             op &= f
         op &= ad
-        posts = Post.objects.filter(op)
+        posts = Post.objects.filter(op).order_by('-id')
         if posts.count() > 0:
             l = []
             temp = []
@@ -261,7 +261,7 @@ class CompanyPostContainer(BaseContainer):
             'is_startup_post': self.__company.is_startup,
             'location': self.__company.city + ' ' + self.__company.state + ' ' + self.__company.country,
             'title': post_info['title'],
-            'wage': post_info['wage'],
+            'wage': post_info['wage'] if not post_info['type'] == 'volunteer' else None,
             'wage_interval': post_info['wage_interval'],
             'openings': post_info['openings'],
             'start_date': post_info['start_date'],
@@ -393,7 +393,7 @@ class CompanyPostContainer(BaseContainer):
             return self.__post
 
     def get_posts(self):
-        posts = Post.objects.filter(company=self.__company, status='open')
+        posts = Post.objects.filter(company=self.__company, status='open').order_by('-id')
         if posts.count() > 0:
             return list(posts)
         else:
@@ -401,7 +401,7 @@ class CompanyPostContainer(BaseContainer):
             return []
 
     def get_expired_posts(self):
-        posts = Post.objects.filter(company=self.__company, status='closed')
+        posts = Post.objects.filter(company=self.__company, status='closed').order_by('-id')
         if posts.count() > 0:
             return list(posts)
         else:

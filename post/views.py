@@ -297,7 +297,7 @@ def post_applicants(request, pk):
             'applications': (apps.get_page(page) if apps else None),
             'count': (apps.count if apps else 0),
             'schools': HomeUtil.get_schools(),
-            'majors': HomeUtil.get_program_majors(program),
+            'majors': HomeUtil.get_program_majors(program) if not post.programs == 'All Programs' else HomeUtil.get_majors(),
             'filters': filters if filters else None,
             'filter_schools': filters['schools'].split(',') if filters and filters['schools'] else None,
             'filter_majors': filters['majors'].split(',') if filters and filters['majors'] else None,
