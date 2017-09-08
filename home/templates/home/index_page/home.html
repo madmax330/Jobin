@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="{% static 'home/css/home.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'home/css/about.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/news.css' %}"/>
 {% endblock %}
 
 {% block title %}Jobin Home{% endblock %}
@@ -25,9 +25,15 @@
                         <div class="col-sm-8 col-md-9 col-lg-9">
                             <h3>At Jobin, we bring the jobs to you!</h3>
                             We give you access to the many jobs that are posted and all you have to do is decide
-                            whether you want to apply or not. We want to make the job searching and application
-                            process simpler and faster.
+                            whether you want to apply or not. We believe in changing the future of hiring.
                         </div>
+                    </div>
+                    <div class="video-container" style="background-color: #f6f6f6; text-align: center;">
+                        <div class="video-loader-icon"><h1><i class="fa fa-spinner fa-spin"></i></h1></div>
+                        <video width="640" height="380" controls class="hidden" id="intro-video">
+                            <source src="https://s3.amazonaws.com/jobin-media/static/home/promovid.mp4" type="video/mp4">
+                            Video cannot be viewed.
+                        </video>
                     </div>
                 </div>
                 <div class="col-sm-6 col-md-5 col-lg-4">
@@ -80,6 +86,16 @@
                         <script>
                             $(function () {
                                 $('#id_username')[0].maxLength = 100;
+                                let vid = $('#intro-video');
+                                vid.on('canplay', function( event ) {
+                                    let loader = $('.video-loader-icon');
+                                    if(vid.hasClass('hidden')){
+                                        vid.removeClass('hidden');
+                                    }
+                                    if(!loader.hasClass('hidden')){
+                                        loader.addClass('hidden');
+                                    }
+                                });
                             });
                         </script>
                     </div>
@@ -89,8 +105,18 @@
         </div>
 
     </div>
-
     {% include 'home/index_page/what.html' %}
-    {% include 'home/index_page/contact.html' %}
+    <div class="container">
+
+        <h2>Contact Us</h2>
+        <ul>
+            <li>
+                <h4 class="less-font-weight">
+                    <span class="glyphicon glyphicon-envelope"></span> By Email: contact@jobin.ca
+                </h4>
+            </li>
+        </ul>
+
+    </div>
 
 {% endblock %}

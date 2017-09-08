@@ -17,7 +17,16 @@ $(function () {
      */
 
     $('.request-cover').click(function () {
-        send_get($(this).data('url'));
+        $.get($(this).data('url'), function(data, status){
+
+        if(status === 'success'){
+            $('#filter-form').submit();
+        }
+
+        })
+            .fail(function(jqXHR){
+                display_message(jqXHR.responseText, 'danger');
+            });
     });
 
     $('.discard-single-applicant').click(function () {
@@ -44,11 +53,29 @@ $(function () {
      */
 
     $('.save-btn').click(function () {
-        send_get($(this).data('url'));
+        $.get($(this).data('url'), function(data, status){
+
+        if(status === 'success'){
+            $('#filter-form').submit();
+        }
+
+        })
+            .fail(function(jqXHR){
+                display_message(jqXHR.responseText, 'danger');
+            });
     });
 
     $('.remove-save').click(function () {
-        send_get($(this).data('url'));
+        $.get($(this).data('url'), function(data, status){
+
+        if(status === 'success'){
+            $('#filter-form').submit();
+        }
+
+        })
+            .fail(function(jqXHR){
+                display_message(jqXHR.responseText, 'danger');
+            });
     });
 
 

@@ -17,6 +17,16 @@
 {% endblock %}
 
 {% block content %}
+    {% if not resumes %}
+        <div>
+            <div class="w3-container w3-padding message-warning w3-display-container">
+                <p>
+                    You have not yet created a resume and won't be able to apply. Go to the "Resumes" section
+                    and create a new resume to get started.
+                </p>
+            </div>
+        </div>
+    {% endif %}
     <div class="job-nav">
         <div class="w3-container secondary-color" style="padding-bottom: 0;">
             <h3 class="w3-center">({{ count }}) {{ d_category }} Job Posts</h3>

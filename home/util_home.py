@@ -26,6 +26,10 @@ class HomeUtil:
         return JobinProgram.objects.all()
 
     @staticmethod
+    def get_student_programs():
+        return JobinProgram.objects.exclude(name='All Programs')
+
+    @staticmethod
     def get_majors():
         return JobinMajor.objects.all()
 

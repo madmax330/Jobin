@@ -269,7 +269,7 @@
 
 
 {% block hidden_block %}
-    <form id="filter-form" action="{% url 'post:applicant' pk=post.id ak='0' %}" method="post">
+    <form id="filter-form" action="{% url 'post:applicant' pk=post.id ak=app.id %}" method="post">
         {% csrf_token %}
         <input type="hidden" id="school_filter" name="filter_schools" value="{{ filters.schools }}">
         <input id="gpa_filter" type="hidden" name="filter_gpa" value="{{ filters.gpa }}">

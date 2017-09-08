@@ -67,7 +67,7 @@ class NewEventView(View):
                 context['errors'] = company.get_form().errors
 
         else:
-            context['event'] = i
+            context['event'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
@@ -111,7 +111,7 @@ class EditEventView(View):
                 context['errors'] = company.get_form().errors
 
         else:
-            context['event'] = i
+            context['event'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
@@ -207,9 +207,9 @@ class RecoverEventView(View):
                 context['errors'] = company.get_form().errors
 
         else:
+            context['event'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
-        context['event'] = company.get_event(pk)
         return render(request, self.template_name, context)
 
 

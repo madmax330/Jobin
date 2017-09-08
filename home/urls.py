@@ -7,6 +7,8 @@ app_name = 'home'
 urlpatterns = [
 
     url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^students/about/$', views.students_about, name='students_about'),
+    url(r'^company/about/$', views.company_about, name='company_about'),
 
     url(r'^register/(?P<ut>\w+)/$', views.RegisterView.as_view(), name='register'),
     url(r'^verify/$', views.verify, name='verify'),

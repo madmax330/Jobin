@@ -67,6 +67,7 @@ class NewPostView(View):
                 context['errors'] = company.get_form().errors
 
         else:
+            context['post'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
@@ -107,7 +108,7 @@ class EditPostView(View):
                 context['errors'] = company.get_form().errors
 
         else:
-            context['post'] = i
+            context['post'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
@@ -388,12 +389,13 @@ class RecoverPostView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
+                context['post'] = i
                 context['errors'] = company.get_errors()
 
         else:
+            context['post'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
-        context['post'] = i
         return render(request, self.template_name, context)
 
 

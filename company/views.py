@@ -68,6 +68,7 @@ class NewCompanyView(View):
                 context['errors'] = company.get_form().errors
 
         else:
+            context['company'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
@@ -108,9 +109,11 @@ class EditCompanyView(View):
                     else:
                         raise IntegrityError
             except IntegrityError:
+                context['company'] = i
                 context['errors'] = company.get_form().errors
 
         else:
+            context['company'] = rq.get_info()
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)
