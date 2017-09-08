@@ -30,11 +30,11 @@ class ActivationUtil(BaseContainer):
         activation_key = self.__create_activation_key()
         subject = 'Jobin Account Verification'
         template = 'home/utils/email/activate_email.html'
-        url = 'http://yourdomain.com/activate/' + activation_key
+        url = 'http://jobin.ca/activate/' + activation_key
         html = render_to_string(template, {'link': url})
         text_val = strip_tags(html)
 
-        from_email = 'signup@jobin.com'
+        from_email = 'info@jobin.ca'
         msg = EmailMultiAlternatives(subject, text_val, from_email,  [self.__user.email])
         msg.attach_alternative(html, "text/html")
         try:
@@ -68,7 +68,7 @@ class ActivationUtil(BaseContainer):
         html = render_to_string(template, {'password': password})
         text_val = strip_tags(html)
 
-        from_email = 'signup@jobin.com'
+        from_email = 'info@jobin.ca'
         msg = EmailMultiAlternatives(subject, text_val, from_email, [self.__user.email])
         msg.attach_alternative(html, "text/html")
         try:
