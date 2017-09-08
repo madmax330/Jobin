@@ -85,7 +85,7 @@ class RegisterView(View):
             try:
                 with transaction.atomic():
                     if user.new_user(i, ut == 'student'):
-                        return redirect('home:verify')
+                        return render(request, 'home/utils/email/verify.html', i)
                     else:
                         raise IntegrityError
             except IntegrityError:
@@ -293,6 +293,44 @@ def close_notifications(request, u):
                 return HttpResponse('No notifications found.', status=400)
 
         return HttpResponse('Invalid user request.', status=400)
+
+    raise Http404
+
+
+def students_about(request):
+
+    if request.method == 'GET':
+        user = UserUtil(request.user)
+        context = {}
+        if user.is_logged_in():
+            if user.get_user_type() == 'company':
+                company = CompanyContainer(user.get_user())
+                context['logged'] = 'company'
+                context['user_name'] = company.get_company().name
+            elif user.get_user_type() == 'student':
+                student = StudentContainer(user.get_user())
+                context['logged'] = 'student'
+                context['user_name'] = student.get_student().name
+        return render(request, 'home/students_about.html', context)
+
+    raise Http404
+
+
+def company_about(request):
+
+    if request.method == 'GET':
+        user = UserUtil(request.user)
+        context = {}
+        if user.is_logged_in():
+            if user.get_user_type() == 'company':
+                company = CompanyContainer(user.get_user())
+                context['logged'] = 'company'
+                context['user_name'] = company.get_company().name
+            elif user.get_user_type() == 'student':
+                student = StudentContainer(user.get_user())
+                context['logged'] = 'student'
+                context['user_name'] = student.get_student().name
+        return render(request, 'home/company_about.html', context)
 
     raise Http404
 

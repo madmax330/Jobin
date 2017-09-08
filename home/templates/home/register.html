@@ -18,7 +18,7 @@
                     </div>
                     <div class="form-group">
                         <label class="required">Email:</label>
-                        <input id="email" placeholder="Email"
+                        <input id="email" placeholder="{% if type == 'student' %}University Email Address{% else %}Email{% endif %}"
                                name="email" class="form-control" type="email"/>
                     </div>
                     <div class="form-group">
@@ -35,6 +35,20 @@
                         <label class="required">Confirm Password:</label>
                         <input id="confirm_password" placeholder="Confirm Password"
                                name="confirm_password" class="form-control" type="password"/>
+                    </div>
+                    <div class="form-group">
+                        <div class="hidden must-agree alert alert-danger">
+                            You must agree to the Terms and Conditions and Privacy Policy to continue.
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" id="tcpp-checkbox">
+                                I agree to the
+                                <a target="_blank" href="{% url 'home:terms' %}">Terms and Conditions</a>
+                                and
+                                <a target="_blank" href="{% url 'home:policy' %}">Privacy Policy</a>.
+                            </label>
+                        </div>
                     </div>
                     <div>
                         <a href="{% url 'home:index' %}" class="btn btn-default">Cancel</a>
@@ -57,6 +71,12 @@
 
 
     <script>
+        function show(el) {
+            if(el.hasClass('hidden')){
+                el.removeClass('hidden');
+            }
+        }
+
         $(function () {
             $('#email')[0].maxLength = 100;
 
@@ -64,13 +84,18 @@
                 let email = $('#email').val();
                 let c_email = $('#confirm_email').val();
                 if (email !== c_email) {
-                    $('.form-error').append('<br/>Emails do not match.<br/>');
+                    show($('.no-email-match'));
                     return false;
                 }
                 let pass = $('#password').val();
                 let c_pass = $('#confirm_password').val();
                 if (pass !== c_pass) {
-                    $('.form-error').append('Passwords do not match.');
+                    show($('.no-pass-match'));
+                    return false;
+                }
+                let check = $('#tcpp-checkbox');
+                if(!(check.is(':checked') && check.prop('checked'))){
+                    show($('.must-agree'));
                     return false;
                 }
             });

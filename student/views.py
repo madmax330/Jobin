@@ -49,7 +49,7 @@ class NewStudentView(View):
         context = {
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
-            'programs': HomeUtil.get_programs(),
+            'programs': HomeUtil.get_student_programs(),
             'majors': HomeUtil.get_majors(),
         }
         return render(request, self.template_name, context)
@@ -61,7 +61,7 @@ class NewStudentView(View):
         context = {
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
-            'programs': HomeUtil.get_programs(),
+            'programs': HomeUtil.get_student_programs(),
             'majors': HomeUtil.get_majors(),
         }
         if i:
@@ -93,7 +93,7 @@ class EditStudentView(View):
             'student': student.get_student(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
-            'programs': HomeUtil.get_programs(),
+            'programs': HomeUtil.get_student_programs(),
             'majors': HomeUtil.get_majors(),
             'tab': 'profile',
         }
@@ -107,7 +107,7 @@ class EditStudentView(View):
             'student': student.get_student(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
-            'programs': HomeUtil.get_programs(),
+            'programs': HomeUtil.get_student_programs(),
             'majors': HomeUtil.get_majors(),
             'tab': 'profile',
         }

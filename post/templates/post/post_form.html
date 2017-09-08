@@ -3,7 +3,13 @@
 {% block title %}Post Information Form{% endblock %}
 
 {% load staticfiles %}
+
+{% block styles %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
 {% block scripts %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
 {% endblock %}
@@ -171,8 +177,28 @@
             </form>
         </div>
     </div>
+    <script>
+        $(function() {
+            let select = $('select#post_type');
+            let t = $('.post-type').text();
+            if(t){
+                select.val(t);
+            }
+
+            select.on('change', function(){
+                let val = $(this).find('option:selected').val();
+                if(val === 'volunteer'){
+                    $('#post_wage').val('0');
+                }
+                else{
+                    $('#post_wage').val('');
+                }
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block hidden_block %}
     {% include 'home/utils/form_values.html' %}
+    <div class="post-type">{% if post.type %}{{ post.type }}{% endif %}</div>
 {% endblock %}

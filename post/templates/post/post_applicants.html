@@ -3,6 +3,11 @@
 {% load staticfiles %}
 {% block styles %}
     <link rel="stylesheet" href="{% static 'post/company_post.css' %}">
+    <style>
+        .popover {
+            max-width:none;
+        }
+    </style>
 {% endblock %}
 
 {% block scripts %}
@@ -66,7 +71,15 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="gpa_filter">GPA Filter:</label><br/>
+                                        <label for="gpa_filter">
+                                            GPA Filter:
+                                            <a href="#" title="GPA Filter" data-toggle="popover" data-trigger="focus"
+                                            data-content="Setting the GPA filter will return any applicants with a GPA greater
+                                            than or equal to the specified value.">
+                                                <i class="fa fa-question-circle"></i>
+                                            </a>
+                                        </label>
+                                        <br/>
                                         <span style="color:red;" class="gpa-error hidden">
                                             GPA value must be a number
                                         </span>
@@ -212,6 +225,11 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function(){
+            $('[data-toggle="popover"]').popover();
+        });
+    </script>
 {% endblock %}
 
 

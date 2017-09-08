@@ -1,19 +1,13 @@
 {% load staticfiles %}
-<div class="section about-section bg-grey">
+<div class="section news-section bg-grey">
 
     <div class="container">
-
-        <h2>What do we do?</h2>
-        <h4>
-            At JobIn, our mission is to help people find jobs in a way that reflects the fast paced society that we live in.
-        </h4>
         <div id="myCarousel" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">
                 <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
                 <li data-target="#myCarousel" data-slide-to="1"></li>
                 <li data-target="#myCarousel" data-slide-to="2"></li>
-                <li data-target="#myCarousel" data-slide-to="3"></li>
             </ol>
 
             <!-- Wrapper for slides -->
@@ -22,51 +16,18 @@
                 <div class="item active">
                     <div class="row carousel-item">
                         <div class="col-lg-4">
-                            <div class="div-image about-image">
-                                <img src="{% static 'home/images/jobin5.gif' %}">
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <p class="about-text">
-                                Applicants shouldn’t have to fill out multiple forms for every jobs they
-                                are applying for nor should they have to bring their resume in person.
-                                We believe that applying for a job should be as easy as clicking on a button.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <div class="row carousel-item">
-                        <div class="col-lg-4">
-                            <h3 class="text-center">Students</h3>
-                            <div class="div-image about-image">
-                                <img src="{% static 'home/images/gradcap.gif' %}">
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <p class="about-text">
-                                Fellow students! All you need is your school email address,
-                                five minutes to register and setup your profile, and the willingness
-                                to find a job. Apply to the job of your dreams in a simple click!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <div class="row carousel-item">
-                        <div class="col-lg-4">
-                            <h3 class="text-center">Employers</h3>
-                            <div class="div-image about-image">
+                            <h3 class="text-center">New Schools!</h3>
+                            <div class="div-image news-image">
                                 <img src="{% static 'home/images/buildings.gif' %}">
                             </div>
                         </div>
                         <div class="col-lg-8">
-                            <p class="about-text">
-                                Register today, create a job posting and use our simple and efficient talent
-                                management tool to recruit the best candidate for your company. Guess what?
-                                It’s all free!
+                            <p class="news-text">
+                                As the Jobin platform expands, support for more and more schools will be added in order
+                                to give every student the Jobin experience.
+                                <br/>
+                                As schools are added, any student pre-registered for that school will be notified that the
+                                service has been opened for his/her establishment.
                             </p>
                         </div>
                     </div>
@@ -75,22 +36,40 @@
                 <div class="item">
                     <div class="row carousel-item">
                         <div class="col-lg-4">
-                            <h3 class="text-center">How Jobin Works</h3>
-                            <div class="div-image about-image">
-                                <img src="{% static 'home/images/gears.gif' %}">
+                            <h3 class="text-center">Mobile App!</h3>
+                            <div class="div-image news-image">
+                                <img src="{% static 'home/images/mobile.png' %}">
                             </div>
                         </div>
                         <div class="col-lg-8">
-                            <p class="about-text">
-                                Jobin works by facilitating the application and recruitment process for students and
-                                recruiters, respectively. Our platform allows students to easily apply to jobs and keep
-                                track of them, and it allows recruiters to create job postings, manage them and
-                                use our efficient talent management tool to choose the best fit for their company!
-                                Start using Jobin today!
+                            <p class="news-text">
+                                The Jobin mobile app is coming soon to bring the convenience from the Jobin web platform
+                                to your phone!
+                                <br/>
+                                The mobile app will bring new and easy ways to apply for jobs, and keep track of your
+                                applications and saved events!
                             </p>
                         </div>
                     </div>
                 </div>
+
+                <div class="item">
+                    <div class="row carousel-item">
+                        <div class="col-lg-4">
+                            <h3 class="text-center">Language Support</h3>
+                            <div class="div-image news-image">
+                                <img src="{% static 'home/images/languages.png' %}">
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <p class="news-text">
+                                The Jobin Team is working hard to translate the Jobin platform into your language so that it
+                                can be used world-wide.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Left and right controls -->

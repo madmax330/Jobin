@@ -1,0 +1,86 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Jobin Students{% endblock %}
+
+{% load staticfiles %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/about.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+    <div>
+        <div class="text-center">
+            <h1 class="main-title"><i class="fa fa-graduation-cap"></i> Jobin Students</h1>
+        </div>
+        <div class="container about-section">
+            <h2>Why we do it:</h2>
+            <div>
+                <ul>
+                    <li>We believe in improving application processes.</li>
+                    <li>We believe that applying for a job should be simple.</li>
+                    <li>We believe that your time matters.</li>
+                </ul>
+                <p>
+                    As a student, it can get overwhelming to deal with our academic goals as well as our daily responsibilities.
+                    One should not have to spend an endless amount of time on job applications in addition to that.
+                    Answering lengthy questionnaire forms and creating dozens of accounts in the quest of finding a
+                    job can certainly be exasperating (or frustrating).
+                    Jobin was created to address all these issues. If you share our beliefs,
+                    we encourage you to start using Jobin right now.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-grey">
+            <div class="container about-section">
+                <h2>How we do it:</h2>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h4 style="font-weight:normal">
+                            By providing a simple to use platform that efficiently improves the job application
+                            process. We provide features like:
+                        </h4>
+                        <ul>
+                            <li><h3>Apply in one click</h3></li>
+                            <li><h3>Track all your applications in one place</h3></li>
+                            <li><h3>Only send cover letters when requested to do so</h3></li>
+                            <li><h3>Have multiple resumes on file</h3></li>
+                            <li><h3>Easy access to a variety of job postings</h3></li>
+                            <li><h3>Filter the job postings to easily find what you are looking for</h3></li>
+                            <li><h3>Receive notifications when there are new job postings</h3></li>
+                            <li><h3>See events organized by companies</h3></li>
+                            <li><h3>Easily withdraw an application</h3></li>
+                            <li><h3>Easily modify an application </h3></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="feature-image">
+                            <img src="{% static 'home/images/thumbsup.png' %}">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+            <div class="container about-section">
+                <div>
+                    <h2>So what do we do?</h2>
+                    <div>
+                        <h4 style="font-weight:normal">
+                            We provide a great platform where students can go to find a job easily and rapidly.
+                        </h4>
+                    </div>
+                    <div>
+                        <div class="text-center" style="padding-top: 16px;">
+                            <h1><a href="{% url 'home:register' ut='student' %}">Sign Up Now</a> <i class="fa fa-check"></i></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
