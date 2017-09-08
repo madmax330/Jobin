@@ -1,0 +1,79 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Jobin Employers{% endblock %}
+
+{% load staticfiles %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/about.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+
+    <div>
+        <div class="text-center">
+            <h1 class="main-title"><i class="fa fa-building-o"></i> Jobin Employers</h1>
+        </div>
+        <div class="container about-section">
+            <h2>Why we do it:</h2>
+            <div>
+                <p class="about-paragraph">
+                    In our quest to create a better platform for students, we also recognized the need to improve the
+                    recruitment side of the job application process. We believe that the tools which are currently
+                    available for recruiters are inefficient, expensive and outdated. We believe that recruiters play
+                    a crucial role in a company’s success and deserve a resourceful platform to facilitate their tasks.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-grey">
+            <div class="container about-section">
+                <h2>How we do it:</h2>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h4 style="font-weight:normal">
+                            By providing a simple to use platform that efficiently improves the job recruitment process.
+                            We provide features like:
+                        </h4>
+                        <ul>
+                            <li><h3>A free service</h3></li>
+                            <li><h3>Standardized resumes</h3></li>
+                            <li><h3>Application management tools</h3></li>
+                            <li><h3>Option to download a pdf version of standardized resumes</h3></li>
+                            <li><h3>Filter applications based on certain criteria</h3></li>
+                            <li><h3>Ability to send job postings to students from different schools on one platform</h3></li>
+                            <li><h3>A user friendly and easy system to use</h3></li>
+                            <li><h3>A niche job board, where only relevant applications will be received</h3></li>
+                            <li><h3>Ability to re-use an expired job posting</h3></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="feature-image">
+                            <img src="{% static 'home/images/thumbsup.png' %}">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+            <div class="container about-section">
+                <div>
+                    <h2>So what do we do?</h2>
+                    <div>
+                        <h4 style="font-weight:normal">
+                            We give you access to a centralized platform where you can hire great individuals conveniently.
+                        </h4>
+                    </div>
+                    <div>
+                        <div class="text-center" style="padding-top: 16px;">
+                            <h1><a href="{% url 'home:register' ut='company' %}">Sign Up Now</a> <i class="fa fa-check"></i></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -3,7 +3,13 @@
 {% block title %}Student Information Form{% endblock %}
 
 {% load staticfiles %}
+
+{% block styles %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
 {% block scripts %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="{% static 'home/scripts/form_util.js' %}"></script>
     <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
     <script src="{% static 'home/scripts/form_location_script.js' %}"></script>
@@ -166,7 +172,7 @@
                     </p>
                     <p>
                         <input id="not-grad" class="w3-radio" type="radio" name="student_graduate" value="False"
-                                {% if not student.graduate %}checked="checked"{% endif %}>
+                                {% if student and not student.graduate %}checked="checked"{% endif %}>
                         <label for="not-grad">No</label>
                     </p>
                 </div>
@@ -190,12 +196,12 @@
                     </p>
                     <p>
                         <input id="cant-work" class="w3-radio" type="radio" name="student_work" value="False"
-                                {% if not student.work_eligible %}checked="checked"{% endif %}>
+                                {% if student and not student.work_eligible %}checked="checked"{% endif %}>
                         <label for="cant-work">No</label>
                     </p>
                 </div>
                 <div>
-                    <a href="{% url 'student:profile' %}" class="w3-btn w3-border w3-border-black">Cancel</a>
+                    {% if student %}<a href="{% url 'student:profile' %}" class="w3-btn w3-border w3-border-black">Cancel</a>{% endif %}
                     <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
                 </div>
             </form>

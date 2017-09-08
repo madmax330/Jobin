@@ -5,15 +5,16 @@
     <title>{% block title %}Jobin Home{% endblock %}</title>
     {% load staticfiles %}
     <!--<link href="https://fonts.googleapis.com/css?family=Quicksand:400,700" rel="stylesheet">-->
-    <link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.min.css' %}"/>
-    <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.min.css' %}"/>-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'home/css/style.css' %}"/>
     {% block stylesheets %}{% endblock %}
-    <script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
-    <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-    <!--<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
-    <script src="{% static 'home/scripts/navigation_script.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js" integrity="sha256-ihAoc6M/JPfrIiIeayPE9xjin4UWjsx2mjW/rtmxLM4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!--<script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>-->
+    <script src="{% static 'home/scripts/browser_scripts.js' %}"></script>
     {% block scripts %}{% endblock %}
 </head>
 <body>
@@ -38,18 +39,13 @@
                         </a>
                     </li>
                     <li>
-                        <a class="nav-item jobin-nav-link" href="#">
+                        <a class="nav-item jobin-nav-link" href="{% url 'home:students_about' %}">
                             <h5>Students</h5>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-item jobin-nav-link" href="#">
+                        <a class="nav-item jobin-nav-link" href="{% url 'home:company_about' %}">
                             <h5>Employers</h5>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-item jobin-nav-link" href="#">
-                            <h5>About Jobin</h5>
                         </a>
                     </li>
                 </ul>
@@ -90,6 +86,11 @@
     </footer>
 
     <div class="hidden">
+        <script>
+            $(function(){
+                browser_alert();
+            });
+        </script>
         {% block hidden %}{% endblock %}
         <div id="page-name">
             {% block page_name %}blank{% endblock %}
