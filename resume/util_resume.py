@@ -15,7 +15,7 @@ from .forms import NewReferenceForm, EditReferenceForm, NewReferenceLinkForm
 
 from .classes import ExtendedResume
 
-import datetime
+from django.utils import timezone
 
 
 class ResumeContainer(BaseContainer):
@@ -34,7 +34,7 @@ class ResumeContainer(BaseContainer):
             'name': r_info['name'],
             'gpa': r_info['gpa'],
             'is_active': False,
-            'last_updated': datetime.datetime.now(),
+            'last_updated': timezone.now(),
         }
         self._form = ResumeForm(info)
         if self._form.is_valid():
@@ -70,7 +70,7 @@ class ResumeContainer(BaseContainer):
             'name': self.__resume.name + ' COPY',
             'gpa': self.__resume.gpa,
             'is_active': False,
-            'last_updated': datetime.datetime.now(),
+            'last_updated': timezone.now(),
         }
         self._form = ResumeForm(info)
         if self._form.is_valid():
@@ -110,7 +110,7 @@ class ResumeContainer(BaseContainer):
             'student': self.__student.id,
             'name': r_info['name'],
             'gpa': r_info['gpa'],
-            'last_updated': datetime.datetime.now(),
+            'last_updated': timezone.now(),
         }
         self._form = ResumeForm(info, instance=self.__resume)
         if self._form.is_valid():

@@ -10,11 +10,11 @@ from .classes import ExtendedPost
 from .models import Post
 from .forms import NewPostForm, EditPostForm
 
-import datetime
+from django.utils import timezone
 
 
 class StudentPostContainer(BaseContainer):
-    TODAY = datetime.datetime.now().date()
+    TODAY = timezone.now().date()
 
     def __init__(self, student):
         super(StudentPostContainer, self).__init__()
@@ -30,7 +30,7 @@ class StudentPostContainer(BaseContainer):
             'student': self.__student.id,
             'post': post.id,
             'resume': resume.id,
-            'date': datetime.datetime.now().date(),
+            'date': timezone.now().date(),
             'post_title': post.title,
             'student_name': self.__student.name,
             'status': 'active',
@@ -318,7 +318,7 @@ class CompanyPostContainer(BaseContainer):
         self.__post.status = 'closed'
         self.__post.notified = False
         self.__post.save()
-        m = 'Post "' + self.__post.title + '" closed on ' + str(datetime.datetime.now().date()) + '.'
+        m = 'Post "' + self.__post.title + '" closed on ' + str(timezone.now().date()) + '.'
         if self.new_message(False, self.__company, m, 2) and self.new_notification(False, self.__company, m, 100):
             apps = self.get_applications()
             if apps:
