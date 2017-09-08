@@ -12,7 +12,7 @@ from post.classes import ExtendedApplication, HomePagePost
 
 from resume.util_resume import ResumeContainer
 
-import datetime
+from django.utils import timezone
 
 
 class CompanyContainer(BaseContainer):
@@ -130,9 +130,9 @@ class CompanyContainer(BaseContainer):
         try:
             suggestion = Suggestion.objects.get(pk=pk)
             if suggestion.comments:
-                suggestion.comments = suggestion.comments + '\n' + str(datetime.datetime.now().date()) + ' - ' + comment
+                suggestion.comments = suggestion.comments + '\n' + str(timezone.now().date()) + ' - ' + comment
             else:
-                suggestion.comments = str(datetime.datetime.now().date()) + ' - ' + comment
+                suggestion.comments = str(timezone.now().date()) + ' - ' + comment
             suggestion.save()
             return True
         except ObjectDoesNotExist:

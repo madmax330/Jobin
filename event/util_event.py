@@ -6,7 +6,7 @@ from .models import Event, SavedEvent
 from .forms import EventForm, NewSavedEventForm
 from .classes import ExtendedEvent
 
-import datetime
+from django.utils import timezone
 
 
 class StudentEventContainer(BaseContainer):
@@ -177,7 +177,7 @@ class CompanyEventContainer(BaseContainer):
     def close_event(self):
         self.__event.active = False
         self.__event.save()
-        m = 'Event "' + self.__event.title + '" closed on ' + str(datetime.datetime.now().date()) + '.'
+        m = 'Event "' + self.__event.title + '" closed on ' + str(timezone.now().date()) + '.'
         if self.new_message(False, self.__company, m, 2) and self.new_notification(False, self.__company, m, 100):
             return True
         else:
