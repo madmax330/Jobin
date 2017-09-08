@@ -13,7 +13,7 @@ from event.util_event import StudentEventContainer, CompanyEventContainer
 
 from resume.classes import ExtendedResume
 
-import datetime
+from django.utils import timezone
 
 
 class StudentContainer(BaseContainer):
@@ -40,7 +40,7 @@ class StudentContainer(BaseContainer):
             return False
         info = {
             'user': user.id,
-            'last_login': datetime.datetime.now().date(),
+            'last_login': timezone.now().date(),
             'name': s_info['firstname'] + ' ' + s_info['lastname'],
             'firstname': s_info['firstname'],
             'lastname': s_info['lastname'],

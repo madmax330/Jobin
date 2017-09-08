@@ -56,3 +56,7 @@ Thumbs.db
 .ebextensions
 .ebextensions/*
 requirements.txt
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
