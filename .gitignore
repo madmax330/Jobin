@@ -42,7 +42,6 @@ Thumbs.db
 .idea/*
 
 *.xml
-*/migrations/*
 *environment/*
 */media/*
 .env
