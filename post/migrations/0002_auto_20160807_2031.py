@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='company',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.PROTECT, to='company.Company'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='company.Company'),
         ),
         migrations.AddField(
             model_name='post',

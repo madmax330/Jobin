@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='resume',
             name='student',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='student.Student'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='student.Student'),
         ),
         migrations.AddField(
             model_name='skill',

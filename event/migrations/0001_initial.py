@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('city', models.CharField(max_length=50, null=True)),
                 ('state', models.CharField(max_length=50, null=True)),
                 ('zipcode', models.CharField(max_length=50, null=True)),
-                ('company', models.ForeignKey(default=0, on_delete=django.db.models.deletion.PROTECT, to='company.Company')),
+                ('company', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='company.Company')),
             ],
         ),
     ]
