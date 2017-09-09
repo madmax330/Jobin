@@ -27,7 +27,6 @@
 *.sql
 *.sqlite
 *.sqlite3
-00*
 
 # OS generated files #
 ######################
@@ -42,7 +41,6 @@ Thumbs.db
 .idea/*
 
 *.xml
-*/migrations/*
 *environment/*
 */media/*
 .env
