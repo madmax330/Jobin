@@ -49,12 +49,6 @@ Thumbs.db
 .ini
 *.mp4
 
-# AWS FILES #
-#############
-.elascticbeanstalk
-.elascticbeanstalk/*
-.ebextensions
-.ebextensions/*
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
