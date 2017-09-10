@@ -152,6 +152,7 @@
                                     <label><strong>Description:</strong></label><br/>
                                     <span>{{ x.description | linebreaksbr }}</span>
                                     <div class="w3-hide increment-url">{% url 'post:increment' pk=x.id %}</div>
+                                    <div class="w3-hide post-url">{% url 'post:student_posts' cat=category pk=x.id %}</div>
                                 </div>
                             </div>
                         </div>

@@ -27,6 +27,7 @@ class Post(models.Model):
     views = models.IntegerField(default=0)
     date_posted = models.DateField(auto_now_add=True)
     location = models.CharField(max_length=200)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -47,6 +48,7 @@ class Application(models.Model):
     student_name = models.CharField(max_length=100)
     resume_notified = models.BooleanField(default=False)
     saved = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.status

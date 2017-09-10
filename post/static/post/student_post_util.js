@@ -44,7 +44,18 @@ $(function () {
 
     $('.change-resume').click(function ( event ) {
         event.preventDefault();
-        send_get($(this).data('url'), null);
+        $.get($(this).data('url'), function(data, status){
+
+            if(status === 'success'){
+                window.location.replace($('.viewed-post').find('.post-url').html().toString().trim());
+            }
+
+        })
+            .fail(function(jqXHR){
+                display_message(jqXHR.responseText, 'danger');
+            });
+
+        send_get(url, null);
     });
 
     $('.apply').click(function () {
