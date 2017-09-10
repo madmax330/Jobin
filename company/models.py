@@ -18,6 +18,7 @@ class Company(models.Model):
     is_new = models.BooleanField(default=True)
     is_startup = models.BooleanField(default=False)
     industry = models.CharField(max_length=100)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -36,6 +37,7 @@ class Suggestion(models.Model):
     resolution_date = models.DateField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     open = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.topic

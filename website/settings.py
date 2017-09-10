@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1', 'localhost',
-    'jobin.ca',
+    'jobin.ca', 'www.jobin.ca',
     'jobin-live.tgmnukbj2e.us-east-1.elasticbeanstalk.com',
 ]
 

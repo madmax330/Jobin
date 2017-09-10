@@ -23,12 +23,7 @@ class Student(models.Model):
     linkedin = models.CharField(max_length=200, null=True, blank=True)
     work_eligible = models.BooleanField(default=True)
     is_new = models.BooleanField(default=True)
-
-    def get_absolute_url(self):
-        if self.is_new:
-            return reverse('resume:newresume')
-        else:
-            return reverse('student:index')
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname
