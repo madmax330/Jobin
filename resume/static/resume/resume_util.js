@@ -123,7 +123,7 @@ $(function () {
         if (WALKTHROUGH)
             send_walkthrough($(this).attr('action'), $(this), {caller: 'resume'});
         else {
-            send_post($(this).attr('action'), $(this));
+            submit_resume_info($(this).attr('action'), $(this));
             close_modal('resume-modal');
         }
 
@@ -174,7 +174,7 @@ $(function () {
     $('#language-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
         close_modal('language-modal');
     });
@@ -237,7 +237,7 @@ $(function () {
     $('#school-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
         close_modal('school-modal');
     });
@@ -293,7 +293,7 @@ $(function () {
     $('#experience-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
         close_modal('experience-modal');
     });
@@ -337,7 +337,7 @@ $(function () {
     $('#award-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
         close_modal('award-modal');
     });
@@ -366,7 +366,7 @@ $(function () {
     $('#skill-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
         close_modal('skill-modal');
     });
@@ -397,12 +397,25 @@ $(function () {
     $('#reference-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
         close_modal('reference-modal');
     });
 
 });
+
+function submit_resume_info(url, form) {
+    $.post(url, form.serialize(), function(data, status){
+
+        if(status === 'success'){
+            location.reload();
+        }
+
+    })
+        .fail(function(jqXHR){
+            display_modal_message(jqXHR.responseText, 'danger');
+        });
+}
 
 function show_next_walk_button(val) {
     let btn = $('#' + val).find('.next-btn');

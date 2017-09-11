@@ -23,6 +23,7 @@
                 </h3>
             {% endif %}
             <div class="w3-padding">
+                <div class="modal-messages"></div>
                 <form id="award-form" action="{% url 'resume:new_award' pk=resume.id %}" method="post">
                     {% csrf_token %}
 

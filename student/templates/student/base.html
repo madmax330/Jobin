@@ -28,12 +28,22 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <!--<script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>-->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-106158410-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
 </head>
 <body>
 
 <div class="w3-main w3-container w3-padding-16">
     <div class="w3-bar jobin-nav">
-        <a href="{% url 'home:index' %}" class="w3-bar-item w3-button nav-header">
+        <a href="#" class="w3-bar-item w3-button nav-header">
             <img class="w3-center" src="{% static 'home/images/jobinblue.gif' %}">
         </a>
         <a href="{% url 'student:index' %}"

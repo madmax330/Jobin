@@ -88,7 +88,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <a href="#" class="edit-resume" data-url="{% url 'resume:edit' pk=x.id %}">Edit</a> |
+                                    <a href="{% url 'resume:details' pk=x.id %}">Edit</a> |
                                     <a href="#" class="warning-open" data-id="delete-resume"
                                        data-url="{% url 'resume:delete' pk=x.id %}" data-name="{{ x.name }}">
                                         Delete
