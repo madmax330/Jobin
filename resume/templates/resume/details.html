@@ -27,9 +27,9 @@
         <div class="w3-center primary-color w3-padding-small">
             <h3 class="w3-text-white resume-overview">Resume Overview</h3>
         </div>
-        <div class="w3-container w3-padding resume-info">
-            <label>Name:</label><span> {{ resume.name }}</span><br/>
-            <label>GPA:</label><span> {{ resume.gpa }}</span><br/>
+        <div class="w3-container w3-padding resume-info jobin-resume">
+            <label>Name:</label><span class="name"> {{ resume.name }}</span><br/>
+            <label>GPA:</label><span class="gpa"> {% if resume.gpa %}{{ resume.gpa }}{% endif %}</span><br/>
             <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
             <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
             <label>File:</label>
@@ -60,6 +60,7 @@
                     </button>
                 </div>
             {% endif %}
+            <button class="edit-resume" data-url="{% url 'resume:edit' pk=resume.id %}">Edit resume info</button>
         </div>
         <div class="w3-container secondary-color w3-row w3-padding">
             <div class="w3-col s9">
@@ -304,6 +305,7 @@
     {% include 'resume/school_form.html' %}
     {% include 'resume/skill_form.html' %}
     {% include 'resume/reference_form.html' %}
+    {% include 'resume/resume_form.html' %}
 {% endblock %}
 
 {% block walkthroughs %}

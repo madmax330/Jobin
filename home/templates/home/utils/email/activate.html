@@ -24,6 +24,17 @@
                 Account activation successful, you can now login with your username and password and start
                 using Jobin!
             </h3>
+            <script>
+                $(function(){
+                    to_home_page_from_activation();
+                });
+                function to_home_page_from_activation(){
+                    setTimeout(
+                        function() {
+                            window.location.replace('https://jobin.ca');
+                        }, 5000);
+                }
+            </script>
         </div>
     {% endif %}
 {% endblock %}
