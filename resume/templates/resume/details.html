@@ -41,6 +41,10 @@
                    class="w3-btn w3-border w3-border-red w3-text-red delete-file-resume">
                     Delete File Resume
                 </a>
+                <button class="w3-btn w3-border w3-border-black edit-resume"
+                        data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
+                    Edit resume info
+                </button>
             {% else %}
                 <span> No file uploaded</span>
                 <form class="w3-hide">
@@ -58,9 +62,13 @@
                     <button class="w3-btn w3-border w3-border-black upload-file-resume" type="button">
                         Upload File Resume
                     </button>
+                    <button class="w3-btn w3-border w3-border-black edit-resume"
+                            data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
+                        Edit resume info
+                    </button>
                 </div>
             {% endif %}
-            <button class="edit-resume" data-url="{% url 'resume:edit' pk=resume.id %}">Edit resume info</button>
+
         </div>
         <div class="w3-container secondary-color w3-row w3-padding">
             <div class="w3-col s9">

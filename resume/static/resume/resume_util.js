@@ -124,7 +124,6 @@ $(function () {
             send_walkthrough($(this).attr('action'), $(this), {caller: 'resume'});
         else {
             submit_resume_info($(this).attr('action'), $(this));
-            close_modal('resume-modal');
         }
 
     });
@@ -176,7 +175,6 @@ $(function () {
 
         submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('language-modal');
     });
 
     /* SCHOOL FUNCTIONS */
@@ -239,7 +237,6 @@ $(function () {
 
         submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('school-modal');
     });
 
     $('#school_current').on('change', function() {
@@ -295,7 +292,6 @@ $(function () {
 
         submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('experience-modal');
     });
 
     $('#experience_current').on('change', function() {
@@ -339,7 +335,6 @@ $(function () {
 
         submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('award-modal');
     });
 
     /* SKILL FUNCTIONS */
@@ -368,7 +363,6 @@ $(function () {
 
         submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('skill-modal');
     });
 
     /* REFERENCES FUNCTIONS */
@@ -399,7 +393,6 @@ $(function () {
 
         submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('reference-modal');
     });
 
 });
