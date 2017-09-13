@@ -1,6 +1,8 @@
 from django.views.generic import View
 from django.shortcuts import redirect, render, Http404, HttpResponse
 from django.db import transaction, IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from home.utils import MessageCenter, Pagination
 from home.util_home import HomeUtil
@@ -10,11 +12,14 @@ from company.util_company import CompanyContainer
 from student.util_student import StudentContainer
 
 
+@login_required(login_url='/')
 def company_index(request):
     if request.method == 'GET':
         event_page = request.GET.get('ep', 1)
         ex_event_page = request.GET.get('xep', 1)
         company = CompanyContainer(request.user)
+        if company.get_company() is None:
+            return redirect('company:new')
         msgs = MessageCenter.get_messages('company', company.get_company())
         events = Pagination(company.get_events(), 10)
         ex_events = Pagination(company.get_expired_events(), 10)
@@ -31,8 +36,10 @@ def company_index(request):
     raise Http404
 
 
-class NewEventView(View):
+class NewEventView(LoginRequiredMixin, View):
     template_name = 'event/event_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request):
         company = CompanyContainer(request.user)
@@ -73,8 +80,10 @@ class NewEventView(View):
         return render(request, self.template_name, context)
 
 
-class EditEventView(View):
+class EditEventView(LoginRequiredMixin, View):
     template_name = 'event/event_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request, pk):
         company = CompanyContainer(request.user)
@@ -117,6 +126,7 @@ class EditEventView(View):
         return render(request, self.template_name, context)
 
 
+@login_required(login_url='/')
 def close_event(request, pk):
 
     if request.method == 'GET':
@@ -140,6 +150,7 @@ def close_event(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def detail_view(request, pk):
 
     if request.method == 'GET':
@@ -154,10 +165,13 @@ def detail_view(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def student_index(request, pk):
 
     if request.method == 'GET':
         student = StudentContainer(request.user)
+        if student.get_student() is None:
+            return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())
         notes = MessageCenter.get_notifications('student', student.get_student())
         events = student.get_events(pk)
@@ -174,8 +188,10 @@ def student_index(request, pk):
     raise Http404
 
 
-class RecoverEventView(View):
+class RecoverEventView(LoginRequiredMixin, View):
     template_name = 'event/event_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request, pk):
         company = CompanyContainer(request.user)
@@ -213,6 +229,7 @@ class RecoverEventView(View):
         return render(request, self.template_name, context)
 
 
+@login_required(login_url='/')
 def save_event(request, pk):
 
     if request.method == 'GET':
@@ -231,6 +248,7 @@ def save_event(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def remove_saved_event(request, pk):
 
     if request.method == 'GET':

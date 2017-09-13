@@ -2,6 +2,8 @@ from django.views.generic import View
 from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.http import JsonResponse
 from django.db import transaction, IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .util_company import CompanyContainer
 
@@ -10,6 +12,7 @@ from home.utils import MessageCenter, Pagination
 from home.util_home import HomeUtil
 
 
+@login_required(login_url='/')
 def index_view(request):
 
     if request.method == 'GET':
@@ -35,8 +38,10 @@ def index_view(request):
     raise Http404
 
 
-class NewCompanyView(View):
+class NewCompanyView(LoginRequiredMixin, View):
     template_name = 'company/company_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request):
         context = {
@@ -74,8 +79,10 @@ class NewCompanyView(View):
         return render(request, self.template_name, context)
 
 
-class EditCompanyView(View):
+class EditCompanyView(LoginRequiredMixin, View):
     template_name = 'company/company_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request):
         company = CompanyContainer(request.user)
@@ -119,10 +126,13 @@ class EditCompanyView(View):
         return render(request, self.template_name, context)
 
 
+@login_required(login_url='/')
 def profile_view(request):
 
     if request.method == 'GET':
         company = CompanyContainer(request.user)
+        if company.get_company() is None:
+            return redirect('company:new')
         context = {
             'user': company.get_user(),
             'company': company.get_company(),
@@ -133,11 +143,14 @@ def profile_view(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def suggestions_view(request):
 
     if request.method == 'GET':
         page = request.GET.get('page', 1)
         company = CompanyContainer(request.user)
+        if company.get_company() is None:
+            return redirect('company:new')
         suggestions = Pagination(company.get_suggestions(), 10)
         msgs = MessageCenter.get_messages('company', company.get_company())
         context = {
@@ -152,6 +165,7 @@ def suggestions_view(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def new_suggestion(request):
 
     if request.method == 'POST':
@@ -177,6 +191,7 @@ def new_suggestion(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def company_not_new(request):
 
     if request.method == 'GET':
@@ -189,6 +204,7 @@ def company_not_new(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def upload_logo(request):
 
     if request.method == 'POST':
@@ -210,6 +226,7 @@ def upload_logo(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_logo(request):
 
     if request.method == 'GET':
@@ -231,6 +248,7 @@ def delete_logo(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def comment_suggestion(request, pk):
 
     if request.method == 'POST':
