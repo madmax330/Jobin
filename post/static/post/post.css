@@ -27,3 +27,7 @@
     max-height: 150px;
 }
 
+.slider-nav-btn {
+    min-height: 100px;
+    background-color: #f6f6f6;
+}

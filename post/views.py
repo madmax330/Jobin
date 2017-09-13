@@ -1,6 +1,8 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.db import transaction, IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from company.util_company import CompanyContainer
 from student.util_student import StudentContainer
@@ -11,12 +13,15 @@ from home.util_home import HomeUtil
 from wkhtmltopdf.views import PDFTemplateResponse
 
 
+@login_required(login_url='/')
 def company_index(request):
 
     if request.method == 'GET':
         post_page = request.GET.get('pp', 1)
         ex_post_page = request.GET.get('xp', 1)
         company = CompanyContainer(request.user)
+        if company.get_company() is None:
+            return redirect('company:new')
         msgs = MessageCenter.get_messages('company', company.get_company())
         posts = Pagination(company.get_posts(), 15)
         expired_posts = Pagination(company.get_expired_posts(), 15)
@@ -33,8 +38,10 @@ def company_index(request):
     raise Http404
 
 
-class NewPostView(View):
+class NewPostView(LoginRequiredMixin, View):
     template_name = 'post/post_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request):
         company = CompanyContainer(request.user)
@@ -73,8 +80,10 @@ class NewPostView(View):
         return render(request, self.template_name, context)
 
 
-class EditPostView(View):
+class EditPostView(LoginRequiredMixin, View):
     template_name = 'post/post_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request, pk):
         company = CompanyContainer(request.user)
@@ -114,6 +123,7 @@ class EditPostView(View):
         return render(request, self.template_name, context)
 
 
+@login_required(login_url='/')
 def close_post(request, pk):
 
     if request.method == 'GET':
@@ -132,6 +142,7 @@ def close_post(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def post_detail(request, pk):
 
     if request.method == 'GET':
@@ -161,10 +172,13 @@ POST_CATEGORIES = {
 }
 
 
+@login_required(login_url='/')
 def student_index(request, cat, pk):
 
     if request.method == 'GET':
         student = StudentContainer(request.user)
+        if student.get_student() is None:
+            return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())
         notes = MessageCenter.get_notifications('student', student.get_student())
         rq = RequestUtil()
@@ -193,6 +207,7 @@ def student_index(request, cat, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def student_detail(request, pk):
 
     if request.method == 'GET':
@@ -212,6 +227,7 @@ def student_detail(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def request_cover_letter(request, pk):
 
     if request.method == 'GET':
@@ -232,6 +248,7 @@ def request_cover_letter(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def submit_cover_letter(request, pk):
 
     if request.method == 'POST':
@@ -257,6 +274,7 @@ def submit_cover_letter(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def apply(request, pk):
 
     if request.method == 'GET':
@@ -275,6 +293,7 @@ def apply(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def post_applicants(request, pk):
 
     if request.method == 'GET' or request.method == 'POST':
@@ -312,6 +331,7 @@ def post_applicants(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def single_applicant(request, pk, ak):
 
     if request.method == 'POST':
@@ -359,8 +379,10 @@ def single_applicant(request, pk, ak):
     raise Http404
 
 
-class RecoverPostView(View):
+class RecoverPostView(LoginRequiredMixin, View):
     template_name = 'post/post_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request, pk):
         company = CompanyContainer(self.request.user)
@@ -399,6 +421,7 @@ class RecoverPostView(View):
         return render(request, self.template_name, context)
 
 
+@login_required(login_url='/')
 def withdraw_application(request, pk):
 
     if request.method == 'GET':
@@ -420,6 +443,7 @@ def withdraw_application(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def activate_application(request, pk):
 
     if request.method == 'GET':
@@ -441,6 +465,7 @@ def activate_application(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def discard_application(request, pk):
 
     if request.method == 'GET':
@@ -463,6 +488,7 @@ def discard_application(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def save_application(request, pk):
 
     if request.method == 'GET':
@@ -483,6 +509,7 @@ def save_application(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def remove_application_save(request, pk):
     if request.method == 'GET':
         company = CompanyContainer(request.user)
@@ -502,6 +529,7 @@ def remove_application_save(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def increment_count(request, pk):
 
     if request.method == 'GET':
@@ -516,8 +544,10 @@ def increment_count(request, pk):
     raise Http404
 
 
-class ApplicantPDF(View):
+class ApplicantPDF(LoginRequiredMixin, View):
     template_name = 'post/applicant_resume_pdf.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request, ak):
         company = CompanyContainer(self.request.user)

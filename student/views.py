@@ -1,6 +1,8 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.db import transaction, IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from home.util_home import HomeUtil
 from home.util_request import RequestUtil
@@ -9,6 +11,7 @@ from home.utils import MessageCenter, Pagination
 from .util_student import StudentContainer
 
 
+@login_required(login_url='/')
 def index_view(request):
 
     if request.method == 'GET':
@@ -42,8 +45,10 @@ def index_view(request):
     raise Http404
 
 
-class NewStudentView(View):
+class NewStudentView(LoginRequiredMixin, View):
     template_name = 'student/student_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request):
         context = {
@@ -84,8 +89,10 @@ class NewStudentView(View):
         return render(request, self.template_name, context)
 
 
-class EditStudentView(View):
+class EditStudentView(LoginRequiredMixin, View):
     template_name = 'student/student_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request):
         student = StudentContainer(request.user)
@@ -130,6 +137,7 @@ class EditStudentView(View):
         return render(request, self.template_name, context)
 
 
+@login_required(login_url='/')
 def history_view(request):
 
     if request.method == 'GET':
@@ -137,6 +145,8 @@ def history_view(request):
         e_page = request.GET.get('ep', 1)
         n_page = request.GET.get('np', 1)
         student = StudentContainer(request.user)
+        if student.get_student() is None:
+            return redirect('student:new')
         ap = Pagination(student.get_all_applications(), 10)
         ep = Pagination(student.get_all_saved_events(), 10)
         np = Pagination(list(MessageCenter.get_all_notifications('student', student.get_student())), 10)
@@ -152,12 +162,15 @@ def history_view(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def profile_view(request):
 
     if request.method == 'GET':
         student = StudentContainer(request.user)
-        s = student.get_student()
-        if s is not None:
+        if student.get_student() is None:
+            return redirect('student:new')
+        else:
+            s = student.get_student()
             context = {
                 'student': s,
                 'user': student.get_user(),
@@ -169,6 +182,7 @@ def profile_view(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def student_not_new(request):
 
     if request.method == 'GET':

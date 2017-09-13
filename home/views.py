@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.views.generic import View
 from django.db import transaction, IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .content_gen import ContentGen
 from .utils import MessageCenter
@@ -154,8 +156,10 @@ def school_closed(request):
     raise Http404
 
 
-class ChangeUserInfo(View):
+class ChangeUserInfo(LoginRequiredMixin, View):
     template_name = 'home/student_change_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request, ut):
         if ut == 'company':
@@ -243,19 +247,17 @@ class NewPasswordView(View):
             try:
                 with transaction.atomic():
                     if user.new_password(mail):
-                        print('all good.')
                         return render(request, 'home/index_page/home.html', {'success_msg': 'Password changed successfully.'})
                     else:
                         raise IntegrityError
             except IntegrityError:
-                print('errors: ' + str(user.get_errors()))
                 return render(request, self.template_name, {'errors': user.get_errors()})
 
         else:
-            print('invalid email')
             return render(request, self.template_name, {'errors': 'Invalid email.'})
 
 
+@login_required(login_url='/')
 def close_notification(request, pk):
 
     if request.method == 'GET':
@@ -272,6 +274,7 @@ def close_notification(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def close_notifications(request, u):
 
     if request.method == 'GET':

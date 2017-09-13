@@ -2,16 +2,20 @@ from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.http import JsonResponse
 from django.db import transaction, IntegrityError
 from home.utils import MessageCenter, Pagination
+from django.contrib.auth.decorators import login_required
 
 from home.util_request import RequestUtil
 from student.util_student import StudentContainer
 
 
+@login_required(login_url='/')
 def resume_index(request):
 
     if request.method == 'GET':
         page = request.GET.get('page', 1)
         student = StudentContainer(request.user)
+        if student.get_student() is None:
+            return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())
         notes = MessageCenter.get_notifications('student', student.get_student())
         resumes = Pagination(student.get_resumes(), 20)
@@ -29,6 +33,7 @@ def resume_index(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def resume_detail(request, pk):
 
     if request.method == 'GET':
@@ -56,6 +61,7 @@ def resume_detail(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def new_resume(request):
 
     if request.method == 'POST':
@@ -87,6 +93,7 @@ def new_resume(request):
     raise Http404
 
 
+@login_required(login_url='/')
 def copy_resume(request, pk):
 
     if request.method == 'GET':
@@ -108,6 +115,7 @@ def copy_resume(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def edit_resume(request, pk):
 
     if request.method == 'POST':
@@ -137,6 +145,7 @@ def edit_resume(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def change_application_resume(request, pk, ak):
 
     if request.method == 'GET':
@@ -157,6 +166,7 @@ def change_application_resume(request, pk, ak):
     raise Http404
 
 
+@login_required(login_url='/')
 def change_active_resume(request, pk):
 
     if request.method == 'GET':
@@ -177,6 +187,7 @@ def change_active_resume(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_resume(request, pk):
 
     if request.method == 'GET':
@@ -196,6 +207,7 @@ def delete_resume(request, pk):
         return redirect('resume:index')
 
 
+@login_required(login_url='/')
 def new_language(request, pk):
 
     if request.method == 'POST':
@@ -223,6 +235,7 @@ def new_language(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def add_language(request, pk, rk):
 
     if request.method == 'GET':
@@ -244,6 +257,7 @@ def add_language(request, pk, rk):
     raise Http404
 
 
+@login_required(login_url='/')
 def edit_language(request, pk):
 
     if request.method == 'POST':
@@ -271,6 +285,7 @@ def edit_language(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_language(request, rk, pk):
 
     if request.method == 'GET':
@@ -292,6 +307,7 @@ def delete_language(request, rk, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def new_experience(request, pk):
 
     if request.method == 'POST':
@@ -319,6 +335,7 @@ def new_experience(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def add_experience(request, pk, rk):
 
     if request.method == 'GET':
@@ -340,6 +357,7 @@ def add_experience(request, pk, rk):
     raise Http404
 
 
+@login_required(login_url='/')
 def edit_experience(request, pk):
 
     if request.method == 'POST':
@@ -367,6 +385,7 @@ def edit_experience(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_experience(request, rk, pk):
 
     if request.method == 'GET':
@@ -388,6 +407,7 @@ def delete_experience(request, rk, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def new_award(request, pk):
 
     if request.method == 'POST':
@@ -415,6 +435,7 @@ def new_award(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def add_award(request, pk, rk):
 
     if request.method == 'GET':
@@ -436,6 +457,7 @@ def add_award(request, pk, rk):
     raise Http404
 
 
+@login_required(login_url='/')
 def edit_award(request, pk):
 
     if request.method == 'POST':
@@ -463,6 +485,7 @@ def edit_award(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_award(request, rk, pk):
 
     if request.method == 'GET':
@@ -484,6 +507,7 @@ def delete_award(request, rk, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def new_school(request, pk):
 
     if request.method == 'POST':
@@ -511,6 +535,7 @@ def new_school(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def add_school(request, pk, rk):
 
     if request.method == 'GET':
@@ -532,6 +557,7 @@ def add_school(request, pk, rk):
     raise Http404
 
 
+@login_required(login_url='/')
 def edit_school(request, pk):
 
     if request.method == 'POST':
@@ -559,6 +585,7 @@ def edit_school(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_school(request, rk, pk):
 
     if request.method == 'GET':
@@ -580,6 +607,7 @@ def delete_school(request, rk, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def new_skill(request, pk):
 
     if request.method == 'POST':
@@ -607,6 +635,7 @@ def new_skill(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def add_skill(request, pk, rk):
 
     if request.method == 'GET':
@@ -628,6 +657,7 @@ def add_skill(request, pk, rk):
     raise Http404
 
 
+@login_required(login_url='/')
 def edit_skill(request, pk):
 
     if request.method == 'POST':
@@ -655,6 +685,7 @@ def edit_skill(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_skill(request, rk, pk):
 
     if request.method == 'GET':
@@ -676,6 +707,7 @@ def delete_skill(request, rk, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def new_reference(request, pk):
 
     if request.method == 'POST':
@@ -703,6 +735,7 @@ def new_reference(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def add_reference(request, pk, rk):
 
     if request.method == 'GET':
@@ -724,6 +757,7 @@ def add_reference(request, pk, rk):
     raise Http404
 
 
+@login_required(login_url='/')
 def edit_reference(request, pk):
 
     if request.method == 'POST':
@@ -751,6 +785,7 @@ def edit_reference(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_reference(request, rk, pk):
 
     if request.method == 'GET':
@@ -772,6 +807,7 @@ def delete_reference(request, rk, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def add_file_resume(request, pk):
 
     if request.method == 'POST':
@@ -793,6 +829,7 @@ def add_file_resume(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def delete_file_resume(request, pk):
 
     if request.method == 'GET':
