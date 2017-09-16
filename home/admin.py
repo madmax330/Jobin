@@ -18,7 +18,6 @@ class JobinAdmin(admin.AdminSite):
         urls = super(JobinAdmin, self).get_urls()
         plus_urls = [
             url(r'^site/statistics/$', self.site_stats_view),
-            url(r'^clear/data/$', self.site_stats_view),
         ]
         return plus_urls + urls
 
@@ -37,11 +36,11 @@ class JobinAdmin(admin.AdminSite):
             x.delete()
         for x in Reference.objects.all():
             x.delete()
-        for x in Resume.objects.all():
-            x.delete()
         for x in Application.objects.all():
             x.delete()
         for x in SavedEvent.objects.all():
+            x.delete()
+        for x in Resume.objects.all():
             x.delete()
         for x in Student.objects.all():
             x.delete()
@@ -54,7 +53,7 @@ class JobinAdmin(admin.AdminSite):
         for x in User.objects.all():
             if not x.username == 'dj@dminuser':
                 x.delete()
-        return redirect('home:index')
+        return HttpResponse('Data clear successful', status=200)
 
     def site_stats_view(self, request):
         if not (request.user.is_authenticated and request.user.is_superuser):
