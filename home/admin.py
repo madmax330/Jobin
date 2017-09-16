@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.conf.urls import url
 from django.shortcuts import redirect, render, HttpResponse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from .models import JobinProgram, JobinMajor, JobinSchool, JobinTerritory, JobinBlockedEmail, JobinRequestedEmail, \
     JobinInvalidUser
@@ -25,15 +25,24 @@ class JobinAdmin(admin.AdminSite):
     def clear_data(self, request):
         if not (request.user.is_authenticated and request.user.is_superuser):
             return redirect('home:index')
-        Resume.objects.all().delete()
-        Application.objects.all().delete()
-        SavedEvent.objects.all().delete()
-        Student.objects.all().delete()
-        Event.objects.all().delete()
-        Post.objects.all().delete()
-        Company.objects.all().delete()
-        User.objects.filter(username__contains='.').delete()
-        return HttpResponse('Content Clear Success.')
+        for x in Resume.objects.all():
+            x.delete()
+        for x in Application.objects.all():
+            x.delete()
+        for x in SavedEvent.objects.all():
+            x.delete()
+        for x in Student.objects.all():
+            x.delete()
+        for x in Event.objects.all():
+            x.delete()
+        for x in Post.objects.all():
+            x.delete()
+        for x in Company.objects.all():
+            x.delete()
+        for x in User.objects.all():
+            if not x.username == 'dj@dminuser':
+                x.delete()
+        return redirect('home:index')
 
     def site_stats_view(self, request):
         if not (request.user.is_authenticated and request.user.is_superuser):
@@ -72,6 +81,8 @@ class JobinAdmin(admin.AdminSite):
 
 
 admin_site = JobinAdmin('Jobin Admin Site')
+admin_site.register(User)
+admin_site.register(Group)
 admin_site.register(JobinMajor)
 admin_site.register(JobinSchool)
 admin_site.register(JobinProgram)
