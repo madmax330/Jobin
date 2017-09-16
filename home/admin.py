@@ -37,11 +37,11 @@ class JobinAdmin(admin.AdminSite):
             x.delete()
         for x in Reference.objects.all():
             x.delete()
-        for x in Resume.objects.all():
-            x.delete()
         for x in Application.objects.all():
             x.delete()
         for x in SavedEvent.objects.all():
+            x.delete()
+        for x in Resume.objects.all():
             x.delete()
         for x in Student.objects.all():
             x.delete()
