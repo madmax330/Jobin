@@ -69,10 +69,9 @@ class UserUtil(BaseContainer):
                 g = Group.objects.get(name='student_user')
                 g.user_set.add(self.__user)
                 if JobinSchool.objects.filter(email=ext).count() == 0:
-                    if JobinRequestedEmail.objects.filter(extension=ext) == 0:
-                        x = JobinRequestedEmail()
-                        x.extension = ext
-                        x.save()
+                    x = JobinRequestedEmail()
+                    x.extension = ext
+                    x.save()
             else:
                 g = Group.objects.get(name='company_user')
                 g.user_set.add(self.__user)

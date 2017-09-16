@@ -28,6 +28,6 @@
 }
 
 .slider-nav-btn {
-    min-height: 100px;
-    background-color: #f6f6f6;
+    padding: 32px 16px;
+    background-color: #255c99;
 }
