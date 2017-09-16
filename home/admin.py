@@ -18,7 +18,6 @@ class JobinAdmin(admin.AdminSite):
         urls = super(JobinAdmin, self).get_urls()
         plus_urls = [
             url(r'^site/statistics/$', self.site_stats_view),
-            url(r'^clear/data/$', self.clear_data),
         ]
         return plus_urls + urls
 
