@@ -10,7 +10,7 @@ from student.models import Student
 
 from post.models import Post, Application
 from event.models import Event, SavedEvent
-from resume.models import Resume
+from resume.models import Resume, Language, Experience, Award, School, Skill, Reference
 
 
 class JobinAdmin(admin.AdminSite):
@@ -25,6 +25,18 @@ class JobinAdmin(admin.AdminSite):
     def clear_data(self, request):
         if not (request.user.is_authenticated and request.user.is_superuser):
             return redirect('home:index')
+        for x in Language.objects.all():
+            x.delete()
+        for x in Experience.objects.all():
+            x.delete()
+        for x in Skill.objects.all():
+            x.delete()
+        for x in School.objects.all():
+            x.delete()
+        for x in Award.objects.all():
+            x.delete()
+        for x in Reference.objects.all():
+            x.delete()
         for x in Resume.objects.all():
             x.delete()
         for x in Application.objects.all():
