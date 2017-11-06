@@ -16,14 +16,6 @@
     <script src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
 {% endblock %}
 
-{% block sideContent %}
-    {% if errors %}
-        <div class="w3-container w3-padding message-danger">
-            {{ errors | linebreaksbr }}
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
     <div>
         <div class="primary-color w3-center w3-text-white w3-padding-small">
@@ -54,6 +46,16 @@
                     {% endif %}
                     <input id="student_last_name" class="w3-input w3-border" type="text"
                            name="student_last_name" value="{{ student.lastname }}">
+                </div>
+                <div class="form-group">
+                    <label for="student_email">Contact Email:</label>
+                    {% if errors.email %}
+                        <div class="alert alert-danger">
+                            {{ errors.email }}
+                        </div>
+                    {% endif %}
+                    <input id="student_email" class="w3-input w3-border" type="text"
+                           name="student_email" value="{{ student.email }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_dob">Date of Birth:</label>

@@ -20,7 +20,7 @@
                         <div class="hidden emails-error alert alert-danger">
                         </div>
                         <label class="required">Email:</label>
-                        <input id="email" placeholder="{% if type == 'student' %}University Email Address{% else %}Email{% endif %}"
+                        <input id="email" placeholder="Email"
                                name="email" class="form-control" type="email"/>
                     </div>
                     <div class="form-group">
@@ -59,16 +59,6 @@
                         <button class="btn btn-primary" type="submit">Sign Up</button>
                     </div>
                 </form>
-            </div>
-            <div class="panel-footer">
-                <p>
-                    Once you signup you will be sent an email where
-                    you can verify your account to activate it.
-                    {% if type == 'student' %}
-                        <br/>
-                        <strong>Make sure you use your school email.</strong>
-                    {% endif %}
-                </p>
             </div>
         </div>
     </div>

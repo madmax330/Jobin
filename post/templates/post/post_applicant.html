@@ -7,256 +7,263 @@
     <script type="text/javascript" src="{% static 'post/company_post_util.js' %}"></script>
 {% endblock %}
 
-
-{% block side_content %}
-    <div class="panel panel-default primary-panel">
-        <div class="panel-heading">
-            <h3 class="text-center">Student</h3>
-        </div>
-        <div class="panel-body" style="word-wrap: break-word;">
-            <label>Name:</label><span> {{ app.name }}</span><br/>
-            <label>Email:</label><span> {{ app.email }}</span><br/>
-            <label>Phone:</label><span> {{ app.phone }}</span><br/>
-            <label>Address:</label><span> {{ app.address }}</span><br/>
-            <label>School:</label><span> {{ app.school }}</span><br/>
-            <label>Program:</label><span> {{ app.program }}</span><br/>
-            <label>Major:</label><span> {{ app.major }}</span><br/>
-            <label>GPA:</label><span> {{ app.gpa }}</span>
-        </div>
-    </div>
-    {% include 'company/sides/applicant_filter.html' %}
-    {% include 'company/sides/post_info.html' %}
-{% endblock %}
-
 {% block content %}
-    <div>
-        <div class="btn-group btn-group-justified">
-            <div class="btn-group">
-                <button data-url="{% url 'post:applicants' pk=post.id %}"
-                        class="btn btn-default to-multiple-view">
-                    Multiple Applicants View
-                </button>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-primary">
-                    Single Applicant View
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="row padding-1">
-        <div class="col-md-6">
-            <button class="btn btn-default btn-block single-prev"
-                    data-url="{% url 'post:applicant' pk=post.id ak=prev_app %}">
-                <span class="glyphicon glyphicon-arrow-left left"></span>
-                Previous Applicant
-            </button>
-        </div>
-        <div class="col-md-6">
-            <button class="btn btn-default btn-block single-next"
-                    data-url="{% url 'post:applicant' pk=post.id ak=next_app %}">
-                <span class="glyphicon glyphicon-arrow-right right"></span>
-                Next Applicant
-            </button>
-        </div>
-    </div>
-
-    <div>
-        {% if app.cover %}
-            <div class="panel panel-default secondary-panel">
+    <div class="row">
+        <div class="col-sm-12 col-md-3">
+            <div class="panel panel-default primary-panel">
                 <div class="panel-heading">
-                    Cover Letter
+                    <h3 class="text-center">Student</h3>
                 </div>
-                <div class="panel-body">
-                    <p>{{ app.cover | linebreaksbr }}</p>
-                </div>
-            </div>
-        {% endif %}
-        {% if resume.file_resume %}
-            <div class="panel panel-default secondary-panel">
-                <div class="panel-heading">
-                    File Resume
-                </div>
-                <div class="panel-body">
-                    {{ resume.file_resume }}
+                <div class="panel-body" style="word-wrap: break-word;">
+                    <label>Name:</label><span> {{ app.name }}</span><br/>
+                    <label>Email:</label><span> {{ app.email }}</span><br/>
+                    <label>Phone:</label><span> {{ app.phone }}</span><br/>
+                    <label>Address:</label><span> {{ app.address }}</span><br/>
+                    <label>School:</label>{% if app.school %}<span> {{ app.school }}</span>{% else %}
+                    <span style="color:red;"> * Not Verified</span>{% endif %}<br/>
+                    <label>Program:</label><span> {{ app.program }}</span><br/>
+                    <label>Major:</label><span> {{ app.major }}</span><br/>
+                    <label>GPA:</label><span> {{ app.gpa }}</span>
                 </div>
             </div>
-        {% endif %}
-        <div class="panel panel-default primary-panel">
-            <div class="panel-heading">
-                <h4 class="text-center">Student Resume</h4>
-            </div>
-            <div class="panel-body">
-                {% if app.resume.file_resume %}
-                    <h3>File Resume</h3>
-                    <div>
-                        <a href="{{ app.resume.file_resume.url }}" target="_blank">Click Here</a> to
-                        view the file resume uploaded by {{ app.name }}.
+            {% include 'company/sides/applicant_filter.html' %}
+            {% include 'company/sides/post_info.html' %}
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <div>
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group">
+                        <button data-url="{% url 'post:applicants' pk=post.id %}"
+                                class="btn btn-default to-multiple-view">
+                            Multiple Applicants View
+                        </button>
                     </div>
-                {% endif %}
-                {% if app.resume.experience %}
-                    <h3>Experience</h3>
-                    {% for x in app.resume.experience %}
-                        <div>
-                            <div>
-                                <label>Title:</label>
-                                <span class="label-information capital">{{ x.title }}</span>
-                                <br/>
-                                <label>Duration:</label>
-                                <span class="label-information">
-                                    {{ x.start }} to {% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}
-                                </span>
-                                <br/>
-                                <label>Type:</label>
-                                <span class="label-information capital">{{ x.experience_type }}</span>
-                            </div>
-                            <label>Description:</label>
-                            <p>{{ x.description | linebreaksbr }}</p>
-                            <hr/>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% if app.resume.schools %}
-                    <h3>Education:</h3>
-                    <table class="table">
-                        <tr>
-                            <th>School Name</th>
-                            <th>Start</th>
-                            <th>End</th>
-                            <th>Level</th>
-                            <th>Program</th>
-                        </tr>
-                        {% for x in app.resume.schools %}
-                            <tr>
-                                <td class="capital">{{ x.name }}</td>
-                                <td>{{ x.start }}</td>
-                                <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
-                                <td class="capital">{{ x.level }}</td>
-                                <td class="capital">{{ x.program }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
-                {% if app.resume.awards %}
-                    <h3>Awards:</h3>
-                    {% for x in app.resume.awards %}
-                        <div>
-                            <div>
-                                <label>Title:</label><span class="label-information capital"> {{ x.title }}</span><br/>
-                                <label>Date Received:</label><span class="label-information"> {{ x.date }}</span><br/>
-                                <label>Type:</label><span class="label-information capital"> {{ x.award_type }}</span>
-                            </div>
-                            <label>Description:</label>
-                            <p>{{ x.description | linebreaksbr }}</p>
-                            <hr/>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% if app.resume.languages %}
-                    <h3>Languages:</h3>
-                    <table class="table">
-                        <tr>
-                            <th>Language</th>
-                            <th>Proficiency</th>
-                        </tr>
-                        {% for x in app.resume.languages %}
-                            <tr>
-                                <td class="capital">{{ x.name }}</td>
-                                <td class="capital">{{ x.level }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
-                {% if app.resume.skills %}
-                    <h3>Skills:</h3>
-                    <table class="table">
-                        <tr>
-                            <th>Skill</th>
-                            <th>Proficiency</th>
-                        </tr>
-                        {% for x in app.resume.skills %}
-                            <tr>
-                                <td class="capital">{{ x.name }}</td>
-                                <td class="capital">{{ x.level }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
-                {% if app.resume.references %}
-                    <h3>References:</h3>
-                    <table class="table">
-                        <tr>
-                            <th>Name</th>
-                            <th>Affiliation</th>
-                            <th>Email</th>
-                        </tr>
-                        {% for x in app.resume.references %}
-                            <tr>
-                                <td class="capital">{{ x.name }}</td>
-                                <td class="capital">{{ x.affiliation }}</td>
-                                <td>{{ x.email }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
-                <hr/>
-                <div class="container">
-                    {% if app.saved %}
-                        <button class="btn btn-warning remove-save" data-url="{% url 'post:remove_save' pk=app.id %}">
-                            Remove from saved
+                    <div class="btn-group">
+                        <button class="btn btn-primary">
+                            Single Applicant View
                         </button>
-                    {% else %}
-                        <button class="btn btn-info save-btn" data-url="{% url 'post:save' pk=app.id %}">
-                            Save Application
-                        </button>
-                    {% endif %}
-                    {% if app.cover_requested %}
-                        <button disabled class="btn btn-default-info">
-                            Cover already requested
-                        </button>
-                    {% else %}
-                        <button type="button" class="btn btn-info request-cover"
-                                data-url="{% url 'post:request_cover' pk=app.id %}">
-                            Request Cover Letter
-                        </button>
-                    {% endif %}
-                    <a href="{% url 'post:app_pdf' ak=app.id %}" class="btn btn-default">
-                        Download PDF Resume
-                    </a>
-                    <button type="button" class="discard-single-applicant btn btn-danger"
-                            data-name="{{ app.name }}" data-url="{% url 'post:discard' pk=app.id %}">
-                        Discard Applicant
+                    </div>
+                </div>
+            </div>
+            <div class="row padding-1">
+                <div class="col-md-6">
+                    <button class="btn btn-default btn-block single-prev"
+                            data-url="{% url 'post:applicant' pk=post.id ak=prev_app %}">
+                        <span class="glyphicon glyphicon-arrow-left left"></span>
+                        Previous Applicant
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-default btn-block single-next"
+                            data-url="{% url 'post:applicant' pk=post.id ak=next_app %}">
+                        <span class="glyphicon glyphicon-arrow-right right"></span>
+                        Next Applicant
                     </button>
                 </div>
             </div>
-        </div>
 
-        <div id="discard-modal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">
-                            <span class="glyphicon glyphicon-warning-sign"></span>
-                            Warning!
-                        </h4>
+            <div>
+                {% if app.cover %}
+                    <div class="panel panel-default secondary-panel">
+                        <div class="panel-heading">
+                            Cover Letter
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ app.cover | linebreaksbr }}</p>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <h4 class="warning-message">
-                            Are you sure you want to discard applicant:
-                            <span class="name"></span>?
-                        </h4>
-                        <p class="warning-note">
-                            <strong>Note: </strong><span> This application will be discarded permanently.</span>
-                        </p>
-                        <div>
-                            <button class="btn btn-default" data-dismiss="modal" type="button">
-                                Cancel
+                {% endif %}
+                {% if resume.file_resume %}
+                    <div class="panel panel-default secondary-panel">
+                        <div class="panel-heading">
+                            File Resume
+                        </div>
+                        <div class="panel-body">
+                            {{ resume.file_resume }}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="panel panel-default primary-panel">
+                    <div class="panel-heading">
+                        <h4 class="text-center">Student Resume</h4>
+                    </div>
+                    <div class="panel-body">
+                        {% if app.resume.file_resume %}
+                            <h3>File Resume</h3>
+                            <div>
+                                <a href="{{ app.resume.file_resume.url }}" target="_blank">Click Here</a> to
+                                view the file resume uploaded by {{ app.name }}.
+                            </div>
+                        {% endif %}
+                        {% if app.resume.experience %}
+                            <h3>Experience</h3>
+                            {% for x in app.resume.experience %}
+                                <div>
+                                    <div>
+                                        <label>Title:</label>
+                                        <span class="label-information capital">{{ x.title }}</span>
+                                        <br/>
+                                        <label>Duration:</label>
+                                        <span class="label-information">
+                                    {{ x.start }} to {% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}
+                                </span>
+                                        <br/>
+                                        <label>Type:</label>
+                                        <span class="label-information capital">{{ x.experience_type }}</span>
+                                    </div>
+                                    <label>Description:</label>
+                                    <p>{{ x.description | linebreaksbr }}</p>
+                                    <hr/>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% if app.resume.schools %}
+                            <h3>Education:</h3>
+                            <table class="table">
+                                <tr>
+                                    <th>School Name</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Level</th>
+                                    <th>Program</th>
+                                </tr>
+                                {% for x in app.resume.schools %}
+                                    <tr>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td>{{ x.start }}</td>
+                                        <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
+                                        <td class="capital">{{ x.level }}</td>
+                                        <td class="capital">{{ x.program }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% endif %}
+                        {% if app.resume.awards %}
+                            <h3>Awards:</h3>
+                            {% for x in app.resume.awards %}
+                                <div>
+                                    <div>
+                                        <label>Title:</label><span
+                                            class="label-information capital"> {{ x.title }}</span><br/>
+                                        <label>Date Received:</label><span
+                                            class="label-information"> {{ x.date }}</span><br/>
+                                        <label>Type:</label><span
+                                            class="label-information capital"> {{ x.award_type }}</span>
+                                    </div>
+                                    <label>Description:</label>
+                                    <p>{{ x.description | linebreaksbr }}</p>
+                                    <hr/>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% if app.resume.languages %}
+                            <h3>Languages:</h3>
+                            <table class="table">
+                                <tr>
+                                    <th>Language</th>
+                                    <th>Proficiency</th>
+                                </tr>
+                                {% for x in app.resume.languages %}
+                                    <tr>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td class="capital">{{ x.level }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% endif %}
+                        {% if app.resume.skills %}
+                            <h3>Skills:</h3>
+                            <table class="table">
+                                <tr>
+                                    <th>Skill</th>
+                                    <th>Proficiency</th>
+                                </tr>
+                                {% for x in app.resume.skills %}
+                                    <tr>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td class="capital">{{ x.level }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% endif %}
+                        {% if app.resume.references %}
+                            <h3>References:</h3>
+                            <table class="table">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Affiliation</th>
+                                    <th>Email</th>
+                                </tr>
+                                {% for x in app.resume.references %}
+                                    <tr>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td class="capital">{{ x.affiliation }}</td>
+                                        <td>{{ x.email }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% endif %}
+                        <hr/>
+                        <div class="container">
+                            {% if app.saved %}
+                                <button class="btn btn-warning remove-save"
+                                        data-url="{% url 'post:remove_save' pk=app.id %}">
+                                    Remove from saved
+                                </button>
+                            {% else %}
+                                <button class="btn btn-info save-btn" data-url="{% url 'post:save' pk=app.id %}">
+                                    Save Application
+                                </button>
+                            {% endif %}
+                            {% if app.cover_requested %}
+                                <button disabled class="btn btn-default-info">
+                                    Cover already requested
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-info request-cover"
+                                        data-url="{% url 'post:request_cover' pk=app.id %}">
+                                    Request Cover Letter
+                                </button>
+                            {% endif %}
+                            <a href="{% url 'post:app_pdf' ak=app.id %}" class="btn btn-default">
+                                Download PDF Resume
+                            </a>
+                            <button type="button" class="discard-single-applicant btn btn-danger"
+                                    data-name="{{ app.name }}" data-url="{% url 'post:discard' pk=app.id %}">
+                                Discard Applicant
                             </button>
-                            <button class="btn btn-warning discard-accepted" type="button">
-                                Continue
-                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="discard-modal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">
+                                    <span class="glyphicon glyphicon-warning-sign"></span>
+                                    Warning!
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <h4 class="warning-message">
+                                    Are you sure you want to discard applicant:
+                                    <span class="name"></span>?
+                                </h4>
+                                <p class="warning-note">
+                                    <strong>Note: </strong><span> This application will be discarded permanently.</span>
+                                </p>
+                                <div>
+                                    <button class="btn btn-default" data-dismiss="modal" type="button">
+                                        Cancel
+                                    </button>
+                                    <button class="btn btn-warning discard-accepted" type="button">
+                                        Continue
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

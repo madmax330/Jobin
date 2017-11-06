@@ -8,23 +8,6 @@
     <script src="{% static 'home/scripts/form_location_script.js' %}"></script>
 {% endblock %}
 
-{% block side_content %}
-    <div class="panel panel-default secondary-panel">
-        <div class="panel-heading">
-            <h4 class="text-center">Note</h4>
-        </div>
-        <div class="panel-body">
-            The information in this form helps us identify you as a company,
-            please make sure to only provide accurate information. Thank you.
-        </div>
-    </div>
-    {% if errors %}
-        <div class="alert alert-danger">
-            {{ errors }}
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
     {% if not company %}
         <div class="alert info-message">

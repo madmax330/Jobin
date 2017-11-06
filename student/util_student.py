@@ -33,11 +33,6 @@ class StudentContainer(BaseContainer):
     #  DATA CREATION FUNCTIONS (SETTERS)
 
     def new_student(self, s_info, user):
-        ext = user.email.split('@', 1)
-        s = JobinSchool.objects.filter(email=ext[1].lower())
-        if not s.count() > 0:
-            self.add_error('School not found.')
-            return False
         info = {
             'user': user.id,
             'last_login': timezone.now().date(),
@@ -50,7 +45,7 @@ class StudentContainer(BaseContainer):
             'state': s_info['state'],
             'zipcode': s_info['zipcode'],
             'country': s_info['country'],
-            'school': s.first().name,
+            'school': None,
             'program': s_info['program'],
             'major': s_info['major'],
             'graduate': s_info['graduate'],
@@ -82,6 +77,7 @@ class StudentContainer(BaseContainer):
             'program': s_info['program'],
             'major': s_info['major'],
             'graduate': s_info['graduate'],
+            'email': s_info['email'],
             'phone': s_info['phone'],
             'linkedin': s_info['linkedin'],
             'work_eligible': s_info['work_eligible'],

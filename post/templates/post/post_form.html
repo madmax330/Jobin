@@ -14,15 +14,6 @@
     <script type="text/javascript" src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
 {% endblock %}
 
-{% block side_content %}
-    {% include 'company/sides/company_info.html' %}
-    {% if errors %}
-        <div class="alert alert-danger">
-            {{ errors }}
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">

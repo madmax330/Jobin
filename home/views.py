@@ -87,7 +87,8 @@ class RegisterView(View):
             try:
                 with transaction.atomic():
                     if user.new_user(i, ut == 'student'):
-                        return render(request, 'home/utils/email/verify.html', i)
+                        user.log_user_in(request, {'email': i['email'], 'password': i['password']})
+                        return redirect('student:new')
                     else:
                         raise IntegrityError
             except IntegrityError:

@@ -86,10 +86,13 @@ class StudentPostContainer(BaseContainer):
         op &= ad
         posts = Post.objects.filter(op).order_by('-id')
         if posts.count() > 0:
+            all_posts = [x for x in posts if x.company.email.split('@', 1)[1].lower() == self.__student.user.email.split('@', 1)[1].lower()]
+            rest_posts = [x for x in posts if x not in all_posts]
+            all_posts.extend(rest_posts)
             l = []
             temp = []
             flag = False
-            for x in posts:
+            for x in all_posts:
                 if int(x.id) == int(pk) > 0:
                     flag = True
                 self.__post = x
