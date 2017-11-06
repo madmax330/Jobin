@@ -56,10 +56,12 @@ class ResumeContainer(BaseContainer):
                 m = 'Your education and languages have been imported from current active resume.'
                 if not self.new_message(True, self.__student, m, 0):
                     return False
-            self.__resume = new_resume
-            self.__resume.is_active = True
-            self.__resume.save()
-            return True
+                return True
+            else:
+                self.__resume = new_resume
+                self.__resume.is_active = True
+                self.__resume.save()
+                return True
         else:
             self.add_form_errors()
             return False

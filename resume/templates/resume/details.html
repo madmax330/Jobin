@@ -32,41 +32,43 @@
             <label>GPA:</label><span class="gpa"> {% if resume.gpa %}{{ resume.gpa }}{% endif %}</span><br/>
             <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
             <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
-            <label>File:</label>
             {% if resume.file_resume %}
-                <a href="{{ resume.file_resume.url }}" target="_blank">{{ resume.file_resume.name }}</a>
-                <span class="spinner w3-hide"><i class="fa fa-spinner fa-spin"></i></span>
-                <br/>
-                <a href="{% url 'resume:delete_file' pk=resume.id %}"
-                   class="w3-btn w3-border w3-border-red w3-text-red delete-file-resume">
-                    Delete File Resume
-                </a>
-                <button class="w3-btn w3-border w3-border-black edit-resume"
-                        data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
-                    Edit resume info
-                </button>
-            {% else %}
-                <span> No file uploaded</span>
-                <form class="w3-hide">
-                    {% csrf_token %}
-                    <input id="resumeupload" type="file" name="file_resume"
-                       data-url="{% url 'resume:add_file' pk=resume.id %}">
-                </form>
-                <div style="display: block; overflow: hidden;">
-                    <div class="w3-half w3-border file-progress w3-hide">
-                        <div><i class="fa fa-spinner fa-spin"></i></div>
-                        <div class="w3-center primary-color progress-bar" style="height:24px; width:0;">0%</div>
-                    </div>
-                </div>
-                <div>
-                    <button class="w3-btn w3-border w3-border-black upload-file-resume" type="button">
-                        Upload File Resume
-                    </button>
+                <label>File:</label>
+                {% if resume.file_resume %}
+                    <a href="{{ resume.file_resume.url }}" target="_blank">{{ resume.file_resume.name }}</a>
+                    <span class="spinner w3-hide"><i class="fa fa-spinner fa-spin"></i></span>
+                    <br/>
+                    <a href="{% url 'resume:delete_file' pk=resume.id %}"
+                       class="w3-btn w3-border w3-border-red w3-text-red delete-file-resume">
+                        Delete File Resume
+                    </a>
                     <button class="w3-btn w3-border w3-border-black edit-resume"
                             data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
                         Edit resume info
                     </button>
-                </div>
+                {% else %}
+                    <span> No file uploaded</span>
+                    <form class="w3-hide">
+                        {% csrf_token %}
+                        <input id="resumeupload" type="file" name="file_resume"
+                           data-url="{% url 'resume:add_file' pk=resume.id %}">
+                    </form>
+                    <div style="display: block; overflow: hidden;">
+                        <div class="w3-half w3-border file-progress w3-hide">
+                            <div><i class="fa fa-spinner fa-spin"></i></div>
+                            <div class="w3-center primary-color progress-bar" style="height:24px; width:0;">0%</div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="w3-btn w3-border w3-border-black upload-file-resume" type="button">
+                            Upload File Resume
+                        </button>
+                        <button class="w3-btn w3-border w3-border-black edit-resume"
+                                data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
+                            Edit resume info
+                        </button>
+                    </div>
+                {% endif %}
             {% endif %}
 
         </div>
@@ -300,7 +302,7 @@
             </tbody>
         </table>
         <div class="w3-padding-16">
-            <a class="w3-btn w3-border w3-border-black" href="{% url 'resume:index' %}">Back to list</a>
+            <a class="w3-btn w3-border w3-border-black" href="{% url 'resume:index' %}">Save &amp; Back</a>
         </div>
     </div>
 {% endblock %}

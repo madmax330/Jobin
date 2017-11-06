@@ -17,12 +17,23 @@
 {% endblock %}
 
 {% block content %}
+    {% if not student.verified %}
+        <div>
+            <div class="w3-container w3-padding message-warning w3-display-container">
+                <p>
+                    You have not yet verified your account. <a href="#">Click Here</a> to verify your account now.
+                    It is important to verify your account to increase your credibility as an applicant and let recruiters
+                    know what school you attend.
+                </p>
+            </div>
+        </div>
+    {% endif %}
     {% if not resumes %}
         <div>
             <div class="w3-container w3-padding message-warning w3-display-container">
                 <p>
-                    You have not yet created a resume and won't be able to apply. Go to the "Resumes" section
-                    and create a new resume to get started.
+                    You have not yet created a resume and won't be able to apply. <a href="{% url 'resume:index' %}">Click Here</a>
+                    to go to the "Resumes" section and create a new resume to get started.
                 </p>
             </div>
         </div>

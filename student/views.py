@@ -19,8 +19,6 @@ def index_view(request):
         e_page = request.GET.get('ep', 1)
         p_page = request.GET.get('pp', 1)
         student = StudentContainer(request.user)
-        if not HomeUtil.open_school(student.get_user().email):
-            return redirect('home:index')
         if student.get_student() is None:
             return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())

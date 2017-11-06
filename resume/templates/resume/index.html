@@ -105,6 +105,10 @@
                                 <div class="w3-hide">
                                     <span class="school-url">{% url 'resume:new_school' pk=x.id %}</span>
                                     <span class="language-url">{% url 'resume:new_language' pk=x.id %}</span>
+                                    <span class="experience-url">{% url 'resume:new_experience' pk=x.id %}</span>
+                                    <span class="award-url">{% url 'resume:new_award' pk=x.id %}</span>
+                                    <span class="skill-url">{% url 'resume:new_skill' pk=x.id %}</span>
+                                    <span class="reference-url">{% url 'resume:new_reference' pk=x.id %}</span>
                                 </div>
                             </td>
                         {% endif %}
@@ -126,6 +130,10 @@
     {% include 'resume/resume_form.html' %}
     {% include 'resume/school_form.html' %}
     {% include 'resume/language_form.html' %}
+    {% include 'resume/experience_form.html' %}
+    {% include 'resume/award_form.html' %}
+    {% include 'resume/skill_form.html' %}
+    {% include 'resume/reference_form.html' %}
 {% endblock %}
 
 
@@ -137,7 +145,7 @@
     <div id="warning-delete-resume">
         <p class="message">Are you sure you want to delete <u><span class="name"></span></u> resume?</p>
         <p class="notes">
-            This will permanently delete this resume from the resume.
+            This will permanently delete this resume.
         </p>
     </div>
 {% endblock %}

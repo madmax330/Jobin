@@ -16,12 +16,6 @@
 
 {% block title %}Post Applicants{% endblock %}
 
-{% block side_content %}
-    {% include 'company/sides/applicant_filter.html' %}
-    {% include 'company/sides/post_info.html' %}
-    {% include 'company/sides/applicant_legend.html' %}
-{% endblock %}
-
 {% block content %}
     <div>
         <div class="btn-group btn-group-justified view-buttons">
@@ -187,7 +181,7 @@
                                     {{ x.student.name }}
                                 </a>
                             </td>
-                            <td>{{ x.student.school }}</td>
+                            <td>{% if x.student.school %}{{ x.student.school }}{% else %}<i class="fa fa-exclamation-circle" style="color:red;"></i> Not Verified{% endif %}</td>
                             <td>{{ x.student.program }}</td>
                             <td>{{ x.student.major }}</td>
                             <td>{{ x.date }}</td>

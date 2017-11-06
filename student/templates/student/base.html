@@ -24,32 +24,11 @@
             background-color: transparent !important;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-2.2.0.min.js" integrity="sha256-ihAoc6M/JPfrIiIeayPE9xjin4UWjsx2mjW/rtmxLM4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"
+            integrity="sha256-ihAoc6M/JPfrIiIeayPE9xjin4UWjsx2mjW/rtmxLM4=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <!--<script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>-->
-    <script>
-        try {
-            (function (i, s, o, g, r, a, m) {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function () {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-            ga('create', 'UA-106158410-1', 'auto');
-            ga('send', 'pageview');
-        }
-        catch(err){
-            console.log(err.message);
-        }
-
-    </script>
 </head>
 <body>
 
@@ -111,8 +90,7 @@
 
     <div class="content-container">
         <div class="w3-row w3-padding-16">
-            <div id="navCol" class="w3-col s12 m12 l3 w3-container">
-                {% block sideContent %}{% endblock %}
+            <div id="bodyCol" class="w3-col s12w3-container">
                 <div id="notifications">
                     {% if notifications %}
                         <div class="w3-card-2 w3-white">
@@ -145,27 +123,6 @@
                         </div>
                     {% endif %}
                 </div>
-                {% if student %}
-                    <div class="{% if notifications %}w3-padding-16{% endif %}">
-                        <div class="w3-card-2 w3-white">
-                            <header class="w3-container secondary-color">
-                                <h4>Student Information</h4>
-                            </header>
-                            <div class="w3-container w3-padding">
-                                <h5>{{ student.firstname }} {{ student.lastname }}</h5>
-                                <span><i>{{ student.school }}</i></span><br/>
-                                <span>{{ student.program }}</span><br/>
-                                <span>{{ student.major }}</span><br/>
-                                <span><i>{{ student.phone }}</i></span><br/>
-                                <span><i>{{ student.email }}</i></span><br/>
-                                <span>{{ student.address }}, {{ student.city }},
-                                            {{ student.state }}, {{ student.zipcode }}</span>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            <div id="bodyCol" class="w3-col s12 m12 l9 w3-container">
                 <div id="messages">
                     {% if messages %}
                         <div>

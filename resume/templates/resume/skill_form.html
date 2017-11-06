@@ -24,7 +24,12 @@
             {% endif %}
             <div class="w3-padding">
                 <div class="modal-messages"></div>
-                <form id="skill-form" action="{% url 'resume:new_skill' pk=resume.id %}" method="post">
+                <div class="w3-hide first-message">
+                    <div class="w3-container w3-padding message-info">
+                        Add in any skills that you have that can add value to your resume.
+                    </div>
+                </div>
+                <form id="skill-form" action="{% if resume %}{% url 'resume:new_skill' pk=resume.id %}{% else %}{% url 'resume:new_skill' pk='0' %}{% endif %}" method="post">
                     {% csrf_token %}
 
                     <div class="form-group">
@@ -40,12 +45,23 @@
                             <option value="advanced">Advanced</option>
                         </select>
                     </div>
-                    <div class="w3-padding">
+                    <div class="regular-buttons w3-padding">
                         <button class="w3-btn close-modal w3-border w3-border-black" type="button"
                                 data-id="skill-modal">
                             Cancel
                         </button>
                         <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                    </div>
+                    <div class="walk-buttons w3-hide w3-padding">
+                        <button class="w3-btn skill-save-another w3-border w3-border-black" type="button">
+                            Save & Add Another
+                        </button>
+                        <button class="w3-btn skill-save-continue w3-border w3-border-green w3-text-green" type="button">
+                            Save & Continue
+                        </button>
+                        <button class="w3-btn skill-next w3-border w3-border-green w3-text-green" type="button">
+                            Next
+                        </button>
                     </div>
                 </form>
             </div>

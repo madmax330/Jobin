@@ -49,10 +49,13 @@ class StudentEventContainer(BaseContainer):
     def get_events(self, pk):
         es = Event.objects.filter(active=True)
         if es.count() > 0:
+            all_events = [x for x in es if x.company.email.split('@', 1)[1].lower() == self.__student.user.email.split('@', 1)[1].lower()]
+            rest_events = [x for x in es if x not in all_events]
+            all_events.extend(rest_events)
             l = []
             temp = []
             flag = False
-            for x in es:
+            for x in all_events:
                 if int(x.id) == int(pk) > 0:
                     flag = True
                 self.__event = x

@@ -195,6 +195,7 @@ class RequestUtil(BaseContainer):
         program = request.POST.get('student_program')
         major = request.POST.get('student_major')
         graduate = request.POST.get('student_graduate')
+        email = request.POST.get('student_email')
         phone = request.POST.get('student_phone')
         lin = request.POST.get('student_linked')
         work = request.POST.get('student_work')
@@ -211,6 +212,7 @@ class RequestUtil(BaseContainer):
             'program': program,
             'major': major,
             'graduate': (True if graduate == 'True' else False),
+            'email': email,
             'phone': phone,
             'linkedin': lin,
             'work_eligible': (True if work == 'True' else False),
