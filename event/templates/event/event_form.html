@@ -4,10 +4,6 @@
 
 {% load staticfiles %}
 
-{% block styles %}
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-{% endblock %}
-
 {% block scripts %}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
@@ -15,6 +11,13 @@
     <script type="text/javascript" src="{% static 'home/scripts/form_location_script.js' %}"></script>
 {% endblock %}
 
+{% block page_body_class %}company-events edit-event{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-events edit-event">
+        <h1>Edit Event</h1>
+    </div>
+{% endblock %}
 
 {% block content %}
     <div class="panel panel-default primary-panel">

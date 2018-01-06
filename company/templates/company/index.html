@@ -2,6 +2,14 @@
 
 {% block title %}Company Home{% endblock %}
 
+{% block page_body_class %}company-home-page{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-home-page">
+        <h1>Home</h1>
+    </div>
+{% endblock %}
+
 {% load staticfiles %}
 {% block scripts %}
     <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
@@ -30,13 +38,27 @@
                         <tr {% if x.notified %}style="background-color: #c2f9ce"
                             {% elif x.new_apps %}style="background-color: #c9f3fc;"
                             {% endif %}>
-                            <td>{{ x.title }}</td>
+                            <td class="post-title">{{ x.title }}</td>
                             <td>{{ x.openings }}</td>
                             <td>{{ x.start_date }}</td>
                             <td>{{ x.deadline }}</td>
                             <td><a href="{% url 'post:applicants' pk=x.id%}">Applicants ({{ x.app_count }})</a></td>
                         </tr>
                     {% endfor %}
+                    <tr class="notified">
+                        <td class="post-title">Notified Post</td>
+                        <td>3</td>
+                        <td>23/06/2012</td>
+                        <td>23/06/2012</td>
+                        <td><a href="#">Applicants (25)</a></td>
+                    </tr>
+                    <tr class="new-applications">
+                        <td class="post-title">New Apps Post</td>
+                        <td>3</td>
+                        <td>23/06/2012</td>
+                        <td>23/06/2012</td>
+                        <td><a href="#">Applicants (10)</a></td>
+                    </tr>
                     <tr>
                         <td colspan="5">
                             <span>Page: </span>
@@ -112,7 +134,7 @@
     <div class="modal fade" id="welcome-modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header primary-color">
+                <div class="modal-header">
                     <h4>Welcome to Jobin!</h4>
                 </div>
                 <div class="modal-body">
@@ -135,7 +157,7 @@
 {% endblock %}
 
 {% block hidden_block %}
-    <div class="new-company">{% if company.is_new %}true{% else %}false{% endif %}</div>
+    <div class="new-company">true</div>
 {% endblock %}
 
 

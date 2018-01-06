@@ -1,13 +1,13 @@
-<div id="language-modal" class="w3-modal">
-    <div class="w3-modal-content w3-animate-zoom w3-card-4">
-        <header class="w3-container primary-color">
+<div id="language-modal" class="w3-modal resume-item-modal">
+    <div class="w3-modal-content w3-animate-zoom">
+        <header class="w3-container">
             <span data-id="language-modal" class="w3-button w3-display-topright close-modal">&times;</span>
-            <h3 class="w3-text-white">Language Form</h3>
+            <h3>Language Form</h3>
         </header>
         <div class="w3-container">
             {% if other_languages %}
                 <div>
-                    <h4 class="secondary-color w3-padding">
+                    <h4>
                         Add languages from other resumes:
                     </h4>
                     <ul class="w3-ul">
@@ -18,14 +18,14 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <h3 class="w3-padding secondary-color">
+                <h3>
                     Language Information
                 </h3>
             {% endif %}
-            <div class="w3-padding">
+            <div>
                 <div class="modal-messages"></div>
                 <div class="w3-hide first-message">
-                    <div class="w3-container w3-padding message-info">
+                    <div class="w3-container message-info">
                         Languages are a quintessential part of your resume; therefore you must add
                         at least one language to complete your resume. Fill in the form below and
                         save to add your first language record. You can choose to add more languages
@@ -52,20 +52,20 @@
                             <option value="beginner">Beginner</option>
                         </select>
                     </div>
-                    <div class="regular-buttons w3-padding">
-                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="language-modal">
+                    <div class="regular-buttons">
+                        <button class="w3-btn btn-default close-modal" type="button" data-id="language-modal">
                             Cancel
                         </button>
-                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                        <button class="w3-btn btn-success" type="submit">Submit</button>
                     </div>
-                    <div class="walk-buttons w3-hide w3-padding">
-                        <button class="w3-btn language-save-another w3-border w3-border-black" type="button">
+                    <div class="walk-buttons w3-hide">
+                        <button class="w3-btn btn-success language-save-another" type="button">
                             Save & Add Another
                         </button>
-                        <button class="w3-btn language-save-continue w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-success language-save-continue" type="button">
                             Save & Continue
                         </button>
-                        <button class="w3-btn w3-hide next-btn language-next w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-success w3-hide next-btn language-next" type="button">
                             Finish
                         </button>
                     </div>

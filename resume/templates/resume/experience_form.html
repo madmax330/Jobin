@@ -1,13 +1,13 @@
-<div id="experience-modal" class="w3-modal">
-    <div class="w3-modal-content w3-animate-zoom w3-card-4">
-        <header class="w3-container primary-color">
+<div id="experience-modal" class="w3-modal resume-item-modal">
+    <div class="w3-modal-content w3-animate-zoom">
+        <header class="w3-container">
             <span data-id="experience-modal" class="w3-button w3-display-topright close-modal">&times;</span>
-            <h3 class="w3-text-white">Experience Form</h3>
+            <h3>Experience Form</h3>
         </header>
         <div class="w3-container">
             {% if other_experience %}
                 <div>
-                    <h4 class="secondary-color w3-padding">
+                    <h4>
                         Add experience from other resumes:
                     </h4>
                     <ul class="w3-ul">
@@ -18,14 +18,14 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <h3 class="w3-padding secondary-color">
+                <h3>
                     Experience Information
                 </h3>
             {% endif %}
             <div class="w3-padding">
                 <div class="modal-messages"></div>
                 <div class="w3-hide first-message">
-                    <div class="w3-container w3-padding message-info">
+                    <div class="w3-container message-info">
                         Add in any work experience that you have to help boost your resume.
                     </div>
                 </div>
@@ -73,19 +73,19 @@
                                   rows="5"></textarea>
                     </div>
                     <div class="regular-buttons w3-padding">
-                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="experience-modal">
+                        <button class="w3-btn btn-default close-modal" type="button" data-id="experience-modal">
                             Cancel
                         </button>
-                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                        <button class="w3-btn btn-success"  type="submit">Submit</button>
                     </div>
-                    <div class="walk-buttons w3-hide w3-padding">
-                        <button class="w3-btn experience-save-another w3-border w3-border-black" type="button">
+                    <div class="walk-buttons w3-hide">
+                        <button class="w3-btn btn-success experience-save-another" type="button">
                             Save & Add Another
                         </button>
-                        <button class="w3-btn experience-save-continue w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-success experience-save-continue" type="button">
                             Save & Continue
                         </button>
-                        <button class="w3-btn experience-next w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-default experience-next" type="button">
                             Next
                         </button>
                     </div>

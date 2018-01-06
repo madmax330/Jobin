@@ -1,12 +1,18 @@
 {% extends 'manual/student/manual_base.html' %}
 
-{% block man-title %}Profile Page Manual{% endblock %}
+{% block page_body_class %}student-manual profile-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-manual">
+        <h1>Profile Page Manual</h1>
+    </div>
+{% endblock %}
 
 
 
 {% block howto %}
 
-    <ul class="margined-li">
+    <ul>
         <li>
             To edit your profile, click on the 'Edit Profile' button. From there you can change your personal
             information.
@@ -49,7 +55,7 @@
     <p>
         There are two sections in the profile page:
     </p>
-    <ul class="margined-li">
+    <ul>
         <li>
             <i>The 'User Information' section</i>
             <br/>

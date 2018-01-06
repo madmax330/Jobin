@@ -1,13 +1,13 @@
-<div id="resume-modal" class="w3-modal">
-    <div class="w3-modal-content w3-animate-zoom w3-card-4">
-        <header class="w3-container primary-color">
+<div id="resume-modal" class="w3-modal resume-item-modal">
+    <div class="w3-modal-content w3-animate-zoom">
+        <header class="w3-container">
             <span data-id="resume-modal" class="w3-button w3-display-topright close-modal">&times;</span>
-            <h3 class="w3-text-white">Resume Form</h3>
+            <h3>Resume Form</h3>
         </header>
         <div class="w3-container">
             {% if resumes %}
                 <div class="other-resumes">
-                    <h4 class="secondary-color w3-padding">
+                    <h4>
                         Create your new resume based of an existing resume:
                     </h4>
                     <ul class="w3-ul">
@@ -18,15 +18,15 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <h3 class="w3-padding secondary-color">
+                <h3>
                     Resume Information
                 </h3>
             {% endif %}
 
-            <div class="w3-padding">
+            <div>
                 <div class="modal-messages"></div>
                 <div class="w3-hide first-message">
-                    <div class="w3-container w3-padding message-info">
+                    <div class="w3-container message-info">
                         Resumes are how you will show off to recruiters. To create your first resume,
                         fill out the form below and submit it.
                     </div>
@@ -44,12 +44,10 @@
                         <input id="resume_gpa" class="w3-input w3-border" type="text"
                                name="resume_gpa">
                     </div>
-                    <div class="w3-padding">
-                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="resume-modal">
+                        <button class="w3-btn btn-default close-modal" type="button" data-id="resume-modal">
                             Cancel
                         </button>
-                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
-                    </div>
+                        <button class="w3-btn btn-success" type="submit">Submit</button>
                 </form>
             </div>
         </div>

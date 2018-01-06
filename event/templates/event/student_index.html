@@ -3,9 +3,6 @@
 {% block title %}Event List{% endblock %}
 
 {% load staticfiles %}
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'event/event.css' %}">
-{% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="{% static 'event/student_event_util.js' %}"></script>
     <script>
@@ -18,19 +15,19 @@
 
 {% block content %}
     <div>
-        <div class="events-header primary-color w3-padding-small">
-            <h3 class="w3-text-white w3-center">Events ({{ count }})</h3>
+        <div class="events-header">
+            <h3 class="w3-center">Events ({{ count }})</h3>
         </div>
         <div class="event-loader-icon">
             <h2 class="w3-center"><i class="fa fa-spinner fa-spin"></i> Loading events...</h2>
         </div>
-        <div class="w3-content w3-container w3-padding-16 main-event-container w3-hide" style="position:relative">
+        <div class="w3-content w3-container main-event-container w3-hide">
             {% if events %}
                 {% for x in events %}
-                    <div class="w3-display-container mySlides w3-animate-right  w3-white" style="margin: 0 30px 0 30px">
+                    <div class="w3-display-container mySlides w3-animate-right ">
                         <div class="row">
                             <div class="w3-col s4">
-                                <div class="w3-container w3-padding secondary-color">
+                                <div class="w3-container">
                                     <h4>Company</h4>
                                 </div>
                                 <div class="w3-container">
@@ -45,9 +42,9 @@
                                 </div>
                             </div>
                             <div class="w3-col s8">
-                                <div class="w3-container w3-padding secondary-color">
+                                <div class="w3-container">
                                     <h4>Event Information</h4>
-                                    <span style="display: none;" class="pk">{{ x.pk }}</span>
+                                    <span class="pk w3-hide">{{ x.pk }}</span>
                                 </div>
                                 <div class="slide-container w3-container scrollable">
                                     <h5>{{ x.title }}</h5>
@@ -58,14 +55,14 @@
                                     <label>Description:</label><br/>
                                     <span>{{ x.desc | linebreaksbr }}</span>
                                 </div>
-                                <div class="w3-display-topright w3-medium w3-container w3-padding-16">
+                                <div class="w3-display-topright w3-medium w3-container">
                                     {% if not x.interested %}
-                                        <button class="w3-btn save w3-text-black w3-border w3-border-black"
+                                        <button class="w3-btn save-btn save"
                                                 data-url="{% url 'event:save' pk=x.pk %}">
                                             Save Event
                                         </button>
                                     {% else %}
-                                        <button class="w3-btn w3-text-black w3-border w3-border-black" disabled>
+                                        <button class="w3-btn save-btn" disabled>
                                             Already saved.
                                         </button>
                                     {% endif %}
@@ -78,8 +75,8 @@
             {% else %}
                 <h3 class="w3-center"> No events found.</h3>
             {% endif %}
-            <a class="w3-btn w3-display-left" style="position:absolute;top:290px;left:0" onclick="plusDivs(-1)">❮</a>
-            <a class="w3-btn w3-display-right" style="position:absolute;top:290px;right:0" onclick="plusDivs(1)">❯</a>
+            <a class="w3-btn w3-display-left slider-nav-btn" onclick="plusDivs(-1)">❮</a>
+            <a class="w3-btn w3-display-right slider-nav-btn" onclick="plusDivs(1)">❯</a>
         </div>
     </div>
 

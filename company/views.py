@@ -116,11 +116,14 @@ class EditCompanyView(LoginRequiredMixin, View):
                     else:
                         raise IntegrityError
             except IntegrityError:
+                i['pk'] = '0'
                 context['company'] = i
                 context['errors'] = company.get_form().errors
 
         else:
-            context['company'] = rq.get_info()
+            info = rq.get_info()
+            info['pk'] = '0'
+            context['company'] = info
             context['errors'] = rq.get_errors()
 
         return render(request, self.template_name, context)

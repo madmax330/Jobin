@@ -4,13 +4,7 @@
 
 {% load staticfiles %}
 
-
-{% block side_content %}
-    {% include 'company/sides/company_info.html' %}
-{% endblock %}
-
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
 
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">
@@ -26,21 +20,21 @@
             </ul>
 
             <div class="tab-content">
-                <div id="howto" class="tab-pane fade in active margined">
+                <div id="howto" class="tab-pane fade in active">
                     {% block howto %}
                     {% endblock %}
                 </div>
-                <div id="faq" class="tab-pane fade margined">
+                <div id="faq" class="tab-pane fade">
                     {% block faq %}
                     {% endblock %}
                 </div>
-                <div id="manual" class="tab-pane fade margined">
+                <div id="manual" class="tab-pane fade">
                     {% block manual %}
                     {% endblock %}
                 </div>
             </div>
             <hr/>
-            <a href="{% url 'manual:company_index' %}" class="btn regular-btn">Back to manual Home</a>
+            <a href="{% url 'manual:company_index' %}" class="btn btn-default">Back to manual Home</a>
         </div>
     </div>
 

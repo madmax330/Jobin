@@ -1,11 +1,17 @@
 {% extends 'manual/company/manual_base.html' %}
 
-{% block man_title %}Home Page Manual{% endblock %}
+{% block page_body_class %}company-manual home-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-manual home-manual">
+        <h1>Home Page Manual</h1>
+    </div>
+{% endblock %}
 
 
 {% block howto %}
 
-    <ul class="margined-li">
+    <ul class="">
         <li>
             To see who applied for your job posting, click on the ‘Applicants’ button on the right of
             the active post in question.
@@ -63,7 +69,7 @@
                 On the left hand side of the screen under ‘Post Legend’, you have a description
                 of what each color represents.
             </p>
-            <ul class="margined-li">
+            <ul>
                 <li>
                     The 'Post Title' column shows you the title of the post for that application.
                 </li>

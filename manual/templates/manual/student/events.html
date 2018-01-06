@@ -1,12 +1,18 @@
 {% extends 'manual/student/manual_base.html' %}
 
-{% block man-title %}Events Page Manual{% endblock %}
+{% block page_body_class %}student-manual events-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-manual">
+        <h1>Events Page Manual</h1>
+    </div>
+{% endblock %}
 
 
 
 {% block howto %}
 
-    <ul class="margined-li">
+    <ul>
         <li>
             To save an event, just click on the ‘Save’ button and it will be added to your home page.
         </li>
@@ -53,7 +59,7 @@
         <br/><br/>
         Each event post is composed of two sections:
     </p>
-    <ul class="margined-li">
+    <ul>
         <li>
             <i>The 'Company' section</i>
             <br/>

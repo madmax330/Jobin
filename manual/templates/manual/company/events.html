@@ -1,11 +1,17 @@
 {% extends 'manual/company/manual_base.html' %}
 
-{% block man_title %}Events Page Manual{% endblock %}
+{% block page_body_class %}company-manual events-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-manual events-manual">
+        <h1>Events Page Manual</h1>
+    </div>
+{% endblock %}
 
 
 {% block howto %}
 
-    <ul class="margined-li">
+    <ul class="">
         <li>
             To create an event, click on the 'New Event' button and fill out the necessary
             information in the form.
