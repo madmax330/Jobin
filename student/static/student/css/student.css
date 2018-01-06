@@ -1,20 +1,38 @@
+/*
+ *  SET BODY TO MINIMUM FULL WINDOW HEIGHT
+ */
+
+html{
+    height: 100%;
+}
+
 body{
-    background-color: #E0E0E0;
-    font-family: 'Roboto Slab', serif;
+    min-height: 100%;
+}
+
+body{
+    background-color: #fff;
+    font-family: 'Helvetica', serif;
     font-weight: 300;
+	background-image:none !important;
 }
 
 h1, h2, h3, h4, h5, h6{
-    font-family: 'Roboto Slab', serif;
+    font-family: 'Helvetica', serif;
     font-weight: 400;
 }
-
+.w3-main.w3-container {
+    padding: 0;
+}
+a:focus, a:hover {
+	text-decoration:none;
+	color:#53acff;
+}
 .bg-grey{
     background-color: #f6f6f6;
 }
 
 .content-container{
-    padding-top: 16px;
     background-color: #ffffff;
 }
 
@@ -26,26 +44,41 @@ h1, h2, h3, h4, h5, h6{
     background-color: #255c99;
     border: none;
     padding-right: 16px;
+	margin-bottom:0;
 }
 
 .jobin-nav img{
     max-width: 100px;
 }
 
-.jobin-nav .nav-link{
+.jobin-nav-link a {
     padding: 15px 16px;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
 }
+.jobin-nav-link a h5 {margin-top:0 !important; margin-bottom:0 !important;
+    text-transform: uppercase;
+    font-weight: 600;}
 
-.jobin-nav .nav-link:hover, .jobin-nav .nav-link.active{
-    color: #efefef!important;
+.jobin-nav-link a:hover, .jobin-nav-link a.active{
+    color: #fff !important;
     text-decoration: none;
     border-bottom: 4px solid #FFFFFF;
+    background-color: transparent !important;
+}
+.navbar-right .jobin-nav-link a:hover {
+    padding-bottom: 11px;
+}
+.navbar-brand {
+    margin-top: -25px;
+}
+.nav-header:hover{
     background-color: #255c99!important;
 }
 
-.nav-header:hover{
-    background-color: #255c99!important;
+
+@media (min-width: 768px) {
+.navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {    margin-left: 0px !important;}
+.navbar-nav {margin-left:20px;}
 }
 
 .required:after{
@@ -72,11 +105,6 @@ h1, h2, h3, h4, h5, h6{
     max-width: 900px;
 }
 
-
-#warning-modal .warning-accepted {
-    border: 1px solid #8a6d3b;
-    color: #8a6d3b
-}
 
 /* NOTIFICATIONS */
 
@@ -114,9 +142,645 @@ h1, h2, h3, h4, h5, h6{
     border-left: 5px solid #bce8f1;
     background-color: #d9edf7;
     color: #31708f;
+	padding: 10px 0;
+}
+.message-warning, .message-danger, .message-success {
+margin-left: calc(50% - 50vw);
+  width: 100vw;
+}
+.message-warning p, .message-danger p, .message-success p {
+    padding: 10px 0 0 10px;
+}
+.jobin-nav {
+    padding: 30px 10px 30px 10px;
+		background: rgb(255, 153, 102);
+	/* Old browsers */
+	background: -moz-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff9966', endColorstr='#ff5e62', GradientType=1);
+}
+.jobin-nav .nav-link:hover, .jobin-nav .nav-link.active {background-color:transparent !important; color:#fff !important;}
+.nav-header:hover {
+    background-color:transparent !important;
+}
+.jobin-nav .nav-link {
+    padding: 35px 16px 10px 16px;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    margin-bottom: 13px;
+}
+footer {
+    padding: 30px 40px 20px 40px !important;
+		background: rgb(255, 153, 102);
+	/* Old browsers */
+	background: -moz-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff9966', endColorstr='#ff5e62', GradientType=1);
+	color: #fff;
+
+}
+footer p {
+    color: #fff;
+    font-size: 12px;
+	font-family: 'Helvetica', sans-serif;
+}
+footer a {
+    color: #fff;
+    font-weight:600;
+}
+footer a:hover {text-decoration: underline;}
+.active-applications, .saved-events, .latest-posts {
+    background: transparent;
+}
+.active-applications h4, .saved-events h4, .latest-posts h4, .resume-list h4 {
+    color: #353535 !important;
+	    font-family: 'Helvetica', sans-serif;
+    font-size: 21px;
+	background: #efefef;
+    margin: 0;
+    padding: 20px 0;
+	text-align:center;
+	
+}
+.w3-table td, .w3-table th, .w3-table-all td, .w3-table-all th {
+font-family: 'Helvetica', sans-serif;}
+.w3-table tbody tr:first-child {
+    background: #f7f7f7 !important;
+    color: #505050;
+}
+a {
+color: #05acff;}
+.message-info {
+    border-left: 5px solid #bce8f1;
+    background-color: #d9edf7;
+    color: #01689a;
+    text-align: center;
 }
 
 
+.job-nav div:first-child {
+    background: transparent !important;
+}
+.job-navbar {
+	margin-left: calc(50% - 50vw);
+  width: 100vw;
+}
+.job-navbar div:first-child a {
+    background: url(http://dev.jobin.io/static/home/images/volunteer.jpg) !important;
+    background-size: cover !important;
+}
+.job-navbar div:nth-child(2) a {
+    background: url(http://dev.jobin.io/static/home/images/internship.jpg) !important;
+    background-size: cover !important;
+}
+.job-navbar div:nth-child(3) a {
+    background: url(http://dev.jobin.io/static/home/images/parttime.jpg) !important;
+    background-size: cover !important;
+}
+.job-navbar div:nth-child(4) a {
+    background: url(http://dev.jobin.io/static/home/images/startup.jpg) !important;
+    background-size: cover !important;
+}
+.job-navbar div:nth-child(5) a {
+    background: url(http://dev.jobin.io/static/home/images/fulltime.jpg) !important;
+    background-size: cover !important;
+}
+.job-navbar a {padding-top: 60px !important;
+padding-bottom: 60px !important;
+    font-size: 15px;
+    font-weight: 600;
+	color:#fff;
+	filter: saturate(0%) !important;
+	}
+.job-navbar a:hover {
+    box-shadow: none !important;
+    background: none !important;
+    color: #fff !important;
+	    text-decoration: none !important;
+			-webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    transition: all .5s ease;
+	filter: saturate(100%)  brightness(170%) !important;
+}
+.mySlides {
+    padding-bottom: 40px;
+}
+
+#post-filter-form .w3-cell {
+    text-align: center;
+}
+form#post-filter-form {
+    background: #ff7964;
+	    padding: 10px 0;
+		    color: #fff;
+			margin-left: calc(50% - 50vw);
+  width: 100vw;
+}
+form#post-filter-form input {
+    background: #ff7964;
+	    padding: 10px 0;
+		    color: #fff;
+}
+form#post-filter-form input {
+    border: 0;
+    padding: 5px 10px;
+    background: transparent;
+    border-bottom: 2px solid #fff;
+}
+form#post-filter-form input:focus {
+    outline: none !important;
+}
+.filter-btn {
+    border-color: #fff !important;
+	-webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    transition: all .5s ease;
+}
+.filter-btn:hover {
+    color: #ff7964;
+    text-decoration: none;
+    box-shadow: none;
+    background: #fff;
+	-webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    -ms-transition: all .3s ease;
+    transition: all .3s ease;
+}
+.job-nav h3 {display:none;}
+.content-container>.w3-padding-16 {
+    padding-top: 0 !important;
+}
+
+.slider-nav-btn {
+        box-shadow: none !important;
+    border-radius: 0;
+    width: 150px !important;
+    height: 50px !important;
+    text-align: center;
+    line-height: 50px !important;
+    padding: 0 !important;
+    background: #ff7964 !important;
+    color: #fff;
+    position: relative !important;
+}
+.slider-nav-btn:hover {
+    text-decoration: none;
+    background: #ff9766 !important;
+	color:#fff;
+}
+.w3-display-left.slider-nav-btn {
+    position: absolute;
+    top: initial;
+    left: initial;
+	float:left;
+}
+.w3-display-right.slider-nav-btn {
+    position: absolute;
+    top: initial;
+    left: initial;
+	float: right;
+}
+.w3-display-right.slider-nav-btn:before {
+    content: "NEXT ";
+}
+.w3-display-left.slider-nav-btn:after {
+	content: " PREV";
+}
+.slide-container h5 {
+    font-size: 22px;
+    color: #ff7964;
+    border-bottom: 2px solid #eee;
+    padding: 20px 0;
+}
+
+.main-post-container {
+background:#fff;
+padding-top:30px;}
+.main-post-container .s4 div {
+    background: #fff;
+    color: #696969;
+}
+.main-post-container .s4 table tr {
+    background: #fff !important;
+    color: #05acff !important;
+	    border-bottom: 0 !important;
+}
+.main-post-container h4 {
+    color: #353535 !important;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 21px;
+    background: #efefef;
+    padding: 20px;
+}
+.main-post-container .s8 {
+border-left: 2px solid #eee;
+color: #696969;
+}
+.main-post-container .s8 h4 {
+    display: none;
+}
+.scrollable {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+}
+.resumes-section h5 {
+	color: #353535 !important;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 21px;
+	background: #efefef;
+    padding: 20px;
+	font-weight:300 !important;
+}
+.main-post-container label {
+    padding-top: 10px;
+}
+.main-post-container .s4 table td strong {
+    padding: 3px 10px;
+    /* background: #ddd; */
+    background-color: #53acff;
+    color: #fff;
+    font-weight: 300;
+}
+.main-post-container .s4 div h5 {
+    font-weight:bold;
+}
+
+.events-header {
+    background: url(http://dev.jobin.io/static/home/images/events.jpg);
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+	margin-left: calc(50% - 50vw);
+  width: 100vw;
+}
+.events-header h3 {
+    	color: #fff !important;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 21px;
+	
+}
+.w3-container.w3-padding.w3-cell-row.w3-text-white.primary-color {
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+    background: url(http://dev.jobin.io/static/home/images/resumes.jpg);
+}
+header.w3-container.primary-color.w3-text-white {
+        padding-top: 60px !important;
+    padding-bottom: 60px !important;
+    background: url(http://dev.jobin.io/static/home/images/applicationshistory.jpg);
+}
+.w3-table, .w3-table-all {
+	    background: #fff;
+}
+.w3-table tr, .wt-table td {
+    border-bottom: 1px solid #eee;
+}
+.w3-dropdown-hover:first-child, .w3-dropdown-click:hover {
+    background-color: #53acff;
+    color: #fff;
+}
+.w3-dropdown-hover>a {
+    color: #fff;
+    padding: 0 10px;
+}
+.w3-dropdown-content {    min-width: 200px;     border: 1px solid #53acff; }
+.w3-btn.apply-btn {
+    border: 1px solid #ddd;
+}
+.saved-events, .latest-posts {
+    text-align: center;
+}
+.main-event-container {padding-top:40px; padding-bottom:40px;}
+.main-event-container {
+background:#fff;
+padding-top:30px;}
+.main-event-container .s4 div {
+    background: #fff;
+    color: #696969;
+}
+.main-event-container .s4 table tr {
+    background: #fff !important;
+    color: #05acff !important;
+	    border-bottom: 0 !important;
+}
+.main-event-container h4 {
+    color: #353535 !important;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 21px;
+    background: #efefef;
+    padding: 20px;
+}
+.main-event-container .s8 {
+border-left: 2px solid #eee;
+color: #696969;
+}
+.main-event-container .s8 h4 {
+    display: none;
+}
+.main-event-container label {
+    padding-top: 10px;
+}
+.pagetitle {
+    text-align: center;
+    padding: 50px 0;
+    color: #fff;
+    text-transform: uppercase;
+    background-position: center center;
+    background-size: cover;
+	margin-bottom: 50px;
+}
+.pagetitle h1 {
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: 6px;
+}
+
+/* Student home page */
+
+.student-home-page .w3-table tr:last-child {border-bottom:none !important;}
+.student-home-page .pagetitle {
+	    background: url(/static/home/images/studenthome.jpg);
+		background-position: center;
+}
+.student-home-page .w3-row {
+    margin: 0 0 50px 0;
+}
+
+/* Resume */
+
+.resume-index .pagetitle {
+	    background: url(/static/home/images/history.jpg);
+		background-position: center;
+}
+
+/* History */
+
+.student-history .pagetitle {
+	    background: url(/static/home/images/resume.jpg);
+		background-position: center;
+}
+/* Posts */
+
+.posts .pagetitle {
+	    background: url(/static/home/images/posts.jpg);
+		background-position: center;
+}
 
 
+/* Profile */
+
+.student-profile .pagetitle {
+	    background: url(/static/home/images/profile.jpg);
+		background-position: center;
+}
+
+.student-profile .info-container span {
+    font-size: 20px;
+    color: #353535;
+    padding-right: 10px;
+}
+
+.student-profile .info-container label {
+    font-size: 20px;
+    color: #ff7164;
+    padding-right: 10px;
+}
+
+.btn-default {
+	background: #ff7964;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+    width: auto;
+    height: 50px;
+	line-height: 37px;
+	margin: 20px 0;
+}
+.btn-default:hover {
+	background: #ff9565;
+    color: #fff;
+	box-shadow:none;
+}
+
+.btn-success {
+	background: #59bf2b;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+    width: auto;
+    height: 50px;
+	line-height: 37px;
+	margin: 20px 0;
+}
+.btn-success:hover {
+	background: #6bd83b;
+    color: #fff;
+	box-shadow:none;
+}
+.edit-profile .w3-input {padding:10px 20px;}
+
+	
+/* Help */
+
+.student-manual .pagetitle {
+	    background: url(/static/home/images/help.jpg);
+		background-position: center;
+}
+
+.student-manual h6 {font-size:22px; line-height:30px;     margin-bottom: 30px;}	
+
+.student-manual #bodyCol {
+	    margin-bottom:30px;
+}	
+.student-manual .tablink {
+    font-size: 20px;
+    background: #efefef;
+    border: 2px solid #fff;
+    padding: 10px 20px;
+    color: #353535;
+    border-bottom: 0px !important;
+    margin-bottom: 20px;
+}
+
+.student-manual .tablink:hover {
+    background: #ff7c64;
+    -o-transition: .5s;
+    -ms-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .2s;
+    color: #fff;
+}
+.man-section h6 {
+    margin-bottom: 6px;
+}
+.man-section li {
+    padding-bottom: 10px;
+}
+
+
+.mySlides .w3-display-topright {
+    position: absolute;
+    right: 0;
+    top: 17px;
+    padding-right: 0 !important;
+}
+
+.save-btn, .apply-btn .apply-btn, .new-resume {
+    background: #ff7964;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+    width: auto;
+    height: 50px;
+}
+.save-btn:hover, apply-btn .apply-btn:hover, .new-resume:hover {
+    box-shadow: none;
+    background: #ff9565;
+	    color: #fff;
+}
+.new-resume {
+    float: right;
+    margin-bottom: 20px;
+}
+.infobutton {
+    background: transparent !important;
+    color: #ff7964 !important;
+    font-size: 26px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.w3-dropdown-hover:hover .w3-dropdown-content {
+    font-size: 14px;
+    min-width: 500px;
+    background: #fff;
+    border: 2px solid #05acff !important;
+}
+.infobutton .w3-dropdown-content {
+    border: 2px solid #ff7964 !important;
+	margin-top: -105px !important;
+    margin-left: 20px !important;
+}
+.infobutton:hover .w3-dropdown-content {
+    border: 2px solid #ff7964 !important;
+}
+
+
+.student-resumes-content {
+    padding: 40px 0;
+}
+.panel {border-radius:0px; box-shadow: none !important; -webkit-box-shadow: none !important; border-radius:0 !important; border:none !important;}
+.panel-default>.panel-heading {border-bottom:0 !important; border-color:#efefef;     background-color: #efefef !important;}
+.panel-default>.panel-heading h4 {color: #353535 !important;    font-family: 'Helvetica', sans-serif;    font-size: 21px;    background: #efefef;    margin: 0;    padding: 20px 0;
+text-align: center;}
+.panel-body { padding:0px !important;}
+.panel-body table tr:first-child {    background: #f7f7f7;}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {border-color:#f7f7f7;}
+
+tr.tr-cover-requested .post-title:after {
+    content: 'COVER LETTER REQUESTED';
+    background: #ff7453;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 6px 3px;
+    border-radius: 3px;
+    margin-left: 7px;
+}
+
+tr.tr-cover-read .post-title:after {
+    content: 'COVER LETTER READ';
+    background: #5acc3e;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 6px 3px;
+    border-radius: 3px;
+    margin-left: 7px;
+}
+tr.tr-cover-submitted .post-title:after {
+    content: 'COVER LETTER SUBMITTED';
+    background: #20b7a3;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 6px 3px;
+    border-radius: 3px;
+    margin-left: 7px;
+}
+
+.popover-content {
+    min-width: 200px;
+}
+.next-walk, .skip-walk {
+	    background: #ff7964;
+    color: #fff !important;
+    text-transform: uppercase;
+    font-size: 14px;
+    width: auto;
+    height: 50px;
+	border-color: #ff7964 !important;
+	min-width: 81px;
+    margin-bottom: 4px;
+}
+
+.next-walk:hover, .skip-walk:hover {
+    box-shadow: none;
+    background: #ff9565;
+	    color: #fff;
+}
+#welcome-modal .w3-modal-content {
+    padding: 6px;
+}
+span.w3-button.w3-display-topright.close-modal:hover {
+    background: transparent !important;
+    color: #ff7964 !important;
+}
+#apply-modal .w3-padding-16 {
+    padding: 30px 30px 0 30px !important;
+}
+.modal-sm {
+    max-width: 500px;
+    top: 35%;
+}
+.incomplete-resume .tr-resume-name:after {
+    content: "RESUME INCOMPLETE";
+    background: #ff7453;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 6px 3px;
+    border-radius: 3px;
+    margin-left: 7px;
+}
+.student-info-header, .user-info-header {
+    color: #353535 !important;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 21px;
+    background: #efefef;
+    padding: 6px 17px 15px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+.btn-danger:hover {
+	    background-color: #d9534f !important;
+    border-color: #d9534f !important;
+}
+#warning-modal .warning-accepted {
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+.warning-header {background:#ff7964;}
+.warning-header h3 {color:#fff;}
+.warning-header .w3-display-topright {color:#fff !important;}
 

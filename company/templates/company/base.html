@@ -9,19 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'company/css/company.css' %}"/>
     <link href="https://fonts.googleapis.com/css?family=Catamaran:400,700,800" rel="stylesheet">
-    {% block styles %}{% endblock %}
-    <style>
-        body {
-            background-image: url("{% static 'home/images/pattern_max_finshed8.png' %}");
-            background-size: 120px 120px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-2.2.0.min.js" integrity="sha256-ihAoc6M/JPfrIiIeayPE9xjin4UWjsx2mjW/rtmxLM4=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <!--<script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>-->
 </head>
-<body>
+<body class="{% block page_body_class %}{% endblock %}">
 
 <nav class="navbar navbar-default jobin-nav">
     <div class="container">
@@ -84,6 +78,9 @@
         </div>
     </div>
 </nav>
+
+<div class="page-title-div">{% block page_title_div %}{% endblock %}</div>
+
 <div class="container main-container">
     <div class="row content-container">
         <div id="bodyCol" class="container col-sm-12">
@@ -153,14 +150,14 @@
             </div>
         </div>
     </div>
-    <footer class="bg-grey">
-        <p>
-            This platform is brought to you by JobIn Solutions. Your use of the platform confirms that you are in
-            agreement with our <a target="_blank" href="{% url 'home:terms' %}">Terms and Conditions</a>
-            and our <a target="_blank" href="{% url 'home:policy' %}">Privacy Policy</a>.
-        </p>
-    </footer>
 </div>
+<footer class="bg-grey">
+    <p>
+        This platform is brought to you by JobIn Solutions. Your use of the platform confirms that you are in
+        agreement with our <a target="_blank" href="{% url 'home:terms' %}">Terms and Conditions</a>
+        and our <a target="_blank" href="{% url 'home:policy' %}">Privacy Policy</a>.
+    </p>
+</footer>
 
 
 <div id="page-name" class="hidden">

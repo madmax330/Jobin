@@ -17,20 +17,22 @@ class IndexView(View):
     template_name = 'home/index_page/home.html'
 
     def get(self, request):
-        user = UserUtil(self.request.user)
-        context = {}
-        if user.is_logged_in():
-            if user.get_user_type() == 'company':
-                company = CompanyContainer(user.get_user())
-                if company.get_company():
-                    context['logged'] = 'company'
-                    context['user_name'] = company.get_company().name
-            elif user.get_user_type() == 'student':
-                student = StudentContainer(user.get_user())
-                if student.get_student():
-                    context['logged'] = 'student'
-                    context['user_name'] = student.get_student().name
-        return render(request, self.template_name, context)
+
+        return render(request, 'home/index.html')
+        # user = UserUtil(self.request.user)
+        # context = {}
+        # if user.is_logged_in():
+        #     if user.get_user_type() == 'company':
+        #         company = CompanyContainer(user.get_user())
+        #         if company.get_company():
+        #             context['logged'] = 'company'
+        #             context['user_name'] = company.get_company().name
+        #     elif user.get_user_type() == 'student':
+        #         student = StudentContainer(user.get_user())
+        #         if student.get_student():
+        #             context['logged'] = 'student'
+        #             context['user_name'] = student.get_student().name
+        # return render(request, self.template_name, context)
 
     def post(self, request):
         user = UserUtil(self.request.user)

@@ -6,21 +6,20 @@
 
 {% block content %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
     <script src="{% static 'manual/student_open_page_script.js' %}"></script>
     <div class="w3-container">
-        <h4 style="margin:0;" class="primary-color w3-center w3-padding w3-text-white">
+        <h4 style="margin:0;" class="w3-center">
             {% block man-title %}{% endblock %}
         </h4>
         <div class="w3-row">
             <a href="javascript:void(0)" onclick="openPage(event, 'HowTo');">
-                <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding active-man-section">How To</div>
+                <div class="w3-third tablink w3-bottombar active-man-section">How To</div>
             </a>
             <a href="javascript:void(0)" onclick="openPage(event, 'FAQ');">
-                <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding">FAQs</div>
+                <div class="w3-third tablink w3-bottombar ">FAQs</div>
             </a>
             <a href="javascript:void(0)" onclick="openPage(event, 'Manual');">
-                <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding">Manual</div>
+                <div class="w3-third tablink w3-bottombar">Manual</div>
             </a>
         </div>
 
@@ -36,7 +35,7 @@
             {% block manual %}{% endblock %}
         </div>
         <hr/>
-        <a href="{% url 'manual:student_index' %}" class="w3-btn w3-border w3-border-black">
+        <a href="{% url 'manual:student_index' %}" class="w3-btn btn-default">
             Back to manual Home
         </a>
     </div>

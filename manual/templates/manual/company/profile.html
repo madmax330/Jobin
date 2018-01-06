@@ -1,11 +1,17 @@
 {% extends 'manual/company/manual_base.html' %}
 
-{% block man_title %}Profile Page Manual{% endblock %}
+{% block page_body_class %}company-manual profile-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-manual profile-manual">
+        <h1>Profile Page Manual</h1>
+    </div>
+{% endblock %}
 
 
 {% block howto %}
 
-    <ul class="margined-li">
+    <ul>
         <li>
             To edit your profile, click on the 'Edit Profile' button and from there you can update
             your company information.

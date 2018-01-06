@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Jobin Home{% endblock %}</title>
+    {% load staticfiles %}
+    <!-- Slider Revolution CSS Files -->
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/fonts/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/index.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/revolution/css/settings.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/revolution/css/layers.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/revolution/css/navigation.css' %}">
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-106158410-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    <!-- Core jQuery Script -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+
+    <!-- Slider Revolution core JavaScript files -->
+    <script type="text/javascript" src="{% static 'home/revolution/js/jquery.themepunch.tools.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/revolution/js/jquery.themepunch.revolution.min.js' %}"></script>
+
+    <!-- Slider Revolution extension scripts. ONLY NEEDED FOR LOCAL TESTING -->
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.actions.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.carousel.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.kenburn.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.layeranimation.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.migration.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.navigation.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.parallax.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.slideanims.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/revolution/js/extensions/revolution.extension.video.min.js' %}"></script>
+    <script src="{% static 'home/scripts/browser_scripts.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</head>
+<body style="margin:0;">
+
+<div class="rev_slider_wrapper fullscreen-container">
+
+    <div id="rev_slider_1" class="rev_slider fullscreenbanner" data-version="5.4.6" style="display: none">
+
+        <ul>
+
+            <li data-transition="slideleft">
+
+                <img src="{% static 'home/images/engineer.jpg' %}" alt="NYC" class="rev-slidebg">
+
+                <!-- JOB LAYER -->
+                <div class="tp-caption tp-resizeme"
+
+                     data-frames='[
+                        {"delay":500,"speed":500,"frame":"0","from":"x:50px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":300,"frame":"999","to":"x:50px;opacity:0;","ease":"Power3.easeInOut"}
+                    ]'
+
+                     data-x="center"
+                     data-y="center"
+                     data-hoffset="0"
+                     data-voffset="-80"
+                     data-width="['auto']"
+                     data-height="['auto']">
+
+                    <!-- FIRST SLIDE CONTENT -->
+                    <h1 class="job-title">Find a job today as an <span class="slider-job-title">ENGINEER</span></h1>
+
+                </div>
+
+            </li>
+
+            <li data-transition="slideleft">
+
+                <img src="{% static 'home/images/developer.jpg' %}" alt="City Two" class="rev-slidebg">
+
+                <!-- JOB LAYER -->
+                <div class="tp-caption tp-resizeme"
+
+                     data-frames='[
+                        {"delay":500,"speed":500,"frame":"0","from":"x:50px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":300,"frame":"999","to":"x:50px;opacity:0;","ease":"Power3.easeInOut"}
+                    ]'
+
+                     data-x="center"
+                     data-y="center"
+                     data-hoffset="0"
+                     data-voffset="-80"
+                     data-width="['auto']"
+                     data-height="['auto']">
+
+                    <!-- SECOND SLIDE CONTENT -->
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">DEVELOPER</span></h1>
+
+                </div>
+
+            </li>
+
+            <li data-transition="slideleft">
+
+                <img src="{% static 'home/images/actuarialanalyst.jpg' %}" alt="City Two" class="rev-slidebg">
+
+                <!-- JOB LAYER -->
+                <div class="tp-caption tp-resizeme"
+
+                     data-frames='[
+                        {"delay":500,"speed":500,"frame":"0","from":"x:50px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":300,"frame":"999","to":"x:50px;opacity:0;","ease":"Power3.easeInOut"}
+                    ]'
+
+                     data-x="center"
+                     data-y="center"
+                     data-hoffset="0"
+                     data-voffset="-80"
+                     data-width="['auto']"
+                     data-height="['auto']">
+
+                    <!-- SECOND SLIDE CONTENT -->
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Actuarial Analyst</span></h1>
+
+                </div>
+
+            </li>
+
+            <li data-transition="slideleft">
+
+                <img src="{% static 'home/images/investmentbanker.jpg' %}" alt="City Two" class="rev-slidebg">
+
+                <!-- JOB LAYER -->
+                <div class="tp-caption tp-resizeme"
+
+                     data-frames='[
+                        {"delay":500,"speed":500,"frame":"0","from":"x:50px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":300,"frame":"999","to":"x:50px;opacity:0;","ease":"Power3.easeInOut"}
+                    ]'
+
+                     data-x="center"
+                     data-y="center"
+                     data-hoffset="0"
+                     data-voffset="-80"
+                     data-width="['auto']"
+                     data-height="['auto']">
+
+                    <!-- SECOND SLIDE CONTENT -->
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Investment Banker</span></h1>
+
+                </div>
+
+            </li>
+
+            <li data-transition="slideleft">
+
+                <img src="{% static 'home/images/researchassistant.jpg' %}" alt="City Two" class="rev-slidebg">
+
+                <!-- JOB LAYER -->
+                <div class="tp-caption tp-resizeme"
+
+                     data-frames='[
+                        {"delay":500,"speed":500,"frame":"0","from":"x:50px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":300,"frame":"999","to":"x:50px;opacity:0;","ease":"Power3.easeInOut"}
+                    ]'
+
+                     data-x="center"
+                     data-y="center"
+                     data-hoffset="0"
+                     data-voffset="-80"
+                     data-width="['auto']"
+                     data-height="['auto']">
+
+                    <!-- SECOND SLIDE CONTENT -->
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Research Assistant</span></h1>
+
+                </div>
+
+            </li>
+			
+			<li data-transition="slideleft">
+
+                <img src="{% static 'home/images/financialanalyst.jpg' %}" alt="City Two" class="rev-slidebg">
+
+                <!-- JOB LAYER -->
+                <div class="tp-caption tp-resizeme"
+
+                     data-frames='[
+                        {"delay":500,"speed":500,"frame":"0","from":"x:50px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":300,"frame":"999","to":"x:50px;opacity:0;","ease":"Power3.easeInOut"}
+                    ]'
+
+                     data-x="center"
+                     data-y="center"
+                     data-hoffset="0"
+                     data-voffset="-80"
+                     data-width="['auto']"
+                     data-height="['auto']">
+
+                    <!-- SECOND SLIDE CONTENT -->
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Financial Analyst</span></h1>
+
+                </div>
+
+            </li>
+
+        </ul>
+
+        <!--    STATIC LAYERS   -->
+
+        <div class="tp-static-layers" style="width:100%; height:100%; overflow:hidden;">
+
+            <!-- LOGIN/REGISTER FORMS -->
+            <div id="company-login" class="animated-block fadeIn hidden">
+                <span class="close-block" onclick="close_login('company')">&times;</span>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="text-center">COMPANY REGISTER</h3>
+                        <form>
+                            <div class="login-error">
+                                <p>The passwords do not match.</p>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Company Name" name="name">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Password" name="password">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Confirm Password"
+                                       name="confirm_password">
+                            </div>
+                            <div>
+                                <button class="btn btn-default login-btn">REGISTER</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-6">
+                        <h3 class="text-center">COMPANY LOGIN</h3>
+                        <form>
+                            <div class="login-error">
+                                <p>The username or password is incorrect.</p>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Password" name="password">
+                            </div>
+                            <div>
+                                <button class="btn btn-default login-btn">LOG IN</button>
+                            </div>
+							<a href="#">Forgot password?</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="student-login" class="animated-block fadeIn hidden">
+                <span class="close-block" onclick="close_login('student')">&times;</span>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="text-center">STUDENT REGISTER</h3>
+                        <form>
+                            <div class="login-error">
+                                <p>The passwords do not match.</p>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Password" name="password">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Confirm Password"
+                                       name="confirm_password">
+                            </div>
+                            <div>
+                                <button class="btn btn-default login-btn">REGISTER</button>
+                            </div>
+                        </form>
+                        <div class="social-media-login">
+                            <span>Or register using:</span>
+                            <div class="social-media-icons">
+                                <div class="social-icon"><i class="fa fa-facebook"></i></div>
+                                <div class="social-icon"><i class="fa fa-google-plus"></i></div>
+                                <div class="social-icon"><i class="fa fa-linkedin"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <h3 class="text-center">STUDENT LOGIN</h3>
+                        <form>
+                            <div class="login-error">
+                                <p>The username or password is incorrect.</p>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Password" name="password">
+                            </div>
+                            <div>
+                                <button class="btn btn-default login-btn">LOG IN</button>
+                            </div>
+                            <a href="#">Forgot password?</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tp-static-layer tp-caption tp-resizeme"
+                 data-startslide="0"
+                 data-endslide="99"
+
+                 data-frames='[{"delay": 500, "speed": 300, "from": "opacity: 0", "to": "opacity: 1"},
+                              {"delay": "wait", "speed": 300, "to": "opacity: 0"}]'
+
+                 data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                 data-y="['top','top','top','top']" data-voffset="['0','0','0','0']"
+                 data-width="['auto']"
+                 data-height="['auto']"
+                 data-margintop="[0,0,0,0]"
+                 data-marginright="[0,0,0,0]"
+                 data-marginbottom="[0,0,0,0]"
+                 data-marginleft="[0,0,0,0]"
+                 data-textAlign="['inherit','inherit','inherit','inherit']"
+                 data-paddingtop="[0,0,0,0]"
+                 data-paddingright="[0,0,0,0]"
+                 data-paddingbottom="[0,0,0,0]"
+                 data-paddingleft="[0,0,0,0]">
+
+                <!-- JOBIN LOGO LAYER CONTENT -->
+                <img src="{% static 'home/images/jobinbluesmall.gif' %}" alt="App Store" width="400" height="215">
+            </div>
+
+            <div class="tp-static-layer tp-caption tp-resizeme"
+                 data-startslide="0"
+                 data-endslide="99"
+
+                 data-frames='[{"delay": 500, "speed": 300, "from": "opacity: 0", "to": "opacity: 1"},
+                      {"delay": "wait", "speed": 300, "to": "opacity: 0"}]'
+
+                 data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                 data-y="['top','top','top','top']" data-voffset="['160','160','160','160']"
+                 data-width="['auto']"
+                 data-height="['auto']"
+                 data-margintop="[0,0,0,0]"
+                 data-marginright="[0,0,0,0]"
+                 data-marginbottom="[0,0,0,0]"
+                 data-marginleft="[0,0,0,0]"
+                 data-textAlign="['inherit','inherit','inherit','inherit']"
+                 data-paddingtop="[0,0,0,0]"
+                 data-paddingright="[0,0,0,0]"
+                 data-paddingbottom="[0,0,0,0]"
+                 data-paddingleft="[0,0,0,0]">
+
+                <!-- JOBIN LOGO TEXT LAYER CONTENT -->
+                <h4 class="text-center" style="font-weight: normal">CHANGING THE FUTURE OF HIRING</h4>
+
+            </div>
+
+            <div class="tp-static-layer tp-caption tp-resizeme"
+                 data-startslide="0"
+                 data-endslide="99"
+                 data-frames='[{"delay": 500, "speed": 300, "from": "opacity: 0", "to": "opacity: 1"},
+                      {"delay": "wait", "speed": 300, "to": "opacity: 0"}]'
+
+                 data-x="center"
+                 data-y="center"
+                 data-hoffset="0"
+                 data-voffset="0"
+                 data-width="['auto']"
+                 data-height="['auto']">
+
+                <!-- REST OF CENTER LAYER CONTENT -->
+                <div class="row center-row">
+                    <div class="col-sm-6">
+                        <button class="btn btn-danger right" onclick="open_login('student')">STUDENT LOGIN/REGISTER
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button class="btn btn-primary" onclick="open_login('company')">COMPANY LOGIN/REGISTER</button>
+                    </div>
+                </div>
+
+                <p class="text-center">
+                    At Jobin, we bring the jobs to you! We give you access to the many jobs that are
+                    posted and all you have to do is decide whether you want to apply or not.
+                </p>
+
+            </div>
+
+            <div class="tp-static-layer tp-caption tp-resizeme"
+                 data-startslide="0"
+                 data-endslide="99"
+
+                 data-frames='[{"delay": 500, "speed": 300, "from": "opacity: 0", "to": "opacity: 1"},
+                      {"delay": "wait", "speed": 300, "to": "opacity: 0"}]'
+
+                 data-x="center"
+                 data-y="bottom"
+                 data-hoffset="0"
+                 data-voffset="30"
+                 data-width="['auto']"
+                 data-height="['auto']">
+
+                <!-- BOTTOM LAYER CONTENT -->
+                <h5 class="text-center">
+                    LEARN MORE <span class="glyphicon glyphicon-triangle-bottom"></span>
+                </h5>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    /* https://learn.jquery.com/using-jquery-core/document-ready/ */
+    jQuery(document).ready(function () {
+
+        /* initialize the slider based on the Slider's ID attribute */
+        jQuery('#rev_slider_1').show().revolution({
+
+            sliderType: "standard",
+            sliderLayout: "fullscreen",
+            dottedOverlay: "none",
+            delay: 5000,
+            navigation: {
+                keyboardNavigation: "off",
+                keyboard_direction: "horizontal",
+                mouseScrollNavigation: "off",
+                mouseScrollReverse: "default",
+                onHoverStop: "off",
+                touch: {
+                    touchenabled: "on",
+                    touchOnDesktop: "off",
+                    swipe_threshold: 75,
+                    swipe_min_touches: 1,
+                    swipe_direction: "horizontal",
+                    drag_block_vertical: false
+                }
+            },
+            responsiveLevels: [1240, 1024, 778, 480],
+            visibilityLevels: [1240, 1024, 778, 480],
+            gridwidth: [1240, 1024, 778, 480],
+            gridheight: [868, 768, 960, 720],
+            lazyType: "none",
+            shadow: 0,
+            spinner: "off",
+            shuffle: "off",
+            autoHeight: "off",
+            fullScreenAutoWidth: "off",
+            fullScreenAlignForce: "off",
+            fullScreenOffsetContainer: "",
+            fullScreenOffset: "0",
+            disableProgressBar: "on",
+            hideThumbsOnMobile: "off",
+            debugMode: false,
+        });
+    });
+
+</script>
+
+
+<div class="post-slider-content">
+
+    <div class="container">
+        <div class="news-row">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="text-center">
+                        <img src="{% static 'home/images/mobile.png' %}" class="jobin-icon-image">
+                    </div>
+                    <p>
+                        The Jobin mobile app is coming soon to bring the convenience from the Jobin web platform
+                        to your phone!
+                        The mobile app will bring new and easy ways to apply for jobs, and keep track of your
+                        applications and saved events!
+                    </p>
+                </div>
+                <div class="col-sm-4">
+                    <div class="text-center">
+                        <img src="{% static 'home/images/buildings.png' %}" class="jobin-icon-image">
+                    </div>
+                    <p>
+                        As the Jobin platform expands, support for more and more schools will be added in order
+                        to give every student the Jobin experience.
+                        As schools are added, any student pre-registered for that school will be notified that the
+                        service has been opened for his/her establishment.
+                    </p>
+                </div>
+                <div class="col-sm-4">
+                    <div class="text-center">
+                        <img src="{% static 'home/images/languages.png' %}" class="jobin-icon-image">
+                    </div>
+                    <p>
+                        The Jobin Team is working hard to translate the Jobin platform into your language so that it
+                        can be used world-wide and in order to give every student the Jobin experience. Stay tuned for
+                        more updates by subscribing to our newsletter.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="video-row">
+            <img src="{% static 'home/images/videopic.png' %}">
+            <!--
+            <video style="width:100%; height:auto; display:block!important;" controls controlsList="nodownload" class="hidden" id="intro-video">
+                <source src="{% static 'home/promovid.mp4' %}" type="video/mp4">
+                Video cannot be viewed.
+            </video>-->
+        </div>
+
+        <div class="jobin-students-row">
+
+            <div class="title-row">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 about-title-col">
+                        <h1 class="text-center">Jobin Students</h1>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <h3>WHY WE DO IT</h3>
+                        <p>
+                            We believe in improving application processes.
+                            <br/>
+                            We believe that applying for a job should be simple.
+                            <br/>
+                            We believe that your time matters.
+                            <br/><br/>
+                            As a student, it can get overwhelming to deal with our academic goals as well as our daily
+                            responsibilities.
+                            One should not have to spend an endless amount of time on job applications in addition to
+                            that.
+                            Answering lengthy questionnaire forms and creating dozens of accounts in the quest of
+                            finding a
+                            job can certainly be exasperating (or frustrating).
+                            <br/><br/>
+                            Jobin was created to address all these issues. If you share our beliefs,
+                            we encourage you to start using Jobin right now.
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <h3>HOW WE DO IT</h3>
+                        <p>
+                            By providing a simple to use platform that efficiently improves the job application
+                            process. We provide features like:
+                            <br/><br/>
+                            - Apply in one click<br/>
+                            - Track all your applications in one place<br/>
+                            - Only send cover letters when requested to do so<br/>
+                            - Have multiple resumes on file<br/>
+                            - Easy access to a variety of job postings<br/>
+                            - Filter the job postings to easily find what you are looking for<br/>
+                            - Receive notifications when there are new job postings<br/>
+                            - See events organized by companies<br/>
+                            - Easily withdraw an application<br/>
+                            - Easily modify an application<br/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="what-we-do-row">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="text-center">
+                        <h2>So what do we do?</h2>
+
+                        <p>
+                            We give you access to a centralized platform where students can go to find a job easily and
+                            rapidly
+                            and employers can hire great individuals conveniently.
+                        </p>
+
+                        <div>
+                            <button class="btn btn-danger">SIGN UP NOW</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="jobin-companies-row">
+
+            <div class="title-row">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 about-title-col">
+                        <h1 class="text-center">Jobin Employers</h1>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <h3>WHY WE DO IT</h3>
+                        <p>
+                            In our quest to create a better platform for students, we also recognized the need to
+                            improve the
+                            recruitment side of the job application process.
+                            <br/><br/>
+                            We believe that the tools which are currently
+                            available for recruiters are inefficient, expensive and outdated.
+                            <br/><br/>
+                            We believe that recruiters play
+                            a crucial role in a company’s success and deserve a resourceful platform to facilitate their
+                            tasks.
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <h3>HOW WE DO IT</h3>
+                        <p>
+                            By providing a simple to use platform that efficiently improves the job recruitment process.
+                            We provide features like:
+                            <br/><br/>
+                            - A free service with standardized resumes<br/>
+                            - Application management tools<br/>
+                            - Option to download a pdf version of standardized resumes<br/>
+                            - Filter applications based on certain criteria<br/>
+                            - Ability to send job postings to students from different schools on one platform and a user
+                            friendly and easy system<br/>
+                            - A niche job board, where only relevant applications will be received and the
+                            ability to re-use an expired job posting<br/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="page-footer">
+        <div class="text-center">
+            <img src="{% static 'home/images/jobinbluesmall.gif' %}" class="page-footer-img">
+        </div>
+        <p class="text-center">
+            <span><a href="#">about us</a></span> |
+            <span><a href="#">terms and conditions</a></span> |
+            <span><a href="#">privacy policy</a></span> |
+            <span><a href="#">investor information</a></span> |
+            <span><a href="#">contact us</a></span>
+        </p>
+        <p class="text-center">
+            2016-2018 &copy; Jobin Solutions Inc. | All Rights Reserved
+        </p>
+    </footer>
+
+</div>
+
+<script type="text/javascript">
+
+    function open_login(val) {
+        let block = $('#' + val + '-login');
+        if (block.hasClass('hidden'))
+            block.removeClass('hidden');
+    }
+
+    function close_login(val) {
+        let block = $('#' + val + '-login');
+        if (!block.hasClass('hidden'))
+            block.addClass('hidden');
+    }
+
+</script>
+
+<div class="hidden">
+    <script>
+        $(function () {
+            browser_alert();
+        });
+    </script>
+</div>
+
+</body>
+</html>

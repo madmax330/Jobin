@@ -1,13 +1,13 @@
-<div id="award-modal" class="w3-modal">
-    <div class="w3-modal-content w3-animate-zoom w3-card-4">
-        <header class="w3-container primary-color">
+<div id="award-modal" class="w3-modal resume-item-modal">
+    <div class="w3-modal-content w3-animate-zoom">
+        <header class="w3-container">
             <span class="w3-button w3-display-topright close-modal" data-id="award-modal">&times;</span>
-            <h3 class="w3-text-white">Award Form</h3>
+            <h3>Award Form</h3>
         </header>
         <div class="w3-container">
             {% if other_awards %}
                 <div>
-                    <h4 class="secondary-color w3-padding">
+                    <h4>
                         Add awards from other resumes:
                     </h4>
                     <ul class="w3-ul">
@@ -18,14 +18,14 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <h3 class="w3-padding secondary-color">
+                <h3>
                     Award Information
                 </h3>
             {% endif %}
-            <div class="w3-padding">
+            <div>
                 <div class="modal-messages"></div>
                 <div class="w3-hide first-message">
-                    <div class="w3-container w3-padding message-info">
+                    <div class="w3-container message-info">
                         Show off your achievements by adding any awards or certifications you received.
                     </div>
                 </div>
@@ -53,19 +53,19 @@
                                   rows="5"></textarea>
                     </div>
                     <div class="regular-buttons w3-padding">
-                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="award-modal">
+                        <button class="w3-btn btn-default close-modal" type="button" data-id="award-modal">
                             Cancel
                         </button>
-                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                        <button class="w3-btn btn-success" type="submit">Submit</button>
                     </div>
-                    <div class="walk-buttons w3-hide w3-padding">
-                        <button class="w3-btn award-save-another w3-border w3-border-black" type="button">
+                    <div class="walk-buttons w3-hide">
+                        <button class="w3-btn btn-success award-save-another" type="button">
                             Save & Add Another
                         </button>
-                        <button class="w3-btn award-save-continue w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-success award-save-continue" type="button">
                             Save & Continue
                         </button>
-                        <button class="w3-btn award-next w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-default award-next" type="button">
                             Next
                         </button>
                     </div>

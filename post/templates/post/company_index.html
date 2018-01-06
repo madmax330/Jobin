@@ -2,19 +2,31 @@
 
 {% block title %}Post List{% endblock %}
 
+{% block page_body_class %}posts{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle posts">
+        <h1>Posts</h1>
+    </div>
+{% endblock %}
+
 {% load staticfiles %}
 {% block scripts %}
 {% endblock %}
 
 {% block content %}
     <div class="panel panel-default primary-panel">
+		<div class="newpostdiv">
+			<a href="{% url 'post:new' %}" class="new-post">
+              <button class="btn btn-primary">New Post</button>
+            </a>
+		</div>
         <div class="panel-heading active-posts">
             <h4 class="text-center">Active Posts</h4>
         </div>
         <div class="panel-body">
             {% if posts %}
                 <table class="table table-hover">
-                    <thead>
                     <tr>
                         <th>Title</th>
                         <th>Wage</th>
@@ -22,13 +34,9 @@
                         <th>Start Date</th>
                         <th>Application Deadline</th>
                         <th>View Count</th>
-                        <th></th>
-                        <th><a href="{% url 'post:new' %}" class="new-post">
-                            <button class="btn btn-primary">New Post</button>
-                        </a></th>
+						<th></th>
+						<th></th>
                     </tr>
-                    </thead>
-                    <tbody>
                     {% for p in posts %}
                         <tr {% if p.notified %}style="background-color: #c2f9ce"
                             {% elif p.new_apps %}style="background-color: #c9f3fc;"
@@ -59,7 +67,6 @@
                             {% endfor %}
                         </td>
                     </tr>
-                    </tbody>
                 </table>
             {% else %}
                 <div class="alert alert-info">
@@ -72,7 +79,7 @@
             {% endif %}
         </div>
     </div>
-    <div class="panel panel-default secondary-panel">
+    <div class="panel panel-default primary-panel">
         <div class="panel-heading expired-posts">
             <h4 class="text-center">Expired Posts</h4>
         </div>
@@ -84,8 +91,7 @@
                     to get started.
                 </div>
             {% elif expired_posts %}
-                <table class="table table-hover">
-                    <thead>
+                <table class="table">
                     <tr>
                         <th>Title</th>
                         <th>Wage</th>
@@ -94,8 +100,6 @@
                         <th>Application Deadline</th>
                         <th></th>
                     </tr>
-                    </thead>
-                    <tbody>
                     {% for p in expired_posts %}
                         <tr {% if p.notified %}style="background-color: #c2f9ce"
                             {% elif p.new_apps %}style="background-color: #c9f3fc;"
@@ -126,7 +130,6 @@
                             {% endfor %}
                         </td>
                     </tr>
-                    </tbody>
                 </table>
             {% else %}
                 <div class="alert alert-info">

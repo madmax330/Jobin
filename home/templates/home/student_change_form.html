@@ -2,13 +2,18 @@
 
 {% block title %}User Info Update{% endblock %}
 
+{% block page_body_class %}student-profile{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-profile">
+        <h1>Edit Account</h1>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="w3-container">
         <div class="w3-card-8">
-            <div class="primary-color w3-container w3-text-white">
-                <h4 class="w3-center">Change User Info</h4>
-            </div>
-            <div class="w3-container w3-pale-yellow">
+            <div class="w3-container">
                 <p>
                     Changing the email attached to this account will result in
                     your account being blocked until you verify the new email
@@ -38,8 +43,8 @@
                         <input class="w3-input w3-border" type="email" name="confirm_email" id="confirm_email"/>
                     </div>
                     <div>
-                        <a href="{% url 'student:profile' %}" class="w3-btn w3-border w3-border-black">Cancel</a>
-                        <button type="submit" class="w3-btn w3-border w3-border-green w3-text-green">Submit</button>
+                        <a href="{% url 'student:profile' %}" class="w3-btn btn-default">Cancel</a>
+                        <button type="submit" class="w3-btn btn-success">Submit</button>
                     </div>
                     <h4 class="secondary-color w3-container w3-padding">Change Password:</h4>
 
@@ -52,8 +57,8 @@
                         <input class="w3-input w3-border" type="password" name="confirm_password" id="confirm_password"/>
                     </div>
                     <div>
-                        <a href="{% url 'student:profile' %}" class="w3-btn w3-border w3-border-black">Cancel</a>
-                        <button type="submit" class="w3-btn w3-border w3-border-green w3-text-green">Submit</button>
+                        <a href="{% url 'student:profile' %}" class="w3-btn btn-default">Cancel</a>
+                        <button type="submit" class="w3-btn btn-success">Submit</button>
                     </div>
                 </form>
             </div>

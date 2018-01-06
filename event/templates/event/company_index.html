@@ -6,15 +6,26 @@
 {% block scripts %}
 {% endblock %}
 
+{% block page_body_class %}company-events{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-events">
+        <h1>Events</h1>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="panel panel-default primary-panel">
+	<div class="newpostdiv">
+	<a href="{% url 'event:new' %}" class="new-event">
+                                <button class="btn btn-primary">New Event</button>
+                 </a></div>
         <div class="panel-heading active-events">
             <h4 class="text-center">Active Events</h4>
         </div>
         <div class="panel-body">
             {% if events %}
-                <table class="table table-hover">
-                    <thead>
+                <table class="table">
                     <tr>
                         <th>Title</th>
                         <th>Date and Time</th>
@@ -22,14 +33,8 @@
                         <th>Website</th>
                         <th>Times Saved</th>
                         <th></th>
-                        <th>
-                            <a href="{% url 'event:new' %}" class="new-event">
-                                <button class="btn btn-primary">New Event</button>
-                            </a>
-                        </th>
+                        <th></th>
                     </tr>
-                    </thead>
-                    <tbody>
                     {% for x in events %}
                         <tr>
                             <td>{{ x.title }}</td>
@@ -54,7 +59,6 @@
                             {% endfor %}
                         </td>
                     </tr>
-                    </tbody>
                 </table>
             {% else %}
                 <div class="alert alert-info">
@@ -69,14 +73,13 @@
             {% endif %}
         </div>
     </div>
-    <div class="panel panel-default secondary-panel">
+    <div class="panel panel-default primary-panel">
         <div class="panel-heading expired-events">
             <h4 class="text-center">Expired Events</h4>
         </div>
         <div class="panel-body">
             {% if expired_events %}
                 <table class="table table-hover">
-                    <thead>
                     <tr>
                         <th>Title</th>
                         <th>Date and Time</th>
@@ -84,8 +87,6 @@
                         <th>Website</th>
                         <th></th>
                     </tr>
-                    </thead>
-                    <tbody>
                     {% for x in expired_events %}
                         <tr>
                             <td>{{ x.title }}</td>
@@ -107,7 +108,6 @@
                             {% endfor %}
                         </td>
                     </tr>
-                    </tbody>
                 </table>
             {% else %}
                 <div class="alert alert-info">

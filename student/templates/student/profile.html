@@ -2,20 +2,28 @@
 
 {% block title %}Student Profile{% endblock %}
 
+{% block page_body_class %}student-profile{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-profile">
+        <h1>Profile</h1>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div>
-        <div class="w3-card-4 w3-white">
-            <header class="w3-container primary-color">
-                <h3 class="w3-text-white">User Information:</h3>
+        <div class="student-info-container">
+            <header class="w3-container user-info-header">
+                <h3>User Information:</h3>
             </header>
-            <div class="w3-container w3-padding-16">
+            <div class="w3-container user-info info-container">
                 <label>Username:</label><span> {{ user.email }}</span><br/>
                 <label>Date Joined:</label><span> {{ user.date_joined }}</span><br/>
             </div>
-            <header class="w3-container primary-color">
-                <h3 class="w3-text-white">Student Information:</h3>
+            <header class="w3-container student-info-header">
+                <h3>Student Information:</h3>
             </header>
-            <div class="w3-container w3-padding-16">
+            <div class="w3-container student-info info-container">
                 <label>First Name:</label><span> {{ student.firstname }}</span><br/>
                 <label>Last Name:</label><span> {{ student.lastname }}</span><br/>
                 <label>Date of Birth:</label><span> {{ student.dob }}</span><br/>
@@ -23,13 +31,11 @@
                 <label>Program:</label><span>{{ student.program }}</span><br/>
                 <label>Phone:</label><span>{{ student.phone }}</span><br/>
                 <label>Email:</label><span>{{ student.email }}</span><br/>
-                <label>Address:</label><br/>
-                <span>{{ student.address }}, {{ student.city }},
-                    {{ student.state }}, {{ student.zipcode }}</span>
+                <label>Address:</label><span>{{ student.address }}, {{ student.city }}, {{ student.state }}, {{ student.zipcode }}</span>
             </div>
-            <div class="w3-container w3-padding-16">
-                <a href="{% url 'student:edit' %}" class="w3-btn w3-border w3-border-black">Edit Profile</a>
-                <a href="{% url 'home:change_info' ut='student'%}" class="w3-btn w3-border w3-border-black">Edit Account</a>
+            <div class="w3-container">
+                <a href="{% url 'student:edit' %}" class="w3-btn btn-default">Edit Profile</a>
+                <a href="{% url 'home:change_info' ut='student'%}" class="w3-btn btn-default">Edit Account</a>
             </div>
         </div>
     </div>

@@ -1,10 +1,16 @@
 {% extends 'manual/student/manual_base.html' %}
 
-{% block man-title %}Posts Page Manual{% endblock %}
+{% block page_body_class %}student-manual posts-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-manual">
+        <h1>Posts Page Manual</h1>
+    </div>
+{% endblock %}
 
 {% block howto %}
 
-    <ul class="margined-li">
+    <ul>
         <li>
             To navigate between the type of job postings, click on one of them
             and the selected category will be highlighted.
@@ -59,7 +65,7 @@
                 We have 5 different types of Job Postings and next to each of them, the number that is
                 inside the parentheses represents the number posts in that category.
             </p>
-            <ul class="margined-li">
+            <ul>
                 <li>
                     Volunteer: In this section, you will find our volunteering opportunities.
                 </li>
@@ -86,7 +92,7 @@
                 <br/>
                 Moreover, each job post is composed of three sections:
             </p>
-            <ul class="margined-li">
+            <ul>
                 <li>
                     <i>The 'Company' section</i>
                     <br/>

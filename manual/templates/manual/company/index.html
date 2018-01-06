@@ -2,15 +2,16 @@
 
 {% load staticfiles %}
 
-{% block title %}Company Manual{% endblock %}
+{% block page_body_class %}company-manual{% endblock %}
 
-{% block side_content %}
-    {% include 'company/sides/company_info.html' %}
+{% block page_title_div %}
+    <div class="pagetitle company-manual">
+        <h1>Help</h1>
+    </div>
 {% endblock %}
 
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
 
     <div class="panel panel-default primary-panel">
         <div class="panel-heading">
@@ -24,7 +25,7 @@
                 all about the platform pages and their functionalities.
             </p>
             <h5>Select which manual you would like to look into:</h5>
-            <ul class="margined-li">
+            <ul class="">
                 <li><a href="{% url 'manual:company_home' %}">Home Page Manual</a></li>
                 <li><a href="{% url 'manual:company_posts' %}">Posts Page Manual</a></li>
                 <li><a href="{% url 'manual:company_events' %}">Events Page Manual</a></li>
