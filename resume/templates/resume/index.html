@@ -7,18 +7,33 @@
     <script type="text/javascript" src="{% static 'resume/resume_util.js' %}"></script>
 {% endblock %}
 
+{% block page_body_class %}resume-index{% endblock %}
+
+{% block page_title_div %}
+
+    <div class="pagetitle resume-index">
+
+        <h1>Resumes</h1>
+
+    </div>
+
+{% endblock %}
+
 {% block content %}
-    <div>
-        <div class="w3-container w3-padding w3-cell-row w3-text-white primary-color">
-            <div class="w3-cell">
-                <div class="w3-dropdown-hover w3-text-white">
-                    <div class="primary-color">
-                        <i class="fa fa-info-circle w3-xlarge"></i>
+	<div class="newpostdiv">
+                    <button class="w3-btn btn-default new-resume">
+                            New Resume
+                        </button>
+            </div>
+    <div class="student-resumes-content">
+	<div class="w3-dropdown-hover infobutton">
+                    <div>
+                        <i class="fa fa-info-circle"></i>
                     </div>
                     <div class="w3-container">
-                        <div class="w3-dropdown-content" style="width:600px;">
+                        <div class="w3-dropdown-content">
                             <div class="w3-card">
-                                <header class="w3-container primary-color w3-text-white">
+                                <header class="w3-container">
                                     <h4>Resume information</h4>
                                 </header>
                                 <div class="w3-container">
@@ -42,7 +57,7 @@
                                         <li>Optionally use the manage button to add information to your resume</li>
                                     </ul>
                                 </div>
-                                <footer class="w3-container w3-light-grey">
+                                <footer class="w3-container">
                                     Any fictive or false information attached to your profile will result in a
                                     termination of your account.
                                 </footer>
@@ -50,74 +65,79 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="w3-cell">
-                <h4>Resume List</h4>
-            </div>
-            <div class="w3-cell w3-padding">
-                <button class="w3-btn w3-border w3-border-white new-resume">
-                    New Resume
-                </button>
-            </div>
+    <div class="panel panel-default panel-primary">
+        <div class="panel-heading resume-list">
+            <h4>Resume List</h4>
         </div>
-        {% if resumes %}
-            <table class="w3-table w3-bordered w3-white">
-                <tr class="secondary-color">
-                    <th class="resume-detail">Name</th>
-                    <th>Last Updated</th>
-                    <th>Is Active</th>
-                    <th class="resume-actions">Actions</th>
-                </tr>
-                {% for x in resumes %}
-                    <tr class="{% if not x.is_complete %}w3-pale-red{% endif %} jobin-resume">
-                        {% if x.is_complete %}
-                            <td>
-                                <a href="{% url 'resume:details' pk=x.id %}" class="name">{{ x.name }}</a>
-                                <span class="gpa w3-hide">{{ x.gpa }}</span>
-                            </td>
-                            <td>{{ x.last_updated }}</td>
-                            <td>
-                                {% if x.is_active %}
-                                    <strong><span class="is-active">Active Resume</span></strong>
-                                {% else %}
-                                    <a href="#" class="activate-resume is-active"
-                                       data-url="{% url 'resume:activate' pk=x.id %}">
-                                        Make Active Resume
-                                    </a>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div>
-                                    <a href="#" class="edit-resume" data-url="{% url 'resume:edit' pk=x.id %}">Edit</a> |
-                                    <a href="#" class="warning-open" data-id="delete-resume"
-                                       data-url="{% url 'resume:delete' pk=x.id %}" data-name="{{ x.name }}">
-                                        Delete
-                                    </a>
-                                </div>
-                            </td>
-                        {% else %}
-                            <td>{{ x.name }}</td>
-                            <td class="w3-text-red">Incomplete</td>
-                            <td>
-                                <a class="complete-resume" href="#">Complete</a>
-                            </td>
-                            <td>
-                                <div class="w3-hide">
-                                    <span class="school-url">{% url 'resume:new_school' pk=x.id %}</span>
-                                    <span class="language-url">{% url 'resume:new_language' pk=x.id %}</span>
-                                </div>
-                            </td>
-                        {% endif %}
+        <div class="panel-body">
+                {% if resumes %}
+                <table class="table">
+                    <tr>
+                        <th class="resume-detail">Name</th>
+                        <th>Last Updated</th>
+                        <th>Is Active</th>
+                        <th class="resume-actions">Actions</th>
                     </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <div class="w3-container">
-                <p>
-                    No resumes found. <a href="{% url 'resume:new' %}">Click Here</a> to add a resume.
-                </p>
-            </div>
-        {% endif %}
+                    {% for x in resumes %}
+                        <tr class="{% if not x.is_complete %}incomplete-resume{% endif %} jobin-resume">
+                            {% if x.is_complete %}
+                                <td class="tr-resume-name">
+                                    <a href="{% url 'resume:details' pk=x.id %}" class="name">{{ x.name }}</a>
+                                    <span class="gpa w3-hide">{{ x.gpa }}</span>
+                                </td>
+                                <td>{{ x.last_updated }}</td>
+                                <td>
+                                    {% if x.is_active %}
+                                        <strong><span class="is-active">Active Resume</span></strong>
+                                    {% else %}
+                                        <a href="#" class="activate-resume is-active"
+                                           data-url="{% url 'resume:activate' pk=x.id %}">
+                                            Make Active Resume
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div>
+                                        <a href="{% url 'resume:details' pk=x.id %}">Edit</a> |
+                                        <a href="#" class="warning-open" data-id="delete-resume"
+                                           data-url="{% url 'resume:delete' pk=x.id %}" data-name="{{ x.name }}">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            {% else %}
+                                <td colspan="2" class="tr-resume-name">{{ x.name }}</td>
+                                <td>
+                                    <a class="complete-resume" href="#">Complete</a>
+                                </td>
+                                <td>
+                                    <div class="w3-hide">
+                                        <span class="school-url">{% url 'resume:new_school' pk=x.id %}</span>
+                                        <span class="language-url">{% url 'resume:new_language' pk=x.id %}</span>
+                                        <span class="experience-url">{% url 'resume:new_experience' pk=x.id %}</span>
+                                        <span class="award-url">{% url 'resume:new_award' pk=x.id %}</span>
+                                        <span class="skill-url">{% url 'resume:new_skill' pk=x.id %}</span>
+                                        <span class="reference-url">{% url 'resume:new_reference' pk=x.id %}</span>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <tr class="incomplete-resume">
+                        <td colspan="2" class="tr-resume-name">French Test Resume</td>
+                        <td><a class="complete-resume" href="#">Complete</a></td>
+                        <td></td>
+                    </tr>
+                </table>
+            {% else %}
+                <div class="w3-container">
+                    <p>
+                        No resumes found. <a href="{% url 'resume:new' %}">Click Here</a> to add a resume.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
     </div>
 {% endblock %}
 
@@ -126,6 +146,10 @@
     {% include 'resume/resume_form.html' %}
     {% include 'resume/school_form.html' %}
     {% include 'resume/language_form.html' %}
+    {% include 'resume/experience_form.html' %}
+    {% include 'resume/award_form.html' %}
+    {% include 'resume/skill_form.html' %}
+    {% include 'resume/reference_form.html' %}
 {% endblock %}
 
 
@@ -137,7 +161,7 @@
     <div id="warning-delete-resume">
         <p class="message">Are you sure you want to delete <u><span class="name"></span></u> resume?</p>
         <p class="notes">
-            This will permanently delete this resume from the resume.
+            This will permanently delete this resume.
         </p>
     </div>
 {% endblock %}

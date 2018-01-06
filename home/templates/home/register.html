@@ -17,8 +17,10 @@
                         {{ error }}
                     </div>
                     <div class="form-group">
+                        <div class="hidden emails-error alert alert-danger">
+                        </div>
                         <label class="required">Email:</label>
-                        <input id="email" placeholder="{% if type == 'student' %}University Email Address{% else %}Email{% endif %}"
+                        <input id="email" placeholder="Email"
                                name="email" class="form-control" type="email"/>
                     </div>
                     <div class="form-group">
@@ -27,6 +29,8 @@
                                name="confirm_email" class="form-control" type="email"/>
                     </div>
                     <div class="form-group">
+                        <div class="hidden passwords-error alert alert-danger">
+                        </div>
                         <label class="required">Password:</label>
                         <input id="password" placeholder="Password"
                                name="password" class="form-control" type="password"/>
@@ -56,16 +60,6 @@
                     </div>
                 </form>
             </div>
-            <div class="panel-footer">
-                <p>
-                    Once you signup you will be sent an email where
-                    you can verify your account to activate it.
-                    {% if type == 'student' %}
-                        <br/>
-                        <strong>Make sure you use your school email.</strong>
-                    {% endif %}
-                </p>
-            </div>
         </div>
     </div>
 
@@ -83,15 +77,32 @@
             $('#register-form').submit(function () {
                 let email = $('#email').val();
                 let c_email = $('#confirm_email').val();
-                if (email !== c_email) {
-                    show($('.no-email-match'));
-                    return false;
+                let e = $('.emails-error');
+                if(email && c_email){
+                    if (email.toString().toLowerCase() !== c_email.toString().toLowerCase()) {
+                        e.text('Emails do not match.');
+                        show(e);
+                        return false;
+                    }
                 }
+                else{
+                    e.text('Email and Confirm Email cannot be left empty.');
+                    show(e);
+                }
+
                 let pass = $('#password').val();
                 let c_pass = $('#confirm_password').val();
-                if (pass !== c_pass) {
-                    show($('.no-pass-match'));
-                    return false;
+                let pe = $('.passwords-error');
+                if(pass && c_pass) {
+                    if (pass !== c_pass) {
+                        pe.text('Passwords do not match.');
+                        show(pe);
+                        return false;
+                    }
+                }
+                else{
+                    pe.text('Password and Confirm Password cannot be left empty.');
+                    show(pe);
                 }
                 let check = $('#tcpp-checkbox');
                 if(!(check.is(':checked') && check.prop('checked'))){

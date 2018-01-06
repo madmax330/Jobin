@@ -2,8 +2,12 @@
 
 {% block title %}Event Details{% endblock %}
 
-{% block side_content %}
-    {% include 'company/sides/company_info.html' %}
+{% block page_body_class %}company-events event-details{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-events event-details">
+        <h1>Event Details</h1>
+    </div>
 {% endblock %}
 
 {% block content %}

@@ -12,205 +12,144 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'student/css/student.css' %}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!--<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700" rel="stylesheet">-->
-    {% block styles %}{% endblock %}
-    <style>
-        body {
-            background-image: url("{% static 'home/images/pattern_max_finshed8.png' %}");
-            background-size: 120px 120px;
-        }
-
-        .close-notification:hover {
-            background-color: transparent !important;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-2.2.0.min.js" integrity="sha256-ihAoc6M/JPfrIiIeayPE9xjin4UWjsx2mjW/rtmxLM4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"
+            integrity="sha256-ihAoc6M/JPfrIiIeayPE9xjin4UWjsx2mjW/rtmxLM4=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <!--<script src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'home/scripts/bootstrap.min.js' %}"></script>-->
 </head>
-<body>
+<body class="{% block page_body_class %}{% endblock %}">
 
-<div class="w3-main w3-container w3-padding-16">
-    <div class="w3-bar jobin-nav">
-        <a href="{% url 'home:index' %}" class="w3-bar-item w3-button nav-header">
-            <img class="w3-center" src="{% static 'home/images/jobinblue.gif' %}">
-        </a>
-        <a href="{% url 'student:index' %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'home' %}active{% endif %}">Home</a>
-        <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link posts-nav {% if tab == 'posts' %}active{% endif %}">Posts</a>
-        <a href="{% url 'event:student_events' pk=0 %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'events' %}active{% endif %}">Events</a>
-        <a href="{% url 'resume:index' %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link  resumes-nav {% if tab == 'resume' %}active{% endif %}">Resumes</a>
-        <a href="{% url 'student:history' %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'history' %}active{% endif %}">History</a>
-        <a href="{% url 'student:profile' %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'profile' %}active{% endif %}">Profile</a>
-        <a href="{% url 'manual:student_index' %}"
-           class="w3-bar-item w3-button w3-hide-small w3-hide-medium nav-link {% if tab == 'manual' %}active{% endif %}">Help</a>
-        <a href="{% url 'home:logout' %}" class="w3-bar-item w3-button w3-right w3-hide-small w3-hide-medium nav-link">
-            <i class="fa fa-sign-out"></i>
-            Logout
-        </a>
-        <a href="#" class="w3-bar-item w3-button w3-right w3-hide-small w3-hide-medium nav-link start-walk walkthrough">
-            <i class="fa fa-question-circle"></i>
-        </a>
-        <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large nav-link"
-           onclick="myFunction()">&#9776;</a>
-    </div>
-
-    <div id="demo" class="w3-bar-block w3-hide w3-hide-large primary-color">
-        <a href="{% url 'student:index' %}" class="w3-bar-item w3-button w3-text-white">Home</a>
-        <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
-           class="w3-bar-item w3-button w3-text-white">Posts</a>
-        <a href="{% url 'event:student_events' pk=0 %}" class="w3-bar-item w3-button w3-text-white">Events</a>
-        <a href="{% url 'resume:index' %}" class="w3-bar-item w3-button w3-text-white">Resumes</a>
-        <a href="{% url 'student:history' %}" class="w3-bar-item w3-button w3-text-white">History</a>
-        <a href="{% url 'student:profile' %}" class="w3-bar-item w3-button w3-text-white">Profile</a>
-        <a href="{% url 'manual:student_index' %}" class="w3-bar-item w3-button w3-text-white">Help</a>
-        <a href="{% url 'home:logout' %}" class="w3-bar-item w3-button w3-text-white">
-            <i class="fa fa-sign-out"></i>
-            Logout
-        </a>
-    </div>
-
-    <script>
-        function myFunction() {
-            let x = document.getElementById("demo");
-            if (x.className.indexOf("w3-show") === -1) {
-                x.className += " w3-show";
-            } else {
-                x.className = x.className.replace(" w3-show", "");
-            }
-        }
-    </script>
-
-    <div class="content-container">
-        <div class="w3-row w3-padding-16">
-            <div id="navCol" class="w3-col s12 m12 l3 w3-container">
-                {% block sideContent %}{% endblock %}
-                <div id="notifications">
-                    {% if notifications %}
-                        <div class="w3-card-2 w3-white">
-                            <header class="w3-container primary-color">
-                                <h4 class="w3-text-white">Notifications ({{ notifications.count }})</h4>
-                            </header>
-                            <div>
-                                <table class="w3-table">
-                                    {% for x in notifications %}
-                                        <tr>
-                                            <td>
-                                                <span class="w3-button close-notification"
-                                                      data-url="{% url 'home:close_notification' pk=x.id %}">
-                                                    &times;
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="w3-padding"><span>{{ x.message }}</span></div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-
-                            </div>
-                            <button class="w3-btn warning-open w3-block w3-border w3-border-red w3-text-red"
-                                    data-id="close-notifications" data-name=""
-                                    data-url="{% url 'home:close_all_notifications' u='student' %}">
-                                Close all
-                            </button>
-                        </div>
-                    {% endif %}
-                </div>
-                {% if student %}
-                    <div class="{% if notifications %}w3-padding-16{% endif %}">
-                        <div class="w3-card-2 w3-white">
-                            <header class="w3-container secondary-color">
-                                <h4>Student Information</h4>
-                            </header>
-                            <div class="w3-container w3-padding">
-                                <h5>{{ student.firstname }} {{ student.lastname }}</h5>
-                                <span><i>{{ student.school }}</i></span><br/>
-                                <span>{{ student.program }}</span><br/>
-                                <span>{{ student.major }}</span><br/>
-                                <span><i>{{ student.phone }}</i></span><br/>
-                                <span><i>{{ student.email }}</i></span><br/>
-                                <span>{{ student.address }}, {{ student.city }},
-                                            {{ student.state }}, {{ student.zipcode }}</span>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            <div id="bodyCol" class="w3-col s12 m12 l9 w3-container">
-                <div id="messages">
-                    {% if messages %}
-                        <div>
-                            {% for x in messages %}
-                                {% if x.code == 'danger' %}
-                                    <div class="w3-container message-danger w3-padding w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                        <p>{{ x.message }}</p>
-                                    </div>
-                                {% elif x.code == 'warning' %}
-                                    <div class="w3-container w3-padding message-warning w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                        <p>{{ x.message }}</p>
-                                    </div>
-                                {% elif x.code == 'success' %}
-                                    <div class="w3-container w3-padding message-success w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                        <p>{{ x.message }}</p>
-                                    </div>
-                                {% else %}
-                                    <div class="w3-container w3-padding message-info w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                        <p>{{ x.message }}</p>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                {% block content %}
-                {% endblock %}
-                <div class="modals">
-                    {% include 'student/util/warning_modal.html' %}
-                    {% block modals %}{% endblock %}
-                </div>
-                <div class="w3-hide">
-                    <div id="warning-close-notifications">
-                        <p class="message">
-                            Are you sure you want to close all notifications?<span class="name"></span>
-                        </p>
-                        <p class="notes">
-                            This will permanently and irreversibly delete all the current notifications.
-                        </p>
-                    </div>
-                    {% block hidden_block %}{% endblock %}
-                    {% block walkthroughs %}
-                        {% include 'company/walkthrough/no_walk.html' %}
-                    {% endblock %}
-                </div>
-            </div>
+<nav class="navbar navbar-default jobin-nav">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jobin-nav">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand jobin-nav-link" href="{% url 'home:index' %}">
+                <img src="{% static 'home/images/jobinblue.gif' %}">
+            </a>
         </div>
-        <footer class="w3-container secondary-color">
-            <p>
-                This platform is brought to you by JobIn Solutions. Your use of the platform confirms that you are in
-                agreement with our <a target="_blank" href="{% url 'home:terms' %}">Terms and Conditions</a>
-                and our <a target="_blank" href="{% url 'home:policy' %}">Privacy Policy</a>.
-            </p>
-        </footer>
+        <div class="collapse navbar-collapse" id="jobin-nav">
+            <ul class="nav navbar-nav">
+                <li class="nav-item jobin-nav-link">
+                    <a href="{% url 'student:index' %}" class="{% if tab == 'home' %}active{% endif %}">
+                        <h5>Home</h5>
+                    </a>
+                </li>
+                <li class="nav-item jobin-nav-link">
+                    <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
+                       class="{% if tab == 'posts' %}active{% endif %}">
+                        <h5>Posts</h5>
+                    </a>
+                </li>
+                <li class="nav-item jobin-nav-link">
+                    <a href="{% url 'event:student_events' pk=0 %}" class="{% if tab == 'events' %}active{% endif %}">
+                        <h5>Events</h5>
+                    </a>
+                </li>
+                <li class="nav-item jobin-nav-link">
+                    <a href="{% url 'resume:index' %}" class="{% if tab == 'resume' %}active{% endif %}">
+                        <h5>Resumes</h5>
+                    </a>
+                </li>
+                <li class="nav-item jobin-nav-link">
+                    <a href="{% url 'student:history' %}" class="{% if tab == 'history' %}active{% endif %}">
+                        <h5>History</h5>
+                    </a>
+                </li>
+                <li class="nav-item jobin-nav-link">
+                    <a href="{% url 'student:profile' %}" class="{% if tab == 'profile' %}active{% endif %}">
+                        <h5>Profile</h5>
+                    </a>
+                </li>
+                <li class="nav-item jobin-nav-link">
+                    <a href="{% url 'manual:student_index' %}" class="{% if tab == 'manual' %}active{% endif %}">
+                        <h5>Help</h5>
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="jobin-nav-link">
+                    <a href="#" class="walkthrough start-walk">
+                        <span class="glyphicon glyphicon-question-sign"></span>
+                    </a>
+                </li>
+                <li class="jobin-nav-link">
+                    <a href="{% url 'home:logout' %}">
+                        <span class="glyphicon glyphicon-log-out"></span>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div id="page-name" style="display: none;">
-        {% block page_name %}
-        {% endblock %}
+</nav>
+
+<div class="page-title-div">{% block page_title_div %}{% endblock %}</div>
+
+<div class="container">
+    <div id="bodyCol" class="w3-container">
+        <div id="messages">
+            {% if messages %}
+                <div>
+                    {% for x in messages %}
+                        {% if x.code == 'danger' %}
+                            <div class="w3-container message-danger w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                                <p>{{ x.message }}</p>
+                            </div>
+                        {% elif x.code == 'warning' %}
+                            <div class="w3-container message-warning w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                                <p>{{ x.message }}</p>
+                            </div>
+                        {% elif x.code == 'success' %}
+                            <div class="w3-container message-success w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                                <p>{{ x.message }}</p>
+                            </div>
+                        {% else %}
+                            <div class="w3-container message-info w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                                <p>{{ x.message }}</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        {% block content %}{% endblock %}
+        <div class="modals">
+            {% include 'student/util/warning_modal.html' %}
+            {% block modals %}{% endblock %}
+        </div>
+        <div class="w3-hide">
+            {% block hidden_block %}{% endblock %}
+            {% block walkthroughs %}
+                {% include 'company/walkthrough/no_walk.html' %}
+            {% endblock %}
+        </div>
     </div>
+</div>
+<footer>
+    <p>
+        This platform is brought to you by JobIn Solutions. Your use of the platform confirms that you are in
+        agreement with our <a target="_blank" href="{% url 'home:terms' %}">Terms and Conditions</a>
+        and our <a target="_blank" href="{% url 'home:policy' %}">Privacy Policy</a>.
+    </p>
+</footer>
+<div id="page-name" style="display: none;">
+    {% block page_name %}
+    {% endblock %}
 </div>
 <script type="text/javascript" src="{% static 'home/scripts/browser_scripts.js' %}"></script>
 <script type="text/javascript" src="{% static 'home/scripts/user_utils.js' %}"></script>

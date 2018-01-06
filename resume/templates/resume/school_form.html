@@ -1,13 +1,13 @@
-<div id="school-modal" class="w3-modal">
-    <div class="w3-modal-content w3-animate-zoom w3-card-4">
-        <header class="w3-container primary-color">
+<div id="school-modal" class="w3-modal resume-item-modal">
+    <div class="w3-modal-content w3-animate-zoom">
+        <header class="w3-container">
             <span data-id="school-modal" class="w3-button w3-display-topright close-modal">&times;</span>
-            <h3 class="w3-text-white">School Form</h3>
+            <h3>School Form</h3>
         </header>
         <div class="w3-container">
             {% if other_schools %}
                 <div>
-                    <h4 class="secondary-color w3-padding">
+                    <h4>
                         Add schools from other resumes:
                     </h4>
                     <ul class="w3-ul">
@@ -18,14 +18,14 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <h3 class="w3-padding secondary-color">
+                <h3>
                     School Information
                 </h3>
             {% endif %}
-            <div class="w3-padding">
+            <div>
                 <div class="modal-messages"></div>
                 <div class="w3-hide first-message">
-                    <div class="w3-container w3-padding message-info">
+                    <div class="w3-container message-info">
                         Schools are how your education will be represented in your resume. To add your
                         first school record, fill out the rest of the form below. You can then choose
                         to save and continue (and add the rest later) or you can add in more schools
@@ -71,20 +71,20 @@
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    <div class="regular-buttons w3-padding">
-                        <button class="w3-btn close-modal w3-border w3-border-black" type="button" data-id="school-modal">
+                    <div class="regular-buttons">
+                        <button class="w3-btn btn-default close-modal" type="button" data-id="school-modal">
                             Cancel
                         </button>
-                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">Submit</button>
+                        <button class="w3-btn btn-success" type="submit">Submit</button>
                     </div>
-                    <div class="walk-buttons w3-hide w3-padding">
-                        <button class="w3-btn school-save-another w3-border w3-border-black" type="button">
+                    <div class="walk-buttons w3-hide">
+                        <button class="w3-btn btn-success school-save-another" type="button">
                             Save & Add Another
                         </button>
-                        <button class="w3-btn school-save-continue w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-success school-save-continue" type="button">
                             Save & Continue
                         </button>
-                        <button class="w3-btn school-next next-btn w3-hide w3-border w3-border-green w3-text-green" type="button">
+                        <button class="w3-btn btn-default school-next next-btn w3-hide" type="button">
                             Next
                         </button>
                     </div>

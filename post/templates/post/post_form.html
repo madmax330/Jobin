@@ -2,25 +2,20 @@
 
 {% block title %}Post Information Form{% endblock %}
 
-{% load staticfiles %}
+{% block page_body_class %}posts new-post{% endblock %}
 
-{% block styles %}
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% block page_title_div %}
+    <div class="pagetitle posts">
+        <h1>New Post</h1>
+    </div>
 {% endblock %}
+
+{% load staticfiles %}
 
 {% block scripts %}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
-{% endblock %}
-
-{% block side_content %}
-    {% include 'company/sides/company_info.html' %}
-    {% if errors %}
-        <div class="alert alert-danger">
-            {{ errors }}
-        </div>
-    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -33,13 +28,16 @@
                   action="">
                 {% csrf_token %}
 
-                <div class="form-group">
+                <div class="form-group has-error">
                     <label class="required" for="post_title">Title:</label>
                     {% if errors.title %}
                         <div class="alert alert-danger">
                             {{ errors.title }}
                         </div>
                     {% endif %}
+                    <div class="alert form-error">
+                            Post Title cannot be left blank.
+                        </div>
                     <input id="post_title" class="form-control" type="text" name="post_title"
                            value="{{ post.title }}">
                 </div>
@@ -70,13 +68,16 @@
                         <option value="volunteer">Volunteer</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group has-error">
                     <label for="post_wage">Wage:</label>
                     {% if errors.wage %}
                         <div class="alert alert-danger">
                             {{ errors.wage }}
                         </div>
                     {% endif %}
+                    <div class="alert form-error">
+                            Post Wage cannot be left blank.
+                        </div>
                     <input id="post_wage" class="form-control" type="text" name="post_wage"
                            value="{% if post.wage %}{{ post.wage }}{% endif %}">
                 </div>

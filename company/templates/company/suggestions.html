@@ -7,22 +7,11 @@
     <script src="{% static 'company/scripts/suggestion_util.js' %}"></script>
 {% endblock %}
 
-{% block side_content %}
-    {% include 'company/sides/company_info.html' %}
-    <div class="panel panel-default secondary-panel">
-        <div class="panel-heading">
-            <h4 class="text-center">Info</h4>
-        </div>
-        <div class="panel-body">
-            Suggestions are ways for you to let us know of some features that
-            you might want to see added to the platform, or some features that brought
-            confusion to you while using the platform.
-            <br/>
-            Your suggestions will be sent to the Jobin Team upon submission of the form.
-            <br/>
-            All your suggestions are greatly appreciated as they will hopefully help make your
-            experience better as well as our product.
-        </div>
+{% block page_body_class %}company-suggestions{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle company-suggestions">
+        <h1>Suggestions</h1>
     </div>
 {% endblock %}
 

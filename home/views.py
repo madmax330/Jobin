@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, Http404, HttpResponse
 from django.views.generic import View
 from django.db import transaction, IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .content_gen import ContentGen
 from .utils import MessageCenter
@@ -15,20 +17,22 @@ class IndexView(View):
     template_name = 'home/index_page/home.html'
 
     def get(self, request):
-        user = UserUtil(self.request.user)
-        context = {}
-        if user.is_logged_in():
-            if user.get_user_type() == 'company':
-                company = CompanyContainer(user.get_user())
-                if company.get_company():
-                    context['logged'] = 'company'
-                    context['user_name'] = company.get_company().name
-            elif user.get_user_type() == 'student':
-                student = StudentContainer(user.get_user())
-                if student.get_student():
-                    context['logged'] = 'student'
-                    context['user_name'] = student.get_student().name
-        return render(request, self.template_name, context)
+
+        return render(request, 'home/index.html')
+        # user = UserUtil(self.request.user)
+        # context = {}
+        # if user.is_logged_in():
+        #     if user.get_user_type() == 'company':
+        #         company = CompanyContainer(user.get_user())
+        #         if company.get_company():
+        #             context['logged'] = 'company'
+        #             context['user_name'] = company.get_company().name
+        #     elif user.get_user_type() == 'student':
+        #         student = StudentContainer(user.get_user())
+        #         if student.get_student():
+        #             context['logged'] = 'student'
+        #             context['user_name'] = student.get_student().name
+        # return render(request, self.template_name, context)
 
     def post(self, request):
         user = UserUtil(self.request.user)
@@ -85,7 +89,8 @@ class RegisterView(View):
             try:
                 with transaction.atomic():
                     if user.new_user(i, ut == 'student'):
-                        return render(request, 'home/utils/email/verify.html', i)
+                        user.log_user_in(request, {'email': i['email'], 'password': i['password']})
+                        return redirect('student:new')
                     else:
                         raise IntegrityError
             except IntegrityError:
@@ -154,8 +159,10 @@ def school_closed(request):
     raise Http404
 
 
-class ChangeUserInfo(View):
+class ChangeUserInfo(LoginRequiredMixin, View):
     template_name = 'home/student_change_form.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
 
     def get(self, request, ut):
         if ut == 'company':
@@ -243,19 +250,17 @@ class NewPasswordView(View):
             try:
                 with transaction.atomic():
                     if user.new_password(mail):
-                        print('all good.')
                         return render(request, 'home/index_page/home.html', {'success_msg': 'Password changed successfully.'})
                     else:
                         raise IntegrityError
             except IntegrityError:
-                print('errors: ' + str(user.get_errors()))
                 return render(request, self.template_name, {'errors': user.get_errors()})
 
         else:
-            print('invalid email')
             return render(request, self.template_name, {'errors': 'Invalid email.'})
 
 
+@login_required(login_url='/')
 def close_notification(request, pk):
 
     if request.method == 'GET':
@@ -272,6 +277,7 @@ def close_notification(request, pk):
     raise Http404
 
 
+@login_required(login_url='/')
 def close_notifications(request, u):
 
     if request.method == 'GET':

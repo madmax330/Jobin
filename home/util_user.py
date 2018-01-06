@@ -55,23 +55,13 @@ class UserUtil(BaseContainer):
     def new_user(self, info, student):
         self._form = NewUserForm(info)
         if self._form.is_valid():
-            ext = info['email'].split('@', 1)[1].lower()
-            if student:
-                if JobinBlockedEmail.objects.filter(extension=ext).count() > 0:
-                    self.add_error("The school email extension '" + ext + "' is not recognized.")
-                    return False
             self.__user = self._form.save(commit=False)
             self.__user.set_password(self._form.cleaned_data['password'])
-            self.__user.is_active = False
             self.__user.save()
 
             if student:
                 g = Group.objects.get(name='student_user')
                 g.user_set.add(self.__user)
-                if JobinSchool.objects.filter(email=ext).count() == 0:
-                    x = JobinRequestedEmail()
-                    x.extension = ext
-                    x.save()
             else:
                 g = Group.objects.get(name='company_user')
                 g.user_set.add(self.__user)
@@ -88,29 +78,11 @@ class UserUtil(BaseContainer):
     def change_user_email(self, info, student=None, company=None):
         self._form = ChangeEmailForm({'username': info['email'], 'email': info['email']}, instance=self.__user)
         if self._form.is_valid():
-            ext = info['email'].split('@', 1)[1].lower()
             if student:
-                if JobinBlockedEmail.objects.filter(extension=ext).count() > 0:
-                    self.add_error("The email extension '" + ext + "' is not recognized.")
-                    return False
-                schools = JobinSchool.objects.filter(email=ext)
-                if schools.count() == 0:
-                    x = JobinRequestedEmail()
-                    x.extension = ext
-                    x.save()
-                else:
-                    student.school = schools.first().name
-                    student.email = info['email']
-                    student.save()
                 self.__user = self._form.save(commit=False)
                 self.__user.is_active = False
                 self.__user.save()
-                activation = ActivationUtil(self.__user)
-                if activation.send_activation_email():
-                    return True
-                else:
-                    self.add_error_list(activation.get_errors())
-                    return False
+                return True
             elif company:
                 company.email = info['email']
                 company.save()

@@ -1,34 +1,40 @@
 {% extends 'student/base.html' %}
 
-{% block title %}Post Details{% endblock %}
+{% block page_body_class %}posts post-details{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle posts post-details">
+        <h1>Post Details</h1>
+    </div>
+{% endblock %}
 
 {% block content %}
     <div>
         {% if application.cover_requested and not application.cover_submitted %}
-            <div class="w3-container w3-padding message-info">
+            <div class="w3-container message-info">
                 <p>
                     A cover letter was requested for this application! Submit your cover letter using the form below.
                     Good luck!
                 </p>
             </div>
-            <div class="w3-card-8">
-                <div class="w3-padding-small secondary-color">
+            <div>
+                <div>
                     <h4>Insert your cover letter here:</h4>
                 </div>
                 {% if post.cover_instructions %}
                     <div class=" w3-container">
                         <h5>Cover letter instructions:</h5>
-                        <p class="w3-padding">
+                        <p>
                             {{ post.cover_instructions | linebreaksbr }}
                         </p>
                     </div>
                 {% endif %}
-                <form id="coverForm" class="w3-white" action="{% url 'post:submit_cover' pk=application.id %}" method="post" enctype="multipart/form-data">
+                <form id="coverForm" action="{% url 'post:submit_cover' pk=application.id %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <textarea rows="10" class="w3-input w3-border" name="cover_letter"
                               placeholder="Cover Letter Here..."></textarea>
                     <div class="w3-padding-16">
-                        <button class="w3-btn w3-border w3-border-green w3-text-green" type="submit">
+                        <button class="w3-btn btn-success" type="submit">
                             Submit Cover Letter
                         </button>
                     </div>
@@ -44,15 +50,15 @@
             </div>
         {% endif %}
         {% if application.cover_submitted %}
-            <div class="w3-container w3-padding message-success">
+            <div class="w3-container message-success">
                 <p>Your cover letter for this post was successfully submitted.</p>
             </div>
         {% endif %}
         <div>
-            <div class="w3-container primary-color w3-text-white">
+            <div class="w3-container">
                 <h4>{{ post.title }}</h4>
             </div>
-            <div class="w3-container w3-padding-16">
+            <div class="w3-container">
                 <div class="w3-container">
                     <label><u>Company</u>:</label><span> {{ post.company.name }}</span><br/>
                     <label><u>Address</u>:</label>
@@ -74,8 +80,8 @@
                     <span>{{ post.requirements | linebreaksbr }}</span><br/>
                     <label><u>Description</u>:</label><br/>
                     <span>{{ post.description | linebreaksbr }}</span><br/>
-                    <div class="w3-padding">
-                        <a href="{% url 'student:index' %}" class="w3-btn w3-border w3-border-black">Back</a>
+                    <div>
+                        <a href="{% url 'student:index' %}" class="w3-btn btn-default">Back</a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,51 @@
+{% extends 'home/admin/base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="text-center">Users: {{ users.count }}</h1>
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-3"><h3>Companies: {{ companies.count }} Active: {{ companies.count_active }}</h3></div>
+                <div class="col-sm-3"><h3>Students: {{ students.count }} Active: {{ students.count_active }}</h3></div>
+                <div class="col-sm-6">
+                    <h3 class="text-center">Requested Emails</h3>
+                    <table class="table">
+                        {% for x in users.requested_emails %}
+                            <tr>
+                                <td>{{ x.extension }}</td>
+                                <td>{{ x.date_created }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+        <h1 class="text-center">Students Data</h1>
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h3>Applications: {{ students.applications }}</h3>
+                </div>
+                <div class="col-sm-4">
+                    <h3>Saved Events: {{ students.saved_events}}</h3>
+                </div>
+                <div class="col-sm-4">
+                    <h3>Resumes: {{ students.resumes }}</h3>
+                    <h4>With file: {{ students.file_resumes }}</h4>
+                </div>
+            </div>
+        </div>
+        <h1 class="text-center">Company Data</h1>
+        <div class="well">
+            <h3>Posts: {{ companies.posts }}</h3>
+            <ul>
+                <li>Internships: {{ companies.internships }}</li>
+                <li>Volunteer: {{ companies.volunteer }}</li>
+                <li>Part-Time: {{ companies.part_time }}</li>
+                <li>Full-Time: {{ companies.full_time }}</li>
+                <li>Startup: {{ companies.startup }}</li>
+            </ul>
+            <h3>Events: {{ companies.events }}</h3>
+        </div>
+    </div>
+{%  endblock %}

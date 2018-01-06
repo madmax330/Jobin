@@ -12,7 +12,7 @@ class HomeUtil:
 
     @staticmethod
     def get_states():
-        return JobinTerritory.objects.all()
+        return JobinTerritory.objects.all().order_by('name')
 
     @staticmethod
     def get_program(name):
@@ -23,19 +23,19 @@ class HomeUtil:
 
     @staticmethod
     def get_programs():
-        return JobinProgram.objects.all()
+        return JobinProgram.objects.all().order_by('name')
 
     @staticmethod
     def get_student_programs():
-        return JobinProgram.objects.exclude(name='All Programs')
+        return JobinProgram.objects.exclude(name='All Programs').order_by('name')
 
     @staticmethod
     def get_majors():
-        return JobinMajor.objects.all()
+        return JobinMajor.objects.all().order_by('name')
 
     @staticmethod
     def get_program_majors(program):
-        majors = JobinMajor.objects.filter(program=program)
+        majors = JobinMajor.objects.filter(program=program).order_by('name')
         if majors.count() > 0:
             return list(majors)
         else:
@@ -43,7 +43,7 @@ class HomeUtil:
 
     @staticmethod
     def get_schools():
-        return list(JobinSchool.objects.all())
+        return list(JobinSchool.objects.all().order_by('name'))
 
     @staticmethod
     def open_school(email):

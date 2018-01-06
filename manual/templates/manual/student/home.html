@@ -1,9 +1,15 @@
 {% extends 'manual/student/manual_base.html' %}
 
-{% block man-title %}Home Page Manual{% endblock %}
+{% block page_body_class %}student-manual home-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-manual">
+        <h1>Home Page Manual</h1>
+    </div>
+{% endblock %}
 
 {% block howto %}
-    <ul class="margined-li">
+    <ul>
         <li>
             To send your cover letter after being notified that one was requested, click on the 'Post Title' of
             a green application in your 'Active Applications' section.
@@ -75,7 +81,7 @@
                 their status. When a cover letter was requested for an application, that application will turn
                 green in the table to help you identify it faster.
             </p>
-            <ul class="margined-li">
+            <ul>
                 <li>
                     The 'Post Title' column shows you the title of the post for that application while
                     providing a link to the details of that post.

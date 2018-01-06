@@ -1,18 +1,13 @@
 {% extends 'company/base.html' %}
 
-{% block title %}Company Profile{% endblock %}
+{% block page_body_class %}company-profile{% endblock %}
 
-{% block side_content %}
-    <div class="panel panel-default secondary-panel">
-        <div class="panel-heading">
-            <h4 class="text-center">Note</h4>
-        </div>
-        <div class="panel-body">
-            - Your profile is the company information attached to your account.<br/>
-            - Your account is the email and password to your account.
-        </div>
+{% block page_title_div %}
+    <div class="pagetitle company-profile">
+        <h1>Profile</h1>
     </div>
 {% endblock %}
+
 
 {% block content %}
     <div class="col-md-12">

@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 
 
 class Student(models.Model):
@@ -14,7 +13,7 @@ class Student(models.Model):
     state = models.CharField(max_length=50)
     zipcode = models.CharField(max_length=20)
     country = models.CharField(max_length=50)
-    school = models.CharField(max_length=100)
+    school = models.CharField(max_length=100, null=True, blank=True)
     program = models.CharField(max_length=100)
     major = models.CharField(max_length=100)
     graduate = models.BooleanField(default=False)
@@ -23,12 +22,8 @@ class Student(models.Model):
     linkedin = models.CharField(max_length=200, null=True, blank=True)
     work_eligible = models.BooleanField(default=True)
     is_new = models.BooleanField(default=True)
-
-    def get_absolute_url(self):
-        if self.is_new:
-            return reverse('resume:newresume')
-        else:
-            return reverse('student:index')
+    date_created = models.DateTimeField(auto_now_add=True)
+    verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname

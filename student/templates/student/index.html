@@ -7,6 +7,14 @@
     <script type="text/javascript" src="{% static 'student/scripts/index_script.js' %}"></script>
 {% endblock %}
 
+{% block page_body_class %}student-home-page{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-home-page">
+        <h1>Home</h1>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="w3-row">
         <div class="w3-col s12">
@@ -30,192 +38,288 @@
                 </div>
             {% endif %}
             <div>
-                <div class="primary-color w3-padding-small active-applications">
-                    <h4 class="w3-center w3-text-white">Active Applications</h4>
-                </div>
-                {% if applications %}
-                    <table class="w3-table w3-bordered w3-white">
-                        <tr>
-                            <th>Post Title</th>
-                            <th>Resume</th>
-                            <th>Status</th>
-                            <th></th>
-                        </tr>
-                        {% for x in applications %}
-                            <tr {% if x.cover_requested %}class="w3-border-green w3-pale-green"{% endif %}>
-                                <td>
-                                    <a href="{% url 'post:student_details' pk=x.id %}">{{ x.post_title }}</a>
-                                </td>
-                                <td>
-                                    <div class="w3-dropdown-hover no-back">
-                                        <a href="#">{{ x.resume.name }}</a>
-                                        <div class="w3-dropdown-content w3-bar-block w3-border">
-                                            {% for r in resumes %}
+                <div class="panel panel-default panel-primary">
+                    <div class="panel-heading active-applications">
+                        <h4 class="w3-center w3-text-white">Active Applications</h4>
+                    </div>
+                    <div class="panel-body">
+                            {% if applications %}
+                            <table class="table">
+                                <tr>
+                                    <th>Post Title</th>
+                                    <th>Resume</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                                {% for x in applications %}
+                                    <tr {% if x.cover_requested %}class="tr-cover-requested"{% endif %}>
+                                        <td class="post-title">
+                                            <a href="{% url 'post:student_details' pk=x.id %}">{{ x.post_title }}</a>
+                                        </td>
+                                        <td>
+                                            <div class="w3-dropdown-hover">
+                                                <a href="#">{{ x.resume.name }} <i class="fa fa-caret-down"></i></a>
+                                                <div class="w3-dropdown-content w3-bar-block">
+                                                    {% for r in resumes %}
+                                                        <div class="w3-bar-item">
+                                                            <a href="#" class="warning-open"
+                                                               data-id="change-resume-{{ r.id }}{{ x.id }}"
+                                                               data-name="{{ r.name }}"
+                                                               data-url="{% url 'resume:change' pk=r.id ak=x.id %}">
+                                                                {{ r.name }}
+                                                            </a>
+                                                            <div id="warning-change-resume-{{ r.id }}{{ x.id }}"
+                                                                 class="w3-hide">
+                                                                <p class="message">
+                                                                    Change resume for {{ x.post_title }} to
+                                                                    <span class="name"></span>?
+                                                                </p>
+                                                                <p class="notes">
+                                                                    This will change the resume {{ x.resume.name }}
+                                                                    with {{ r.name }}.
+                                                                    <br/>
+                                                                    <strong>Note:</strong> a notification will be sent
+                                                                    to {{ x.post.company }} to alert that you have
+                                                                    updated your resume.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+        
+                                        </td>
+                                        <td>{{ x.status }}</td>
+                                        <td>
+                                            <a href="#" class="warning-open" data-id="withdraw-application"
+                                               data-name="{{ x.post.title }}"
+                                               data-url="{% url 'post:withdraw' pk=x.id %}">
+                                                Withdraw
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="tr-cover-submitted">
+                                    <td class="post-title">
+                                        <a href="{% url 'post:student_details' pk=16 %}">Test Post Title</a>
+                                    </td>
+                                    <td>
+                                        <div class="w3-dropdown-hover">
+                                            <a href="#">French Resume <i class="fa fa-caret-down"></i></a>
+                                            <div class="w3-dropdown-content w3-bar-block w3-border">
                                                 <div class="w3-bar-item">
-                                                    <a href="#" class="warning-open" data-id="change-resume-{{ r.id }}{{ x.id }}"
-                                                       data-name="{{ r.name }}"
-                                                       data-url="{% url 'resume:change' pk=r.id ak=x.id %}">
-                                                        {{ r.name }}
+                                                    <a href="#" class="warning-open"
+                                                       data-id="change-resume-1616"
+                                                       data-name="English Resume"
+                                                       data-url="{% url 'resume:change' pk=16 ak=16 %}">
+                                                        English Resume
                                                     </a>
-                                                    <div id="warning-change-resume-{{ r.id }}{{ x.id }}" class="w3-hide">
+                                                    <div id="warning-change-resume-1616" class="w3-hide">
                                                         <p class="message">
-                                                            Change resume for {{ x.post_title }} to
+                                                            Change resume for Test Post Title to
                                                             <span class="name"></span>?
                                                         </p>
                                                         <p class="notes">
-                                                            This will change the resume {{ x.resume.name }}
-                                                            with {{ r.name }}.
+                                                            This will change the resume French Resume
+                                                            with English Resume.
                                                             <br/>
                                                             <strong>Note:</strong> a notification will be sent
-                                                            to {{ x.post.company }} to alert that you have
+                                                            to Jobin Corp. to alert that you have
                                                             updated your resume.
                                                         </p>
                                                     </div>
                                                 </div>
-                                            {% endfor %}
+                                            </div>
                                         </div>
-                                    </div>
-
-                                </td>
-                                <td>{{ x.status }}</td>
-                                <td>
-                                    <a href="#" class="warning-open" data-id="withdraw-application"
-                                       data-name="{{ x.post.title }}"
-                                       data-url="{% url 'post:withdraw' pk=x.id %}">
-                                        Withdraw
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        <tr>
-                            <td colspan="4">
-                                <span>Page: </span>
-                                {% for x in applications.paginator.page_range %}
-                                    {% if x == applications.number %}
-                                        <strong><span>{{ x }} </span></strong>
-                                    {% else %}
-                                        <a class="w3-text-black"
-                                           href="?ap={{ x }}&ep={{ events.number }}&pp={{ posts.number }}">
-                                            {{ x }}
+        
+                                    </td>
+                                    <td>Active</td>
+                                    <td>
+                                        <a href="#" class="warning-open" data-id="withdraw-application"
+                                           data-name="Test Post Title"
+                                           data-url="{% url 'post:withdraw' pk=16 %}">
+                                            Withdraw
                                         </a>
-                                    {% endif %}|
-                                {% endfor %}
-                            </td>
-                        </tr>
-                    </table>
-                {% else %}
-                    <div class="w3-container w3-padding message-info">
-                        You currently have no active applications.
-                        <a href="{% url 'post:student_posts' cat='internship' pk=0 %}">Browse the posts</a>
-                        to apply.
+                                    </td>
+                                </tr>
+                                <tr class="tr-cover-read">
+                                    <td class="post-title">
+                                        <a href="{% url 'post:student_details' pk=16 %}">Another Test Title</a>
+                                    </td>
+                                    <td>
+                                        <div class="w3-dropdown-hover">
+                                            <a href="#">French Resume <i class="fa fa-caret-down"></i></a>
+                                            <div class="w3-dropdown-content w3-bar-block w3-border">
+                                                <div class="w3-bar-item">
+                                                    <a href="#" class="warning-open"
+                                                       data-id="change-resume-1616"
+                                                       data-name="English Resume"
+                                                       data-url="{% url 'resume:change' pk=16 ak=16 %}">
+                                                        English Resume
+                                                    </a>
+                                                    <div id="warning-change-resume-1616" class="w3-hide">
+                                                        <p class="message">
+                                                            Change resume for Another Test Title to
+                                                            <span class="name"></span>?
+                                                        </p>
+                                                        <p class="notes">
+                                                            This will change the resume French Resume
+                                                            with English Resume.
+                                                            <br/>
+                                                            <strong>Note:</strong> a notification will be sent
+                                                            to Jobin Corp. to alert that you have
+                                                            updated your resume.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+        
+                                    </td>
+                                    <td>Active</td>
+                                    <td>
+                                        <a href="#" class="warning-open" data-id="withdraw-application"
+                                           data-name="Another Test Title"
+                                           data-url="{% url 'post:withdraw' pk=16 %}">
+                                            Withdraw
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <span>Page: </span>
+                                        {% for x in applications.paginator.page_range %}
+                                            {% if x == applications.number %}
+                                                <strong><span>{{ x }} </span></strong>
+                                            {% else %}
+                                                <a
+                                                   href="?ap={{ x }}&ep={{ events.number }}&pp={{ posts.number }}">
+                                                    {{ x }}
+                                                </a>
+                                            {% endif %}|
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            </table>
+                        {% else %}
+                            <div class="w3-container w3-padding message-info">
+                                You currently have no active applications.
+                                <a href="{% url 'post:student_posts' cat='internship' pk=0 %}">Browse the posts</a>
+                                to apply.
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-            </div>
-            <div class="w3-padding-16">
-                <div class="w3-padding-small primary-color saved-events">
-                    <h4 class="w3-center w3-text-white">Saved Events</h4>
                 </div>
-                {% if events %}
-                    <table class="w3-table w3-bordered w3-white">
-                        <tr>
-                            <th>Title</th>
-                            <th>Date & Time</th>
-                            <th>Address</th>
-                            <th></th>
-                        </tr>
-                        {% for x in events %}
-                            <tr {% if x.cover_requested %}class="w3-border-green w3-pale-green"{% endif %}>
-                                <td><a href="{% url 'event:student_events' pk=x.id %}">{{ x.title }}</a></td>
-                                <td>{{ x.start_date }} at {{ x.start_time }}</td>
-                                <td>{{ x.address }}, {{ x.city }}, {{ x.state }}</td>
-                                <td>
-                                    <a href="#" class="warning-open" data-id="remove-event"
-                                       data-url="{% url 'event:remove_save' pk=x.id %}"
-                                       data-name="{{ x.title }}">
-                                        Remove
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        <tr>
-                            <td colspan="4">
-                                <span>Page: </span>
-                                {% for x in events.paginator.page_range %}
-                                    {% if x == events.number %}
-                                        <strong><span>{{ x }} </span></strong>
-                                    {% else %}
-                                        <a href="?ap={{ applications.number }}&ep={{ x }}&pp={{ posts.number }}"
-                                           class="w3-text-black">{{ x }} </a>
-                                    {% endif %}|
-                                {% endfor %}
-                            </td>
-                        </tr>
-                    </table>
-                {% else %}
-                    <div class="w3-container w3-padding message-info">
-                        You currently have shown no interest in any events.
-                        <a href="{% url 'event:student_events' pk=0 %}">Browse the events</a>
-                        to see which ones interest you.
+                <div class="panel panel-default panel-primary">
+                        <div class="panel-heading saved-events">
+                            <h4>Saved Events</h4>
+                        </div>
+                        <div class="panel-body">
+                                {% if events %}
+                                <table class="table">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Date & Time</th>
+                                        <th>Address</th>
+                                        <th></th>
+                                    </tr>
+                                    {% for x in events %}
+                                        <tr>
+                                            <td><a href="{% url 'event:student_events' pk=x.id %}">{{ x.title }}</a></td>
+                                            <td>{{ x.start_date }} at {{ x.start_time }}</td>
+                                            <td>{{ x.address }}, {{ x.city }}, {{ x.state }}</td>
+                                            <td>
+                                                <a href="#" class="warning-open" data-id="remove-event"
+                                                   data-url="{% url 'event:remove_save' pk=x.id %}"
+                                                   data-name="{{ x.title }}">
+                                                    Remove
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td colspan="4">
+                                            <span>Page: </span>
+                                            {% for x in events.paginator.page_range %}
+                                                {% if x == events.number %}
+                                                    <strong><span>{{ x }} </span></strong>
+                                                {% else %}
+                                                    <a href="?ap={{ applications.number }}&ep={{ x }}&pp={{ posts.number }}">
+                                                        {{ x }} </a>
+                                                {% endif %}|
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                </table>
+                            {% else %}
+                                <div class="w3-container message-info">
+                                    You currently have shown no interest in any events.
+                                    <a href="{% url 'event:student_events' pk=0 %}">Browse the events</a>
+                                    to see which ones interest you.
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                {% endif %}
-            </div>
-            <div class="w3-padding-16">
-                <div class="w3-padding-small primary-color latest-posts">
-                    <h4 class="w3-center w3-text-white">Latest Posts</h4>
-                </div>
-                {% if posts %}
-                    <table class="w3-table w3-bordered w3-white">
-                        <tr>
-                            <th>Title</th>
-                            <th>Company</th>
-                            <th>Application Deadline</th>
-                            <th>Location</th>
-                        </tr>
-                        {% for x in posts %}
-                            <tr>
-                                <td><a href="{% url 'post:student_posts' cat=x.type pk=x.id %}">{{ x.title }}</a></td>
-                                <td>{{ x.company }}</td>
-                                <td>{{ x.deadline }}</td>
-                                <td>{{ x.company.address }}, {{ x.company.city }}, {{ x.company.state }}</td>
-                            </tr>
-                        {% endfor %}
-                        <tr>
-                            <td colspan="4">
-                                <span>Page: </span>
-                                {% for x in posts.paginator.page_range %}
-                                    {% if x == posts.number %}
-                                        <strong><span>{{ x }} </span></strong>
-                                    {% else %}
-                                        <a href="?ap={{ applications.number }}&ep={{ events.number }}&pp={{ x }}"
-                                           class="w3-text-black">{{ x }} </a>
-                                    {% endif %}|
-                                {% endfor %}
-                            </td>
-                        </tr>
-                    </table>
-                {% else %}
-                    <div class="warning-message message">
-                        There are no posts available for you right now.
+                    <div class="panel panel-default panel-primary">
+                            <div class="panel-heading latest-posts">
+                                <h4>Latest Posts</h4>
+                            </div>
+                            <div class="panel-body">
+                                    {% if posts %}
+                                    <table class="table">
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Company</th>
+                                            <th>Application Deadline</th>
+                                            <th>Location</th>
+                                        </tr>
+                                        {% for x in posts %}
+                                            <tr>
+                                                <td><a href="{% url 'post:student_posts' cat=x.type pk=x.id %}">{{ x.title }}</a></td>
+                                                <td>{{ x.company }}</td>
+                                                <td>{{ x.deadline }}</td>
+                                                <td>{{ x.company.address }}, {{ x.company.city }}, {{ x.company.state }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td colspan="4">
+                                                <span>Page: </span>
+                                                {% for x in posts.paginator.page_range %}
+                                                    {% if x == posts.number %}
+                                                        <strong><span>{{ x }} </span></strong>
+                                                    {% else %}
+                                                        <a href="?ap={{ applications.number }}&ep={{ events.number }}&pp={{ x }}">
+                                                            {{ x }} </a>
+                                                    {% endif %}|
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                {% else %}
+                                    <div class="warning-message message">
+                                        There are no posts available for you right now.
+                                    </div>
+                                {% endif %}
+                            </div>
                     </div>
-                {% endif %}
             </div>
         </div>
     </div>
     <div>
         <div id="welcome-modal" class="w3-modal">
             <div class="w3-modal-content w3-animate-zoom w3-card-4 modal-sm">
-                <header class="w3-container primary-color w3-text-white">
+                <header class="w3-container">
                     <span data-id="welcome-modal" class="w3-button w3-display-topright close-modal">&times;</span>
                     <h3>Welcome to Jobin!</h3>
                 </header>
-                <div class="w3-container w3-padding-16">
+                <div class="w3-container">
                     <p>
-                        Welcome to Jobin and thanks for signing up. To get started quickly click on the
-                        continue button for a quick tutorial on how to use the platform, then start applying
-                        for jobs!
+                        Welcome to Jobin and thanks for signing up. To get started click on the
+                        continue button for a quick tutorial on how to use the platform, then
+                        start applying for jobs!
                     </p>
                     <div>
-                        <button class="w3-btn w3-border w3-border-black close-modal start-walk" data-id="welcome-modal">
+                        <button class="w3-btn btn-default close-modal start-walk" data-id="welcome-modal">
                             Continue
                         </button>
                     </div>
@@ -247,7 +351,7 @@
             when the date for this event approaches.
         </p>
     </div>
-    <div class="new-student">{% if student.is_new %}true{% else %}false{% endif %}</div>
+    <div class="new-student">true</div>
 {% endblock %}
 
 {% block walkthroughs %}

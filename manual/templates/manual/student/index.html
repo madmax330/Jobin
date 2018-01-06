@@ -4,10 +4,16 @@
 
 {% block title %}Student Manual{% endblock %}
 
+{% block page_body_class %}student-manual{% endblock %}
+
+{% block page_title_div %}
+    <div class="pagetitle student-manual">
+        <h1>Help</h1>
+    </div>
+{% endblock %}
+
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="{% static 'manual/style.css' %}">
     <div class="w3-container">
-        <h4 style="margin:0;" class="primary-color w3-center w3-padding w3-text-white">Student Manual</h4>
         <h6>The student manual assists you in learning how to use the Jobin Platform.</h6>
         <p>
             You can look at the "FAQ" section for a quick answer to your question, look in the "How To" section
@@ -15,7 +21,7 @@
             all about the platform pages and their functionalities.
         </p>
         <h5>Select which manual you would like to look into:</h5>
-        <ul class="margined-li">
+        <ul>
             <li><a href="{% url 'manual:student_home' %}">Home Page Manual</a></li>
             <li><a href="{% url 'manual:student_posts' %}">Posts Page Manual</a></li>
             <li><a href="{% url 'manual:student_events' %}">Events Page Manual</a></li>

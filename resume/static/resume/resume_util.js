@@ -17,6 +17,10 @@ function send_walkthrough(url, form, info) {
                 close_modal('resume-modal');
                 $('#school-form').attr('action', '/resume/new/school/' + data + '/');
                 $('#language-form').attr('action', '/resume/new/language/' + data + '/');
+                $('#experience-form').attr('action', '/resume/new/experience/' + data + '/');
+                $('#award-form').attr('action', '/resume/new/award/' + data + '/');
+                $('#skill-form').attr('action', '/resume/new/skill/' + data + '/');
+                $('#reference-form').attr('action', '/resume/new/reference/' + data + '/');
                 open_modal('school-modal');
                 display_modal_message('New resume created successfully.', 'success');
             }
@@ -36,10 +40,54 @@ function send_walkthrough(url, form, info) {
                 display_modal_message('Language successfully added to resume.', 'success');
                 if (info['action'] === 'continue') {
                     close_modal('language-modal');
-                    location.reload()
+                    open_modal('experience-modal');
                 }
                 else if (info['action'] === 'another') {
                     show_next_walk_button('language-modal');
+                }
+            }
+            else if (info['caller'] === 'experience') {
+                clear_form('experience-form');
+                display_modal_message('Experience successfully added to resume.', 'success');
+                if (info['action'] === 'continue') {
+                    close_modal('experience-modal');
+                    open_modal('award-modal');
+                }
+                else if (info['action'] === 'another') {
+                    show_next_walk_button('experience-modal');
+                }
+            }
+            else if (info['caller'] === 'award') {
+                clear_form('award-form');
+                display_modal_message('Award successfully added to resume.', 'success');
+                if (info['action'] === 'continue') {
+                    close_modal('award-modal');
+                    open_modal('skill-modal');
+                }
+                else if (info['action'] === 'another') {
+                    show_next_walk_button('award-modal');
+                }
+            }
+            else if (info['caller'] === 'skill') {
+                clear_form('skill-form');
+                display_modal_message('Skill successfully added to resume.', 'success');
+                if (info['action'] === 'continue') {
+                    close_modal('skill-modal');
+                    open_modal('reference-modal');
+                }
+                else if (info['action'] === 'another') {
+                    show_next_walk_button('skill-modal');
+                }
+            }
+            else if (info['caller'] === 'reference') {
+                clear_form('reference-form');
+                display_modal_message('Reference successfully added to resume.', 'success');
+                if (info['action'] === 'continue') {
+                    close_modal('reference-modal');
+                    location.reload()
+                }
+                else if (info['action'] === 'another') {
+                    show_next_walk_button('reference-modal');
                 }
             }
         }
@@ -88,6 +136,10 @@ $(function () {
         $('#school_level').val('university');
         $('#school-form').attr('action', parent.find('.school-url').html().toString().trim());
         $('#language-form').attr('action', parent.find('.language-url').html().toString().trim());
+        $('#experience-form').attr('action', parent.find('.experience-url').html().toString().trim());
+        $('#award-form').attr('action', parent.find('.award-url').html().toString().trim());
+        $('#skill-form').attr('action', parent.find('.skill-url').html().toString().trim());
+        $('#reference-form').attr('action', parent.find('.reference-url').html().toString().trim());
         open_modal('school-modal');
     });
 
@@ -123,8 +175,7 @@ $(function () {
         if (WALKTHROUGH)
             send_walkthrough($(this).attr('action'), $(this), {caller: 'resume'});
         else {
-            send_post($(this).attr('action'), $(this));
-            close_modal('resume-modal');
+            submit_resume_info($(this).attr('action'), $(this));
         }
 
     });
@@ -138,12 +189,11 @@ $(function () {
     $('.language-next').click(function () {
         clear_form('language-form');
         close_modal('language-modal');
-        location.reload();
+        open_modal('experience-modal');
     });
 
     $('.language-save-continue').click(function () {
 
-        WALKTHROUGH = false;
         let form = $('#language-form');
         send_walkthrough(form.attr('action'), form, {caller: 'language', action: 'continue'});
 
@@ -174,9 +224,8 @@ $(function () {
     $('#language-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('language-modal');
     });
 
     /* SCHOOL FUNCTIONS */
@@ -237,9 +286,8 @@ $(function () {
     $('#school-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('school-modal');
     });
 
     $('#school_current').on('change', function() {
@@ -257,6 +305,26 @@ $(function () {
 
     $('.new-experience').click(function () {
         open_modal('experience-modal');
+    });
+
+    $('.experience-next').click(function () {
+        clear_form('experience-form');
+        close_modal('experience-modal');
+        open_modal('award-modal');
+    });
+
+    $('.experience-save-continue').click(function () {
+
+        let form = $('#experience-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'experience', action: 'continue'});
+
+    });
+
+    $('.experience-save-another').click(function () {
+
+        let form = $('#experience-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'experience', action: 'another'});
+
     });
 
     $('.edit-experience').click(function () {
@@ -293,9 +361,8 @@ $(function () {
     $('#experience-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('experience-modal');
     });
 
     $('#experience_current').on('change', function() {
@@ -313,6 +380,26 @@ $(function () {
 
     $('.new-award').click(function () {
         open_modal('award-modal');
+    });
+
+    $('.award-next').click(function () {
+        clear_form('award-form');
+        close_modal('award-modal');
+        open_modal('skill-modal');
+    });
+
+    $('.award-save-continue').click(function () {
+
+        let form = $('#award-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'award', action: 'continue'});
+
+    });
+
+    $('.award-save-another').click(function () {
+
+        let form = $('#award-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'award', action: 'another'});
+
     });
 
     $('.edit-award').click(function () {
@@ -337,15 +424,34 @@ $(function () {
     $('#award-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('award-modal');
     });
 
     /* SKILL FUNCTIONS */
 
     $('.new-skill').click(function () {
         open_modal('skill-modal');
+    });
+
+    $('.skill-next').click(function () {
+        clear_form('skill-form');
+        close_modal('skill-modal');
+        open_modal('reference-modal');
+    });
+
+    $('.skill-save-continue').click(function () {
+
+        let form = $('#skill-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'skill', action: 'continue'});
+
+    });
+
+    $('.skill-save-another').click(function () {
+
+        let form = $('#skill-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'skill', action: 'another'});
+
     });
 
     $('.edit-skill').click(function () {
@@ -366,15 +472,35 @@ $(function () {
     $('#skill-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('skill-modal');
     });
 
     /* REFERENCES FUNCTIONS */
 
     $('.new-reference').click(function() {
         open_modal('reference-modal');
+    });
+
+    $('.reference-next').click(function () {
+        clear_form('reference-form');
+        close_modal('reference-modal');
+        location.reload();
+    });
+
+    $('.reference-save-continue').click(function () {
+
+        WALKTHROUGH = false;
+        let form = $('#reference-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'reference', action: 'continue'});
+
+    });
+
+    $('.reference-save-another').click(function () {
+
+        let form = $('#reference-form');
+        send_walkthrough(form.attr('action'), form, {caller: 'reference', action: 'another'});
+
     });
 
     $('.edit-reference').click(function() {
@@ -397,12 +523,24 @@ $(function () {
     $('#reference-form').submit(function (event) {
         event.preventDefault();
 
-        send_post($(this).attr('action'), $(this));
+        submit_resume_info($(this).attr('action'), $(this));
 
-        close_modal('reference-modal');
     });
 
 });
+
+function submit_resume_info(url, form) {
+    $.post(url, form.serialize(), function(data, status){
+
+        if(status === 'success'){
+            location.reload();
+        }
+
+    })
+        .fail(function(jqXHR){
+            display_modal_message(jqXHR.responseText, 'danger');
+        });
+}
 
 function show_next_walk_button(val) {
     let btn = $('#' + val).find('.next-btn');

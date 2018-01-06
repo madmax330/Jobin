@@ -19,6 +19,7 @@
     overflow: hidden;
     max-width: 150px;
     max-height: 150px;
+    padding-top: 10px;
 }
 
 .logo-container img {
@@ -26,3 +27,7 @@
     max-height: 150px;
 }
 
+.slider-nav-btn {
+    padding: 32px 16px;
+    background-color: #255c99;
+}
