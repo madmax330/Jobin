@@ -43,6 +43,7 @@ class StudentPostContainer(BaseContainer):
                 post.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -172,6 +173,9 @@ class StudentPostContainer(BaseContainer):
         self.add_error('No applications found.')
         return []
 
+    def get_resume_applications(self, resume):
+        return list(Application.objects.filter(resume=resume))
+
     def get_old_applications(self):
         apps = Application.objects.filter(student=self.__student, status='hold', post__status='open')
         if apps.count() > 0:
@@ -199,11 +203,8 @@ class StudentPostContainer(BaseContainer):
         self.__post.save()
         return True
 
-    def submit_cover_letter(self, letter):
-        info = {
-            'cover': letter,
-            'cover_submitted': True,
-        }
+    def submit_cover_letter(self, info):
+        info['cover_submitted'] = True
         self._form = AddCoverLetterForm(info, instance=self.__application)
         if self._form.is_valid():
             self.__application = self._form.save()
@@ -236,6 +237,13 @@ class StudentPostContainer(BaseContainer):
             self.add_form_errors()
             return False
 
+    def notify_resume(self, app=None):
+        if app:
+            self.__application = app
+        if not self.__application.resume_notified:
+            self.__application.resume_notified = True
+            self.__application.save()
+
     def withdraw_application(self):
         self.__application.status = 'closed'
         self.__application.save()
@@ -258,24 +266,11 @@ class CompanyPostContainer(BaseContainer):
 
     #  DATA CREATION FUNCTIONS (SETTERS)
 
-    def new_post(self, post_info):
-        info = {
-            'company': self.__company.id,
-            'is_startup_post': self.__company.is_startup,
-            'location': self.__company.city + ' ' + self.__company.state + ' ' + self.__company.country,
-            'title': post_info['title'],
-            'wage': post_info['wage'] if not post_info['type'] == 'volunteer' else None,
-            'wage_interval': post_info['wage_interval'],
-            'openings': post_info['openings'],
-            'start_date': post_info['start_date'],
-            'end_date': post_info['end_date'],
-            'deadline': post_info['deadline'],
-            'description': post_info['description'],
-            'requirements': post_info['requirements'],
-            'programs': post_info['programs'],
-            'type': post_info['type'],
-            'cover_instructions': post_info['cover_instructions'],
-        }
+    def new_post(self, info):
+        info['company'] = self.__company.id
+        info['is_startup_post'] = self.__company.is_startup
+        if info['type'] == 'volunteer':
+            info['wage'] = None
         self._form = NewPostForm(info)
         if self._form.is_valid():
             self.__post = self._form.save()
@@ -289,21 +284,7 @@ class CompanyPostContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_post(self, post_info):
-        info = {
-            'title': post_info['title'],
-            'wage': post_info['wage'],
-            'wage_interval': post_info['wage_interval'],
-            'openings': post_info['openings'],
-            'start_date': post_info['start_date'],
-            'end_date': post_info['end_date'],
-            'deadline': post_info['deadline'],
-            'description': post_info['description'],
-            'requirements': post_info['requirements'],
-            'programs': post_info['programs'],
-            'type': post_info['type'],
-            'cover_instructions': post_info['cover_instructions'],
-        }
+    def edit_post(self, info):
         self._form = EditPostForm(info, instance=self.__post)
         if self._form.is_valid():
             self.__post = self._form.save()
@@ -334,21 +315,7 @@ class CompanyPostContainer(BaseContainer):
         else:
             return False
 
-    def recover_post(self, post_info):
-        info = {
-            'title': post_info['title'],
-            'wage': post_info['wage'],
-            'wage_interval': post_info['wage_interval'],
-            'openings': post_info['openings'],
-            'start_date': post_info['start_date'],
-            'end_date': post_info['end_date'],
-            'deadline': post_info['deadline'],
-            'description': post_info['description'],
-            'requirements': post_info['requirements'],
-            'programs': post_info['programs'],
-            'type': post_info['type'],
-            'cover_instructions': post_info['cover_instructions'],
-        }
+    def recover_post(self, info):
         self._form = EditPostForm(info, instance=self.__post)
         if self._form.is_valid():
             self.__post = self._form.save(commit=False)
@@ -368,6 +335,7 @@ class CompanyPostContainer(BaseContainer):
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -571,3 +539,7 @@ class CompanyPostContainer(BaseContainer):
             self.__post.new_apps = False
             self.__post.save()
 
+    def remove_application_resume_notified(self):
+        if self.__application.resume_notified:
+            self.__application.resume_notified = False
+            self.__application.save()

@@ -41,6 +41,7 @@ class StudentEventContainer(BaseContainer):
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -119,22 +120,8 @@ class CompanyEventContainer(BaseContainer):
 
     #  DATA CREATION FUNCTIONS (SETTERS)
 
-    def new_event(self, event_info):
-        info = {
-            'company': self.__company.id,
-            'title': event_info['title'],
-            'start_date': event_info['start_date'],
-            'start_time': event_info['start_time'],
-            'end_date': event_info['end_date'],
-            'end_time': event_info['end_time'],
-            'website': event_info['website'],
-            'address': event_info['address'],
-            'city': event_info['city'],
-            'state': event_info['state'],
-            'zipcode': event_info['zipcode'],
-            'country': event_info['country'],
-            'description': event_info['description'],
-        }
+    def new_event(self, info):
+        info['company'] = self.__company.id
         self._form = EventForm(info)
         if self._form.is_valid():
             self.__event = self._form.save()
@@ -148,22 +135,8 @@ class CompanyEventContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_event(self, event_info):
-        info = {
-            'company': self.__company.id,
-            'title': event_info['title'],
-            'start_date': event_info['start_date'],
-            'start_time': event_info['start_time'],
-            'end_date': event_info['end_date'],
-            'end_time': event_info['end_time'],
-            'website': event_info['website'],
-            'address': event_info['address'],
-            'city': event_info['city'],
-            'state': event_info['state'],
-            'zipcode': event_info['zipcode'],
-            'country': event_info['country'],
-            'description': event_info['description'],
-        }
+    def edit_event(self, info):
+        info['company'] = self.__company.id
         self._form = EventForm(info, instance=self.__event)
         if self._form.is_valid():
             self.__event = self._form.save()
@@ -186,22 +159,8 @@ class CompanyEventContainer(BaseContainer):
         else:
             return False
 
-    def recover_event(self, event_info):
-        info = {
-            'company': self.__company.id,
-            'title': event_info['title'],
-            'start_date': event_info['start_date'],
-            'start_time': event_info['start_time'],
-            'end_date': event_info['end_date'],
-            'end_time': event_info['end_time'],
-            'website': event_info['website'],
-            'address': event_info['address'],
-            'city': event_info['city'],
-            'state': event_info['state'],
-            'zipcode': event_info['zipcode'],
-            'country': event_info['country'],
-            'description': event_info['description'],
-        }
+    def recover_event(self, info):
+        info['company'] = self.__company.id
         self._form = EventForm(info, instance=self.__event)
         if self._form.is_valid():
             self.__event = self._form.save(commit=False)
@@ -213,6 +172,7 @@ class CompanyEventContainer(BaseContainer):
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 

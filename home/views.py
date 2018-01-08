@@ -17,22 +17,16 @@ class IndexView(View):
     template_name = 'home/index_page/home.html'
 
     def get(self, request):
+        user = UserUtil(self.request.user)
+        if user.is_logged_in():
+            if user.get_user_type() == 'company':
+                return redirect('company:index')
+            elif user.get_user_type() == 'student':
+                return redirect('student:index')
+            else:
+                user.log_user_out(self.request)
 
         return render(request, 'home/index.html')
-        # user = UserUtil(self.request.user)
-        # context = {}
-        # if user.is_logged_in():
-        #     if user.get_user_type() == 'company':
-        #         company = CompanyContainer(user.get_user())
-        #         if company.get_company():
-        #             context['logged'] = 'company'
-        #             context['user_name'] = company.get_company().name
-        #     elif user.get_user_type() == 'student':
-        #         student = StudentContainer(user.get_user())
-        #         if student.get_student():
-        #             context['logged'] = 'student'
-        #             context['user_name'] = student.get_student().name
-        # return render(request, self.template_name, context)
 
     def post(self, request):
         user = UserUtil(self.request.user)
@@ -48,17 +42,16 @@ class IndexView(View):
                         return redirect('home:closed')
                     return redirect('student:index')
                 else:
-                    return render(request, self.template_name, {'error': 'Invalid user type.'})
+                    return render(request, self.template_name, {'login_error': 'Invalid user type.'})
             elif t < 0:
                 return render(request, 'home/utils/email/verify.html', i)
             else:
-                return render(request, self.template_name, {'error': str(user.get_errors())})
+                return render(request, self.template_name, {'login_error': str(user.get_errors())})
         else:
-            return render(request, self.template_name, {'error': str(rq.get_errors())})
+            return render(request, self.template_name, {'login_error': str(rq.get_errors())})
 
 
 def user_logout(request):
-
     if request.method == 'GET':
         user = UserUtil(request.user)
         if user.log_user_out(request):
@@ -79,31 +72,30 @@ class RegisterView(View):
 
     def post(self, request, ut):
         user = UserUtil(self.request.user)
-        rq = RequestUtil()
-        i = rq.get_user_info(self.request)
         context = {
             'type': ut
         }
-        if i:
+        info = request.POST.copy()
 
-            try:
-                with transaction.atomic():
-                    if user.new_user(i, ut == 'student'):
-                        user.log_user_in(request, {'email': i['email'], 'password': i['password']})
+        try:
+            with transaction.atomic():
+                if user.new_user(info, ut == 'student'):
+                    user.log_user_in(request, info)
+                    if ut == 'student':
                         return redirect('student:new')
+                    elif ut == 'company':
+                        return redirect('company:new')
                     else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['error'] = str(user.get_errors())
-                return render(request, self.template_name, context)
+                        return render(request, 'home/index.html', {'register_error': 'Unknown registration type.'})
+                else:
+                    raise IntegrityError
 
-        else:
-            context['error'] = str(rq.get_errors())
+        except IntegrityError:
+            context['register_error'] = str(user.get_errors())
             return render(request, self.template_name, context)
 
 
 def verify(request):
-
     if request.method == 'GET':
         return render(request, 'home/utils/email/verify.html')
 
@@ -111,7 +103,6 @@ def verify(request):
 
 
 def activate(request, key):
-
     if request.method == 'GET':
         user = UserUtil(request.user)
 
@@ -129,7 +120,6 @@ def activate(request, key):
 
 
 def new_verification(request):
-
     if request.method == 'POST':
         user = UserUtil(request.user)
         rq = RequestUtil()
@@ -152,7 +142,6 @@ def new_verification(request):
 
 
 def school_closed(request):
-
     if request.method == 'GET':
         return render(request, 'home/school_not_open.html')
 
@@ -250,7 +239,8 @@ class NewPasswordView(View):
             try:
                 with transaction.atomic():
                     if user.new_password(mail):
-                        return render(request, 'home/index_page/home.html', {'success_msg': 'Password changed successfully.'})
+                        return render(request, 'home/index_page/home.html',
+                                      {'success_msg': 'Password changed successfully.'})
                     else:
                         raise IntegrityError
             except IntegrityError:
@@ -262,7 +252,6 @@ class NewPasswordView(View):
 
 @login_required(login_url='/')
 def close_notification(request, pk):
-
     if request.method == 'GET':
 
         try:
@@ -279,7 +268,6 @@ def close_notification(request, pk):
 
 @login_required(login_url='/')
 def close_notifications(request, u):
-
     if request.method == 'GET':
         user = None
         if u == 'company':
@@ -304,7 +292,6 @@ def close_notifications(request, u):
 
 
 def students_about(request):
-
     if request.method == 'GET':
         user = UserUtil(request.user)
         context = {}
@@ -323,7 +310,6 @@ def students_about(request):
 
 
 def company_about(request):
-
     if request.method == 'GET':
         user = UserUtil(request.user)
         context = {}
@@ -342,7 +328,6 @@ def company_about(request):
 
 
 def terms_and_conditions(request):
-
     if request.method == 'GET':
         user = UserUtil(request.user)
         context = {}
@@ -361,7 +346,6 @@ def terms_and_conditions(request):
 
 
 def privacy_policy(request):
-
     if request.method == 'GET':
         user = UserUtil(request.user)
         context = {}
@@ -380,7 +364,6 @@ def privacy_policy(request):
 
 
 def create_test_content(request, n):
-
     if request.method == 'GET':
         try:
             with transaction.atomic():
@@ -393,7 +376,6 @@ def create_test_content(request, n):
 
 
 def clear_test_content(request):
-
     if request.method == 'GET':
         try:
             with transaction.atomic():
@@ -403,7 +385,6 @@ def clear_test_content(request):
             print(str(e))
         return redirect('home:index')
     raise Http404
-
 
 #
 #

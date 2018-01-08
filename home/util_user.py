@@ -53,6 +53,9 @@ class UserUtil(BaseContainer):
     #
 
     def new_user(self, info, student):
+        if not info['password'] == info['confirm_password']:
+            self.add_error('Passwords do not match')
+            return False
         self._form = NewUserForm(info)
         if self._form.is_valid():
             self.__user = self._form.save(commit=False)

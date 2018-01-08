@@ -1,11 +1,11 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect, Http404, HttpResponse
+from django.http import JsonResponse
 from django.db import transaction, IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from home.util_home import HomeUtil
-from home.util_request import RequestUtil
 from home.utils import MessageCenter, Pagination
 
 from .util_student import StudentContainer
@@ -13,7 +13,6 @@ from .util_student import StudentContainer
 
 @login_required(login_url='/')
 def index_view(request):
-
     if request.method == 'GET':
         app_page = request.GET.get('ap', 1)
         e_page = request.GET.get('ep', 1)
@@ -54,35 +53,33 @@ class NewStudentView(LoginRequiredMixin, View):
             'states': HomeUtil.get_states(),
             'programs': HomeUtil.get_student_programs(),
             'majors': HomeUtil.get_majors(),
+            'new': True,
         }
         return render(request, self.template_name, context)
 
     def post(self, request):
         student = StudentContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_student_info(request)
         context = {
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
             'programs': HomeUtil.get_student_programs(),
             'majors': HomeUtil.get_majors(),
+            'new': True,
         }
-        if i:
+        info = request.POST.copy()
 
-            try:
-                with transaction.atomic():
-                    if student.new_student(i, request.user):
-                        m = 'Student profile created successfully.'
-                        MessageCenter.new_message('student', student.get_student(), 'success', m)
-                        return redirect('student:index')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['student'] = i
-                context['errors'] = student.get_form().errors
+        try:
+            with transaction.atomic():
+                if student.new_student(info, request.user):
+                    m = 'Student profile created successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    return redirect('student:index')
+                else:
+                    raise IntegrityError
 
-        else:
-            context['errors'] = rq.get_errors()
+        except IntegrityError:
+            context['student'] = info
+            context['errors'] = student.get_form().errors
 
         return render(request, self.template_name, context)
 
@@ -106,8 +103,6 @@ class EditStudentView(LoginRequiredMixin, View):
 
     def post(self, request):
         student = StudentContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_student_info(request)
         context = {
             'student': student.get_student(),
             'countries': HomeUtil.get_countries(),
@@ -116,28 +111,26 @@ class EditStudentView(LoginRequiredMixin, View):
             'majors': HomeUtil.get_majors(),
             'tab': 'profile',
         }
-        if i:
+        info = request.POST.copy()
 
-            try:
-                with transaction.atomic():
-                    if student.edit_student(i):
-                        m = 'Student profile edited successfully.'
-                        MessageCenter.new_message('student', student.get_student(), 'success', m)
-                        return redirect('student:index')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['errors'] = student.get_form().errors
+        try:
+            with transaction.atomic():
+                if student.edit_student(info):
+                    m = 'Student profile edited successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    return redirect('student:index')
+                else:
+                    raise IntegrityError
 
-        else:
-            context['errors'] = str(rq.get_errors())
+        except IntegrityError:
+            context['student'] = info
+            context['errors'] = student.get_form().errors
 
         return render(request, self.template_name, context)
 
 
 @login_required(login_url='/')
 def history_view(request):
-
     if request.method == 'GET':
         app_page = request.GET.get('ap', 1)
         e_page = request.GET.get('ep', 1)
@@ -162,7 +155,6 @@ def history_view(request):
 
 @login_required(login_url='/')
 def profile_view(request):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
         if student.get_student() is None:
@@ -182,7 +174,6 @@ def profile_view(request):
 
 @login_required(login_url='/')
 def student_not_new(request):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
         if student.not_new():
@@ -193,9 +184,49 @@ def student_not_new(request):
     raise Http404
 
 
+@login_required(login_url='/')
+def add_transcript(request):
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.add_transcript(request.POST, request.FILES):
+                    m = 'Transcript uploaded successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    data = {'is_valid': True}
+                    return JsonResponse(data)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            data = {'is_valid': False, 'error': str(student.get_errors())}
+            return JsonResponse(data)
+
+    raise Http404
+
+
+@login_required(login_url='/')
+def delete_transcript(request, pk):
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.delete_transcript():
+                    m = 'File resume deleted successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('resume:details', pk=pk)
+
+    raise Http404
+
 #
 #
 #   API VIEWS
 #
 #
-

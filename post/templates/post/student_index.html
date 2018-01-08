@@ -9,7 +9,6 @@
         $(function () {
             hide($('.post-loader-icon'));
             show($('.main-post-container'));
-            open_modal('apply-modal');
         });
     </script>
 {% endblock %}
@@ -143,9 +142,8 @@
                                     <h4>Post Information</h4>
                                 </div>
                                 <div class="slide-container w3-container scrollable">
-                                    <h5>{{ x.title }}</h5>
-                                    <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
-                                    <label>End Date:</label><span> {{ x.end_date }}</span><br/>
+                                    <h5 class="display-post-title">{{ x.title }}</h5>
+                                    <label>Location:</label><span> {{ x.location }}</span><br/>
                                     <label>Wage:</label>
                                     {% if x.wage and x.wage > 0 %}
                                         <span> {{ x.wage }}$/{{ x.wage_interval }}</span>
@@ -153,14 +151,25 @@
                                         <span> N/A</span>
                                     {% endif %}
                                     <br/>
-                                    <label>Number of positions:</label><span> {{ x.openings }}</span><br/>
+                                    <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
+                                    {% if x.end_date %}<label>End Date:</label><span> {{ x.end_date }}</span><br/>{% endif %}
+                                    <label>Number of positions:</label>
+                                    <span> {% if x.openings %}{{ x.openings }}{% else %}N/A{% endif %}</span><br/>
                                     <label>
                                         <strong>Application Deadline:</strong>
                                     </label><span> {{ x.deadline }}</span><br/>
-                                    <label><strong>Requirements:</strong></label><br/>
+                                    {% if x.why_us %}
+                                        <label>Why {{ x.name }}:</label><br/>
+                                        <span>{{ x.why_us | linebreaksbr }}</span><br/>
+                                    {% endif %}
+                                    <label><strong>Qualifications:</strong></label><br/>
                                     <span>{{ x.requirements | linebreaksbr }}</span><br/>
-                                    <label><strong>Description:</strong></label><br/>
+                                    <label><strong>Responsibilities:</strong></label><br/>
                                     <span>{{ x.description | linebreaksbr }}</span>
+                                    {% if x.benefits %}
+                                        <label>Benefits:</label><br/>
+                                        <span>{{ x.benefits | linebreaksbr }}</span><br/>
+                                    {% endif %}
                                     <div class="w3-hide increment-url">{% url 'post:increment' pk=x.id %}</div>
                                     <div class="w3-hide post-url">{% url 'post:student_posts' cat=category pk=x.id %}</div>
                                 </div>
@@ -206,14 +215,14 @@
                 </header>
                 <div class="w3-container w3-padding-16">
                     <p>
-                        Are you sure you want to apply to the post "Summer Intern"?
+                        Are you sure you want to apply to the post "<span class="post-warning-name"></span>"?
                     </p>
                     <div class="checkbox">
-                        <label><input type="checkbox" value=""> Don't show this message again.</label>
+                        <label><input id="apply-warning-check" type="checkbox"> Don't show this message again.</label>
                     </div>
                     <div>
-                        <button class="w3-btn btn-default">Cancel</button>
-                        <button class="w3-btn btn-success">Apply</button>
+                        <button class="w3-btn btn-default close-modal" data-id="apply-modal">Cancel</button>
+                        <button class="w3-btn btn-success" id="apply-warning">Apply</button>
                     </div>
                 </div>
             </div>

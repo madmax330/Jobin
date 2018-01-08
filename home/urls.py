@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^activate/(?P<key>.+)$', views.activate, name='activate'),
     url(r'^new-activation/$', views.new_verification, name='new_activation'),
     url(r'^not/open/$', views.school_closed, name='closed'),
-    url(r'^new/password/$', views.NewPasswordView.as_view(), name='new_password'),
+    url(r'^new/password/(?P<ut>\w+)/$', views.NewPasswordView.as_view(), name='new_password'),
 
     url(r'^change/user/info/(?P<ut>\w+)/$', views.ChangeUserInfo.as_view(), name='change_info'),
     url(r'^logout/$', views.user_logout, name='logout'),

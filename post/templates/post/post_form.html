@@ -6,7 +6,7 @@
 
 {% block page_title_div %}
     <div class="pagetitle posts">
-        <h1>New Post</h1>
+        <h1>{% if new %}New Post{% else %}Edit Post{% endif %}</h1>
     </div>
 {% endblock %}
 
@@ -24,8 +24,7 @@
             <h4>Post Information Form</h4>
         </div>
         <div class="panel-body">
-            <form id="post-form" method="post"
-                  action="">
+            <form id="post-form" method="post" action="">
                 {% csrf_token %}
 
                 <div class="form-group has-error">
@@ -38,7 +37,7 @@
                     <div class="alert form-error">
                             Post Title cannot be left blank.
                         </div>
-                    <input id="post_title" class="form-control" type="text" name="post_title"
+                    <input id="post_title" class="form-control" type="text" name="title"
                            value="{{ post.title }}">
                 </div>
                 <div class="form-group">
@@ -48,7 +47,7 @@
                             {{ errors.programs }}
                         </div>
                     {% endif %}
-                    <select id="post_programs" class="form-control program-input" name="post_programs">
+                    <select id="post_programs" class="form-control program-input" name="programs">
                         {% if post.programs %}
                             <option value="{{ post.programs }}">{{ post.programs }}</option>
                         {% endif %}
@@ -61,7 +60,7 @@
                             {{ errors.type }}
                         </div>
                     {% endif %}
-                    <select id="post_type" class="form-control" name="post_type">
+                    <select id="post_type" class="form-control" name="type">
                         <option value="internship">Internship</option>
                         <option value="full_time">Full Time</option>
                         <option value="part_time">Part Time</option>
@@ -78,28 +77,35 @@
                     <div class="alert form-error">
                             Post Wage cannot be left blank.
                         </div>
-                    <input id="post_wage" class="form-control" type="text" name="post_wage"
+                    <input id="post_wage" class="form-control" type="text" name="wage"
                            value="{% if post.wage %}{{ post.wage }}{% endif %}">
                 </div>
                 <div class="form-group">
                     <label class="radio-inline">
-                        <input type="radio" name="post_wage_interval"
+                        <input type="radio" name="wage_interval"
                                {% if post.wage_interval == 'hr' or not post %}checked="checked"{% endif %}
                                 value="hr">
                         Hourly
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="post_wage_interval"
+                        <input type="radio" name="wage_interval"
                                {% if post.wage_interval == 'mth' %}checked="checked"{% endif %}
                                 value="mth">
                         Monthly
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="post_wage_interval"
+                        <input type="radio" name="wage_interval"
                                {% if post.wage_interval == 'yr' %}checked="checked"{% endif %}
                                 value="yr">
                         Yearly
                     </label>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="post_location">Location: (street address, city, state, zip/postal code)</label>
+                    <div class="checkbox">
+                        <label><input id="post-address-checkbox" type="checkbox">Use company address</label>
+                    </div>
+                    <input id="post_location" value="{{ post.location }}" name="location">
                 </div>
                 <div class="form-group">
                     <label class="required" for="post_openings">Number of positions:</label>
@@ -108,7 +114,7 @@
                             {{ errors.openings }}
                         </div>
                     {% endif %}
-                    <input id="post_openings" class="form-control" type="number" name="post_openings"
+                    <input id="post_openings" class="form-control" type="number" name="openings"
                            value="{{ post.openings }}">
                 </div>
                 <div class="form-group">
@@ -119,7 +125,7 @@
                         </div>
                     {% endif %}
                     <input id="post_start" class="form-control date-input" data-date="{{ post.start_date }}"
-                           type="date" name="post_start" value="">
+                           type="date" name="start_start" value="">
                 </div>
                 <div class="form-group">
                     <label for="post_end">End Date:</label>
@@ -128,7 +134,7 @@
                             {{ errors.end_date }}
                         </div>
                     {% endif %}
-                    <input id="post_end" class="form-control date-input" type="date" name="post_end"
+                    <input id="post_end" class="form-control date-input" type="date" name="end_date"
                             value="" data-date="{{ post.end_date }}">
                 </div>
                 <div class="form-group">
@@ -139,27 +145,47 @@
                         </div>
                     {% endif %}
                     <input id="post_deadline" class="form-control date-input" type="date"
-                           name="post_deadline" value="" data-date="{{ post.deadline }}">
+                           name="deadline" value="" data-date="{{ post.deadline }}">
                 </div>
                 <div class="form-group">
-                    <label class="required" for="post_description">Description:</label>
+                    <label for="post_why_us">Why Us:</label>
+                    {% if errors.why_us %}
+                        <div class="alert alert-danger">
+                            {{ errors.why_us }}
+                        </div>
+                    {% endif %}
+                    <textarea id="post_why_us" name="why_us" class="form-control" rows="5"
+                              placeholder="Tell applicants why they want to work for you...">{% if post.why_us %}{{ post.why_us }}{% endif %}</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="post_description">Responsibilities:</label>
                     {% if errors.description %}
                         <div class="alert alert-danger">
                             {{ errors.description }}
                         </div>
                     {% endif %}
-                    <textarea id="post_description" name="post_description" class="form-control"
+                    <textarea id="post_description" name="description" class="form-control"
                               rows="5">{{ post.description }}</textarea>
                 </div>
                 <div class="form-group">
-                    <label class="required" for="post_requirements">Requirements:</label>
+                    <label class="required" for="post_requirements">Qualifications:</label>
                     {% if errors.requirements %}
                         <div class="alert alert-danger">
                             {{ errors.requirements }}
                         </div>
                     {% endif %}
-                    <textarea id="post_requirements" name="post_requirements" class="form-control"
+                    <textarea id="post_requirements" name="requirements" class="form-control"
                               rows="5">{{ post.requirements }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="post_benefits">Benefits:</label>
+                    {% if errors.benefits%}
+                        <div class="alert alert-danger">
+                            {{ errors.benefits}}
+                        </div>
+                    {% endif %}
+                    <textarea id="post_benefits" name="benefits" class="form-control" rows="5"
+                              placeholder="Enter position benefits here...">{% if post.benefits %}{{ post.benefits }}{% endif %}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="post_instructions">Cover letter instructions:</label>
@@ -168,8 +194,11 @@
                             {{ errors.cover_instructions }}
                         </div>
                     {% endif %}
-                    <textarea id="post_instructions" name="post_cover" class="form-control"
+                    <textarea id="post_instructions" name="cover_instructions" class="form-control"
                               rows="5">{% if post.cover_instructions %}{{ post.cover_instructions }}{% endif %}</textarea>
+                </div>
+                <div class="checkbox">
+                    <label><input id="post_transcript" name="transcript" type="checkbox">Require student transcript:</label>
                 </div>
                 <div>
                     <a href="{% url 'post:company_posts' %}" class="btn btn-default">Cancel</a>
@@ -195,6 +224,20 @@
                     $('#post_wage').val('');
                 }
             });
+
+            $('input#post-address-checkbox').change(function(){
+                if(this.checked){
+                    let address = $('.company_address').html().toString().trim();
+                    let city = $('.company_city').html().toString().trim();
+                    let state = $('.company_state').html().toString().trim();
+                    let zipcode = $('.company_zipcode').html().toString().trim();
+                    let loc = address + ', ' + city + ', ' + state + ', ' + zipcode;
+                    $('#post_location').val(loc);
+                }
+                else{
+                    $('#post_location').val('');
+                }
+            });
         });
     </script>
 {% endblock %}
@@ -202,4 +245,10 @@
 {% block hidden_block %}
     {% include 'home/utils/form_values.html' %}
     <div class="post-type">{% if post.type %}{{ post.type }}{% endif %}</div>
+    <div>
+        <span class="company_address">{{ company.address }}</span>
+        <span class="company_city">{{ company.city }}</span>
+        <span class="company_state">{{ company.state }}</span>
+        <span class="company_zipcode">{{ company.zipcode }}</span>
+    </div>
 {% endblock %}

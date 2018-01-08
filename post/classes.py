@@ -41,7 +41,7 @@ class ExtendedApplication:
         self.email = stu.email
         self.phone = stu.phone
         self.address = stu.address + ' ' + stu.city + ' ' + stu.state + ' ' + stu.zipcode
-        self.school = stu.school
+        self.school = stu.school if stu.school else 'School Not Verified'
         self.program = stu.program
         self.major = stu.major
         self.resume = resume

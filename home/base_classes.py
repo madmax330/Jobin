@@ -13,6 +13,9 @@ class BaseContainer:
     def get_errors(self):  # return list of errors
         return self.__errors
 
+    def get_form_errors(self):
+        return self.__form.errors
+
     def add_error(self, err):  # add a new error to the list
         msg = '-- ' + self._container_name + ' -- ' + err
         self.__errors.append(msg)

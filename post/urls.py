@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^save/(?P<pk>[0-9]+)/$', views.save_application, name='save'),
     url(r'^remove/save/(?P<pk>[0-9]+)/$', views.remove_application_save, name='remove_save'),
     url(r'^app/(?P<ak>[0-9]+)/pdf/$', views.ApplicantPDF.as_view(), name='app_pdf'),
+    url(r'^student/app/(?P<ak>[0-9]+)/pdf/$', views.StudentApplicantPDF.as_view(), name='student_app_pdf'),
 ]
 
 

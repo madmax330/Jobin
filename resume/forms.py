@@ -171,7 +171,7 @@ class EditSkillForm(forms.ModelForm):
 
     class Meta:
         model = Skill
-        fields = ('name', 'level',)
+        fields = ('name', 'level', 'description')
 
 
 class NewSkillLinkForm(forms.ModelForm):

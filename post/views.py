@@ -15,7 +15,6 @@ from wkhtmltopdf.views import PDFTemplateResponse
 
 @login_required(login_url='/')
 def company_index(request):
-
     if request.method == 'GET':
         post_page = request.GET.get('pp', 1)
         ex_post_page = request.GET.get('xp', 1)
@@ -54,28 +53,24 @@ class NewPostView(LoginRequiredMixin, View):
 
     def post(self, request):
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_post_info(request)
         context = {
             'programs': HomeUtil.get_programs(),
             'company': company.get_company(),
             'tab': 'posts',
+            'new': True,
         }
-        if i:
 
-            try:
-                with transaction.atomic():
-                    if company.new_post(i):
-                        return redirect('post:company_posts')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['post'] = i
-                context['errors'] = company.get_form().errors
+        try:
 
-        else:
-            context['post'] = rq.get_info()
-            context['errors'] = rq.get_errors()
+            with transaction.atomic():
+                if company.new_post(request.POST.copy()):
+                    return redirect('post:company_posts')
+                else:
+                    raise IntegrityError
+
+        except IntegrityError:
+            context['post'] = request.POST
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
@@ -97,35 +92,30 @@ class EditPostView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_post_info(request)
         context = {
             'company': company.get_company(),
             'programs': HomeUtil.get_programs(),
             'tab': 'posts',
         }
-        if i:
+        info = request.POST.copy()
+        info['id'] = pk
 
-            try:
-                with transaction.atomic():
-                    if company.edit_post(pk, i):
-                        return redirect('post:company_post', pk=pk)
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['post'] = i
-                context['errors'] = company.get_form().errors
+        try:
+            with transaction.atomic():
+                if company.edit_post(pk, info):
+                    return redirect('post:company_post', pk=pk)
+                else:
+                    raise IntegrityError
 
-        else:
-            context['post'] = rq.get_info()
-            context['errors'] = rq.get_errors()
+        except IntegrityError:
+            context['post'] = info
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
 
 @login_required(login_url='/')
 def close_post(request, pk):
-
     if request.method == 'GET':
         company = CompanyContainer(request.user)
 
@@ -135,6 +125,7 @@ def close_post(request, pk):
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
             m = str(company.get_errors())
             return HttpResponse(m, status=400)
@@ -144,7 +135,6 @@ def close_post(request, pk):
 
 @login_required(login_url='/')
 def post_detail(request, pk):
-
     if request.method == 'GET':
         company = CompanyContainer(request.user)
         msgs = MessageCenter.get_messages('company', company.get_company())
@@ -174,13 +164,11 @@ POST_CATEGORIES = {
 
 @login_required(login_url='/')
 def student_index(request, cat, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
         if student.get_student() is None:
             return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())
-        notes = MessageCenter.get_notifications('student', student.get_student())
         rq = RequestUtil()
         filters = rq.get_student_post_filter(request)
         posts = student.get_posts(cat, pk, filters)
@@ -197,7 +185,6 @@ def student_index(request, cat, pk):
             'full_time_count': student.get_post_count('full_time', filters),
             'startup_count': student.get_post_count('startup', filters),
             'messages': msgs,
-            'notifications': notes,
             'filters': filters,
             'tab': 'posts',
         }
@@ -209,7 +196,6 @@ def student_index(request, cat, pk):
 
 @login_required(login_url='/')
 def student_detail(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
         msgs = MessageCenter.get_messages('student', student.get_student())
@@ -229,7 +215,6 @@ def student_detail(request, pk):
 
 @login_required(login_url='/')
 def request_cover_letter(request, pk):
-
     if request.method == 'GET':
         company = CompanyContainer(request.user)
 
@@ -250,25 +235,18 @@ def request_cover_letter(request, pk):
 
 @login_required(login_url='/')
 def submit_cover_letter(request, pk):
-
     if request.method == 'POST':
         student = StudentContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_cover_letter(request)
-        if i:
 
-            try:
-                with transaction.atomic():
-                    if student.submit_cover_letter(pk, i):
-                        return HttpResponse('success', status=200)
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                m = str(student.get_errors())
-                return HttpResponse(m, status=400)
+        try:
+            with transaction.atomic():
+                if student.submit_cover_letter(pk, request.POST.copy()):
+                    return HttpResponse('success', status=200)
+                else:
+                    raise IntegrityError
 
-        else:
-            m = str(rq.get_errors())
+        except IntegrityError:
+            m = str(student.get_errors())
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -276,7 +254,6 @@ def submit_cover_letter(request, pk):
 
 @login_required(login_url='/')
 def apply(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -295,7 +272,6 @@ def apply(request, pk):
 
 @login_required(login_url='/')
 def post_applicants(request, pk):
-
     if request.method == 'GET' or request.method == 'POST':
         page = request.GET.get('page')
         company = CompanyContainer(request.user)
@@ -317,7 +293,8 @@ def post_applicants(request, pk):
             'applications': (apps.get_page(page) if apps else None),
             'count': (apps.count if apps else 0),
             'schools': HomeUtil.get_schools(),
-            'majors': HomeUtil.get_program_majors(program) if not post.programs == 'All Programs' else HomeUtil.get_majors(),
+            'majors': HomeUtil.get_program_majors(
+                program) if not post.programs == 'All Programs' else HomeUtil.get_majors(),
             'filters': filters if filters else None,
             'filter_schools': filters['schools'].split(',') if filters and filters['schools'] else None,
             'filter_majors': filters['majors'].split(',') if filters and filters['majors'] else None,
@@ -333,7 +310,6 @@ def post_applicants(request, pk):
 
 @login_required(login_url='/')
 def single_applicant(request, pk, ak):
-
     if request.method == 'POST':
         company = CompanyContainer(request.user)
         post = company.get_post(pk)
@@ -344,15 +320,15 @@ def single_applicant(request, pk, ak):
             MessageCenter.new_message('company', company.get_company(), 'danger', str(rq.get_errors()))
         apps = company.get_applications(pk, ak=ak, filters=filters)
         if apps and len(apps) > 0:
-            prev_app = apps[len(apps)-1]
+            prev_app = apps[len(apps) - 1]
             app = apps[0]
             next_app = apps[(1 if 1 < len(apps) else 0)]
             if not ak == '0':
                 for i in range(0, len(apps)):
                     if str(apps[i].id) == ak:
-                        prev_app = apps[i-1] if i-1 >= 0 else apps[len(apps)-1]
+                        prev_app = apps[i - 1] if i - 1 >= 0 else apps[len(apps) - 1]
                         app = apps[i]
-                        next_app = apps[i+1] if i+1 < len(apps) else apps[0]
+                        next_app = apps[i + 1] if i + 1 < len(apps) else apps[0]
             msgs = MessageCenter.get_messages('company', company.get_company())
             context = {
                 'messages': msgs,
@@ -396,34 +372,29 @@ class RecoverPostView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         company = CompanyContainer(self.request.user)
-        rq = RequestUtil()
-        i = rq.get_post_info(request)
         context = {
             'company': company.get_company(),
             'tab': 'posts',
         }
-        if i:
+        info = request.POST.copy()
+        info['id'] = pk
 
-            try:
-                with transaction.atomic():
-                    if company.recover_post(pk, i):
-                        return redirect('post:company_posts')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['post'] = i
-                context['errors'] = company.get_errors()
+        try:
+            with transaction.atomic():
+                if company.recover_post(pk, info):
+                    return redirect('post:company_posts')
+                else:
+                    raise IntegrityError
 
-        else:
-            context['post'] = rq.get_info()
-            context['errors'] = rq.get_errors()
+        except IntegrityError:
+            context['post'] = info
+            context['errors'] = company.get_errors()
 
         return render(request, self.template_name, context)
 
 
 @login_required(login_url='/')
 def withdraw_application(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -434,6 +405,7 @@ def withdraw_application(request, pk):
                     MessageCenter.new_message('student', student.get_student(), 'success', m)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
             m = str(student.get_errors())
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
@@ -445,7 +417,6 @@ def withdraw_application(request, pk):
 
 @login_required(login_url='/')
 def activate_application(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -456,6 +427,7 @@ def activate_application(request, pk):
                     MessageCenter.new_message('student', student.get_student(), 'success', m)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
             m = str(student.get_errors())
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
@@ -467,7 +439,6 @@ def activate_application(request, pk):
 
 @login_required(login_url='/')
 def discard_application(request, pk):
-
     if request.method == 'GET':
         company = CompanyContainer(request.user)
 
@@ -479,18 +450,18 @@ def discard_application(request, pk):
                     return HttpResponse(status=200)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
             m = str(company.get_errors())
             return HttpResponse(m, status=400)
 
         raise Http404
-    
+
     raise Http404
 
 
 @login_required(login_url='/')
 def save_application(request, pk):
-
     if request.method == 'GET':
         company = CompanyContainer(request.user)
 
@@ -502,6 +473,7 @@ def save_application(request, pk):
                     return HttpResponse(status=200)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
             m = str(company.get_errors())
             return HttpResponse(m, status=400)
@@ -522,6 +494,7 @@ def remove_application_save(request, pk):
                     return HttpResponse(status=200)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
             m = str(company.get_errors())
             return HttpResponse(m, status=400)
@@ -531,7 +504,6 @@ def remove_application_save(request, pk):
 
 @login_required(login_url='/')
 def increment_count(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -572,22 +544,34 @@ class ApplicantPDF(LoginRequiredMixin, View):
         # return render(request, self.template_name, context)
 
 
+class StudentResumePDF(LoginRequiredMixin, View):
+    template_name = 'post/applicant_resume_pdf.html'
+    login_url = '/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, rk):
+        student = StudentContainer(self.request.user)
+        app = student.get_pdf_resume_info(rk)
+        filename = app.name + 'Resume.pdf'
+        context = {'app': app}
+        # response = 'none'
+        response = PDFTemplateResponse(
+            request=request,
+            template=self.template_name,
+            filename=filename,
+            context=context,
+            show_content_in_browser=False,
+            cmd_options={
+                'page-size': 'A4',
+                'orientation': 'portrait',
+                'disable-smart-shrinking': True,
+            },
+        )
+        return response
+
+
 #
 #
 #   API VIEWS
 #
 #
-
-
-
-
-
-
-
-
-
-
-
-
-
-

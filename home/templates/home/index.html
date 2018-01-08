@@ -195,7 +195,7 @@
                 </div>
 
             </li>
-			
+
 			<li data-transition="slideleft">
 
                 <img src="{% static 'home/images/financialanalyst.jpg' %}" alt="City Two" class="rev-slidebg">
@@ -230,14 +230,16 @@
 
             <!-- LOGIN/REGISTER FORMS -->
             <div id="company-login" class="animated-block fadeIn hidden">
-                <span class="close-block" onclick="close_login('company')">&times;</span>
+                <span class="close-block" onclick="close_block('company-login')">&times;</span>
                 <div class="row">
                     <div class="col-sm-6">
                         <h3 class="text-center">COMPANY REGISTER</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The passwords do not match.</p>
-                            </div>
+                        <form action="{% url 'home:register' ut='company' %}" method="post">
+                            {% if register_error %}
+                                <div class="login-error">
+                                    <p>{{ register_error }}</p>
+                                </div>
+                            {% endif %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Company Name" name="name">
                             </div>
@@ -258,10 +260,12 @@
                     </div>
                     <div class="col-sm-6">
                         <h3 class="text-center">COMPANY LOGIN</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The username or password is incorrect.</p>
-                            </div>
+                        <form action="" method="post">
+                            {% if login_error %}
+                                <div class="login-error">
+                                    <p>{{ login_error }}</p>
+                                </div>
+                            {% endif %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Email" name="email">
                             </div>
@@ -271,20 +275,22 @@
                             <div>
                                 <button class="btn btn-default login-btn">LOG IN</button>
                             </div>
-							<a href="#">Forgot password?</a>
+							<a href="#" onclick="open_block('company-forgot-password')">Forgot password?</a>
                         </form>
                     </div>
                 </div>
             </div>
             <div id="student-login" class="animated-block fadeIn hidden">
-                <span class="close-block" onclick="close_login('student')">&times;</span>
+                <span class="close-block" onclick="close_block('student-login')">&times;</span>
                 <div class="row">
                     <div class="col-sm-6">
                         <h3 class="text-center">STUDENT REGISTER</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The passwords do not match.</p>
-                            </div>
+                        <form action="{% url 'home:register' ut='student' %}" method="post">
+                            {% if register_error %}
+                                <div class="login-error">
+                                    <p>{{ register_error }}</p>
+                                </div>
+                            {% endif %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Email" name="email">
                             </div>
@@ -310,10 +316,12 @@
                     </div>
                     <div class="col-sm-6">
                         <h3 class="text-center">STUDENT LOGIN</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The username or password is incorrect.</p>
-                            </div>
+                        <form action="" method="post">
+                            {% if login_error %}
+                                <div class="login-error">
+                                    <p>{{ login_error }}</p>
+                                </div>
+                            {% endif %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Email" name="email">
                             </div>
@@ -323,9 +331,45 @@
                             <div>
                                 <button class="btn btn-default login-btn">LOG IN</button>
                             </div>
-                            <a href="#">Forgot password?</a>
+                            <a href="#" onclick="open_block('student-forgot-password')">Forgot password?</a>
                         </form>
                     </div>
+                </div>
+            </div>
+            <div id="student-forgot-password" class="animated-block fadeIn hidden">
+                <span class="close-block" onclick="close_block('student-forgot-password')">&times;</span>
+                <div>
+                    <h3>Forgot your password?</h3>
+                    {% if error %}
+                        <div class="login-error">
+                            <p>{{ error }}</p>
+                        </div>
+                    {% endif %}
+                    <form action="{% url 'home:new_password' ut='student' %}" method="post">
+                        <label>Enter your email address</label>
+                        <input type="email" class="form-control" placeholder="Email" name="email">
+                        <label>Enter your date of birth</label>
+                        <input type="date" class="form-control" name="dob">
+                        <button class="btn btn-default">GET NEW PASSWORD</button>
+                    </form>
+                </div>
+            </div>
+            <div id="company-forgot-password" class="animated-block fadeIn hidden">
+                <span class="close-block" onclick="close_block('company-forgot-password')">&times;</span>
+                <div>
+                    <h3>Forgot your password?</h3>
+                    {% if error %}
+                        <div class="login-error">
+                            <p>{{ error }}</p>
+                        </div>
+                    {% endif %}
+                    <form action="{% url 'home:new_password' ut='company' %}" method="post">
+                        <label>Enter your email address</label>
+                        <input type="email" class="form-control" placeholder="Email" name="email">
+                        <label>Enter your zip/postal code</label>
+                        <input type="text" class="form-control" name="zipcode" placeholder="Zip/Postal Code">
+                        <button class="btn btn-default">GET NEW PASSWORD</button>
+                    </form>
                 </div>
             </div>
 
@@ -396,18 +440,18 @@
                 <!-- REST OF CENTER LAYER CONTENT -->
                 <div class="row center-row">
                     <div class="col-sm-6">
-                        <button class="btn btn-danger right" onclick="open_login('student')">STUDENT LOGIN/REGISTER
+                        <button class="btn btn-danger right" onclick="open_block('student-login')">STUDENT LOGIN/REGISTER
                         </button>
                     </div>
                     <div class="col-sm-6">
-                        <button class="btn btn-primary" onclick="open_login('company')">COMPANY LOGIN/REGISTER</button>
+                        <button class="btn btn-primary" onclick="open_block('company-login')">COMPANY LOGIN/REGISTER</button>
                     </div>
                 </div>
 
-                <p class="text-center">
+                <h4 class="text-center">
                     At Jobin, we bring the jobs to you! We give you access to the many jobs that are
                     posted and all you have to do is decide whether you want to apply or not.
-                </p>
+                </h4>
 
             </div>
 
@@ -688,14 +732,14 @@
 
 <script type="text/javascript">
 
-    function open_login(val) {
-        let block = $('#' + val + '-login');
+    function open_block(val) {
+        let block = $('#' + val);
         if (block.hasClass('hidden'))
             block.removeClass('hidden');
     }
 
-    function close_login(val) {
-        let block = $('#' + val + '-login');
+    function close_block(val) {
+        let block = $('#' + val);
         if (!block.hasClass('hidden'))
             block.addClass('hidden');
     }

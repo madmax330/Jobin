@@ -5,7 +5,7 @@ from home.base_classes import BaseContainer
 from home.models import JobinSchool
 
 from .models import Student
-from .forms import NewStudentForm, EditStudentForm
+from .forms import NewStudentForm, EditStudentForm, TranscriptForm
 
 from post.util_post import StudentPostContainer, CompanyPostContainer
 from resume.util_resume import ResumeContainer
@@ -32,28 +32,12 @@ class StudentContainer(BaseContainer):
 
     #  DATA CREATION FUNCTIONS (SETTERS)
 
-    def new_student(self, s_info, user):
-        info = {
-            'user': user.id,
-            'last_login': timezone.now().date(),
-            'name': s_info['firstname'] + ' ' + s_info['lastname'],
-            'firstname': s_info['firstname'],
-            'lastname': s_info['lastname'],
-            'dob': s_info['dob'],
-            'address': s_info['address'],
-            'city': s_info['city'],
-            'state': s_info['state'],
-            'zipcode': s_info['zipcode'],
-            'country': s_info['country'],
-            'school': None,
-            'program': s_info['program'],
-            'major': s_info['major'],
-            'graduate': s_info['graduate'],
-            'email': user.email,
-            'phone': s_info['phone'],
-            'linkedin': s_info['linkedin'],
-            'work_eligible': s_info['work_eligible'],
-        }
+    def new_student(self, info, user):
+        info['user'] = user.id
+        info['name'] = info['firstname'] + ' ' + info['lastname']
+        info['school'] = None
+        info['email'] = user.email
+        info['last_login'] = timezone.now().date()
         self._form = NewStudentForm(info)
         if self._form.is_valid():
             self.__student = self._form.save()
@@ -63,25 +47,8 @@ class StudentContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_student(self, s_info):
-        info = {
-            'name': s_info['firstname'] + ' ' + s_info['lastname'],
-            'firstname': s_info['firstname'],
-            'lastname': s_info['lastname'],
-            'dob': s_info['dob'],
-            'address': s_info['address'],
-            'city': s_info['city'],
-            'state': s_info['state'],
-            'zipcode': s_info['zipcode'],
-            'country': s_info['country'],
-            'program': s_info['program'],
-            'major': s_info['major'],
-            'graduate': s_info['graduate'],
-            'email': s_info['email'],
-            'phone': s_info['phone'],
-            'linkedin': s_info['linkedin'],
-            'work_eligible': s_info['work_eligible'],
-        }
+    def edit_student(self, info):
+        info['name'] = info['firstname'] + ' ' + info['lastname']
         self._form = EditStudentForm(info, instance=self.__student)
         if self._form.is_valid():
             self.__student = self._form.save()
@@ -100,6 +67,22 @@ class StudentContainer(BaseContainer):
         return self.__user
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
+
+    def add_transcript(self, info, files):
+        if self.delete_transcript():
+            self._form = TranscriptForm(info, files, instance=self.__student)
+            if self._form.is_valid():
+                self._form.save()
+                return True
+            self.add_form_errors()
+        return False
+
+    def delete_transcript(self):
+        if self.__student.transcript:
+            self.__student.transcript.delete()
+            self.__student.transcript = None
+            self.__student.save()
+        return True
 
     def not_new(self):
         self.__student.is_new = False
@@ -150,6 +133,20 @@ class StudentContainer(BaseContainer):
         else:
             self.add_form_errors(self.__post_container.get_errors())
             return None
+
+    def get_pdf_resume_info(self, rk):
+        if self.__resume_container.get_resume(rk):
+            return {
+                'name': self.__student.name,
+                'school': self.__student.school if self.__student.school else 'School Not Verified',
+                'program': self.__student.program,
+                'major': self.__student.major,
+                'email': self.__student.email,
+                'phone': self.__student.phone,
+                'address': '%s, %s, %s, %s' % (self.__student.address, self.__student.city, self.__student.state, self.__student.zipcode),
+                'resume': self.__resume_container.get_resume()
+
+            }
 
     def get_applications(self):
         return self.__post_container.get_applications()
@@ -277,6 +274,8 @@ class StudentContainer(BaseContainer):
     def new_school(self, pk, info):
         if self.__resume_container.get_resume(pk):
             if self.__resume_container.new_school(info):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -285,6 +284,8 @@ class StudentContainer(BaseContainer):
         o = self.__resume_container.get_school(ok)
         if o and self.__resume_container.get_resume(pk):
             if self.__resume_container.link_school(o):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -309,6 +310,8 @@ class StudentContainer(BaseContainer):
     def new_language(self, pk, info):
         if self.__resume_container.get_resume(pk):
             if self.__resume_container.new_language(info):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -317,6 +320,8 @@ class StudentContainer(BaseContainer):
         o = self.__resume_container.get_language(ok)
         if o and self.__resume_container.get_resume(pk):
             if self.__resume_container.link_language(o):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -341,6 +346,8 @@ class StudentContainer(BaseContainer):
     def new_experience(self, pk, info):
         if self.__resume_container.get_resume(pk):
             if self.__resume_container.new_experience(info):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -349,6 +356,8 @@ class StudentContainer(BaseContainer):
         o = self.__resume_container.get_experience(ok)
         if o and self.__resume_container.get_resume(pk):
             if self.__resume_container.link_experience(o):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -373,6 +382,8 @@ class StudentContainer(BaseContainer):
     def new_award(self, pk, info):
         if self.__resume_container.get_resume(pk):
             if self.__resume_container.new_award(info):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -381,6 +392,8 @@ class StudentContainer(BaseContainer):
         o = self.__resume_container.get_award(ok)
         if o and self.__resume_container.get_resume(pk):
             if self.__resume_container.link_award(o):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -405,6 +418,8 @@ class StudentContainer(BaseContainer):
     def new_skill(self, pk, info):
         if self.__resume_container.get_resume(pk):
             if self.__resume_container.new_skill(info):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -413,6 +428,8 @@ class StudentContainer(BaseContainer):
         o = self.__resume_container.get_skill(ok)
         if o and self.__resume_container.get_resume(pk):
             if self.__resume_container.link_skill(o):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -437,6 +454,8 @@ class StudentContainer(BaseContainer):
     def new_reference(self, pk, info):
         if self.__resume_container.get_resume(pk):
             if self.__resume_container.new_reference(info):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False
@@ -445,6 +464,8 @@ class StudentContainer(BaseContainer):
         o = self.__resume_container.get_reference(ok)
         if o and self.__resume_container.get_resume(pk):
             if self.__resume_container.link_reference(o):
+                for x in self.__post_container.get_resume_applications(self.__resume_container.get_resume()):
+                    self.__post_container.notify_resume(x)
                 return True
         self.add_error_list(self.__resume_container.get_errors())
         return False

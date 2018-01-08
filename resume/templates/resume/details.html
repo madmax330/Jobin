@@ -33,12 +33,13 @@
             <label>GPA:</label><span class="gpa"> {% if resume.gpa %}{{ resume.gpa }}{% endif %}</span><br/>
             <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
             <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
+            <a href="{% url 'post:student_app_pdf' ak=resume.id %}" class="w3-btn btn-default">Download PDF Resume</a>
             <label>Transcript:</label>
                 <a href="{{ resume.transcript.url }}" target="_blank">{{ resume.transcript.name }}</a>
                 <span class="spinner w3-hide"><i class="fa fa-spinner fa-spin"></i></span>
                 <br/>
-                <a href="{% url 'resume:delete_file' pk=resume.id %}"
-                   class="w3-btn btn-default btn-danger delete-file-resume">
+                <a href="{% url 'student:delete_transcript' pk=resume.id %}"
+                   class="w3-btn btn-default btn-danger delete-transcript">
                     Delete Transcript
                 </a>
                 <button class="w3-btn btn-default edit-resume"
@@ -50,11 +51,11 @@
                 <span> No file uploaded</span>
                 <form class="w3-hide">
                     {% csrf_token %}
-                    <input id="resumeupload" type="file" name="file_resume"
-                       data-url="{% url 'resume:add_file' pk=resume.id %}">
+                    <input id="resumeupload" type="file" name="transcript"
+                       data-url="{% url 'student:add_transcript' %}">
                 </form>
                 <div>
-                    <button class="w3-btn btn-default upload-file-resume" type="button">
+                    <button class="w3-btn btn-default upload-transcript" type="button">
                         Upload Transcript
                     </button>
                     <button class="w3-btn btn-default edit-resume"
@@ -256,6 +257,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Proficiency</th>
+                        <th>Description</th>
                         <th></th>
                     </tr>
                     {% if resume.skills %}
@@ -263,6 +265,7 @@
                             <tr class="jobin-skill">
                                 <td class="name">{{ x.name }}</td>
                                 <td class="level">{{ x.level }}</td>
+                                <td class="description">{% if x.description %}{{ x.description }}{% endif %}</td>
                                 <td>
                                     <a href="#" data-url="{% url 'resume:edit_skill' pk=x.id %}" class="edit-skill">
                                         Edit</a>

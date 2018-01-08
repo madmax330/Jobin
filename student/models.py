@@ -24,6 +24,7 @@ class Student(models.Model):
     is_new = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
+    transcripts = models.FileField(null=True, blank=True)
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname

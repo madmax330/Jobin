@@ -33,7 +33,7 @@ class EditPostForm(forms.ModelForm):
         model = Post
         exclude = (
             'company', 'schools', 'status', 'supplied_by_jobin', 'notified', 'new_apps',
-            'is_startup_post', 'views', 'location'
+            'is_startup_post', 'views'
         )
 
     def clean(self):

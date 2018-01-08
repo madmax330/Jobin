@@ -59,6 +59,18 @@ $(function () {
     });
 
     $('.apply').click(function () {
+        if(check_cookie('apply'))
+            apply($(this).data('url'), $('.viewed-post'));
+        else{
+            $('#apply-warning').data('url', $(this).data('url'));
+            $('.post-warning-name').html($('.viewed-post').find('.display-post-title').html().toString().trim());
+            open_modal('apply-modal');
+        }
+    });
+
+    $('#apply-warning').click(function () {
+        if($('#apply-warning-check').is(':checked'))
+            set_cookie('apply', 'no warning', 365);
         apply($(this).data('url'), $('.viewed-post'));
     });
 
@@ -77,6 +89,9 @@ $(function () {
 
 
 function apply(url, post) {
+
+    close_modal('apply-modal');
+    $('.post-warning-name').html('');
 
     $.get(url, function(data, status){
 

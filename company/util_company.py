@@ -29,22 +29,10 @@ class CompanyContainer(BaseContainer):
 
     #  DATA CREATION FUNCTIONS (SETTERS)
 
-    def new_company(self, c_info, user):
-        info = {
-            'user': user.id,
-            'name': c_info['name'],
-            'address': c_info['address'],
-            'city': c_info['city'],
-            'state': c_info['state'],
-            'zipcode': c_info['zipcode'],
-            'country': c_info['country'],
-            'phone': c_info['phone'],
-            'email': user.email,
-            'points': 0,
-            'website': c_info['website'],
-            'is_startup': c_info['is_startup'],
-            'industry': c_info['industry'],
-        }
+    def new_company(self, info, user):
+        info['user'] = user.id
+        info['email'] = user.email
+        info['points'] = 0
         self._form = NewCompanyForm(info)
         if self._form.is_valid():
             self.__company = self._form.save()
@@ -54,19 +42,7 @@ class CompanyContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_company(self, c_info):
-        info = {
-            'name': c_info['name'],
-            'address': c_info['address'],
-            'city': c_info['city'],
-            'state': c_info['state'],
-            'zipcode': c_info['zipcode'],
-            'country': c_info['country'],
-            'phone': c_info['phone'],
-            'website': c_info['website'],
-            'is_startup': c_info['is_startup'],
-            'industry': c_info['industry']
-        }
+    def edit_company(self, info):
         self._form = EditCompanyForm(info, instance=self.__company)
         if self._form.is_valid():
             self.__company = self._form.save()
@@ -76,18 +52,14 @@ class CompanyContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def new_suggestion(self, i_info):
-        info = {
-            'company': self.__company.id,
-            'topic': i_info['topic'],
-            'suggestion': i_info['suggestion'],
-            'importance': i_info['importance'],
-        }
+    def new_suggestion(self, info):
+        info['company'] = self.__company.id
         self._form = NewSuggestionForm(info)
         if self._form.is_valid():
             self._form.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -126,13 +98,16 @@ class CompanyContainer(BaseContainer):
             self.__company.logo.delete()
         return True
 
-    def comment_suggestion(self, pk, comment):
+    def comment_suggestion(self, pk, info):
         try:
             suggestion = Suggestion.objects.get(pk=pk)
+            if not info['comment']:
+                self.add_error('Comment cannot be left blank.')
+                return False
             if suggestion.comments:
-                suggestion.comments = suggestion.comments + '\n' + str(timezone.now().date()) + ' - ' + comment
+                suggestion.comments = suggestion.comments + '\n' + str(timezone.now().date()) + ' - ' + info['comment']
             else:
-                suggestion.comments = str(timezone.now().date()) + ' - ' + comment
+                suggestion.comments = str(timezone.now().date()) + ' - ' + info['comment']
             suggestion.save()
             return True
         except ObjectDoesNotExist:
@@ -203,7 +178,9 @@ class CompanyContainer(BaseContainer):
         return results
 
     def get_application(self, pk):
-        return self.__post_container.get_application(pk)
+        app = self.__post_container.get_application(pk)
+        self.__post_container.remove_application_resume_notified()
+        return app
 
     def get_extended_application(self, app):
         self.__post_container.app_opened(app)

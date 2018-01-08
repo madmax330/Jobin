@@ -459,9 +459,12 @@ $(function () {
 
         let name = parent.find('.name').html().toString().trim();
         let level = parent.find('.level').html().toString().trim();
+        let description = parent.find('.description').html();
 
         $('#skill_name').val(name);
         $('#skill_level').val(level.toLowerCase());
+        if (description)
+            $('#skill_description').val(description.toString().trim());
 
         $('#skill-form').attr('action', $(this).data('url'));
 
