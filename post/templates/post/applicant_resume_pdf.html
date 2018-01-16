@@ -26,9 +26,9 @@
 <body>
     <div class="center">
         <h4>{{ app.name }}</h4>
-        <h5>{{ app.school }}, {{ app.program }}, {{ app.major }}</h5>
+        <h5>{% if app.school %}{{ app.school }}{% else %}School Not Verified{% endif %}, {{ app.program }}, {{ app.major }}</h5>
         <h5>{{ app.email }}</h5>
-        <h5>{{ app.phone }}</h5>
+        {% if app.phone %}<h5>{{ app.phone }}</h5>{% endif %}
         <h5>{{ app.address }}</h5>
     </div>
     <hr/>

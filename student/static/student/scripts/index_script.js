@@ -14,6 +14,7 @@ $(function(){
             .fail(function(jqXHR){
                 display_message(jqXHR.responseText, 'danger');
             });
+        open_modal('welcome-modal');
     }
 });
 

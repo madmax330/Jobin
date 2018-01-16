@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Activation{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.min.css' %}"/>
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body{
+            background-color: #f4f4f4;
+            font-family: 'Helvetica', sans-serif;
+        }
+        .content-div{
+            position: absolute;
+            min-width: 500px;
+            min-height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 16px;
+            background-color: #FFFFFF;
+        }
+        .jobin-image{
+            position:absolute;
+            top: 0;
+            max-height: 200px;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+    </style>
+    {% block style %}{% endblock %}
+</head>
+<body>
+    <div class="jobin-image">
+        <img src="{% static 'home/images/jobinbluesmall.gif' %}">
+    </div>
+    <div class="content-div">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

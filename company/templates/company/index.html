@@ -45,20 +45,6 @@
                             <td><a href="{% url 'post:applicants' pk=x.id%}">Applicants ({{ x.app_count }})</a></td>
                         </tr>
                     {% endfor %}
-                    <tr class="notified">
-                        <td class="post-title">Notified Post</td>
-                        <td>3</td>
-                        <td>23/06/2012</td>
-                        <td>23/06/2012</td>
-                        <td><a href="#">Applicants (25)</a></td>
-                    </tr>
-                    <tr class="new-applications">
-                        <td class="post-title">New Apps Post</td>
-                        <td>3</td>
-                        <td>23/06/2012</td>
-                        <td>23/06/2012</td>
-                        <td><a href="#">Applicants (10)</a></td>
-                    </tr>
                     <tr>
                         <td colspan="5">
                             <span>Page: </span>
@@ -157,7 +143,7 @@
 {% endblock %}
 
 {% block hidden_block %}
-    <div class="new-company">true</div>
+    <div class="new-company">{% if company.is_new %}true{% else %}false{% endif %}</div>
 {% endblock %}
 
 

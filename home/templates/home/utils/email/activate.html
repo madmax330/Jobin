@@ -1,29 +1,31 @@
-{% extends 'home/base.html' %}
+{% extends 'home/utils/email/base.html' %}
 
 {% block title %}{% if errors %}Activation{% else %}Activation Successful{% endif %}{% endblock %}
 
 {% block content %}
     {% if errors %}
-        <div style="padding:128px" class="text-center">
-            <h3>
+        <div>
+            <h2 class="text-center">
                 Problem activating your account.
-            </h3>
+            </h2>
+            <h3>To get a new activation link:</h3>
             <p>
-                <strong>
-                    To get a new activation link go to the login screen login in with
-                    your username and password.
-                </strong>
+                1) Go back to the home page<br/><br/>
+                2) Enter your username and password<br/><br/>
+                3) Click on the login button<br/><br/>
+                4) On the screen that appears click on the 'Click Here' button<br/><br/>
+                5) Use the new activation link in your email to verify your account.<br/><br/>
             </p>
-            <div class="text-center alert alert-danger">
+            <div class="alert alert-danger">
                 {{ errors }}
             </div>
         </div>
     {% else %}
-        <div style="padding:128px" class="text-center">
-            <h3>
-                Account activation successful, you can now login with your username and password and start
-                using Jobin!
-            </h3>
+        <div>
+            <h1 class="text-center">
+                Account activation successful!
+            </h1>
+            <p class="text-center">You can now login with your username and password and start using Jobin!</p>
             <script>
                 $(function(){
                     to_home_page_from_activation();

@@ -27,17 +27,110 @@
                 <label>First Name:</label><span> {{ student.firstname }}</span><br/>
                 <label>Last Name:</label><span> {{ student.lastname }}</span><br/>
                 <label>Date of Birth:</label><span> {{ student.dob }}</span><br/>
-                <label>School:</label><span>{{ student.school }}</span><br/>
+                <label>School:</label><span>{% if student.school %}{{ student.school }}{% else %}Not Verified{% endif %}</span><br/>
                 <label>Program:</label><span>{{ student.program }}</span><br/>
-                <label>Phone:</label><span>{{ student.phone }}</span><br/>
+                <label>Phone:</label><span>{% if student.phone %}{{ student.phone }}{% else %}N/A{% endif %}</span><br/>
                 <label>Email:</label><span>{{ student.email }}</span><br/>
                 <label>Address:</label><span>{{ student.address }}, {{ student.city }}, {{ student.state }}, {{ student.zipcode }}</span>
             </div>
             <div class="w3-container">
                 <a href="{% url 'student:edit' %}" class="w3-btn btn-default">Edit Profile</a>
-                <a href="{% url 'home:change_info' ut='student'%}" class="w3-btn btn-default">Edit Account</a>
+                <a href="{% url 'home:change_info' ut='student' %}" class="w3-btn btn-default">Edit Account</a>
             </div>
+            <header class="w3-container user-info-header">
+                <h3>Verify Your School</h3>
+            </header>
+            {% if student.school_email %}
+                <div>
+                    {% if  student.verified %}
+                        <h4>Your school was verified!</h4>
+                    {% else %}
+                        <h4>You still need to verify your school!</h4>
+                        <p>
+                            You can verify your school by clicking on the activation link that was sent to the school
+                            email you provided.<br/>
+                            - If you didn't get an email or your activation link expired click on the button below to
+                            have a new one emailed to you.
+                        </p>
+                    {% endif %}
+                    <div>
+                        <label>School:</label><span> {{ student.school }}</span> <br/>
+                        <label>School email address:</label><span> {{ student.school_email }}</span>
+                    </div>
+                    <button data-url="{% url 'student:change_school' %}" class="w3-btn btn-default warning-open"
+                            data-id="change-school" data-name="{{ student.school }}">
+                        CHANGE MY SCHOOL
+                    </button>
+                    {% if not student.verified %}
+                        <a href="{% url 'student:request_new_school_verification' %}" class="w3-btn btn-default">
+                            Get new activation link
+                        </a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="w3-container">
+                    <form method="post" action="{% url 'student:request_school_verification' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="verify_schools">Select your school below:</label>
+                            <select id="verify_schools" name="school" class="w3-input w3-border">
+                                {% for x in schools %}
+                                    <option value="{{ x.name }}">{{ x.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="verify_email">Enter your school email address:</label>
+                            <input type="email" name="email" id="verify_email" class="w3-input w3-border">
+                        </div>
+                        <button class="w3-btn btn-success">VERIFY</button>
+                    </form>
+                    <hr/>
+                    <h4 style="text-decoration: underline;">If your school is not in the list:</h4>
+                    {% if student.school_requested %}
+                        <div>
+                            <p>* You sent a new school request for {{ student.school_requested }}.</p>
+                            <a href="{% url 'student:change_school' %}" class="w3-btn btn-default">
+                                Change my school
+                            </a>
+                        </div>
+                    {% else %}
+                        <form method="post" action="{% url 'student:request_new_school' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="school_request">Enter the full name of your school:</label>
+                                <input type="text" name="name" id="school_request" class="w3-input w3-border">
+                            </div>
+                            <div class="form-group">
+                                <label for="verify_schools">Select the country your school is in:</label>
+                                <select id="verify_schools" name="country" class="w3-input w3-border">
+                                    {% for x in countries %}
+                                        <option value="{{ x }}">{{ x }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <p>
+                                * This will send a request to the Jobin Team, once we integrate your school
+                                we will inform you and send a validation link to the provided email.
+                            </p>
+                            <button class="w3-btn btn-default">SEND REQUEST</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
+    </div>
+{% endblock %}
+
+{% block hidden_block %}
+    <div class="w3-hide" id="warning-change-school">
+        <p class="message">
+            Are you sure you want to change your school from <span class="name"></span>?
+        </p>
+        <p class="notes">
+            This will remove the school verification until you verify your new school using your new
+            school email address.
+        </p>
     </div>
 {% endblock %}
 

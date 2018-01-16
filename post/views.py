@@ -552,7 +552,7 @@ class StudentResumePDF(LoginRequiredMixin, View):
     def get(self, request, rk):
         student = StudentContainer(self.request.user)
         app = student.get_pdf_resume_info(rk)
-        filename = app.name + 'Resume.pdf'
+        filename = app['name'] + 'Resume.pdf'
         context = {'app': app}
         # response = 'none'
         response = PDFTemplateResponse(

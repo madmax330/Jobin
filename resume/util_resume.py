@@ -31,7 +31,7 @@ class ResumeContainer(BaseContainer):
     def new_resume(self, info):
         info['student'] = self.__student.id
         info['is_active'] = False
-        info['last_update'] = timezone.now()
+        info['last_updated'] = timezone.now()
         self._form = ResumeForm(info)
         if self._form.is_valid():
             new_resume = self._form.save()

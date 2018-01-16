@@ -1,31 +1,38 @@
-{% extends 'home/base.html' %}
+{% extends 'home/utils/email/base.html' %}
 
 {% block title %}Registration successful{% endblock %}
 
 {% block content %}
-    <div style="padding:128px" class="text-center">
-        <h3>
-            Your registration was successful, check your email to find the activation link for your account
-            so you can get started using Jobin right away!
-        </h3>
-        {% if errors %}
-            <div class="alert alert-danger">
-                {{ errors }}
-            </div>
-        {% endif %}
-        {% if msg %}
-            <div class="alert alert-info">
-                {{ msg }}
-            </div>
-        {% endif %}
-        <form action="{% url 'home:new_activation' %}" method="post">
-            {% csrf_token %}
-            <p>
-                If you didn't get an activation key <button class="btn btn-default"><strong>Click Here</strong></button> to have a new one
-                emailed to you.
+    <div>
+        {% if new %}
+            <h1 class="text-center">Your registration was successful!</h1>
+            <p class="text-center">
+                Check your email and click on the activation link to get started using Jobin!
             </p>
-            <input type="hidden" name="email" value="{{ email }}">
-            <input type="hidden" name="password" value="pass">
-        </form>
+        {% else %}
+            {% if errors %}
+                <div class="alert alert-danger">
+                    {{ errors }}
+                </div>
+            {% endif %}
+            {% if msg %}
+                <div class="alert alert-info">
+                    {{ msg }}
+                </div>
+            {% endif %}
+            <form action="{% url 'home:new_activation' %}" method="post">
+                {% csrf_token %}
+                <h2>Did You:</h2>
+                <p>
+                    <strong>- Not get and activation email?</strong><br/><br/>
+                    <strong>- Delete your activation email?</strong><br/><br/>
+                    <strong>- Activation link expire?</strong><br/><br/>
+                    <button class="btn btn-default"><strong>Click Here</strong></button><br/><br/>
+                    <i>You will have a new activation email sent to you so you can verify your account!</i>
+                </p>
+                <input type="hidden" name="email" value="{{ email }}">
+                <input type="hidden" name="password" value="pass">
+            </form>
+        {% endif %}
     </div>
 {% endblock %}

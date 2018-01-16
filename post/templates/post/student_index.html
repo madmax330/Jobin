@@ -16,12 +16,11 @@
 {% block content %}
     {% if not student.verified %}
         <div>
-            <div class="w3-container message-warning w3-display-container hidden">
+            <div class="w3-container message-warning w3-display-container">
                 <p>
-                    You have not yet verified your account. <a href="#">Click Here</a> to verify your account now.
+                    You have not yet verified your school. <a href="{% url 'student:profile' %}">Click Here</a> to verify your account now.
                     It is important to verify your account to increase your credibility as an applicant and let
-                    recruiters
-                    know what school you attend.
+                    recruiters know what school you attend.
                 </p>
             </div>
         </div>
@@ -44,31 +43,31 @@
         <div class="w3-cell-row job-navbar">
             <div class="w3-cell volunteer-cell">
                 <a href="{% url 'post:student_posts' cat='volunteer' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'volunteer' %}active{% endif %}">
                     ({{ volunteer_count }}) Volunteer
                 </a>
             </div>
             <div class="w3-cell internship-cell">
                 <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'internship' %}active{% endif %}">
                     ({{ internship_count }}) Internships
                 </a>
             </div>
             <div class="w3-cell part-time-cell">
                 <a href="{% url 'post:student_posts' cat='part_time' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'part_time' %}active{% endif %}">
                     ({{ part_time_count }}) Part-Time
                 </a>
             </div>
             <div class="w3-cell start-up-cell">
                 <a href="{% url 'post:student_posts' cat='startup' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'startup' %}active{% endif %}">
                     ({{ startup_count }}) Start Up
                 </a>
             </div>
             <div class="w3-cell full-time-cell">
                 <a href="{% url 'post:student_posts' cat='full_time' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'full_time' %}active{% endif %}">
                     ({{ full_time_count }}) Full Time
                 </a>
             </div>
@@ -163,9 +162,9 @@
                                         <span>{{ x.why_us | linebreaksbr }}</span><br/>
                                     {% endif %}
                                     <label><strong>Qualifications:</strong></label><br/>
-                                    <span>{{ x.requirements | linebreaksbr }}</span><br/>
+                                    <span>{{ x.qualifications | linebreaksbr }}</span><br/>
                                     <label><strong>Responsibilities:</strong></label><br/>
-                                    <span>{{ x.description | linebreaksbr }}</span>
+                                    <span>{{ x.responsibilities | linebreaksbr }}</span><br/>
                                     {% if x.benefits %}
                                         <label>Benefits:</label><br/>
                                         <span>{{ x.benefits | linebreaksbr }}</span><br/>

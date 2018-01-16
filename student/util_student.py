@@ -2,7 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from home.base_classes import BaseContainer
 
-from home.models import JobinSchool
+from home.models import JobinRequestedSchool
+from home.forms import JobinRequestedSchoolForm
 
 from .models import Student
 from .forms import NewStudentForm, EditStudentForm, TranscriptForm
@@ -84,6 +85,47 @@ class StudentContainer(BaseContainer):
             self.__student.save()
         return True
 
+    def request_school_verification(self, info):
+        self.__student.school_email = info['email']
+        self.__student.school = info['school']
+        self.__student.save()
+        return True
+
+    def request_new_school(self, info):
+        if not (info['name'] and info['country']):
+            self.add_error('School name and country must be specified.')
+            return False
+        info['name'] = info['name'].lower()
+        requests = JobinRequestedSchool.objects.filter(name=info['name'])
+        if requests.count():
+            school = requests.first()
+            school.count = school.count + 1
+            school.save()
+            return True
+        else:
+            info['count'] = 1
+            self._form = JobinRequestedSchoolForm(info)
+            if self._form.is_valid():
+                self._form.save()
+                self.__student.school_requested = info['name'].lower()
+                self.__student.save()
+                return True
+            else:
+                self.add_form_errors()
+                return False
+
+    def school_verified(self):
+        self.__student.verified = True
+        self.__student.save()
+        return True
+
+    def change_school(self):
+        self.__student.verified = False
+        self.__student.school_requested = None
+        self.__student.school_email = ''
+        self.__student.save()
+        return True
+
     def not_new(self):
         self.__student.is_new = False
         self.__student.save()
@@ -138,14 +180,13 @@ class StudentContainer(BaseContainer):
         if self.__resume_container.get_resume(rk):
             return {
                 'name': self.__student.name,
-                'school': self.__student.school if self.__student.school else 'School Not Verified',
+                'school': self.__student.school if self.__student.school else '',
                 'program': self.__student.program,
                 'major': self.__student.major,
                 'email': self.__student.email,
                 'phone': self.__student.phone,
                 'address': '%s, %s, %s, %s' % (self.__student.address, self.__student.city, self.__student.state, self.__student.zipcode),
-                'resume': self.__resume_container.get_resume()
-
+                'resume': self.__resume_container.get_extended_resume(self.__resume_container.get_resume())
             }
 
     def get_applications(self):

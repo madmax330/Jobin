@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Message, Notification, JobinActivation
+from .models import Message, Notification, JobinActivation, JobinRequestedSchool
 
 
 class NewUserForm(forms.ModelForm):
@@ -42,4 +42,13 @@ class NewActivationForm(forms.ModelForm):
     class Meta:
         model = JobinActivation
         fields = '__all__'
+
+
+class JobinRequestedSchoolForm(forms.ModelForm):
+
+    class Meta:
+        model = JobinRequestedSchool
+        fields = '__all__'
+
+
 

@@ -99,92 +99,6 @@
                                         </td>
                                     </tr>
                                 {% endfor %}
-                                <tr class="tr-cover-submitted">
-                                    <td class="post-title">
-                                        <a href="{% url 'post:student_details' pk=16 %}">Test Post Title</a>
-                                    </td>
-                                    <td>
-                                        <div class="w3-dropdown-hover">
-                                            <a href="#">French Resume <i class="fa fa-caret-down"></i></a>
-                                            <div class="w3-dropdown-content w3-bar-block w3-border">
-                                                <div class="w3-bar-item">
-                                                    <a href="#" class="warning-open"
-                                                       data-id="change-resume-1616"
-                                                       data-name="English Resume"
-                                                       data-url="{% url 'resume:change' pk=16 ak=16 %}">
-                                                        English Resume
-                                                    </a>
-                                                    <div id="warning-change-resume-1616" class="w3-hide">
-                                                        <p class="message">
-                                                            Change resume for Test Post Title to
-                                                            <span class="name"></span>?
-                                                        </p>
-                                                        <p class="notes">
-                                                            This will change the resume French Resume
-                                                            with English Resume.
-                                                            <br/>
-                                                            <strong>Note:</strong> a notification will be sent
-                                                            to Jobin Corp. to alert that you have
-                                                            updated your resume.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-        
-                                    </td>
-                                    <td>Active</td>
-                                    <td>
-                                        <a href="#" class="warning-open" data-id="withdraw-application"
-                                           data-name="Test Post Title"
-                                           data-url="{% url 'post:withdraw' pk=16 %}">
-                                            Withdraw
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="tr-cover-read">
-                                    <td class="post-title">
-                                        <a href="{% url 'post:student_details' pk=16 %}">Another Test Title</a>
-                                    </td>
-                                    <td>
-                                        <div class="w3-dropdown-hover">
-                                            <a href="#">French Resume <i class="fa fa-caret-down"></i></a>
-                                            <div class="w3-dropdown-content w3-bar-block w3-border">
-                                                <div class="w3-bar-item">
-                                                    <a href="#" class="warning-open"
-                                                       data-id="change-resume-1616"
-                                                       data-name="English Resume"
-                                                       data-url="{% url 'resume:change' pk=16 ak=16 %}">
-                                                        English Resume
-                                                    </a>
-                                                    <div id="warning-change-resume-1616" class="w3-hide">
-                                                        <p class="message">
-                                                            Change resume for Another Test Title to
-                                                            <span class="name"></span>?
-                                                        </p>
-                                                        <p class="notes">
-                                                            This will change the resume French Resume
-                                                            with English Resume.
-                                                            <br/>
-                                                            <strong>Note:</strong> a notification will be sent
-                                                            to Jobin Corp. to alert that you have
-                                                            updated your resume.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-        
-                                    </td>
-                                    <td>Active</td>
-                                    <td>
-                                        <a href="#" class="warning-open" data-id="withdraw-application"
-                                           data-name="Another Test Title"
-                                           data-url="{% url 'post:withdraw' pk=16 %}">
-                                            Withdraw
-                                        </a>
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td colspan="4">
                                         <span>Page: </span>
@@ -306,7 +220,7 @@
         </div>
     </div>
     <div>
-        <div id="welcome-modal" class="w3-modal">
+        <div id="welcome-modal" class="w3-modal" style="display: none;">
             <div class="w3-modal-content w3-animate-zoom w3-card-4 modal-sm">
                 <header class="w3-container">
                     <span data-id="welcome-modal" class="w3-button w3-display-topright close-modal">&times;</span>
@@ -351,7 +265,7 @@
             when the date for this event approaches.
         </p>
     </div>
-    <div class="new-student">true</div>
+    <div class="new-student">{% if student.is_new %}true{% else %}false{% endif %}</div>
 {% endblock %}
 
 {% block walkthroughs %}

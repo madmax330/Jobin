@@ -54,7 +54,7 @@
                 </li>
                 <li class="nav-item jobin-nav-link">
                     <a href="{% url 'resume:index' %}" class="{% if tab == 'resume' %}active{% endif %}">
-                        <h5>Resumes</h5>
+                        <h5 class="resumes-nav">Resumes</h5>
                     </a>
                 </li>
                 <li class="nav-item jobin-nav-link">
@@ -155,7 +155,6 @@
 <script type="text/javascript" src="{% static 'home/scripts/user_utils.js' %}"></script>
 <script type="text/javascript" src="{% static 'student/scripts/util_script.js' %}"></script>
 <script type="text/javascript" src="{% static 'student/scripts/warning_script.js' %}"></script>
-<script type="text/javascript" src="{% static 'home/scripts/notification_script.js' %}"></script>
 <script type="text/javascript" src="{% static 'home/scripts/walkthrough.js' %}"></script>
 {% block scripts %}{% endblock %}
 </body>

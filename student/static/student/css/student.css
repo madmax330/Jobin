@@ -148,6 +148,10 @@ a:focus, a:hover {
 margin-left: calc(50% - 50vw);
   width: 100vw;
 }
+.modal-messages .message-warning, .modal-messages .message-danger, .modal-messages .message-success {
+    margin-left: 0;
+    width: 100%;
+}
 .message-warning p, .message-danger p, .message-success p {
     padding: 10px 0 0 10px;
 }
@@ -262,7 +266,7 @@ padding-bottom: 60px !important;
 	color:#fff;
 	filter: saturate(0%) !important;
 	}
-.job-navbar a:hover {
+.job-navbar a:hover, .job-navbar a.active{
     box-shadow: none !important;
     background: none !important;
     color: #fff !important;

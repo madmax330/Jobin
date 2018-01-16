@@ -59,6 +59,9 @@ if not DEBUG:
     DEFAULT_FILE_STORAGE = 'website.storage_backends.MediaStorage'
 else:
     STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 #
 #   EMAIL SETTINGS

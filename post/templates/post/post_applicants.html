@@ -30,7 +30,7 @@
                     <div class="panel-body">
                         <form id="filter-form" action="{% url 'post:applicants' pk=post.id %}" method="post">
                             {% csrf_token %}
-                            <div class="delete-non-filtered">
+                            <div class="delete-non-filtered hidden">
                                 <strong>
                                     If you opt not to keep applicants outside of the filter, all the applications
                                     that do not meet the filter criteria will be closed permanently.
@@ -41,7 +41,7 @@
                                     <div class="form-group">
                                         <label for="school_filter">School Filter:</label>
                                         <input type="hidden" id="school_filter" name="filter_schools"
-                                               value="{{ filters.schools }}">
+                                               value="{% for x in filters.schools %}{{ x }},{% endfor %}">
                                         <input class="form-control search-in"
                                                type="text" title="" placeholder="School name...">
                                         <div class="search-results hidden">
@@ -61,7 +61,7 @@
                                         <br/>
                                         <input class="form-control" id="gpa_filter" type="text" name="filter_gpa"
                                                value="{{ filters.gpa }}">
-										<span class="gpa-error">
+										<span class="gpa-error hidden">
                                             GPA value must be a number
                                         </span>
                                     </div>
@@ -70,7 +70,7 @@
                                     <div class="form-group">
                                         <label for="major-select">Majors Filter:</label>
                                         <input type="hidden" id="major_filter" name="filter_majors"
-                                               value="{{ filters.majors }}">
+                                               value="{% for x in filters.majors %}{{ x }},{% endfor %}">
                                         <select id="major-select" class="form-control">
                                             {% if majors %}
                                                 <option value="">Select a major</option>
@@ -127,8 +127,6 @@
                                     <div class="apply-filter-button">
                                         <button class="apply-filter filter-button" type="submit">Apply Filter</button>
 									</div>
-							
-							
 									<div class="clear-filter-button">
                                         <a href="{% url 'post:applicants' pk=post.id %}"
                                            class="clear-filter filter-button">
@@ -136,11 +134,6 @@
                                         </a>
 									</div>
                                 </div>
-                            </div>
-
-							
-                            <div>
-                                
                             </div>
                         </form>
                         <div class="filters-div">
@@ -151,32 +144,39 @@
                                 <div class="col-sm-4">
                                     <div class="sub-filter-div school-filters">
                                         <label>Schools</label>
-                                        <span>None</span>
-                                        <ul>
-                                            <li>McGill University <span class="remove-filter-item">&times;</span></li>
-                                            <li>Concordia University <span class="remove-filter-item">&times;</span></li>
-                                            <li>HEC Montreal <span class="remove-filter-item">&times;</span></li>
-                                        </ul>
+                                        {% if filters.schools %}
+                                            <ul>
+                                            {% for x in filters.schools %}
+                                                <li>{{ x }} <span class="remove-filter-item">&times;</span></li>
+                                            {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <span>None</span>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="sub-filter-div major-filters">
                                         <label>Majors</label>
-                                        <span>None</span>
-                                        <ul>
-                                            <li>Chemistry <span class="remove-filter-item">&times;</span></li>
-                                            <li>Computer Science <span class="remove-filter-item">&times;</span></li>
-                                        </ul>
+                                        {% if filters.majors %}
+                                            <ul>
+                                            {% for x in filters.majors %}
+                                                <li>{{ x }} <span class="remove-filter-item">&times;</span></li>
+                                            {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <span>None</span>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="sub-filter-div gpa-filters">
                                         <label>GPA</label>
-                                        <span class="gpa-filter-val">None</span>
+                                        <span class="gpa-filter-val">{% if filters.gpa %}{{ filters.gpa }}{% else %}None{% endif %}</span>
                                     </div>
                                     <div class="sub-filter-div saved-filters">
                                         <label>Only Saved Applications</label>
-                                        <span class="only-saved-val">False</span>
+                                        <span class="only-saved-val">{% if filters.saved_only %}True{% else %}False{% endif %}</span>
                                     </div>
                                 </div>
                             </div>
@@ -228,84 +228,6 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr class="app-resume-updated">
-                        <td>
-                            <a href="#" 
-                            class="to-single-view app-not-opened">
-                                Baba Kourouma
-                            </a>
-                        </td>
-                        <td class="app-school-not-verified"><i class="fa fa-exclamation-circle"></i> Not Verified</td>
-                        <td>Bachelor of Business Administration</td>
-                        <td>Finance</td>
-                        <td>Nov. 6, 2017</td>
-                        <td>
-                                <span class="remove-save app-saved" >
-                                    <span class="glyphicon glyphicon-check text-success"></span> Saved
-                                </span> |
-                            <a href="#" class="warning-open" data-id="close-app" data-name="{{ x.student.name }}">
-                                Discard
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="new-app">
-                        <td>
-                            <a href="#" 
-                            class="to-single-view app-not-opened">
-                            Baba Kourouma
-                            </a>
-                        </td>
-                        <td>HEC Montreal</td>
-                        <td>Bachelor of Business Administration</td>
-                        <td>Finance</td>
-                        <td>Nov. 6, 2017</td>
-                        <td>
-                            <span class="save-btn">Save</span> |
-                            <a href="#" class="warning-open" data-id="close-app" data-name="{{ x.student.name }}">
-                                Discard
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="app-cover-submitted">
-                        <td>
-                            <a href="#" 
-                            class="to-single-view">
-                            Baba Kourouma
-                            </a>
-                        </td>
-                        <td>Bishop's University</td>
-                        <td>Bachelor of Business Administration</td>
-                        <td>Finance</td>
-                        <td>Nov. 6, 2017</td>
-                        <td>
-                                <span class="remove-save app-saved" >
-                                    <span class="glyphicon glyphicon-check text-success"></span> Saved
-                                </span> |
-                            <a href="#" class="warning-open" data-id="close-app" data-name="{{ x.student.name }}">
-                                Discard
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="app-cover-read">
-                        <td>
-                            <a href="#" 
-                            class="to-single-view">
-                            Baba Kourouma
-                            </a>
-                        </td>
-                        <td class="app-school-not-verified"><i class="fa fa-exclamation-circle"></i> Not Verified</td>
-                        <td>Bachelor of Business Administration</td>
-                        <td>Finance</td>
-                        <td>Nov. 6, 2017</td>
-                        <td>
-                                <span class="remove-save app-saved" >
-                                    <span class="glyphicon glyphicon-check text-success"></span> Saved
-                                </span> |
-                            <a href="#" class="warning-open" data-id="close-app" data-name="{{ x.student.name }}">
-                                Discard
-                            </a>
-                        </td>
-                    </tr>
                     <tr>
                         <td colspan="6">
                             <span>Page: </span>

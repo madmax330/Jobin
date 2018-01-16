@@ -18,13 +18,15 @@ class Student(models.Model):
     major = models.CharField(max_length=100)
     graduate = models.BooleanField(default=False)
     email = models.CharField(max_length=100)
+    school_email = models.CharField(max_length=200, null=True, blank=True)
     phone = models.CharField(max_length=30, null=True, blank=True)
     linkedin = models.CharField(max_length=200, null=True, blank=True)
     work_eligible = models.BooleanField(default=True)
     is_new = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
-    transcripts = models.FileField(null=True, blank=True)
+    transcript = models.FileField(null=True, blank=True)
+    school_requested = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname

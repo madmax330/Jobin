@@ -15,9 +15,11 @@ class ExtendedPost:
         self.wage = post.wage
         self.wage_interval = post.wage_interval
         self.openings = post.openings
-        self.requirements = post.requirements
-        self.description = post.description
+        self.qualifications = post.qualifications
+        self.responsibilities = post.responsibilities
         self.applied = applied
+        self.location = post.location
+        self.benefits = post.benefits
 
 
 class HomePagePost:

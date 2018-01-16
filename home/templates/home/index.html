@@ -30,7 +30,7 @@
 
     </script>
     <!-- Core jQuery Script -->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
 
     <!-- Slider Revolution core JavaScript files -->
     <script type="text/javascript" src="{% static 'home/revolution/js/jquery.themepunch.tools.min.js' %}"></script>
@@ -55,8 +55,6 @@
             src="{% static 'home/revolution/js/extensions/revolution.extension.slideanims.min.js' %}"></script>
     <script type="text/javascript"
             src="{% static 'home/revolution/js/extensions/revolution.extension.video.min.js' %}"></script>
-    <script src="{% static 'home/scripts/browser_scripts.js' %}"></script>
-    {% block scripts %}{% endblock %}
 </head>
 <body style="margin:0;">
 
@@ -235,16 +233,9 @@
                     <div class="col-sm-6">
                         <h3 class="text-center">COMPANY REGISTER</h3>
                         <form action="{% url 'home:register' ut='company' %}" method="post">
-                            {% if register_error %}
-                                <div class="login-error">
-                                    <p>{{ register_error }}</p>
-                                </div>
-                            {% endif %}
+                            {% csrf_token %}
                             <div class="form-group">
-                                <input class="form-control" placeholder="Company Name" name="name">
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
+                                <input class="form-control" placeholder="Email" name="email" value="{{ company_register_email }}">
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Password" name="password">
@@ -260,14 +251,10 @@
                     </div>
                     <div class="col-sm-6">
                         <h3 class="text-center">COMPANY LOGIN</h3>
-                        <form action="" method="post">
-                            {% if login_error %}
-                                <div class="login-error">
-                                    <p>{{ login_error }}</p>
-                                </div>
-                            {% endif %}
+                        <form action="{% url 'home:company_login' %}" method="post">
+                            {% csrf_token %}
                             <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
+                                <input class="form-control" placeholder="Email" name="email" value="{{ company_email }}">
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Password" name="password">
@@ -275,7 +262,7 @@
                             <div>
                                 <button class="btn btn-default login-btn">LOG IN</button>
                             </div>
-							<a href="#" onclick="open_block('company-forgot-password')">Forgot password?</a>
+							<a href="#" onclick="close_block('company-login');open_block('company-forgot-password')">Forgot password?</a>
                         </form>
                     </div>
                 </div>
@@ -286,13 +273,9 @@
                     <div class="col-sm-6">
                         <h3 class="text-center">STUDENT REGISTER</h3>
                         <form action="{% url 'home:register' ut='student' %}" method="post">
-                            {% if register_error %}
-                                <div class="login-error">
-                                    <p>{{ register_error }}</p>
-                                </div>
-                            {% endif %}
+                            {% csrf_token %}
                             <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
+                                <input class="form-control" placeholder="Email" name="email" value="{{ student_register_email }}">
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Password" name="password">
@@ -316,14 +299,10 @@
                     </div>
                     <div class="col-sm-6">
                         <h3 class="text-center">STUDENT LOGIN</h3>
-                        <form action="" method="post">
-                            {% if login_error %}
-                                <div class="login-error">
-                                    <p>{{ login_error }}</p>
-                                </div>
-                            {% endif %}
+                        <form action="{% url 'home:student_login' %}" method="post">
+                            {% csrf_token %}
                             <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
+                                <input class="form-control" placeholder="Email" name="email" value="{{ student_email }}">
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Password" name="password">
@@ -331,7 +310,7 @@
                             <div>
                                 <button class="btn btn-default login-btn">LOG IN</button>
                             </div>
-                            <a href="#" onclick="open_block('student-forgot-password')">Forgot password?</a>
+                            <a href="#" onclick="close_block('student-login');open_block('student-forgot-password')">Forgot password?</a>
                         </form>
                     </div>
                 </div>
@@ -346,11 +325,15 @@
                         </div>
                     {% endif %}
                     <form action="{% url 'home:new_password' ut='student' %}" method="post">
-                        <label>Enter your email address</label>
-                        <input type="email" class="form-control" placeholder="Email" name="email">
-                        <label>Enter your date of birth</label>
-                        <input type="date" class="form-control" name="dob">
-                        <button class="btn btn-default">GET NEW PASSWORD</button>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Email Address" name="email">
+                        </div>
+                        <h5>Date of birth:</h5>
+                        <div class="form-group">
+                            <input type="date" class="form-control" name="dob" placeholder="Date Of Birth">
+                        </div>
+                        <button class="btn btn-default login-btn">GET NEW PASSWORD</button>
                     </form>
                 </div>
             </div>
@@ -364,10 +347,13 @@
                         </div>
                     {% endif %}
                     <form action="{% url 'home:new_password' ut='company' %}" method="post">
-                        <label>Enter your email address</label>
-                        <input type="email" class="form-control" placeholder="Email" name="email">
-                        <label>Enter your zip/postal code</label>
-                        <input type="text" class="form-control" name="zipcode" placeholder="Zip/Postal Code">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Email Address" name="email">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="zipcode" placeholder="Zip/Postal Code">
+                        </div>
                         <button class="btn btn-default">GET NEW PASSWORD</button>
                     </form>
                 </div>
@@ -433,7 +419,7 @@
                  data-x="center"
                  data-y="center"
                  data-hoffset="0"
-                 data-voffset="0"
+                 data-voffset="25"
                  data-width="['auto']"
                  data-height="['auto']">
 
@@ -448,7 +434,7 @@
                     </div>
                 </div>
 
-                <h4 class="text-center">
+                <h4 class="text-center" style="margin:0; padding-top: 10px;">
                     At Jobin, we bring the jobs to you! We give you access to the many jobs that are
                     posted and all you have to do is decide whether you want to apply or not.
                 </h4>
@@ -470,7 +456,7 @@
                  data-height="['auto']">
 
                 <!-- BOTTOM LAYER CONTENT -->
-                <h5 class="text-center">
+                <h5 class="text-center" style="cursor: pointer;" onclick="scroll_to('post-slider-content');">
                     LEARN MORE <span class="glyphicon glyphicon-triangle-bottom"></span>
                 </h5>
 
@@ -650,7 +636,7 @@
                         </p>
 
                         <div>
-                            <button class="btn btn-danger">SIGN UP NOW</button>
+                            <button class="btn btn-danger" onclick="scroll_to('fullscreen-container')">SIGN UP NOW</button>
                         </div>
                     </div>
                 </div>
@@ -744,12 +730,53 @@
             block.addClass('hidden');
     }
 
+    function scroll_to(name) {
+
+        $('html, body').animate({
+            scrollTop: $("."+name).offset().top
+        }, 500);
+    }
+
+    function show_messages() {
+        setTimeout(
+            function() {
+                $('.jobin-message').each(function(){
+                    let msg = $(this).text().trim();
+                    if(msg)
+                        new_notification({
+                            code: $(this).data('code'),
+                            message: msg
+                        });
+                });
+            }, 1000);
+    }
 </script>
 
+<script src="{% static 'home/scripts/browser_scripts.js' %}"></script>
+<script src="{% static 'home/scripts/bootstrap-notify.js' %}"></script>
+<script src="{% static 'home/scripts/notify.js' %}"></script>
+
 <div class="hidden">
+    <div id="active-panel">{{ panel }}</div>
+    <div>
+        {% for x in messages %}
+            <div class="jobin-message" data-code="{{ x.code }}">{{ x.message | linebreaksbr }}</div>
+        {% endfor %}
+    </div>
     <script>
         $(function () {
             browser_alert();
+            show_messages();
+
+            let panel = $('#active-panel').html();
+            if(panel) {
+                panel = panel.toString().trim();
+                if(panel === 'student')
+                    open_block('student-login');
+                if(panel === 'company')
+                    open_block('company-login');
+            }
+
         });
     </script>
 </div>

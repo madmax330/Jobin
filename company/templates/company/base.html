@@ -84,30 +84,6 @@
 <div class="container main-container">
     <div class="row content-container">
         <div id="bodyCol" class="container col-sm-12">
-            {% if notifications %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>Notifications</h4>
-                    </div>
-                    <div class="panel-body">
-                        {% for x in notifications %}
-                            <div class="alert alert-info">
-                                <div style="position:relative; top:0; left:0; padding:0;">
-                                    <a href="#" class="close-note"
-                                       data-url="{% url 'home:close_notification' pk=x.id %}">x</a>
-                                </div>
-                                <p>
-                                    {{ x.message }}
-                                </p>
-                            </div>
-                        {% endfor %}
-                        <button class="btn btn-danger btn-block warning-open" data-name="" data-id="close-notifications"
-                                data-url="{% url 'home:close_all_notifications' u='company' %}">
-                            Close all
-                        </button>
-                    </div>
-                </div>
-            {% endif %}
             <div class="messages">
                 {% for x in messages %}
                     {% if x.code == 'danger' %}

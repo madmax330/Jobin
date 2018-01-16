@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from home.util_home import HomeUtil
 from home.utils import MessageCenter, Pagination
+from home.util_activation import ActivationUtil
 
 from .util_student import StudentContainer
 
@@ -161,25 +162,17 @@ def profile_view(request):
             return redirect('student:new')
         else:
             s = student.get_student()
+            msgs = MessageCenter.get_messages('student', student.get_student())
             context = {
                 'student': s,
                 'user': student.get_user(),
-                'notifications': MessageCenter.get_notifications('student', s),
-                'tab': 'profile'
+                'schools': HomeUtil.get_schools(),
+                'countries': HomeUtil.get_countries(),
+                'tab': 'profile',
+                'messages': msgs,
             }
+            MessageCenter.clear_msgs(msgs)
             return render(request, 'student/profile.html', context)
-
-    raise Http404
-
-
-@login_required(login_url='/')
-def student_not_new(request):
-    if request.method == 'GET':
-        student = StudentContainer(request.user)
-        if student.not_new():
-            return HttpResponse('good', status=200)
-        else:
-            return HttpResponse(str(student.get_errors()), status=400)
 
     raise Http404
 
@@ -224,6 +217,131 @@ def delete_transcript(request, pk):
         return redirect('resume:details', pk=pk)
 
     raise Http404
+
+
+@login_required(login_url='/')
+def request_school_verification(request):
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+        activation = ActivationUtil(request.user)
+        info = request.POST.copy()
+
+        try:
+            with transaction.atomic():
+                if activation.send_student_school_verification(info) and student.request_school_verification(info):
+                    m = 'A verification was sent to your school email.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors()) + '\n' + str(activation.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('student:profile')
+
+    raise Http404
+
+
+@login_required(login_url='/')
+def request_new_school_verification(request):
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+        activation = ActivationUtil(request.user)
+        info = request.POST.copy()
+
+        try:
+            with transaction.atomic():
+                if activation.send_student_school_verification(info) and student.request_school_verification(info):
+                    m = 'A verification was sent to your school email.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors()) + '\n' + str(activation.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('student:profile')
+
+    raise Http404
+
+
+@login_required(login_url='/')
+def verify_student_school(request, key):
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+        activation = ActivationUtil(request.user)
+
+        try:
+            with transaction.atomic():
+                if activation.verify_student_school(key) and student.school_verified():
+                    m = 'Your school was verified successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors()) + '\n' + str(activation.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('student:profile')
+
+    raise Http404
+
+
+@login_required(login_url='/')
+def change_school(request):
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.change_school():
+                    m = 'Old school successfully removed, you must still verify your new school.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('student:profile')
+
+    raise Http404
+
+
+@login_required(login_url='/')
+def request_new_school(request):
+    if request.method == 'POST':
+        student = StudentContainer(request.user)
+
+        try:
+            with transaction.atomic():
+                if student.request_new_school(request.POST.copy()):
+                    m = 'New school request sent successfully.'
+                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            m = str(student.get_errors())
+            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+
+        return redirect('student:profile')
+
+    raise Http404
+
+
+@login_required(login_url='/')
+def student_not_new(request):
+    if request.method == 'GET':
+        student = StudentContainer(request.user)
+        if student.not_new():
+            return HttpResponse('good', status=200)
+        else:
+            return HttpResponse(str(student.get_errors()), status=400)
+
+    raise Http404
+
+
+
 
 #
 #

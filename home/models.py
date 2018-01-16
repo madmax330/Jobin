@@ -19,6 +19,15 @@ class JobinSchool(models.Model):
         return self.name
 
 
+class JobinRequestedSchool(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    country = models.CharField(max_length=100)
+    count = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.name
+
+
 class JobinProgram(models.Model):
     name = models.CharField(max_length=100)
 

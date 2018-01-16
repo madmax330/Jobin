@@ -151,6 +151,7 @@ $(function () {
 
     $('.new-resume').click(function () {
         show($('.other-resumes'));
+        $('#resume-form').attr('action', $(this).data('url'));
         open_modal('resume-modal');
     });
 

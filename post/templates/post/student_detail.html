@@ -72,14 +72,14 @@
                 <hr/>
                 <div class="w3-container">
                     <label><u>Start Date</u>:</label><span> {{ post.start_date }}</span><br/>
-                    <label><u>End Date</u>:</label><span> {{ post.end_date }}</span><br/>
-                    <label><u>Wage</u>:</label><span> {{ post.wage }}$/hr</span><br/>
-                    <label><u>Number of positions</u>:</label><span> {{ post.openings }}</span><br/>
+                    {% if post.end_date %}<label><u>End Date</u>:</label><span> {{ post.end_date }}</span><br/>{% endif %}
+                    <label><u>Wage</u>:</label><span> {% if post.wage %}{{ post.wage }}$/hr{% else %}N/A{% endif %}</span><br/>
+                    <label><u>Number of positions</u>:</label><span> {% if post.openings %}{{ post.openings }}{% else %}N/A{% endif %}</span><br/>
                     <label><u>Application Deadline</u>:</label><span> {{ post.deadline }}</span><br/>
-                    <label><u>Requirements</u>:</label><br/>
-                    <span>{{ post.requirements | linebreaksbr }}</span><br/>
-                    <label><u>Description</u>:</label><br/>
-                    <span>{{ post.description | linebreaksbr }}</span><br/>
+                    <label><u>Qualifications</u>:</label><br/>
+                    <span>{{ post.qualifications | linebreaksbr }}</span><br/>
+                    <label><u>Responsibilities</u>:</label><br/>
+                    <span>{{ post.responsibilities| linebreaksbr }}</span><br/>
                     <div>
                         <a href="{% url 'student:index' %}" class="w3-btn btn-default">Back</a>
                     </div>
