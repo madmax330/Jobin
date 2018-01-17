@@ -46,6 +46,7 @@ class ExtendedApplication:
         self.school = stu.school if stu.school else 'School Not Verified'
         self.program = stu.program
         self.major = stu.major
+        self.transcript = stu.transcript
         self.resume = resume
         self.gpa = app.resume.gpa
         self.post = app.post

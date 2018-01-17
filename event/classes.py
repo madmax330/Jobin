@@ -2,7 +2,7 @@
 
 class ExtendedEvent:
 
-    def __init__(self, event, company, interested):
+    def __init__(self, event, company, saved):
         self.pk = event.pk
         self.name = company.name
         self.cweb = company.website
@@ -14,7 +14,7 @@ class ExtendedEvent:
         self.start_time = event.start_time
         self.website = event.website
         self.desc = event.description
-        self.interested = interested
+        self.saved = saved
 
 
 

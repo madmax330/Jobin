@@ -91,7 +91,7 @@ class StudentEventContainer(BaseContainer):
         return []
 
     def already_saved(self):
-        return SavedEvent.objects.filter(event=self.__event, student=self.__student).count() > 0
+        return SavedEvent.objects.filter(event=self.__event, student=self.__student, active=True).count() > 0
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
 

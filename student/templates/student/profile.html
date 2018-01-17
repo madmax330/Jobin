@@ -11,6 +11,16 @@
 {% endblock %}
 
 {% block content %}
+    {% if not email_verified %}
+        <div>
+            <div class="w3-container message-warning w3-display-container">
+                <p>
+                    You have not yet verified your email, check our inbox for an email from the Jobin Team and
+                    click on the activation link to verify your email.
+                </p>
+            </div>
+        </div>
+    {% endif %}
     <div>
         <div class="student-info-container">
             <header class="w3-container user-info-header">

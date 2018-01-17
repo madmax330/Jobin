@@ -232,7 +232,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <h3 class="text-center">COMPANY REGISTER</h3>
-                        <form action="{% url 'home:register' ut='company' %}" method="post">
+                        <form action="{% url 'home:register_company' %}" method="post">
                             {% csrf_token %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Email" name="email" value="{{ company_register_email }}">
@@ -272,7 +272,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <h3 class="text-center">STUDENT REGISTER</h3>
-                        <form action="{% url 'home:register' ut='student' %}" method="post">
+                        <form action="{% url 'home:register_student' %}" method="post">
                             {% csrf_token %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Email" name="email" value="{{ student_register_email }}">

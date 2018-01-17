@@ -26,6 +26,9 @@ class StudentPostContainer(BaseContainer):
     #  DATA CREATION FUNCTIONS (SETTERS)
 
     def new_application(self, post, resume):
+        if post.transcript and not self.__student.transcript:
+            self.add_error('A transcript is required to apply for this post. Upload one to a resume and apply again.')
+            return False
         info = {
             'student': self.__student.id,
             'post': post.id,

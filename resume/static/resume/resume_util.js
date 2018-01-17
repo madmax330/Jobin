@@ -196,18 +196,19 @@ $(function () {
     $('.language-save-continue').click(function () {
 
         let form = $('#language-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'language', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'language', action: 'continue'});
 
     });
 
     $('.language-save-another').click(function () {
 
         let form = $('#language-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'language', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'language', action: 'another'});
 
     });
 
-    $('.edit-language').click(function () {
+    $('.edit-language').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-language');
 
         let name = parent.find('.name').html().toString().trim();
@@ -244,18 +245,19 @@ $(function () {
     $('.school-save-continue').click(function () {
 
         let form = $('#school-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'school', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'school', action: 'continue'});
 
     });
 
     $('.school-save-another').click(function () {
 
         let form = $('#school-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'school', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'school', action: 'another'});
 
     });
 
-    $('.edit-school').click(function () {
+    $('.edit-school').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-school');
 
         let name = parent.find('.name').html().toString().trim();
@@ -317,18 +319,19 @@ $(function () {
     $('.experience-save-continue').click(function () {
 
         let form = $('#experience-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'experience', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'experience', action: 'continue'});
 
     });
 
     $('.experience-save-another').click(function () {
 
         let form = $('#experience-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'experience', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'experience', action: 'another'});
 
     });
 
-    $('.edit-experience').click(function () {
+    $('.edit-experience').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-experience');
 
         let title = parent.find('.title').html().toString().trim();
@@ -347,7 +350,10 @@ $(function () {
             $('#experience_description').val(description.toString().trim().replace('<br/>', '\n'));
 
         if (end.toLowerCase() === 'current job') {
-
+            let e = $('#experience_end');
+            e.prop('disabled',true);
+            e.val('');
+            $('#experience_current').prop('checked', true);
         }
         else {
             $('#experience_end').val(get_input_date(end));
@@ -392,18 +398,19 @@ $(function () {
     $('.award-save-continue').click(function () {
 
         let form = $('#award-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'award', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'award', action: 'continue'});
 
     });
 
     $('.award-save-another').click(function () {
 
         let form = $('#award-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'award', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'award', action: 'another'});
 
     });
 
-    $('.edit-award').click(function () {
+    $('.edit-award').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-award');
 
         let title = parent.find('.title').html().toString().trim();
@@ -444,18 +451,19 @@ $(function () {
     $('.skill-save-continue').click(function () {
 
         let form = $('#skill-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'skill', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'skill', action: 'continue'});
 
     });
 
     $('.skill-save-another').click(function () {
 
         let form = $('#skill-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'skill', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'skill', action: 'another'});
 
     });
 
-    $('.edit-skill').click(function () {
+    $('.edit-skill').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-skill');
 
         let name = parent.find('.name').html().toString().trim();
@@ -496,18 +504,19 @@ $(function () {
 
         WALKTHROUGH = false;
         let form = $('#reference-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'reference', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'reference', action: 'continue'});
 
     });
 
     $('.reference-save-another').click(function () {
 
         let form = $('#reference-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'reference', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'reference', action: 'another'});
 
     });
 
-    $('.edit-reference').click(function() {
+    $('.edit-reference').click(function( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-reference');
 
         let name = parent.find('.name').html().toString().trim();

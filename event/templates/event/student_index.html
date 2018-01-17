@@ -38,7 +38,7 @@
                                     {% endif %}
                                     <h5>{{ x.name }}</h5>
                                     <label>Address:</label><span> {{ x.caddr }}</span><br/>
-                                    <label>Website:</label><span> <a href="http://{{ x.cweb }}" target="_blank">{{ x.cweb }}</a></span>
+                                    <label>Website:</label><span> {% if x.cweb %}<a href="http://{{ x.cweb }}" target="_blank">{{ x.cweb }}</a>{% else %}N/A{% endif %}</span>
                                 </div>
                             </div>
                             <div class="w3-col s8">
@@ -56,7 +56,7 @@
                                     <span>{{ x.desc | linebreaksbr }}</span>
                                 </div>
                                 <div class="w3-display-topright w3-medium w3-container">
-                                    {% if not x.interested %}
+                                    {% if not x.saved %}
                                         <button class="w3-btn save-btn save"
                                                 data-url="{% url 'event:save' pk=x.pk %}">
                                             Save Event

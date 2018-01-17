@@ -102,7 +102,7 @@
                     <input id="post_location" class="form-control" value="{{ post.location }}" name="location">
                 </div>
                 <div class="form-group {% if errors.openings %}has-error{% endif %}">
-                    <label class="required" for="post_openings">Number of positions:</label>
+                    <label for="post_openings">Number of positions:</label>
                     {% if errors.openings %}
                         <div class="alert form-error">
                             {{ errors.openings }}
@@ -192,7 +192,7 @@
                               rows="5">{% if post.cover_instructions %}{{ post.cover_instructions }}{% endif %}</textarea>
                 </div>
                 <div class="checkbox">
-                    <label><input id="post_transcript" name="transcript" type="checkbox">Require student transcript:</label>
+                    <label><input id="post_transcript" name="transcript" type="checkbox" {% if post.transcript %}checked="checked"{% endif %}>Transcript Required</label>
                 </div>
                 <div>
                     <a href="{% url 'post:company_posts' %}" class="btn btn-default">Cancel</a>

@@ -194,13 +194,15 @@ def delete_resume(request, pk):
 @login_required(login_url='/')
 def new_language(request, pk):
     if request.method == 'POST':
+        api = request.GET.get('api', '')
         student = StudentContainer(request.user)
 
         try:
             with transaction.atomic():
                 if student.new_language(pk, request.POST.copy()):
                     m = 'New language added successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    if not api:
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse(m, status=200)
                 else:
                     raise IntegrityError
@@ -280,13 +282,15 @@ def delete_language(request, rk, pk):
 @login_required(login_url='/')
 def new_experience(request, pk):
     if request.method == 'POST':
+        api = request.GET.get('api', '')
         student = StudentContainer(request.user)
 
         try:
             with transaction.atomic():
                 if student.new_experience(pk, request.POST.copy()):
                     m = 'New experience added successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    if not api:
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse(m, status=200)
                 else:
                     raise IntegrityError
@@ -366,13 +370,15 @@ def delete_experience(request, rk, pk):
 @login_required(login_url='/')
 def new_award(request, pk):
     if request.method == 'POST':
+        api = request.GET.get('api', '')
         student = StudentContainer(request.user)
 
         try:
             with transaction.atomic():
                 if student.new_award(pk, request.POST.copy()):
                     m = 'New award added successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    if not api:
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse(m, status=200)
                 else:
                     raise IntegrityError
@@ -452,13 +458,15 @@ def delete_award(request, rk, pk):
 @login_required(login_url='/')
 def new_school(request, pk):
     if request.method == 'POST':
+        api = request.GET.get('api', '')
         student = StudentContainer(request.user)
 
         try:
             with transaction.atomic():
                 if student.new_school(pk, request.POST.copy()):
                     m = 'New school added successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    if not api:
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse(m, status=200)
                 else:
                     raise IntegrityError
@@ -538,13 +546,15 @@ def delete_school(request, rk, pk):
 @login_required(login_url='/')
 def new_skill(request, pk):
     if request.method == 'POST':
+        api = request.GET.get('api', '')
         student = StudentContainer(request.user)
 
         try:
             with transaction.atomic():
                 if student.new_skill(pk, request.POST.copy()):
                     m = 'New skill added successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    if not api:
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse(m, status=200)
                 else:
                     raise IntegrityError
@@ -623,13 +633,15 @@ def delete_skill(request, rk, pk):
 @login_required(login_url='/')
 def new_reference(request, pk):
     if request.method == 'POST':
+        api = request.GET.get('api', '')
         student = StudentContainer(request.user)
 
         try:
             with transaction.atomic():
                 if student.new_reference(pk, request.POST.copy()):
                     m = 'New reference added successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                    if not api:
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                     return HttpResponse(m, status=200)
                 else:
                     raise IntegrityError

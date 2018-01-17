@@ -28,6 +28,7 @@ def index_view(request):
         posts = Pagination(student.get_newest_posts(), 5)
         context = {
             'student': student.get_student(),
+            'email_verified': student.email_verified(),
             'applications': apps.get_page(app_page),
             'old_apps': student.get_old_applications(),
             'events': events.get_page(e_page),
@@ -161,10 +162,11 @@ def profile_view(request):
         if student.get_student() is None:
             return redirect('student:new')
         else:
-            s = student.get_student()
+            student.get_student()
             msgs = MessageCenter.get_messages('student', student.get_student())
             context = {
-                'student': s,
+                'student': student.get_student(),
+                'email_verified': student.email_verified(),
                 'user': student.get_user(),
                 'schools': HomeUtil.get_schools(),
                 'countries': HomeUtil.get_countries(),

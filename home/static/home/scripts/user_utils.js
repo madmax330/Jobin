@@ -69,7 +69,7 @@ function get_input_time(val){
 }
 
 function check_cookie(name){
-    let name = name + "=";
+    name = name + "=";
     let ca = document.cookie.split(';');
     for(let i = 0; i < ca.length; i++) {
         let c = ca[i];

@@ -37,7 +37,7 @@
             <div>
                 {% if student.transcript %}
                     <label>Transcript:</label>
-                    <a href="{{ resume.transcript.url }}" target="_blank">{{ resume.transcript.name }}</a>
+                    <a href="{{ student.transcript.url }}" target="_blank">{{ student.transcript.name }}</a>
                     <br/>
                     <a href="{% url 'student:delete_transcript' pk=resume.id %}"
                        class="w3-btn btn-danger delete-transcript">
@@ -93,7 +93,7 @@
                                 <td class="title">{{ x.title }}</td>
                                 <td class="start">{{ x.start }}</td>
                                 <td class="end">
-                                    {% if x.is_current %}Current Job{% else %}{{ x.end }}{% endif %}
+                                    {% if x.is_current %}current job{% else %}{{ x.end }}{% endif %}
                                 </td>
                                 <td class="company">{{ x.company }}</td>
                                 <td>

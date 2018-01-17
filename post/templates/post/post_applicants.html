@@ -192,54 +192,62 @@
                         <th>Date Applied</th>
                         <th></th>
                     </tr>
-                    {% for x in applications %}
-                        <tr {% if x.resume_notified %}
-                            class="app-resume-updated"
-                        {% elif x.cover_opened %}
-                            class="app-cover-read"
-                        {% elif x.cover_submitted %}
-                            class="app-cover-submitted"
-                        {% elif x.cover_requested %}
-                            class="app-cover-requested"
-                            {% elif not x.opened %}
-                            class="new-app"
-                            {% endif %}>
-                            <td>
-                                <a href="#" data-url="{% url 'post:applicant' pk=post.pk ak=x.pk %}"
-                                   class="to-single-view">
-                                    {{ x.student.name }}
-                                </a>
-                            </td>
-                            <td>{% if x.student.school %}{{ x.student.school }}{% else %}<i class="fa fa-exclamation-circle"></i> Not Verified{% endif %}</td>
-                            <td>{{ x.student.program }}</td>
-                            <td>{{ x.student.major }}</td>
-                            <td>{{ x.date }}</td>
-                            <td>
+                    {% if applications %}
+                        {% for x in applications %}
+                            <tr {% if x.resume_notified %}
+                                class="app-resume-updated"
+                            {% elif x.cover_opened %}
+                                class="app-cover-read"
+                            {% elif x.cover_submitted %}
+                                class="app-cover-submitted"
+                            {% elif x.cover_requested %}
+                                class="app-cover-requested"
+                                {% elif not x.opened %}
+                                class="new-app"
+                                {% endif %}>
+                                <td>
+                                    <a href="#" data-url="{% url 'post:applicant' pk=post.pk ak=x.pk %}"
+                                       class="to-single-view">
+                                        {{ x.student.name }}
+                                    </a>
+                                </td>
+                                <td>{% if x.student.school %}{{ x.student.school }}{% else %}<i class="fa fa-exclamation-circle"></i> Not Verified{% endif %}</td>
+                                <td>{{ x.student.program }}</td>
+                                <td>{{ x.student.major }}</td>
+                                <td>{{ x.date }}</td>
+                                <td>
 
-                                {% if x.saved %}
-                                    <span class="remove-save" data-url="{% url 'post:remove_save' pk=x.id %}">
-                                        <span class="glyphicon glyphicon-check text-success"></span> Saved
-                                    </span> |
-                                {% else %} <span class="save-btn" data-url="{% url 'post:save' pk=x.id %}">Save</span> |{% endif %}
-                                <a href="#" class="warning-open" data-id="close-app" data-name="{{ x.student.name }}"
-                                   data-url="{% url 'post:discard' pk=x.id %}">
-                                    Discard
-                                </a>
+                                    {% if x.saved %}
+                                        <span class="remove-save" data-url="{% url 'post:remove_save' pk=x.id %}">
+                                            <span class="glyphicon glyphicon-check text-success"></span> Saved
+                                        </span> |
+                                    {% else %} <span class="save-btn" data-url="{% url 'post:save' pk=x.id %}">Save</span> |{% endif %}
+                                    <a href="#" class="warning-open" data-id="close-app" data-name="{{ x.student.name }}"
+                                       data-url="{% url 'post:discard' pk=x.id %}">
+                                        Discard
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="6">
+                                <span>Page: </span>
+                                {% for x in applications.paginator.page_range %}
+                                    {% if x == applications.number %}
+                                        <strong><span>{{ x }} </span></strong>
+                                    {% else %}
+                                        <a href="?page={{ x }}">{{ x }}</a>
+                                    {% endif %}|
+                                {% endfor %}
                             </td>
                         </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="6">
-                            <span>Page: </span>
-                            {% for x in applications.paginator.page_range %}
-                                {% if x == applications.number %}
-                                    <strong><span>{{ x }} </span></strong>
-                                {% else %}
-                                    <a href="?page={{ x }}">{{ x }}</a>
-                                {% endif %}|
-                            {% endfor %}
-                        </td>
-                    </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: left">
+                                <span>No applications have been received for this post.</span>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </table>
                 <div>
                     <a href="{% url 'post:company_posts' %}" class="btn btn-default">Back to List</a>
