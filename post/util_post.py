@@ -207,6 +207,9 @@ class StudentPostContainer(BaseContainer):
         return True
 
     def submit_cover_letter(self, info):
+        if not info['cover']:
+            self.add_error('Cover letter can\'t be blank.')
+            return False
         info['cover_submitted'] = True
         self._form = AddCoverLetterForm(info, instance=self.__application)
         if self._form.is_valid():

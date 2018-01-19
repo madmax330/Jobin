@@ -190,7 +190,6 @@ class UserUtil(BaseContainer):
         return False
 
     def new_activation_key(self, info):
-        self.add_error('email: ' + info['email'])
         if self.get_user(email=info['email']):
             if self.__user.is_active:
                 self.add_error('User already activated.')

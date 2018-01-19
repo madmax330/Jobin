@@ -40,9 +40,13 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
 	z-index: 30;
 }
 #student-login input, #company-login input, #student-forgot-password input, #company-forgot-password input {
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     border-radius: 0;
     border: 0;
-    padding: 24px 15px;
+	height: 48px;
+    padding: 0 15px;
     font-size: 21px;
     font-family: 'Helvetica', sans-serif;
     color: #2b2929;

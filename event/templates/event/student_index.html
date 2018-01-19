@@ -6,18 +6,21 @@
 {% block scripts %}
     <script type="text/javascript" src="{% static 'event/student_event_util.js' %}"></script>
     <script>
-        $(function(){
+        $(function () {
             hide($('.event-loader-icon'));
             show($('.main-event-container'));
         });
     </script>
 {% endblock %}
 
+{% block page_title_div %}
+    <div class="events-header">
+        <h3 class="w3-center">Events ({{ count }})</h3>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div>
-        <div class="events-header">
-            <h3 class="w3-center">Events ({{ count }})</h3>
-        </div>
         <div class="event-loader-icon">
             <h2 class="w3-center"><i class="fa fa-spinner fa-spin"></i> Loading events...</h2>
         </div>
@@ -38,7 +41,9 @@
                                     {% endif %}
                                     <h5>{{ x.name }}</h5>
                                     <label>Address:</label><span> {{ x.caddr }}</span><br/>
-                                    <label>Website:</label><span> {% if x.cweb %}<a href="http://{{ x.cweb }}" target="_blank">{{ x.cweb }}</a>{% else %}N/A{% endif %}</span>
+                                    <label>Website:</label><span> {% if x.cweb %}
+                                    <a href="http://{{ x.cweb }}" target="_blank">{{ x.cweb }}</a>{% else %}
+                                    N/A{% endif %}</span>
                                 </div>
                             </div>
                             <div class="w3-col s8">
@@ -51,7 +56,8 @@
                                     <label>Date:</label><span> {{ x.start_date }}</span><br/>
                                     <label>Time:</label><span> {{ x.start_time }}</span><br/>
                                     <label>Address:</label><span> {{ x.address }}</span><br/>
-                                    <label>Website:</label><span> <a href="http://{{ x.website }}" target="_blank">{{ x.website }}</a></span><br/>
+                                    <label>Website:</label><span> <a href="http://{{ x.website }}"
+                                                                     target="_blank">{{ x.website }}</a></span><br/>
                                     <label>Description:</label><br/>
                                     <span>{{ x.desc | linebreaksbr }}</span>
                                 </div>

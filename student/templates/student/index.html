@@ -15,7 +15,7 @@
     </div>
 {% endblock %}
 
-{% block content %}
+{% block messages %}
     {% if not email_verified %}
         <div>
             <div class="w3-container message-warning w3-display-container">
@@ -45,6 +45,9 @@
             </div>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block content %}
     <div>
         <div class="panel panel-default panel-primary">
             <div class="panel-heading active-applications">

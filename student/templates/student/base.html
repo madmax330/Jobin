@@ -44,7 +44,7 @@
                 <li class="nav-item jobin-nav-link">
                     <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
                        class="{% if tab == 'posts' %}active{% endif %}">
-                        <h5>Posts</h5>
+                        <h5 class="posts-nav">Posts</h5>
                     </a>
                 </li>
                 <li class="nav-item jobin-nav-link">
@@ -92,41 +92,42 @@
 
 <div class="page-title-div">{% block page_title_div %}{% endblock %}</div>
 
+<div id="messages">
+    {% block messages %}{% endblock %}
+    {% if messages %}
+        <div>
+            {% for x in messages %}
+                {% if x.code == 'danger' %}
+                    <div class="w3-container message-danger w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                        <p>{{ x.message }}</p>
+                    </div>
+                {% elif x.code == 'warning' %}
+                    <div class="w3-container message-warning w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                        <p>{{ x.message }}</p>
+                    </div>
+                {% elif x.code == 'success' %}
+                    <div class="w3-container message-success w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                        <p>{{ x.message }}</p>
+                    </div>
+                {% else %}
+                    <div class="w3-container message-info w3-display-container">
+                                        <span onclick="this.parentElement.style.display='none'"
+                                              class="w3-button w3-display-topright">&times;</span>
+                        <p>{{ x.message }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 <div class="container">
     <div id="bodyCol" class="w3-container">
-        <div id="messages">
-            {% if messages %}
-                <div>
-                    {% for x in messages %}
-                        {% if x.code == 'danger' %}
-                            <div class="w3-container message-danger w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                <p>{{ x.message }}</p>
-                            </div>
-                        {% elif x.code == 'warning' %}
-                            <div class="w3-container message-warning w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                <p>{{ x.message }}</p>
-                            </div>
-                        {% elif x.code == 'success' %}
-                            <div class="w3-container message-success w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                <p>{{ x.message }}</p>
-                            </div>
-                        {% else %}
-                            <div class="w3-container message-info w3-display-container">
-                                        <span onclick="this.parentElement.style.display='none'"
-                                              class="w3-button w3-display-topright">&times;</span>
-                                <p>{{ x.message }}</p>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
         {% block content %}{% endblock %}
         <div class="modals">
             {% include 'student/util/warning_modal.html' %}

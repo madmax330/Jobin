@@ -4,6 +4,7 @@
 
 {% block scripts %}
     <script type="text/javascript" src="{% static 'post/company_post_util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'post/applicants_filters.js' %}"></script>
 {% endblock %}
 
 {% block title %}Post Applicants{% endblock %}
@@ -41,10 +42,10 @@
                                     <div class="form-group">
                                         <label for="school_filter">School Filter:</label>
                                         <input type="hidden" id="school_filter" name="filter_schools"
-                                               value="{% for x in filters.schools %}{{ x }},{% endfor %}">
-                                        <input class="form-control search-in"
+                                               value="{{ filters.schools }}">
+                                        <input class="form-control school-search-in"
                                                type="text" title="" placeholder="School name...">
-                                        <div class="search-results hidden">
+                                        <div class="school-search-results hidden">
                                         </div>
                                     </div>
                                 </div>
@@ -54,7 +55,7 @@
                                             GPA Filter:
                                             <a href="#" title="GPA Filter" data-toggle="popover" data-trigger="focus"
                                             data-content="Setting the GPA filter will return any applicants with a GPA greater
-                                            than or equal to the specified value.">
+                                            than or equal to the specified value." class="gpa-filter-explained">
                                                 <i class="fa fa-question-circle"></i>
                                             </a>
                                         </label>
@@ -70,7 +71,7 @@
                                     <div class="form-group">
                                         <label for="major-select">Majors Filter:</label>
                                         <input type="hidden" id="major_filter" name="filter_majors"
-                                               value="{% for x in filters.majors %}{{ x }},{% endfor %}">
+                                               value="{{ filters.majors }}">
                                         <select id="major-select" class="form-control">
                                             {% if majors %}
                                                 <option value="">Select a major</option>
@@ -144,39 +145,25 @@
                                 <div class="col-sm-4">
                                     <div class="sub-filter-div school-filters">
                                         <label>Schools</label>
-                                        {% if filters.schools %}
-                                            <ul>
-                                            {% for x in filters.schools %}
-                                                <li>{{ x }} <span class="remove-filter-item">&times;</span></li>
-                                            {% endfor %}
-                                            </ul>
-                                        {% else %}
-                                            <span>None</span>
-                                        {% endif %}
+                                        <div class="school-filters-container">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="sub-filter-div major-filters">
                                         <label>Majors</label>
-                                        {% if filters.majors %}
-                                            <ul>
-                                            {% for x in filters.majors %}
-                                                <li>{{ x }} <span class="remove-filter-item">&times;</span></li>
-                                            {% endfor %}
-                                            </ul>
-                                        {% else %}
-                                            <span>None</span>
-                                        {% endif %}
+                                        <div class="major-filters-container">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="sub-filter-div gpa-filters">
                                         <label>GPA</label>
-                                        <span class="gpa-filter-val">{% if filters.gpa %}{{ filters.gpa }}{% else %}None{% endif %}</span>
+                                        <span class="gpa-filter-val"></span>
                                     </div>
                                     <div class="sub-filter-div saved-filters">
                                         <label>Only Saved Applications</label>
-                                        <span class="only-saved-val">{% if filters.saved_only %}True{% else %}False{% endif %}</span>
+                                        <span class="only-saved-val"></span>
                                     </div>
                                 </div>
                             </div>
@@ -259,6 +246,9 @@
     <script>
         $(function(){
             $('[data-toggle="popover"]').popover();
+            $('.gpa-filter-explained').click(function ( event ) {
+                event.preventDefault();
+            });
         });
     </script>
 {% endblock %}
@@ -277,9 +267,7 @@
     <div class="jobin-schools">
         {% for x in schools %}
             <div>
-                <div class="search-result school-result">
-                    {{ x.name }}
-                </div>
+                {{ x.name }}
             </div>
         {% endfor %}
     </div>

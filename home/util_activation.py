@@ -108,7 +108,7 @@ class ActivationUtil(BaseContainer):
 
     def __confirm_activation_key(self, key):
         try:
-            activation = JobinActivation.objects.get(key=key, user=self.__user)
+            activation = JobinActivation.objects.get(key=key)
         except ObjectDoesNotExist:
             self.add_error('Invalid activation key.')
             return None

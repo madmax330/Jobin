@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth.models import User, Group
 
 from .models import JobinProgram, JobinMajor, JobinSchool, JobinTerritory, JobinBlockedEmail, JobinRequestedEmail, \
-    JobinInvalidUser
+    JobinInvalidUser, JobinRequestedSchool
 from company.models import Company, Suggestion
 from student.models import Student
 
@@ -96,6 +96,7 @@ admin_site.register(User)
 admin_site.register(Group)
 admin_site.register(JobinMajor)
 admin_site.register(JobinSchool)
+admin_site.register(JobinRequestedSchool)
 admin_site.register(JobinProgram)
 admin_site.register(JobinTerritory)
 admin_site.register(JobinBlockedEmail)

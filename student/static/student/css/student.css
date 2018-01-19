@@ -509,6 +509,9 @@ color: #696969;
 .main-event-container label {
     padding-top: 10px;
 }
+.container {
+    padding-top: 20px;
+}
 .pagetitle {
     text-align: center;
     padding: 50px 0;
@@ -516,7 +519,7 @@ color: #696969;
     text-transform: uppercase;
     background-position: center center;
     background-size: cover;
-	margin-bottom: 50px;
+	margin-bottom: 0;
 }
 .pagetitle h1 {
     font-size: 26px;

@@ -296,8 +296,6 @@ def post_applicants(request, pk):
             'majors': HomeUtil.get_program_majors(
                 program) if not post.programs == 'All Programs' else HomeUtil.get_majors(),
             'filters': filters if filters else None,
-            'filter_schools': filters['schools'].split(',') if filters and filters['schools'] else None,
-            'filter_majors': filters['majors'].split(',') if filters and filters['majors'] else None,
             'messages': msgs,
             'applicants': 'True',
             'tab': 'posts',

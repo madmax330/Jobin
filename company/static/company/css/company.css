@@ -735,14 +735,19 @@ form#filter-form input[type="text"] {
     border-right: 0;
     color: #fff;
 }
-input.form-control.search-in::placeholder {
+input.form-control.school-search-in::placeholder {
 color:#fff;}
-.search-results {
+.school-search-results {
     width: 100%;
     display: inline-block;
     padding: 0 10px;
 }
+.school-result {
+    padding: 5px;
+    cursor: pointer;
+}
 .gpa_filter_group .fa-question-circle:before {color:#fff;}
+.popover-title{color:#000000;}
 .majors_filter_group select {
     background: transparent;
     border-top: 0;
@@ -763,6 +768,7 @@ form#filter-form .apply-filter-button, form#filter-form .clear-filter-button {
     padding: 0;
     margin: 0;
 }
+
 .filter-button {
     background: transparent;
     color: #fff;
@@ -823,6 +829,7 @@ span.remove-filter-item {
     color: #ff8352;
     font-size: 14px;
     padding: 5px 9px;
+    cursor: pointer;
 }
 .post-applicant .panel-heading {
     margin-bottom: 15px;

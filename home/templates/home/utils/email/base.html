@@ -10,37 +10,39 @@
         html, body {
             height: 100%;
         }
-        body{
-            background-color: #f4f4f4;
+
+        body {
             font-family: 'Helvetica', sans-serif;
         }
-        .content-div{
+        .content-div {
             position: absolute;
             min-width: 500px;
             min-height: 500px;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            color: #ffffff;
             padding: 16px;
-            background-color: #FFFFFF;
+            background: rgb(255, 153, 102);
+            /* Old browsers */
+            background: -moz-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+            /* FF3.6-15 */
+            background: -webkit-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+            /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+            /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff9966', endColorstr='#ff5e62', GradientType=1);
         }
-        .jobin-image{
-            position:absolute;
-            top: 0;
-            max-height: 200px;
-            left: 50%;
-            transform: translate(-50%, 0);
+        .content-div a{
+            color: #ffffff;
         }
     </style>
     {% block style %}{% endblock %}
 </head>
 <body>
-    <div class="jobin-image">
-        <img src="{% static 'home/images/jobinbluesmall.gif' %}">
-    </div>
-    <div class="content-div">
-        {% block content %}
-        {% endblock %}
-    </div>
+<div class="content-div">
+    {% block content %}
+    {% endblock %}
+</div>
 </body>
 </html>

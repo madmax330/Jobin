@@ -10,7 +10,7 @@
     </div>
 {% endblock %}
 
-{% block content %}
+{% block messages %}
     {% if not email_verified %}
         <div>
             <div class="w3-container message-warning w3-display-container">
@@ -21,6 +21,9 @@
             </div>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block content %}
     <div>
         <div class="student-info-container">
             <header class="w3-container user-info-header">

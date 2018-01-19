@@ -8,6 +8,14 @@
     </div>
 {% endblock %}
 
+{% block messages %}
+    {% if application.cover_submitted %}
+        <div class="w3-container message-success">
+            <p>Your cover letter for this post was successfully submitted.</p>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div>
         {% if application.cover_requested and not application.cover_submitted %}
@@ -29,9 +37,10 @@
                         </p>
                     </div>
                 {% endif %}
-                <form id="coverForm" action="{% url 'post:submit_cover' pk=application.id %}" method="post" enctype="multipart/form-data">
+                <form id="coverForm" action="{% url 'post:submit_cover' pk=application.id %}" method="post"
+                      enctype="multipart/form-data">
                     {% csrf_token %}
-                    <textarea rows="10" class="w3-input w3-border" name="cover_letter"
+                    <textarea rows="10" class="w3-input w3-border" name="cover"
                               placeholder="Cover Letter Here..."></textarea>
                     <div class="w3-padding-16">
                         <button class="w3-btn btn-success" type="submit">
@@ -39,19 +48,14 @@
                         </button>
                     </div>
                     <script>
-                        $(function(){
-                            $('#coverForm').submit(function( event ) {
+                        $(function () {
+                            $('#coverForm').submit(function (event) {
                                 event.preventDefault();
                                 send_post($(this).attr('action'), $(this));
                             });
                         });
                     </script>
                 </form>
-            </div>
-        {% endif %}
-        {% if application.cover_submitted %}
-            <div class="w3-container message-success">
-                <p>Your cover letter for this post was successfully submitted.</p>
             </div>
         {% endif %}
         <div>
@@ -72,9 +76,12 @@
                 <hr/>
                 <div class="w3-container">
                     <label><u>Start Date</u>:</label><span> {{ post.start_date }}</span><br/>
-                    {% if post.end_date %}<label><u>End Date</u>:</label><span> {{ post.end_date }}</span><br/>{% endif %}
-                    <label><u>Wage</u>:</label><span> {% if post.wage %}{{ post.wage }}$/hr{% else %}N/A{% endif %}</span><br/>
-                    <label><u>Number of positions</u>:</label><span> {% if post.openings %}{{ post.openings }}{% else %}N/A{% endif %}</span><br/>
+                    {% if post.end_date %}<label><u>End Date</u>:</label><span> {{ post.end_date }}</span>
+                        <br/>{% endif %}
+                    <label><u>Wage</u>:</label><span> {% if post.wage %}{{ post.wage }}$/hr{% else %}
+                    N/A{% endif %}</span><br/>
+                    <label><u>Number of positions</u>:</label><span> {% if post.openings %}{{ post.openings }}{% else %}
+                    N/A{% endif %}</span><br/>
                     <label><u>Application Deadline</u>:</label><span> {{ post.deadline }}</span><br/>
                     <label><u>Qualifications</u>:</label><br/>
                     <span>{{ post.qualifications | linebreaksbr }}</span><br/>

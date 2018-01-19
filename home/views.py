@@ -39,13 +39,14 @@ def login_student(request):
         if t > 0:
             return redirect('student:index')
         elif t < 0:
-            return render(request, 'home/utils/email/verify.html', info)
+            return render(request, 'home/utils/email/verify.html', {'email': info['email']})
         else:
             errors.append({
                 'code': 'danger',
                 'message': str(user.get_errors())
             })
-            return render(request, 'home/index.html', {'messages': errors, 'student_email': info['email'], 'panel': 'student'})
+            return render(request, 'home/index.html',
+                          {'messages': errors, 'student_email': info['email'], 'panel': 'student'})
 
     raise Http404
 
@@ -60,13 +61,14 @@ def login_company(request):
         if t > 0:
             return redirect('company:index')
         elif t < 0:
-            return render(request, 'home/utils/email/verify.html', info)
+            return render(request, 'home/utils/email/verify.html', {'email': info['email']})
         else:
             errors.append({
                 'code': 'danger',
                 'message': str(user.get_errors())
             })
-            return render(request, 'home/index.html', {'messages': errors, 'company_email': info['email'], 'panel': 'company'})
+            return render(request, 'home/index.html',
+                          {'messages': errors, 'company_email': info['email'], 'panel': 'company'})
 
     raise Http404
 
@@ -121,9 +123,9 @@ def register_student(request):
         try:
             with transaction.atomic():
                 if user.new_user(info, True):
-                    return redirect('student:new')
-                else:
-                    raise IntegrityError
+                    if user.log_user_in(request, info):
+                        return redirect('student:new')
+                raise IntegrityError
         except IntegrityError:
             errors.append({
                 'code': 'danger',
@@ -160,21 +162,16 @@ def activate(request, key):
 def new_verification(request):
     if request.method == 'POST':
         user = UserUtil(request.user)
-        rq = RequestUtil()
-        i = rq.get_login_info(request)
-        if i:
+        info = request.POST.copy()
 
-            try:
-                with transaction.atomic():
-                    if user.new_activation_key(i):
-                        return render(request, 'home/utils/email/verify.html', {'msg': 'New link sent successfully.'})
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                return render(request, 'home/utils/email/verify.html', {'errors': str(user.get_errors())})
-
-        else:
-            return render(request, 'home/utils/email/verify.html', {'errors': str(rq.get_errors())})
+        try:
+            with transaction.atomic():
+                if user.new_activation_key(info):
+                    return render(request, 'home/utils/email/verify.html', {'msg': 'New link sent successfully.'})
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            return render(request, 'home/utils/email/verify.html', {'errors': str(user.get_errors()), 'email': info['email']})
 
     raise Http404
 
@@ -257,7 +254,6 @@ class ChangeUserInfo(LoginRequiredMixin, View):
 
 
 def new_password_view(request, ut):
-
     if request.method == 'POST':
         user = UserUtil(request.user)
         info = request.POST.copy()
