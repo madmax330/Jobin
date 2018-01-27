@@ -118,8 +118,8 @@
                                 {% endif %}
                                 <h5>{{ x.name }}</h5>
                                 <label>Address:</label><span> {{ x.address }}</span><br/>
-                                <label>Website:</label><a target="_blank"
-                                                          href="http://{{ x.website }}"> {{ x.website }}</a>
+                                <label>Website:</label>{% if x.website %}<a target="_blank"
+                                                          href="http://{{ x.website }}"> {{ x.website }}</a>{% else %} N/A{% endif %}
                             </div>
                             <div class="w3-container resumes-section">
                                 <h5>Resumes</h5>

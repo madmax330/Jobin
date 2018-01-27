@@ -81,7 +81,7 @@ class NewStudentView(LoginRequiredMixin, View):
 
         except IntegrityError:
             context['student'] = info
-            context['errors'] = student.get_form().errors
+            context['errors'] = student.get_form_errors()
 
         return render(request, self.template_name, context)
 
@@ -120,13 +120,13 @@ class EditStudentView(LoginRequiredMixin, View):
                 if student.edit_student(info):
                     m = 'Student profile edited successfully.'
                     MessageCenter.new_message('student', student.get_student(), 'success', m)
-                    return redirect('student:index')
+                    return redirect('student:profile')
                 else:
                     raise IntegrityError
 
         except IntegrityError:
             context['student'] = info
-            context['errors'] = student.get_form().errors
+            context['errors'] = student.get_form_errors()
 
         return render(request, self.template_name, context)
 

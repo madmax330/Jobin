@@ -106,6 +106,7 @@ class ResumeContainer(BaseContainer):
 
     def edit_resume(self, info):
         info['student'] = self.__student.id
+        info['is_active'] = self.__resume.is_active
         info['last_updated'] = timezone.now()
         self._form = ResumeForm(info, instance=self.__resume)
         if self._form.is_valid():

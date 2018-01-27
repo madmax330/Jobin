@@ -63,7 +63,7 @@
                             <th></th>
                         </tr>
                         {% for x in applications %}
-                            <tr {% if x.cover_requested %}class="tr-cover-requested"{% endif %}>
+                            <tr class="{% if x.cover_opened %}tr-cover-read{% elif x.cover_submitted %}tr-cover-submitted{% elif x.cover_requested %}tr-cover-requested{% endif %}">
                                 <td class="post-title">
                                     <a href="{% url 'post:student_details' pk=x.id %}">{{ x.post_title }}</a>
                                 </td>

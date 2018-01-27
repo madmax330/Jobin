@@ -232,7 +232,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <h3 class="text-center">COMPANY REGISTER</h3>
-                        <form action="{% url 'home:register_company' %}" method="post">
+                        <form action="{% url 'home:register_company' %}" method="post" class="registration-form">
                             {% csrf_token %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Email" name="email" value="{{ company_register_email }}">
@@ -243,6 +243,13 @@
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Confirm Password"
                                        name="confirm_password">
+                            </div>
+                            <div class="form-group checkbox">
+                                <label><input type="checkbox" class="terms-and-policy">
+                                I agree to the
+                                    <a href="{% url 'home:terms' %}" target="_blank">Terms and Conditions</a> and
+                                    <a href="{% url 'home:policy' %}" target="_blank">Privacy Policy</a>
+                                </label>
                             </div>
                             <div>
                                 <button class="btn btn-default login-btn">REGISTER</button>
@@ -272,7 +279,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <h3 class="text-center">STUDENT REGISTER</h3>
-                        <form action="{% url 'home:register_student' %}" method="post">
+                        <form action="{% url 'home:register_student' %}" method="post" class="registration-form">
                             {% csrf_token %}
                             <div class="form-group">
                                 <input class="form-control" placeholder="Email" name="email" value="{{ student_register_email }}">
@@ -284,6 +291,13 @@
                                 <input type="password" class="form-control" placeholder="Confirm Password"
                                        name="confirm_password">
                             </div>
+                            <div class="form-group checkbox">
+                                <label><input type="checkbox" class="terms-and-policy">
+                                I agree to the
+                                    <a href="{% url 'home:terms' %}" target="_blank">Terms and Conditions</a> and
+                                    <a href="{% url 'home:policy' %}" target="_blank">Privacy Policy</a>
+                                </label>
+                            </div>
                             <div>
                                 <button class="btn btn-default login-btn">REGISTER</button>
                             </div>
@@ -292,7 +306,6 @@
                             <span>Or register using:</span>
                             <div class="social-media-icons">
                                 <div class="social-icon"><i class="fa fa-facebook"></i></div>
-                                <div class="social-icon"><i class="fa fa-google-plus"></i></div>
                                 <div class="social-icon"><i class="fa fa-linkedin"></i></div>
                             </div>
                         </div>
@@ -704,8 +717,8 @@
         </div>
         <p class="text-center">
             <span><a href="#">about us</a></span> |
-            <span><a href="#">terms and conditions</a></span> |
-            <span><a href="#">privacy policy</a></span> |
+            <span><a href="{% url 'home:terms' %}">terms and conditions</a></span> |
+            <span><a href="{% url 'home:policy' %}">privacy policy</a></span> |
             <span><a href="#">investor information</a></span> |
             <span><a href="#">contact us</a></span>
         </p>
@@ -776,6 +789,20 @@
                 if(panel === 'company')
                     open_block('company-login');
             }
+
+            $('.registration-form').submit(function() {
+                let check = $(this).find('.terms-and-policy');
+                if(!check.prop('checked')){
+                    new_notification({
+                        code: 'danger',
+                        message: 'You must agree to the Terms and Conditions and Privacy Policy to register.'
+                    });
+                    return false
+                }
+                else{
+                    return true;
+                }
+            });
 
         });
     </script>

@@ -27,7 +27,6 @@
         <div class="panel-body">
             <form id="event-form" method="post" action="">
                 {% csrf_token %}
-
                 <div class="form-group">
                     <label class="required" for="event_title">Title:</label>
                     {% if errors.title %}

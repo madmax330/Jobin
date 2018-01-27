@@ -44,6 +44,7 @@
                 <label>Program:</label><span>{{ student.program }}</span><br/>
                 <label>Phone:</label><span>{% if student.phone %}{{ student.phone }}{% else %}N/A{% endif %}</span><br/>
                 <label>Email:</label><span>{{ student.email }}</span><br/>
+                <label>LinkedIn:</label><span>{% if student.linkedin %}{{ student.linkedin }}{% else %}N/A{% endif %}</span><br/>
                 <label>Address:</label><span>{{ student.address }}, {{ student.city }}, {{ student.state }}, {{ student.zipcode }}</span>
             </div>
             <div class="w3-container">

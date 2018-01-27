@@ -22,8 +22,8 @@ def company_index(request):
         if company.get_company() is None:
             return redirect('company:new')
         msgs = MessageCenter.get_messages('company', company.get_company())
-        posts = Pagination(company.get_posts(), 15)
-        expired_posts = Pagination(company.get_expired_posts(), 15)
+        posts = Pagination(company.get_posts(), 10)
+        expired_posts = Pagination(company.get_expired_posts(), 10)
         context = {
             'company': company.get_company(),
             'posts': posts.get_page(post_page),
@@ -386,7 +386,7 @@ class RecoverPostView(LoginRequiredMixin, View):
 
         except IntegrityError:
             context['post'] = info
-            context['errors'] = company.get_errors()
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 

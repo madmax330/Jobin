@@ -90,7 +90,7 @@
                         </div>
                     {% endif %}
                     <input id="student_phone" class="w3-input w3-border" type="text"
-                           name="phone" value="{{ student.phone }}">
+                           name="phone" value="{% if student.phone %}{{ student.phone }}{% endif %}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_address">Address:</label>
@@ -158,12 +158,12 @@
                     {% endif %}
                     <p>
                         <input id="is-grad" class="w3-radio" type="radio" name="graduate" value="True"
-                               {% if student.graduate or not student %}checked="checked"{% endif %}>
+                               {% if not student.graduate or not student.graduate == 'False' %}checked="checked"{% endif %}>
                         <label for="is-grad">Yes</label>
                     </p>
                     <p>
                         <input id="not-grad" class="w3-radio" type="radio" name="graduate" value="False"
-                                {% if student and not student.graduate %}checked="checked"{% endif %}>
+                                {% if student.graduate and student.graduate == 'False' %}checked="checked"{% endif %}>
                         <label for="not-grad">No</label>
                     </p>
                 </div>
@@ -174,7 +174,8 @@
                             {{ errors.linkedin }}
                         </div>
                     {% endif %}
-                    <input id="student_linkedin" class="w3-input w3-border" type="text" name="linkedin">
+                    <input id="student_linkedin" class="w3-input w3-border" type="text"
+                           name="linkedin" value="{% if student.linkedin %}{{ student.linkedin }}{% endif %}">
                 </div>
                 <div class="form-group">
                     <label for="student_work">
@@ -182,17 +183,17 @@
                     </label>
                     <p>
                         <input id="can-work" class="w3-radio" type="radio" name="work_eligible" value="True"
-                               {% if student.work_eligible or not student %}checked="checked"{% endif %}>
+                               {% if not student.work_eligible or not student.work_eligible == 'False' %}checked="checked"{% endif %}>
                         <label for="can-work">Yes</label>
                     </p>
                     <p>
                         <input id="cant-work" class="w3-radio" type="radio" name="work_eligible" value="False"
-                                {% if student and not student.work_eligible %}checked="checked"{% endif %}>
+                                {% if student.work_eligible and student.work_eligible == 'False' %}checked="checked"{% endif %}>
                         <label for="cant-work">No</label>
                     </p>
                 </div>
                 <div>
-                    {% if new %}<a href="{% url 'student:profile' %}" class="w3-btn btn-default">Cancel</a>{% endif %}
+                    {% if not new %}<a href="{% url 'student:profile' %}" class="w3-btn btn-default">Cancel</a>{% endif %}
                     <button class="w3-btn btn-success" type="submit">Submit</button>
                 </div>
             </form>

@@ -96,7 +96,7 @@ class StudentContainer(BaseContainer):
             self.add_error('School name and country must be specified.')
             return False
         info['name'] = info['name'].lower()
-        requests = JobinRequestedSchool.objects.filter(name=info['name'])
+        requests = JobinRequestedSchool.objects.filter(name=info['name'], country=info['country'])
         if requests.count():
             school = requests.first()
             school.count = school.count + 1

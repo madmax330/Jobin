@@ -1,26 +1,18 @@
 
 
 function isChrome() {
-    let isChromium = window.chrome,
-        winNav = window.navigator,
-        vendorName = winNav.vendor,
-        isOpera = winNav.userAgent.indexOf("OPR") > -1,
-        isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-        isIOSChrome = winNav.userAgent.match("CriOS");
+    // Chrome 1+
+    return !!window.chrome && !!window.chrome.webstore;
+}
 
-    if (isIOSChrome) {
-        return true;
-    } else if (isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera === false && isIEedge === false) {
-        return true;
-    } else {
-        return false;
-    }
+function isFireFox() {
+    return typeof InstallTrigger !== 'undefined';
 }
 
 function browser_alert(){
-    if(!isChrome()) {
+    if(!(isChrome() || isFireFox())) {
         if (!check_cookie()) {
-            alert('You are not using Google Chrome!!\nFor better results we suggest that you use Google Chrome as your browser for better results. \n\nThe Jobin Team.');
+            alert('You are not using Google Chrome or Firefox!!\nFor better results we suggest that you use Google Chrome or Firefox as your browser for better results. \n\nThe Jobin Team.');
             set_cookie();
         }
     }
@@ -46,4 +38,27 @@ function set_cookie(){
     d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
     let expires = "expires="+d.toUTCString();
     document.cookie = 'jobin_browser_alert' + "=" + 'alerted' + ";" + expires + ";path=/";
+}
+
+function check_browsers(){
+    // Opera 8.0+
+    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+    // Firefox 1.0+
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+
+    // Safari 3.0+ "[object HTMLElementConstructor]"
+    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+    // Internet Explorer 6-11
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+    // Edge 20+
+    var isEdge = !isIE && !!window.StyleMedia;
+
+    // Chrome 1+
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+    // Blink engine detection
+    var isBlink = (isChrome || isOpera) && !!window.CSS;
 }

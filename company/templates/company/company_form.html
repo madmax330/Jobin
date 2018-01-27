@@ -143,12 +143,12 @@
                     {% endif %}
                     <label class="radio-inline">
                         <input type="radio" name="is_startup" value="True"
-                        {% if company.is_startup %}checked="checked"{% endif %}/>
+                        {% if company.is_startup and not company.is_startup == 'False' %}checked="checked"{% endif %}/>
                         Yes
                     </label>
                     <label class="radio-inline">
                         <input type="radio" name="is_startup" value="False"
-                        {% if not company.is_startup %}checked="checked"{% endif %}/>
+                        {% if not company.is_startup or company.is_startup == 'False' %}checked="checked"{% endif %}/>
                         No
                     </label>
                 </div>

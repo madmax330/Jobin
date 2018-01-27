@@ -8,9 +8,11 @@ $(function(){
 
     $('.date-input').each(function(){
         let date = $(this).data('date');
-        if(date)
+        if(date) {
             $(this).val(get_input_date(date));
-        if(!isChrome()){
+            console.log('date: ' + get_input_date(date) + ' value: ' + $(this).val());
+        }
+        if(!(isChrome() || isFireFox())){
             $(this).datepicker();
         }
     });
@@ -21,6 +23,12 @@ $(function(){
             $(this).val(get_input_time(time));
         if(!isChrome()){
             $(this).siblings('label').append(' (hh:mm AM/PM)');
+        }
+    });
+
+    $('.date-input').click(function ( event ) {
+        if(!(isChrome() || isFireFox())){
+            event.preventDefault();
         }
     });
 

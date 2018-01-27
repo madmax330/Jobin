@@ -58,6 +58,14 @@
                 </form>
             </div>
         {% endif %}
+        {% if application.cover_submitted %}
+            <div>
+                <h4>Cover Letter:</h4>
+            </div>
+            <p>
+                {{ application.cover | linebreaksbr }}
+            </p>
+        {% endif %}
         <div>
             <div class="w3-container">
                 <h4>{{ post.title }}</h4>
@@ -69,8 +77,12 @@
                     <span> {{ post.company.address }}, {{ post.company.city }}, {{ post.company.state }}</span><br/>
                     <label><u>Website</u>:</label>
                     <span>
-                    <a target="_blank" href="{{ post.company.website }}">{{ post.company.website }}</a>
-                </span>
+                        {% if post.company.website %}
+                            <a target="_blank" href="{{ post.company.website }}">{{ post.company.website }}</a>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
                     <br/>
                 </div>
                 <hr/>
@@ -83,10 +95,18 @@
                     <label><u>Number of positions</u>:</label><span> {% if post.openings %}{{ post.openings }}{% else %}
                     N/A{% endif %}</span><br/>
                     <label><u>Application Deadline</u>:</label><span> {{ post.deadline }}</span><br/>
-                    <label><u>Qualifications</u>:</label><br/>
-                    <span>{{ post.qualifications | linebreaksbr }}</span><br/>
-                    <label><u>Responsibilities</u>:</label><br/>
-                    <span>{{ post.responsibilities| linebreaksbr }}</span><br/>
+                    {% if post.why_us %}
+                        <label>Why Us:</label>
+                        <p>{{ post.why_us | linebreaksbr }}</p>
+                    {% endif %}
+                    <label><u>Qualifications</u>:</label>
+                    <p>{{ post.qualifications | linebreaksbr }}</p>
+                    <label><u>Responsibilities</u>:</label>
+                    <p>{{ post.responsibilities | linebreaksbr }}</p>
+                    {% if post.benefits %}
+                        <label>Benefits:</label>
+                        <p>{{ post.benefits | linebreaksbr }}</p>
+                    {% endif %}
                     <div>
                         <a href="{% url 'student:index' %}" class="w3-btn btn-default">Back</a>
                     </div>

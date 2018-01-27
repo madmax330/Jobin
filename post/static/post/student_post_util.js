@@ -10,6 +10,17 @@
 
 let slideIndex = 1;
 
+document.onkeydown = function(e) {
+    switch (e.keyCode) {
+        case 37:
+            plusDivs(1);
+            break;
+        case 39:
+            plusDivs(-1);
+            break;
+    }
+};
+
 function plusDivs(n) {
     increment_post_count($('.viewed-post').find('.increment-url').html().toString().trim());
     showDivs(slideIndex += n);

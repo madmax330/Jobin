@@ -89,6 +89,9 @@ class RequestUtil(BaseContainer):
                     'old_password': old_password,
                     'email': False
                 }
+            else:
+                self.add_error('Passwords do not match.')
+                return None
 
         self.add_error('Invalid request.')
         return None

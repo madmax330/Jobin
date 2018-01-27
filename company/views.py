@@ -104,7 +104,7 @@ class EditCompanyView(LoginRequiredMixin, View):
                 if company.edit_company(request.POST.copy()):
                     m = 'Company profile edited successfully.'
                     MessageCenter.new_message('company', company.get_company(), 'success', m)
-                    return redirect('company:index')
+                    return redirect('company:profile')
                 else:
                     raise IntegrityError
 
@@ -122,11 +122,14 @@ def profile_view(request):
         company = CompanyContainer(request.user)
         if company.get_company() is None:
             return redirect('company:new')
+        msgs = MessageCenter.get_messages('company', company.get_company())
         context = {
             'user': company.get_user(),
             'company': company.get_company(),
             'tab': 'profile',
+            'messages': msgs,
         }
+        MessageCenter.clear_msgs(msgs)
         return render(request, 'company/profile.html', context)
 
     raise Http404
@@ -230,7 +233,7 @@ def delete_logo(request):
             m = str(company.get_errors())
             MessageCenter.new_message('company', company.get_company(), 'danger', m)
 
-        return redirect('company:index')
+        return redirect('company:profile')
 
     raise Http404
 

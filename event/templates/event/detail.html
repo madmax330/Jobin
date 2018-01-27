@@ -24,8 +24,9 @@
             <label>Address:</label>
             <span> {{ event.address }}, {{ event.city }}, {{ event.state }}, {{ event.zipcode }}</span><br/>
             <label>Website:</label><span> {{ event.website }}</span><br/>
-            <label>Description:</label><p>{{ event.description }}</p>
+            <label>Description:</label><p>{{ event.description | linebreaksbr }}</p>
             <div>
+                <a href="{% url 'event:company_events' %}" class="btn btn-default">Back to list</a>
                 <button class="warning-open btn btn-danger" data-id="close-event" data-name="{{ event.title }}"
                         data-url="{% url 'event:close' pk=event.id %}" data-redirect="{% url 'event:company_events' %}">
                     Cancel Event
@@ -33,7 +34,6 @@
             </div>
         </div>
     </div>
-    <a href="{% url 'event:company_events' %}" class="btn btn-default">Back to list</a>
 {% endblock %}
 
 

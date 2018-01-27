@@ -78,7 +78,7 @@ function display_modal_message(msg, code){
     let msgs = $('.modal-messages');
 
     let html = `<div class="w3-container w3-padding message-${code} w3-display-container">
-                    <span onclick="this.parentElement.style.display='none'"
+                    <span onclick="clear_modal_messages()"
                         class="w3-button w3-display-topright">&times;</span>
                     <p>${msg}</p>
                 </div>`;
@@ -96,4 +96,7 @@ function show(obj){
         obj.removeClass('w3-hide');
 }
 
+function clear_modal_messages(){
+    $('.modal-messages').html('');
+}
 

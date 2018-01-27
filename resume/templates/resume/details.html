@@ -14,6 +14,7 @@
     <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/jquery.fileupload.js' %}"></script>
     <script type="text/javascript" src="{% static 'resume/resume_util.js' %}"></script>
     <script type="text/javascript" src="{% static 'resume/file_upload.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
 {% endblock %}
 
 {% block page_body_class %}resume-index resume-overview{% endblock %}
@@ -33,41 +34,38 @@
             <label>GPA:</label><span class="gpa"> {% if resume.gpa %}{{ resume.gpa }}{% endif %}</span><br/>
             <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
             <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
-            <a href="{% url 'post:student_app_pdf' rk=resume.id %}" target="_blank" class="w3-btn btn-default">Download PDF Resume</a>
-            <div>
+            <label>Transcript:</label>
+            <span>
                 {% if student.transcript %}
-                    <label>Transcript:</label>
                     <a href="{{ student.transcript.url }}" target="_blank">{{ student.transcript.name }}</a>
-                    <br/>
-                    <a href="{% url 'student:delete_transcript' pk=resume.id %}"
-                       class="w3-btn btn-danger delete-transcript">
-                        Delete Transcript
-                        <span class="spinner w3-hide file-progress"><i class="fa fa-spinner fa-spin"></i></span>
-                    </a>
-                    <button class="w3-btn btn-default edit-resume"
-                            data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
-                        Edit resume info
-                    </button>
-                {% else %}
-                    <label>Transcript:</label>
-                    <span> No transcript uploaded</span>
-                    <form class="w3-hide">
-                        {% csrf_token %}
-                        <input id="transcriptupload" type="file" name="transcript"
-                               data-url="{% url 'student:add_transcript' %}">
-                    </form>
-                    <div>
-                        <button class="w3-btn btn-default upload-transcript" type="button">
-                            Upload Transcript
-                            <span class="spinner w3-hide file-progress"><i class="fa fa-spinner fa-spin"></i></span>
-                        </button>
-                        <button class="w3-btn btn-default edit-resume"
-                                data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
-                            Edit resume info
-                        </button>
-                    </div>
-                {% endif %}
-            </div>
+                {% else %}No transcript uploaded.{% endif %}</span><br/>
+            {% if student.transcript %}
+                <a href="{% url 'student:delete_transcript' pk=resume.id %}"
+                   class="w3-btn btn-default delete-transcript">
+                    Delete Transcript
+                    <span class="spinner w3-hide file-progress"><i class="fa fa-spinner fa-spin"></i></span>
+                </a>
+                <button class="w3-btn btn-default edit-resume"
+                        data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
+                    Edit resume info
+                </button>
+            {% else %}
+                <form class="w3-hide">
+                    {% csrf_token %}
+                    <input id="transcriptupload" type="file" name="transcript"
+                           data-url="{% url 'student:add_transcript' %}">
+                </form>
+                <button class="w3-btn btn-default upload-transcript" type="button">
+                    Upload Transcript
+                    <span class="spinner w3-hide file-progress"><i class="fa fa-spinner fa-spin"></i></span>
+                </button>
+                <button class="w3-btn btn-default edit-resume"
+                        data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
+                    Edit resume info
+                </button>
+            {% endif %}
+            <a href="{% url 'post:student_app_pdf' rk=resume.id %}" target="_blank" class="w3-btn btn-default">Download
+                PDF Resume</a>
         </div>
         <hr/>
         <div class="panel panel-default panel-primary">
@@ -241,7 +239,7 @@
                                 <td class="name">{{ x.name }}</td>
                                 <td class="level">{{ x.level }}</td>
                                 <td class="description">{% if x.description %}{{ x.description }}{% endif %}</td>
-                                <td>
+                                <td style="min-width: 100px;">
                                     <a href="#" data-url="{% url 'resume:edit_skill' pk=x.id %}" class="edit-skill">
                                         Edit</a>
                                     | <a href="{% url 'resume:delete_skill' rk=resume.id pk=x.id %}">Delete</a>

@@ -4,7 +4,9 @@
 
 {% load staticfiles %}
 {% block scripts %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="{% static 'resume/resume_util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
 {% endblock %}
 
 {% block page_body_class %}resume-index{% endblock %}
@@ -127,7 +129,7 @@
             {% else %}
                 <div class="w3-container">
                     <p>
-                        No resumes found. <a href="#" class="new-resume" data-url="{% url 'resume:new' %}">Click Here</a> to add a resume.
+                        No resumes found.
                     </p>
                 </div>
             {% endif %}

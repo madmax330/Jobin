@@ -15,6 +15,10 @@ $(function(){
         modal.find('.suggestion-info-date').html(parent.find('.date').html().toString().trim());
         modal.find('.suggestion-info-topic').html(parent.find('.topic').html().toString().trim());
         modal.find('.suggestion-info-suggestion').html(parent.find('.suggestion').html().toString().trim());
+        let comments = parent.find('.comments').html();
+        if(comments) {
+            modal.find('.suggestion-info-comments').html(comments.toString().trim());
+        }
         modal.modal('toggle');
     });
 

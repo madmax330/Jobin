@@ -35,11 +35,7 @@ class StudentEventContainer(BaseContainer):
             self._form.save()
             event.times_saved += 1
             event.save()
-            m = 'Event ' + event.title + ' successfully added to saved events.'
-            if self.new_message(True, self.__student, m, 0):
-                return True
-            else:
-                return False
+            return True
         else:
             self.save_form()
             self.add_form_errors()
@@ -153,8 +149,12 @@ class CompanyEventContainer(BaseContainer):
     def close_event(self):
         self.__event.active = False
         self.__event.save()
-        m = 'Event "' + self.__event.title + '" closed on ' + str(timezone.now().date()) + '.'
+        temp = self.get_saved_events()
+        m = 'Event "' + self.__event.title + '" cancelled on ' + str(timezone.now().date()) + '.'
         if self.new_message(False, self.__company, m, 2) and self.new_notification(False, self.__company, m, 100):
+            for x in temp:
+                if not (self.new_message(True, x.student.user, m, 2)):
+                    return False
             return True
         else:
             return False
@@ -170,8 +170,11 @@ class CompanyEventContainer(BaseContainer):
             if self.new_message(False, self.__company, m, 0):
                 return True
             else:
+                print('no message')
                 return False
         else:
+            print('form invalid')
+            print(str(self._form.errors))
             self.save_form()
             self.add_form_errors()
             return False
@@ -215,6 +218,9 @@ class CompanyEventContainer(BaseContainer):
         else:
             self.add_error('No expired events found.')
             return []
+
+    def get_saved_events(self):
+        return list(SavedEvent.objects.filter(event=self.__event))
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
 

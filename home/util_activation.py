@@ -25,7 +25,7 @@ class ActivationUtil(BaseContainer):
         self._container_name = 'Activation Util'
         self.__user = user
 
-    def send_activation_email(self):
+    def send_activation_email(self, student):
         if isinstance(self.__user, AnonymousUser):
             self.add_error('User not authenticated.')
             return False
@@ -33,7 +33,7 @@ class ActivationUtil(BaseContainer):
         if self.__new_activation(activation_key):
             subject = 'Jobin Account Verification'
             template = 'home/utils/email/activate_email.html'
-            url = 'https://jobin.ca/activate/' + activation_key + '/'
+            url = 'https://jobin.ca/activate/' + ('student/' if student else 'company/') + activation_key + '/'
             html = render_to_string(template, {'link': url})
             text_val = strip_tags(html)
 
@@ -170,7 +170,7 @@ class ActivationUtil(BaseContainer):
                     self.add_error('Error sending email: ' + str(e))
                     return False
             return False
-        self.add_error('School Email not recognized.')
+        self.add_error('School email not recognized for "' + school.name + '".')
         return False
 
     def verify_student_school(self, key):

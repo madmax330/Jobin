@@ -113,7 +113,6 @@ $(function () {
         $('.first-message').each(function () {
             show($(this));
         });
-        $('#school_name').val($('.student-school').html().toString().trim());
         $('#school_program').val($('.student-program').html().toString().trim());
         $('#school_level').val('university');
     }
@@ -152,6 +151,7 @@ $(function () {
     $('.new-resume').click(function () {
         show($('.other-resumes'));
         $('#resume-form').attr('action', $(this).data('url'));
+        clear_form('resume-form');
         open_modal('resume-modal');
     });
 
@@ -184,6 +184,7 @@ $(function () {
     /* LANGUAGE FUNCTIONS */
 
     $('.new-language').click(function () {
+        clear_form('language-form');
         open_modal('language-modal');
     });
 
@@ -233,6 +234,7 @@ $(function () {
     /* SCHOOL FUNCTIONS */
 
     $('.new-school').click(function () {
+        clear_form('school-form');
         open_modal('school-modal');
     });
 
@@ -273,11 +275,16 @@ $(function () {
         if (program)
             $('#school_program').val(program.toString().trim());
 
+        let e = $('#school_end');
         if (end.toLowerCase() === 'current school') {
-
+            e.val('');
+            e.prop('disabled', true);
+            $('#school_current').prop('checked', true);
         }
         else {
-            $('#school_end').val(get_input_date(end));
+            e.prop('disabled', false);
+            e.val(get_input_date(end));
+            $('#school_current').prop('checked', false);
         }
 
         $('#school-form').attr('action', $(this).data('url'));
@@ -307,6 +314,7 @@ $(function () {
     /* EXPERIENCE FUNCTIONS */
 
     $('.new-experience').click(function () {
+        clear_form('experience-form');
         open_modal('experience-modal');
     });
 
@@ -349,14 +357,16 @@ $(function () {
         if (description)
             $('#experience_description').val(description.toString().trim().replace('<br/>', '\n'));
 
+        let e = $('#experience_end');
         if (end.toLowerCase() === 'current job') {
-            let e = $('#experience_end');
-            e.prop('disabled',true);
             e.val('');
+            e.prop('disabled',true);
             $('#experience_current').prop('checked', true);
         }
         else {
-            $('#experience_end').val(get_input_date(end));
+            e.prop('disabled', false);
+            e.val(get_input_date(end));
+            $('#experience_current').prop('checked', false);
         }
 
         $('#experience-form').attr('action', $(this).data('url'));
@@ -386,6 +396,7 @@ $(function () {
     /* AWARD FUNCTIONS */
 
     $('.new-award').click(function () {
+        clear_form('award-form');
         open_modal('award-modal');
     });
 
@@ -439,6 +450,7 @@ $(function () {
     /* SKILL FUNCTIONS */
 
     $('.new-skill').click(function () {
+        clear_form('skill-form');
         open_modal('skill-modal');
     });
 
@@ -491,6 +503,7 @@ $(function () {
     /* REFERENCES FUNCTIONS */
 
     $('.new-reference').click(function() {
+        clear_form('reference-form');
         open_modal('reference-modal');
     });
 

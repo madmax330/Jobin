@@ -13,7 +13,8 @@ urlpatterns = [
     url(r'^register/student/$', views.register_student, name='register_student'),
     url(r'^register/company/$', views.register_company, name='register_company'),
     url(r'^verify/$', views.verify, name='verify'),
-    url(r'^activate/(?P<key>.+)/$', views.activate, name='activate'),
+    url(r'^activate/company/(?P<key>.+)/$', views.activate_company, name='activate_company'),
+    url(r'^activate/student/(?P<key>.+)/$', views.activate_student, name='activate_student'),
     url(r'^new-activation/$', views.new_verification, name='new_activation'),
     url(r'^new/password/(?P<ut>\w+)/$', views.new_password_view, name='new_password'),
 

@@ -44,8 +44,8 @@
                                name="name">
                     </div>
                     <div class="form-group">
-                        <label for="language_level">Level:</label>
-                        <select id="language_level" name="level" class="w3-input w3-border">
+                        <label for="language_level" class="required">Level:</label>
+                        <select id="language_level" name="level" class="w3-input w3-border skip-form-clear">
                             <option value="native">Native</option>
                             <option value="fluent">Fluent</option>
                             <option value="conversational">Conversational</option>
@@ -65,8 +65,8 @@
                         <button class="w3-btn btn-success language-save-continue" type="button">
                             Save & Continue
                         </button>
-                        <button class="w3-btn btn-success w3-hide next-btn language-next" type="button">
-                            Finish
+                        <button class="w3-btn btn-default w3-hide next-btn language-next" type="button">
+                            Next
                         </button>
                     </div>
                 </form>

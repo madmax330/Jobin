@@ -64,7 +64,7 @@ class UserUtil(BaseContainer):
             flag = self.__new_company_user(info)
         if flag:
             activation = ActivationUtil(self.__user)
-            if activation.send_activation_email():
+            if activation.send_activation_email(student):
                 return True
             self.add_error_list(activation.get_errors())
             return False
@@ -104,10 +104,17 @@ class UserUtil(BaseContainer):
         self._form = ChangeEmailForm({'username': info['email'], 'email': info['email']}, instance=self.__user)
         if self._form.is_valid():
             if student:
-                self.__user = self._form.save(commit=False)
-                self.__user.is_active = False
-                self.__user.save()
-                return True
+                student.email = info['email']
+                student.save()
+                self.__user = self._form.save()
+                group = Group.objects.get(name='student_email_not_verified')
+                group.user_set.add(self.__user)
+                activation = ActivationUtil(self.__user)
+                if activation.send_activation_email(True):
+                    return True
+                else:
+                    self.add_error_list(activation.get_errors())
+                    return False
             elif company:
                 company.email = info['email']
                 company.save()
@@ -115,7 +122,7 @@ class UserUtil(BaseContainer):
                 self.__user.is_active = False
                 self.__user.save()
                 activation = ActivationUtil(self.__user)
-                if activation.send_activation_email():
+                if activation.send_activation_email(False):
                     return True
                 else:
                     self.add_error_list(activation.get_errors())
@@ -165,7 +172,7 @@ class UserUtil(BaseContainer):
 
         zone = pytz.timezone(TIME_ZONE)
         d = datetime.datetime.strftime(
-            datetime.datetime.now(zone) + datetime.timedelta(days=7),
+            self.__user.date_joined + datetime.timedelta(days=7),
             "%Y-%m-%d %H:%M:%S"
         )
 
@@ -178,30 +185,40 @@ class UserUtil(BaseContainer):
     #   USER CHANGE FUNCTIONS
     #
 
-    def activate_user(self, key):
+    def activate_company(self, key):
         activation = ActivationUtil(self.__user)
-        if self.get_user_type() == 'student':
-            if activation.activate_student(key):
-                return True
-        else:
-            if activation.activate_company(key):
-                return True
+        if activation.activate_company(key):
+            return True
+        self.add_error_list(activation.get_errors())
+        return False
+
+    def activate_student(self, key):
+        activation = ActivationUtil(self.__user)
+        if activation.activate_student(key):
+            return True
         self.add_error_list(activation.get_errors())
         return False
 
     def new_activation_key(self, info):
         if self.get_user(email=info['email']):
-            if self.__user.is_active:
-                self.add_error('User already activated.')
+            temp = self.get_user_type()
+            if temp == 'student':
+                if not self.__user.groups.filter(name='student_email_not_verified').exists():
+                    self.add_error('User already activated.')
+                    return False
+            elif temp == 'company':
+                if self.__user.is_active:
+                    self.add_error('User already activated.')
+            if not temp:
+                self.add_error('User not found.')
                 return False
+
             activation = ActivationUtil(self.__user)
             activation.clear_codes()
-            if activation.send_activation_email():
+            if activation.send_activation_email(temp == 'student'):
                 return True
             self.add_error_list(activation.get_errors())
-            return False
-        else:
-            return False
+        return False
 
     def new_password(self, mail):
         if self.get_user(email=mail):

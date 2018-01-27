@@ -313,7 +313,7 @@ class CompanyPostContainer(BaseContainer):
             apps = self.get_applications()
             if apps:
                 for x in apps:
-                    if not self.new_notification(True, x.student, m, 100):
+                    if not (self.new_notification(True, x.student, m, 100) and self.new_message(True, x.student, m, 2)):
                         x.status = 'hold'
                         x.save()
                         return False
@@ -333,7 +333,7 @@ class CompanyPostContainer(BaseContainer):
                 if apps:
                     for x in apps:
                         m = 'The post "' + self.__post.title + '" that you had previously applied to was re-opened.'
-                        if not self.new_notification(True, x.student, m, 100):
+                        if not (self.new_notification(True, x.student, m, 100) and self.new_message(True, x.student, m, 0)):
                             return False
                         x.cover_requested = False
                         x.save()
@@ -521,7 +521,7 @@ class CompanyPostContainer(BaseContainer):
         self.__application.status = 'closed'
         self.__application.save()
         m = 'Your application for the post "' + self.__application.post.title + '" was closed.'
-        if self.new_notification(True, self.__application.student, m, 100):
+        if self.new_notification(True, self.__application.student, m, 100) and self.new_message(True, self.__application.student, m, 2):
             return True
         return False
 

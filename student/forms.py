@@ -13,7 +13,7 @@ class EditStudentForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        exclude = ('is_new', 'user', 'school', 'email')
+        exclude = ('is_new', 'user', 'school', 'email', 'school_requested', 'school_email', 'transcript', 'verified')
 
 
 class TranscriptForm(forms.ModelForm):
@@ -25,8 +25,8 @@ class TranscriptForm(forms.ModelForm):
     def clean(self):
         clean_data = super(TranscriptForm, self).clean()
         file = clean_data['transcript']
-        if file.size > 4 * 1024 * 1024:
-            raise forms.ValidationError({'transcript': 'The file size for your transcript cannot exceed 4MB.'})
+        if file.size > 512 * 1024:
+            raise forms.ValidationError({'transcript': 'The file size for your transcript cannot exceed 512Kbs.'})
         arr = file.name.split('.')
         ext = arr[len(arr)-1]
         if not len(arr) > 1:

@@ -150,6 +150,7 @@ class CompanyContainer(BaseContainer):
         if self.__post_container.get_post(pk):
             if self.__post_container.recover_post(info):
                 return True
+        self.save_form(self.__post_container.get_form())
         self.add_error_list(self.__post_container.get_errors())
         return False
 
@@ -273,6 +274,7 @@ class CompanyContainer(BaseContainer):
         if self.__event_container.get_event(pk):
             if self.__event_container.recover_event(info):
                 return True
+        self.save_form(self.__event_container.get_form())
         self.add_error_list(self.__event_container.get_errors())
         return False
 

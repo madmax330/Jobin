@@ -26,7 +26,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label class="required" for="suggestion_topic">Topic:</label>
-                    <select id="suggestion_topic" name="suggestion_topic" class="form-control">
+                    <select id="suggestion_topic" name="topic" class="form-control">
                         <option value="posts">Posts</option>
                         <option value="applications">Applications</option>
                         <option value="events">Events</option>
@@ -46,7 +46,7 @@
                 <div class="form-group hidden">
                     <label class="required" for="suggestion_importance">How important do you think this suggestion
                         is?</label>
-                    <input id="suggestion_importance" type="range" min="1" max="10" name="suggestion_importance"/>
+                    <input id="suggestion_importance" type="range" min="1" max="10" name="importance"/>
                     <div style="width:100%;">
                         <span class="left">0</span>
                         <span class="right">10</span>
@@ -81,7 +81,8 @@
                                    href="#" class="suggestion-comment">
                                     Add Comment
                                 </a>
-                                <span class="hidden suggestion">{{ x.suggestion }}</span>
+                                <span class="hidden suggestion">{{ x.suggestion | linebreaksbr }}</span>
+                                <span class="hidden comments">{{ x.comments | linebreaksbr }}</span>
                             </td>
                         </tr>
                     {% endfor %}
@@ -119,7 +120,7 @@
                     <form class="form" id="comment-form" action="" method="post">
                         {% csrf_token %}
                         <div class="form-group">
-                            <textarea rows="5" title="" name="suggestion_comment" class="form-control"
+                            <textarea rows="5" title="" name="comment" class="form-control"
                                       placeholder="Type comment here..."></textarea>
                         </div>
                         <div>
@@ -145,6 +146,8 @@
                     <label>Topic:</label><span class="suggestion-info-topic"></span><br/>
                     <label>Suggestion:</label>
                     <p class="suggestion-info-suggestion"></p>
+                    <label>Comments:</label>
+                    <p class="suggestion-info-comments">None</p>
                 </div>
             </div>
         </div>

@@ -79,7 +79,7 @@
         </div>
         <div class="panel-body">
             {% if expired_events %}
-                <table class="table table-hover">
+                <table class="table">
                     <tr>
                         <th>Title</th>
                         <th>Date and Time</th>
@@ -90,7 +90,7 @@
                     {% for x in expired_events %}
                         <tr>
                             <td>{{ x.title }}</td>
-                            <td>{{ x.date }} {{ x.time }}</td>
+                            <td>{{ x.start_date }} {{ x.start_time }}</td>
                             <td>{{ x.active }}</td>
                             <td>{{ x.website }}</td>
                             <td><a href="{% url 'event:recover' pk=x.pk %}">Re-activate</a></td>
@@ -98,7 +98,7 @@
                     {% endfor %}
                     <tr>
                         <td colspan="5">
-                            <span>Page: </span><span class="hidden page-object">xevent_page</span>
+                            <span>Page: </span>
                             {% for x in expired_events.paginator.page_range %}
                                 {% if x == expired_events.number %}
                                     <strong><span>{{ x }} </span></strong>

@@ -142,13 +142,30 @@ def verify(request):
     raise Http404
 
 
-def activate(request, key):
+def activate_company(request, key):
     if request.method == 'GET':
         user = UserUtil(request.user)
 
         try:
             with transaction.atomic():
-                if user.activate_user(key):
+                if user.activate_company(key):
+                    return render(request, 'home/utils/email/activate.html')
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            errs = str(user.get_errors())
+            return render(request, 'home/utils/email/activate.html', {'errors': errs})
+
+    raise Http404
+
+
+def activate_student(request, key):
+    if request.method == 'GET':
+        user = UserUtil(request.user)
+
+        try:
+            with transaction.atomic():
+                if user.activate_student(key):
                     return render(request, 'home/utils/email/activate.html')
                 else:
                     raise IntegrityError
@@ -167,7 +184,7 @@ def new_verification(request):
         try:
             with transaction.atomic():
                 if user.new_activation_key(info):
-                    return render(request, 'home/utils/email/verify.html', {'msg': 'New link sent successfully.'})
+                    return render(request, 'home/utils/email/verify.html', {'msg': 'New link sent successfully.', 'email': info['email']})
                 else:
                     raise IntegrityError
         except IntegrityError:
@@ -206,14 +223,14 @@ class ChangeUserInfo(LoginRequiredMixin, View):
                             if ut == 'student':
                                 student = StudentContainer(user.get_user())
                                 if user.change_user_email(i, student=student.get_student()):
-                                    return redirect('home:verify')
+                                    return render(request, 'home/utils/email/verify.html', {'email': i['email']})
                                 else:
                                     raise IntegrityError
                             elif ut == 'company':
                                 company = CompanyContainer(user.get_user())
                                 if user.change_user_email(i, company=company.get_company()):
                                     if user.log_user_out(request):
-                                        return redirect('home:verify')
+                                        return render(request, 'home/utils/email/verify.html', {'email': i['email']})
                                     raise IntegrityError
                                 else:
                                     raise IntegrityError
@@ -234,12 +251,12 @@ class ChangeUserInfo(LoginRequiredMixin, View):
                                             student = StudentContainer(user.get_user())
                                             MessageCenter.new_notification('student', student.get_student(), 100, m)
                                             MessageCenter.new_message('student', student.get_student(), 'success', m)
-                                            return redirect('student:index')
+                                            return redirect('student:profile')
                                         elif ut == 'company':
                                             company = CompanyContainer(user.get_user())
                                             MessageCenter.new_notification('company', company.get_company(), 100, m)
                                             MessageCenter.new_message('company', company.get_company(), 'success', m)
-                                            return redirect('company:index')
+                                            return redirect('company:profile')
                                         else:
                                             return redirect('home:index')
                             raise IntegrityError

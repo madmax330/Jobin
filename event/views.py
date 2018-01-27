@@ -71,7 +71,7 @@ class NewEventView(LoginRequiredMixin, View):
 
         except IntegrityError:
             context['event'] = info
-            context['errors'] = company.get_form().errors
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
@@ -113,7 +113,7 @@ class EditEventView(LoginRequiredMixin, View):
 
         except IntegrityError:
             context['event'] = info
-            context['errors'] = company.get_form().errors
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
@@ -209,7 +209,7 @@ class RecoverEventView(LoginRequiredMixin, View):
 
         except IntegrityError:
             context['event'] = info
-            context['errors'] = company.get_form().errors
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 

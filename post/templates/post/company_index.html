@@ -47,7 +47,7 @@
                                 </a>
                             </td>
                             <td>{% if p.wage %}${{ p.wage }}/{{ p.wage_interval }}{% else %}N/A{% endif %}</td>
-                            <td>{{ p.openings }}</td>
+                            <td>{% if p.openings %}{{ p.openings }}{% else %}N/A{% endif %}</td>
                             <td>{{ p.start_date }}</td>
                             <td>{{ p.deadline }}</td>
                             <td>{{ p.views }}</td>
@@ -112,7 +112,7 @@
                             <td>
                                 {{ p.wage }}{% if not p.wage_interval == 'single' %}/{{ p.wage_interval }}{% endif %}
                             </td>
-                            <td>{{ p.openings }}</td>
+                            <td>{% if p.openings %}{{ p.openings }}{% else %}N/A{% endif %}</td>
                             <td>{{ p.start_date }}</td>
                             <td>{{ p.deadline }}</td>
                             <td><a href="{% url 'post:recover' p.pk %}">Reactivate</a></td>

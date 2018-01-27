@@ -33,9 +33,9 @@ class UploadLogoForm(forms.ModelForm):
         arr = file.name.split('.')
         ext = arr[len(arr) - 1]
         if not len(arr) > 1:
-            raise forms.ValidationError({'file_resume': 'The file extension is not recognized.'})
+            raise forms.ValidationError({'logo': 'The file extension is not recognized.'})
         if not (ext in IMAGE_EXTENSIONS):
-            raise forms.ValidationError({'file_resume': 'The file must be a jpeg, jpg, gif or png.'})
+            raise forms.ValidationError({'logo': 'The file must be a jpeg, jpg, gif or png.'})
 
 
 class NewSuggestionForm(forms.ModelForm):

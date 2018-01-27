@@ -56,8 +56,11 @@
                                     <label>Date:</label><span> {{ x.start_date }}</span><br/>
                                     <label>Time:</label><span> {{ x.start_time }}</span><br/>
                                     <label>Address:</label><span> {{ x.address }}</span><br/>
-                                    <label>Website:</label><span> <a href="http://{{ x.website }}"
-                                                                     target="_blank">{{ x.website }}</a></span><br/>
+                                    <label>Website:</label><span> {% if x.website %}
+                                        <a href="http://{{ x.website }}" target="_blank">{{ x.website }}</a>
+                                    {% else %}
+                                        <span>N/A</span>
+                                    {% endif %}</span><br/>
                                     <label>Description:</label><br/>
                                     <span>{{ x.desc | linebreaksbr }}</span>
                                 </div>
