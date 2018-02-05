@@ -153,8 +153,10 @@ class CompanyEventContainer(BaseContainer):
         m = 'Event "' + self.__event.title + '" cancelled on ' + str(timezone.now().date()) + '.'
         if self.new_message(False, self.__company, m, 2) and self.new_notification(False, self.__company, m, 100):
             for x in temp:
-                if not (self.new_message(True, x.student.user, m, 2)):
+                if not (self.new_message(True, x.student, m, 2)):
                     return False
+                x.active = False
+                x.save()
             return True
         else:
             return False

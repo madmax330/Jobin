@@ -10,9 +10,8 @@ $(function(){
         let date = $(this).data('date');
         if(date) {
             $(this).val(get_input_date(date));
-            console.log('date: ' + get_input_date(date) + ' value: ' + $(this).val());
         }
-        if(!(isChrome() || isFireFox())){
+        if(!isChrome()){
             $(this).datepicker();
         }
     });
@@ -22,12 +21,12 @@ $(function(){
         if(time)
             $(this).val(get_input_time(time));
         if(!isChrome()){
-            $(this).siblings('label').append(' (hh:mm AM/PM)');
+            $(this).siblings('label').append(' (hh:mm)');
         }
     });
 
     $('.date-input').click(function ( event ) {
-        if(!(isChrome() || isFireFox())){
+        if(!isChrome()){
             event.preventDefault();
         }
     });

@@ -314,9 +314,9 @@ class CompanyPostContainer(BaseContainer):
             if apps:
                 for x in apps:
                     if not (self.new_notification(True, x.student, m, 100) and self.new_message(True, x.student, m, 2)):
-                        x.status = 'hold'
-                        x.save()
                         return False
+                    x.status = 'hold'
+                    x.save()
             return True
         else:
             return False

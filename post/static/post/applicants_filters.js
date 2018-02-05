@@ -50,7 +50,7 @@ $(function(){
         if (val && isNaN(val)) {
             show(gpa_error);
         }
-        else if(Number(val) > 4) {
+        else if(!(Number(val) > 0 || Number(val) <= 4)) {
             show(gpa_error);
         }
         else {

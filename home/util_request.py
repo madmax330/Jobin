@@ -338,7 +338,7 @@ class RequestUtil(BaseContainer):
             if gpa:
                 try:
                     temp = float(gpa)
-                    if not(0 < int(temp) < 4):
+                    if not(0 < int(temp) <= 4):
                         self.add_error('GPA must be a numerical value between 0 and 4.0.')
                         return None
                 except ValueError:

@@ -331,7 +331,7 @@ def create_test_content(request, n):
     if request.method == 'GET':
         try:
             with transaction.atomic():
-                ContentGen.gen_test_content(int(n))
+                ContentGen.gen_test_content(int(n), company=False)
                 print('No error')
         except (IntegrityError, TypeError, ValueError) as e:
             print(str(e))
