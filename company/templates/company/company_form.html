@@ -10,6 +10,7 @@
 
 {% load staticfiles %}
 {% block scripts %}
+    <script src="{% static 'home/scripts/form_util.js' %}"></script>
     <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
     <script src="{% static 'home/scripts/form_location_script.js' %}"></script>
     <script src="{% static 'home/scripts/phone_validation.js' %}"></script>
@@ -124,7 +125,8 @@
                             {{ errors.phone }}
                         </div>
                     {% endif %}
-                    <input class="form-control" id="company_phone" type="text" name="phone" value="{{ company.phone }}"/>
+                    <div class="form-error"></div>
+                    <input class="form-control phone-input" id="company_phone" type="text" name="phone" value="{% if company.phone %}{{ company.phone }}{% endif %}"/>
                 </div>
                 <div class="form-group">
                     <label for="company_website">Website:</label>

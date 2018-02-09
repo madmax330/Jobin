@@ -20,6 +20,7 @@ class ExtendedPost:
         self.applied = applied
         self.location = post.location
         self.benefits = post.benefits
+        self.why_us = post.why_us
 
 
 class HomePagePost:

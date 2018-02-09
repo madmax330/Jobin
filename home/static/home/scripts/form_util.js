@@ -31,6 +31,10 @@ $(function(){
         }
     });
 
+    $('form').submit(function() {
+        return (validate_zipcode() && validate_phone())
+    });
+
 });
 
 

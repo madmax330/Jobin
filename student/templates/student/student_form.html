@@ -90,7 +90,8 @@
                             {{ errors.phone }}
                         </div>
                     {% endif %}
-                    <input id="student_phone" class="w3-input w3-border" type="text"
+                    <div class="form-error"></div>
+                    <input id="student_phone" class="w3-input w3-border phone-input" type="text"
                            name="phone" value="{% if student.phone %}{{ student.phone }}{% endif %}">
                 </div>
                 <div class="form-group">

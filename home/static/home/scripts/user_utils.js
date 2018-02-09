@@ -2,6 +2,18 @@
  * Created by maxencecoulibaly on 5/6/17.
  */
 
+$(function() {
+     $('.string-to-html').each(function() {
+         let str = $(this).html();
+         if(str){
+             let elem = document.createElement('textarea');
+             elem.innerHTML = str.toString().trim();
+             let decoded = elem.value;
+             $(this).html(decoded);
+         }
+
+     });
+});
 
 function clear_form(id){
 

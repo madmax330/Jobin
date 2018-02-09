@@ -24,7 +24,8 @@
             <label>Address:</label>
             <span> {{ event.address }}, {{ event.city }}, {{ event.state }}, {{ event.zipcode }}</span><br/>
             <label>Website:</label><span> {{ event.website }}</span><br/>
-            <label>Description:</label><p>{{ event.description | linebreaksbr }}</p>
+            <label>Description:</label>
+            <p class="string-to-html">{{ event.description }}</p>
             <div>
                 <a href="{% url 'event:company_events' %}" class="btn btn-default">Back to list</a>
                 <button class="warning-open btn btn-danger" data-id="close-event" data-name="{{ event.title }}"

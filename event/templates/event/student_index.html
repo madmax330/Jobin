@@ -62,7 +62,7 @@
                                         <span>N/A</span>
                                     {% endif %}</span><br/>
                                     <label>Description:</label><br/>
-                                    <span>{{ x.desc | linebreaksbr }}</span>
+                                    <p class="string-to-html">{{ x.desc }}</p>
                                 </div>
                                 <div class="w3-display-topright w3-medium w3-container">
                                     {% if not x.saved %}

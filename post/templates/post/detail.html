@@ -25,13 +25,13 @@
             <label>Wage: </label><span> {% if post.wage %}${{ post.wage }}/{{ post.wage_interval }}{% else %}N/A{% endif %}</span><br/>
             <label>Openings: </label><span> {% if post.openings %}{{ post.openings }}{% else %}N/A{% endif %}</span><br/>
             <label>Why Us:</label>
-            <p>{% if post.why_us %}{{ post.why_us | linebreaksbr }}{% else %}N/A{% endif %}</p>
+            <p class="string-to-html">{% if post.why_us %}{{ post.why_us }}{% else %}N/A{% endif %}</p>
             <label>Responsibilities: </label>
-            <p class="formatted-text">{{ post.responsibilities| linebreaksbr }}</p>
+            <p class="string-to-html">{{ post.responsibilities }}</p>
             <label>Qualifications: </label>
-            <p>{{ post.qualifications | linebreaksbr }}</p>
+            <p class="string-to-html">{{ post.qualifications }}</p>
             <label>Benefits:</label>
-            <p>{% if post.benefits %}{{ post.benefits | linebreaksbr }}{% else %}N/A{% endif %}</p>
+            <p class="string-to-html">{% if post.benefits %}{{ post.benefits }}{% else %}N/A{% endif %}</p>
             {% if post.cover_instructions %}
                 <label>Cover Letter Instructions:</label>
                 <p>{{ post.cover_instructions }}</p>

@@ -471,6 +471,7 @@ header.w3-container.primary-color.w3-text-white {
 .w3-dropdown-hover>a {
     color: #fff;
     padding: 0 10px;
+	float:left;
 }
 .w3-dropdown-content {    min-width: 200px;     border: 1px solid #53acff; }
 .w3-btn.apply-btn {
@@ -813,4 +814,31 @@ span.w3-button.w3-display-topright.close-modal:hover {
 .warning-header {background:#ff7964;}
 .warning-header h3 {color:#fff;}
 .warning-header .w3-display-topright {color:#fff !important;}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+    background-color: #ff7c64;
+}
+@media screen and (max-width: 992px) {
+    .jobin-nav-link a h5 {    font-size: 12px;}
+	.navbar-default .navbar-nav>li>a {    padding: 20px 8px;}
+	.container {    padding-right: 0;    padding-left: 0; }
+	.panel-body td[colspan="7"], .panel-body td[colspan="5"], .panel-body td[colspan="6"], .panel-body td[colspan="8"] {font-size:14px;}
+	
+}
+@media screen and (max-width: 767px) {
+	.jobin-nav-link a:hover, .jobin-nav-link a.active {border-bottom:0;}
+	tr.tr-cover-requested .post-title:after, tr.tr-cover-read .post-title:after, tr.tr-cover-submitted .post-title:after {     float: left;     margin-left: 0; }
+	.post-title a {    float: left; }
+	.nav>li {    margin: 0 15px; }
+	.student-posts .w3-col.s4 {width:100%;}
+	.student-posts .main-post-container .s8 {   width: 100%; border-left: 0;}
+	.mySlides .w3-display-topright {    position: absolute;     top: -46px;    padding-right: 0 !important;}
+	.student-posts .w3-cell    { display: block;}
+	.job-navbar a {padding-top: 15px !important;
+    padding-bottom: 15px !important;}
+}
+	
 

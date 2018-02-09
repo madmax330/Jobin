@@ -872,8 +872,23 @@ span.remove-filter-item {
 .to-multiple-view {
     width:100%;
 }
-
-
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+    background-color: #799dd0;
+}
+@media screen and (max-width: 992px) {
+    .jobin-nav-link a h5 {    font-size: 12px;}
+	.navbar-default .navbar-nav>li>a {    padding: 20px 10px;}
+	.content-container {    padding: 0 10px;}
+	.panel-body td[colspan="7"], .panel-body td[colspan="5"], .panel-body td[colspan="6"], .panel-body td[colspan="8"] {font-size:14px;}
+	
+}
+@media screen and (max-width: 767px) {
+	.jobin-nav-link a:hover, .jobin-nav-link a.active {border-bottom:0; background-color:#6898c5 !important;}
+	
+}
 
 
 

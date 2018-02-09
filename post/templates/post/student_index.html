@@ -4,11 +4,23 @@
 
 {% load staticfiles %}
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'home/scripts/jquery.touchSwipe.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'post/student_post_util.js' %}"></script>
     <script>
         $(function () {
             hide($('.post-loader-icon'));
             show($('.main-post-container'));
+
+            $('#main-post-container').swipe({
+                swipeLeft: function ( event, direction, duration, fingerCount ) {
+                    plusDivs(1);
+                },
+
+                swipeRight: function ( event, direction, duration, fingerCount ) {
+                    plusDivs(-1);
+                }
+            });
+
         });
     </script>
 {% endblock %}
@@ -101,7 +113,7 @@
     <div class="post-loader-icon">
         <h2 class="w3-center"><i class="fa fa-spinner fa-spin"></i> Loading job posts...</h2>
     </div>
-    <div class="w3-content w3-container main-post-container w3-hide">
+    <div id="main-post-container" class="w3-content w3-container main-post-container w3-hide">
         {% if posts %}
             {% for x in posts %}
                 <div class="w3-display-container mySlides w3-animate-right">
@@ -167,15 +179,15 @@
                                 </label><span> {{ x.deadline }}</span><br/>
                                 {% if x.why_us %}
                                     <label>Why {{ x.name }}:</label><br/>
-                                    <span>{{ x.why_us | linebreaksbr }}</span><br/>
+                                    <p class="string-to-html">{{ x.why_us }}</p><br/>
                                 {% endif %}
                                 <label><strong>Qualifications:</strong></label><br/>
-                                <span>{{ x.qualifications | linebreaksbr }}</span><br/>
+                                <p class="string-to-html">{{ x.qualifications }}</p><br/>
                                 <label><strong>Responsibilities:</strong></label><br/>
-                                <span>{{ x.responsibilities | linebreaksbr }}</span><br/>
+                                <p class="string-to-html">{{ x.responsibilities }}</p><br/>
                                 {% if x.benefits %}
                                     <label>Benefits:</label><br/>
-                                    <span>{{ x.benefits | linebreaksbr }}</span><br/>
+                                    <p class="string-to-html">{{ x.benefits }}</p><br/>
                                 {% endif %}
                                 <div class="w3-hide increment-url">{% url 'post:increment' pk=x.id %}</div>
                                 <div class="w3-hide post-url">{% url 'post:student_posts' cat=category pk=x.id %}</div>

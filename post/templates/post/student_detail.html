@@ -97,15 +97,15 @@
                     <label>Application Deadline:</label><span> {{ post.deadline }}</span><br/>
                     {% if post.why_us %}
                         <label>Why Us:</label>
-                        <p>{{ post.why_us | linebreaksbr }}</p>
+                        <p class="string-to-html">{{ post.why_us }}</p>
                     {% endif %}
                     <label>Qualifications:</label>
-                    <p>{{ post.qualifications | linebreaksbr }}</p>
+                    <p class="string-to-html">{{ post.qualifications }}</p>
                     <label>Responsibilities:</label>
-                    <p>{{ post.responsibilities | linebreaksbr }}</p>
+                    <p class="string-to-html">{{ post.responsibilities }}</p>
                     {% if post.benefits %}
                         <label>Benefits:</label>
-                        <p>{{ post.benefits | linebreaksbr }}</p>
+                        <p class="string-to-html">{{ post.benefits }}</p>
                     {% endif %}
                     <div>
                         <a href="{% url 'student:index' %}" class="w3-btn btn-default">Back</a>
