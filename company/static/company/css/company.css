@@ -891,4 +891,9 @@ span.remove-filter-item {
 }
 
 
+.string-to-html li{
+    white-space: inherit !important;
+}
+
+
 

@@ -19,7 +19,12 @@
     <script type="text/javascript" src="{% static 'home/scripts/tinymce/js/tinymce/tinymce.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/tinymce/js/tinymce/jquery.tinymce.min.js' %}"></script>
     <script>
-        $('textarea').tinymce({theme: 'modern'});
+        $('textarea').tinymce({
+            theme: 'modern',
+            plugins: 'lists advlist',
+            invalid_styles: 'color font-size font-family font-weight',
+            invalid_elements: 'h1,h2,h3,h4,h5'
+        });
     </script>
     <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>

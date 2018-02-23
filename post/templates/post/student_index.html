@@ -26,61 +26,61 @@
 {% endblock %}
 
 {% block page_title_div %}
-    <div class="job-nav">
-    <div class="w3-container">
-        <h3 class="w3-center">({{ count }}) {{ d_category }} Job Posts</h3>
-    </div>
-    <div class="w3-cell-row job-navbar">
-        <div class="w3-cell volunteer-cell">
-            <a href="{% url 'post:student_posts' cat='volunteer' pk=0 %}"
-               class="w3-btn w3-block page-link {% if category == 'volunteer' %}active{% endif %}">
-                ({{ volunteer_count }}) Volunteer
-            </a>
+    <div class="job-nav student-posts">
+        <div class="w3-container">
+            <h3 class="w3-center">({{ count }}) {{ d_category }} Job Posts</h3>
         </div>
-        <div class="w3-cell internship-cell">
-            <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
-               class="w3-btn w3-block page-link {% if category == 'internship' %}active{% endif %}">
-                ({{ internship_count }}) Internships
-            </a>
-        </div>
-        <div class="w3-cell part-time-cell">
-            <a href="{% url 'post:student_posts' cat='part_time' pk=0 %}"
-               class="w3-btn w3-block page-link {% if category == 'part_time' %}active{% endif %}">
-                ({{ part_time_count }}) Part-Time
-            </a>
-        </div>
-        <div class="w3-cell start-up-cell">
-            <a href="{% url 'post:student_posts' cat='startup' pk=0 %}"
-               class="w3-btn w3-block page-link {% if category == 'startup' %}active{% endif %}">
-                ({{ startup_count }}) Start Up
-            </a>
-        </div>
-        <div class="w3-cell full-time-cell">
-            <a href="{% url 'post:student_posts' cat='full_time' pk=0 %}"
-               class="w3-btn w3-block page-link {% if category == 'full_time' %}active{% endif %}">
-                ({{ full_time_count }}) Full Time
-            </a>
-        </div>
-    </div>
-    <form id="post-filter-form" class="form-inline">
-        <div class="w3-cell-row w3-container job-filters">
-            <div class="w3-cell">
-                <label for="location_filter">Location:</label>
-                <input id="location_filter" name="location_filter" placeholder="City or State/Province..."
-                       type="text" value="{{ filters.location }}">
+        <div class="w3-cell-row job-navbar student-posts">
+            <div class="w3-cell volunteer-cell">
+                <a href="{% url 'post:student_posts' cat='volunteer' pk=0 %}"
+                   class="w3-btn w3-block page-link {% if category == 'volunteer' %}active{% endif %}">
+                    ({{ volunteer_count }}) Volunteer
+                </a>
             </div>
-            <div class="w3-cell">
-                <label for="keyword_filter">Keyword:</label>
-                <input id="keyword_filter" name="keyword_filter" placeholder="Job Title..."
-                       type="text" value="{{ filters.keyword }}">
+            <div class="w3-cell internship-cell">
+                <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
+                   class="w3-btn w3-block page-link {% if category == 'internship' %}active{% endif %}">
+                    ({{ internship_count }}) Internships
+                </a>
             </div>
-            <div class="w3-cell">
-                <a href="{% url 'post:student_posts' cat=category pk='0' %}"
-                   class="w3-btn  filter-btn">Clear</a>
-                <button class="w3-btn filter-btn">Filter</button>
+            <div class="w3-cell part-time-cell">
+                <a href="{% url 'post:student_posts' cat='part_time' pk=0 %}"
+                   class="w3-btn w3-block page-link {% if category == 'part_time' %}active{% endif %}">
+                    ({{ part_time_count }}) Part-Time
+                </a>
+            </div>
+            <div class="w3-cell start-up-cell">
+                <a href="{% url 'post:student_posts' cat='startup' pk=0 %}"
+                   class="w3-btn w3-block page-link {% if category == 'startup' %}active{% endif %}">
+                    ({{ startup_count }}) Start Up
+                </a>
+            </div>
+            <div class="w3-cell full-time-cell">
+                <a href="{% url 'post:student_posts' cat='full_time' pk=0 %}"
+                   class="w3-btn w3-block page-link {% if category == 'full_time' %}active{% endif %}">
+                    ({{ full_time_count }}) Full Time
+                </a>
             </div>
         </div>
-    </form>
+        <form id="post-filter-form" class="form-inline">
+            <div class="w3-cell-row w3-container job-filters">
+                <div class="w3-cell">
+                    <label for="location_filter">Location:</label>
+                    <input id="location_filter" name="location_filter" placeholder="City or State/Province..."
+                           type="text" value="{{ filters.location }}">
+                </div>
+                <div class="w3-cell">
+                    <label for="keyword_filter">Keyword:</label>
+                    <input id="keyword_filter" name="keyword_filter" placeholder="Job Title..."
+                           type="text" value="{{ filters.keyword }}">
+                </div>
+                <div class="w3-cell">
+                    <a href="{% url 'post:student_posts' cat=category pk='0' %}"
+                       class="w3-btn  filter-btn">Clear</a>
+                    <button class="w3-btn filter-btn">Filter</button>
+                </div>
+            </div>
+        </form>
 {% endblock %}
 
 {% block messages %}

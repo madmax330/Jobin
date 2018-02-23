@@ -329,3 +329,20 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
 	box-shadow:none !important;
 }
 
+@media screen and (max-width: 992px) {
+	.home-static-text {
+		width: 600px !important;
+		white-space: normal;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.home-static-text {
+		max-width: 500px !important;
+		white-space: normal;
+	}
+}
+
+.register-terms {
+	padding: 16px 0;
+}

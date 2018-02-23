@@ -419,7 +419,7 @@ color: #696969;
     font-size: 21px;
 	background: #efefef;
     padding: 20px;
-	font-weight:300 !important;
+	font-weight:400 !important;
 }
 .main-post-container label {
     padding-top: 10px;
@@ -835,10 +835,15 @@ span.w3-button.w3-display-topright.close-modal:hover {
 	.nav>li {    margin: 0 15px; }
 	.student-posts .w3-col.s4 {width:100%;}
 	.student-posts .main-post-container .s8 {   width: 100%; border-left: 0;}
-	.mySlides .w3-display-topright {    position: absolute;     top: -46px;    padding-right: 0 !important;}
+	.mySlides .w3-display-topright {    position: absolute;     top: -46px;    padding-right: 0 !important;  padding-left: 0 !important;    width: 100%;}
 	.student-posts .w3-cell    { display: block;}
 	.job-navbar a {padding-top: 15px !important;
     padding-bottom: 15px !important;}
+	.w3-col.s4, .main-post-container .s8, .main-event-container .s8 {    width: 100%; border-left:0;}
+	.slider-nav-btn {    width: 140px !important; }
+	.save-btn, .apply-btn, .new-resume {  width: 100%;}
 }
 	
-
+.string-to-html li{
+    white-space: inherit !important;
+}

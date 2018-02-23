@@ -230,7 +230,7 @@
             <div id="company-login" class="animated-block fadeIn hidden">
                 <span class="close-block" onclick="close_block('company-login')">&times;</span>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-6">
                         <h3 class="text-center">COMPANY REGISTER</h3>
                         <form action="{% url 'home:register_company' %}" method="post" class="registration-form">
                             {% csrf_token %}
@@ -244,7 +244,7 @@
                                 <input type="password" class="form-control" placeholder="Confirm Password"
                                        name="confirm_password">
                             </div>
-                            <div class="form-group checkbox">
+                            <div class="form-group checkbox  register-terms">
                                 <label><input type="checkbox" class="terms-and-policy">
                                 I agree to the
                                     <a href="{% url 'home:terms' %}" target="_blank">Terms and Conditions</a> and
@@ -256,7 +256,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-12">
                         <h3 class="text-center">COMPANY LOGIN</h3>
                         <form action="{% url 'home:company_login' %}" method="post">
                             {% csrf_token %}
@@ -277,7 +277,7 @@
             <div id="student-login" class="animated-block fadeIn hidden">
                 <span class="close-block" onclick="close_block('student-login')">&times;</span>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-6">
                         <h3 class="text-center">STUDENT REGISTER</h3>
                         <form action="{% url 'home:register_student' %}" method="post" class="registration-form">
                             {% csrf_token %}
@@ -291,7 +291,7 @@
                                 <input type="password" class="form-control" placeholder="Confirm Password"
                                        name="confirm_password">
                             </div>
-                            <div class="form-group checkbox">
+                            <div class="form-group checkbox register-terms">
                                 <label><input type="checkbox" class="terms-and-policy">
                                 I agree to the
                                     <a href="{% url 'home:terms' %}" target="_blank">Terms and Conditions</a> and
@@ -310,7 +310,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-6">
                         <h3 class="text-center">STUDENT LOGIN</h3>
                         <form action="{% url 'home:student_login' %}" method="post">
                             {% csrf_token %}
@@ -431,6 +431,7 @@
 
                  data-x="center"
                  data-y="center"
+                 data-textAlign="['center']"
                  data-hoffset="0"
                  data-voffset="25"
                  data-width="['auto']"
@@ -446,11 +447,12 @@
                         <button class="btn btn-primary" onclick="open_block('company-login')">COMPANY LOGIN/REGISTER</button>
                     </div>
                 </div>
+                    <h4 class="home-static-text" style="margin:0; padding-top: 10px;">
+                        At Jobin, we bring the jobs to you! We give you access to the many jobs that are
+                        posted and all you have to do is decide whether you want to apply or not.
+                    </h4>
 
-                <h4 class="text-center" style="margin:0; padding-top: 10px;">
-                    At Jobin, we bring the jobs to you! We give you access to the many jobs that are
-                    posted and all you have to do is decide whether you want to apply or not.
-                </h4>
+
 
             </div>
 
@@ -568,7 +570,7 @@
             </div>
         </div>
         <div class="video-row">
-            <img src="{% static 'home/images/videopic.png' %}">
+            <img src="{% static 'home/images/videopic.png' %}" style="width:100%;">
             <!--
             <video style="width:100%; height:auto; display:block!important;" controls controlsList="nodownload" class="hidden" id="intro-video">
                 <source src="{% static 'home/promovid.mp4' %}" type="video/mp4">
