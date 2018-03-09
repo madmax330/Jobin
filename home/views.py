@@ -276,18 +276,30 @@ def new_password_view(request, ut):
         info = request.POST.copy()
         errors = []
         if ut == 'student':
-            student = StudentContainer(user.get_user())
-            if student.get_student() and not student.get_student().dob == info['dob']:
+            student = StudentContainer(user.get_user(email=info['email']))
+            if student.get_student():
+                if not student.get_student().dob == info['dob']:
+                    errors.append({
+                        'code': 'danger',
+                        'message': 'Unable to verify user, double check the information you provided.'
+                    })
+            else:
                 errors.append({
                     'code': 'danger',
-                    'message': 'Unable to verify user, double check the information you provided.'
+                    'message': 'User not found, double check the information you provided.'
                 })
         elif ut == 'company':
-            company = CompanyContainer(user.get_user())
-            if company.get_company() and not company.get_company().zipcode == info['zipcode']:
+            company = CompanyContainer(user.get_user(email=info['email']))
+            if company.get_company():
+                if not company.get_company().zipcode == info['zipcode']:
+                    errors.append({
+                        'code': 'danger',
+                        'message': 'Unable to verify user, double check the information you provided.'
+                    })
+            else:
                 errors.append({
                     'code': 'danger',
-                    'message': 'Unable to verify user, double check the information you provided.'
+                    'message': 'User not found, double check the information you provided.'
                 })
         else:
             errors.append({
@@ -299,7 +311,7 @@ def new_password_view(request, ut):
         else:
             try:
                 with transaction.atomic():
-                    if user.new_password(info['mail']):
+                    if user.new_password(info['email']):
                         return render(
                             request,
                             'home/index.html',
