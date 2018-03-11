@@ -278,7 +278,7 @@ def new_password_view(request, ut):
         if ut == 'student':
             student = StudentContainer(user.get_user(email=info['email']))
             if student.get_student():
-                if not student.get_student().dob == info['dob']:
+                if not (student.get_student().dob.strftime('%Y-%m-%d') == info['dob']):
                     errors.append({
                         'code': 'danger',
                         'message': 'Unable to verify user, double check the information you provided.'
