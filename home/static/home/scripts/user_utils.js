@@ -103,6 +103,12 @@ function set_cookie(name, value, t){
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
 
+function scroll_to(el){
+    $('html, body').animate({
+        scrollTop: el.offset().top
+    }, 2000);
+}
+
 
 
 

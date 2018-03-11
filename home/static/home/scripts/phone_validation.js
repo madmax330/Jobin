@@ -10,6 +10,7 @@ function validate_phone() {
         else {
             err.addClass('alert alert-danger alert-dismissible');
             err.html('Phone number must have format ###-###-#### for example 800-800-8000');
+            scroll_to(phone_in);
             return false;
         }
     }

@@ -208,7 +208,7 @@ def delete_transcript(request, pk):
         try:
             with transaction.atomic():
                 if student.delete_transcript():
-                    m = 'File resume deleted successfully.'
+                    m = 'Transcript deleted successfully.'
                     MessageCenter.new_message('student', student.get_student(), 'success', m)
                 else:
                     raise IntegrityError

@@ -37,7 +37,7 @@
             <label>Transcript:</label>
             <span>
                 {% if student.transcript %}
-                    <a href="{{ student.transcript.url }}" target="_blank">{{ student.transcript.name }}</a>
+                    <a href="{{ student.transcript.url }}" target="_blank">View Transcript</a>
                 {% else %}No transcript uploaded.{% endif %}</span><br/>
             {% if student.transcript %}
                 <a href="{% url 'student:delete_transcript' pk=resume.id %}"
@@ -66,6 +66,9 @@
             {% endif %}
             <a href="{% url 'post:student_app_pdf' rk=resume.id %}" target="_blank" class="w3-btn btn-default">Download
                 PDF Resume</a>
+            {% if not student.transcript %}
+                <p><i>* Transcript must be a pdf and less than 512 Kilobytes.</i></p>
+            {% endif %}
         </div>
         <hr/>
         <div class="panel panel-default panel-primary">

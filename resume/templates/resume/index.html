@@ -85,7 +85,7 @@
                             {% if x.is_complete %}
                                 <td class="tr-resume-name">
                                     <a href="{% url 'resume:details' pk=x.id %}" class="name">{{ x.name }}</a>
-                                    <span class="gpa w3-hide">{{ x.gpa }}</span>
+                                    <span class="gpa w3-hide">{% if x.gpa %}{{ x.gpa }}{% endif %}</span>
                                 </td>
                                 <td>{{ x.last_updated }}</td>
                                 <td>

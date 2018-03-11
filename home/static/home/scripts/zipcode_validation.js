@@ -11,6 +11,7 @@ function validate_zipcode() {
     if (z === "") {
         err.addClass('alert alert-danger alert-dismissible');
         err.html('Zip code cannot be left empty.');
+        scroll_to(zip_in);
         return false;
     }
     else {
@@ -18,6 +19,7 @@ function validate_zipcode() {
             if (z.length > 6) {
                 err.addClass('alert alert-danger alert-dismissible');
                 err.html('Zip Code value invalid. Example A1A 2A2');
+                scroll_to(zip_in);
                 return false;
             }
             if (/^[a-zA-Z][0-9][a-zA-Z][0-9][a-zA-Z][0-9]$/.test(z))
@@ -25,6 +27,7 @@ function validate_zipcode() {
             else {
                 err.addClass('alert alert-danger alert-dismissible');
                 err.html('Zip Code value invalid. Example A1A 2A2');
+                scroll_to(zip_in);
                 return false;
             }
         }
@@ -32,6 +35,7 @@ function validate_zipcode() {
             if (z.length > 5) {
                 err.addClass('alert alert-danger alert-dismissible');
                 err.html('Zip code value invalid. Example 90210');
+                scroll_to(zip_in);
                 return false;
             }
             if (/^[0-9]{5}$/.test(z))
@@ -39,6 +43,7 @@ function validate_zipcode() {
             else {
                 err.addClass('alert alert-danger alert-dismissible');
                 err.html('Zip code value invalid. Example 90210');
+                scroll_to(zip_in);
                 return false;
             }
         }

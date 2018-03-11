@@ -223,6 +223,7 @@ class ChangeUserInfo(LoginRequiredMixin, View):
                             if ut == 'student':
                                 student = StudentContainer(user.get_user())
                                 if user.change_user_email(i, student=student.get_student()):
+                                    user.log_user_out(request)
                                     return render(request, 'home/utils/email/verify.html', {'email': i['email']})
                                 else:
                                     raise IntegrityError
@@ -230,6 +231,7 @@ class ChangeUserInfo(LoginRequiredMixin, View):
                                 company = CompanyContainer(user.get_user())
                                 if user.change_user_email(i, company=company.get_company()):
                                     if user.log_user_out(request):
+                                        user.log_user_out(request)
                                         return render(request, 'home/utils/email/verify.html', {'email': i['email']})
                                     raise IntegrityError
                                 else:
