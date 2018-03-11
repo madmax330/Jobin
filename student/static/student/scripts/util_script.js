@@ -52,6 +52,14 @@ $(function(){
 function open_modal(id){
     MODAL_OPEN = true;
     document.getElementById(id).style.display = 'block';
+    if(WALKTHROUGH !== undefined){
+        if(!WALKTHROUGH){
+            clear_modal_messages();
+        }
+    }
+    else{
+        clear_modal_messages();
+    }
 }
 
 function close_modal(id){

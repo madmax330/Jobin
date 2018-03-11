@@ -143,7 +143,7 @@
                                 {% if x.is_current %}Current School{% else %}{{ x.end }}{% endif %}
                             </td>
                             <td class="level">{{ x.level }}</td>
-                            <td class="program">{{ x.program }}</td>
+                            <td class="program">{% if x.program %}{{ x.program }}{% else %}N/A{% endif %}</td>
                             <td>
                                 <a href="#" data-url="{% url 'resume:edit_school' pk=x.id %}" class="edit-school">
                                     Edit</a>

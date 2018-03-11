@@ -580,6 +580,7 @@ function submit_resume_info(url, form) {
 
     })
         .fail(function(jqXHR){
+            hide(form.find('.fa-spinner'));
             display_modal_message(jqXHR.responseText, 'danger');
         });
 }

@@ -12,7 +12,7 @@ $(function(){
             $(this).val(get_input_date(date));
         }
         if(!isChrome()){
-            $(this).datepicker();
+            $(this).datepicker({changeMonth: true, changeYear: true});
         }
     });
 
@@ -32,7 +32,8 @@ $(function(){
     });
 
     $('form').submit(function() {
-        return (validate_zipcode() && validate_phone())
+        if($('.zip-input').length)
+            return (validate_zipcode() && validate_phone())
     });
 
 });

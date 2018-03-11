@@ -193,7 +193,7 @@
                                         <td>{{ x.start }}</td>
                                         <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
                                         <td class="capital">{{ x.level }}</td>
-                                        <td class="capital">{{ x.program }}</td>
+                                        <td class="capital">{% if x.program %}{{ x.program }}{% else %}N/A{% endif %}</td>
                                     </tr>
                                 {% endfor %}
                             </table>
