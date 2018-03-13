@@ -106,7 +106,7 @@
                                 </a>
                             </td>
                             <td>
-                                {{ p.wage }}{% if not p.wage_interval == 'single' %}/{{ p.wage_interval }}{% endif %}
+                                {% if p.wage %}{{ p.wage }}{% if not p.wage_interval == 'single' %}/{{ p.wage_interval }}{% endif %}{% endif %}
                             </td>
                             <td>{% if p.openings %}{{ p.openings }}{% else %}N/A{% endif %}</td>
                             <td>{{ p.start_date }}</td>

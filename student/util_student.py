@@ -101,18 +101,17 @@ class StudentContainer(BaseContainer):
             school = requests.first()
             school.count = school.count + 1
             school.save()
-            return True
         else:
             info['count'] = 1
             self._form = JobinRequestedSchoolForm(info)
             if self._form.is_valid():
                 self._form.save()
-                self.__student.school_requested = info['name'].lower()
-                self.__student.save()
-                return True
             else:
                 self.add_form_errors()
                 return False
+        self.__student.school_requested = info['name'].lower()
+        self.__student.save()
+        return True
 
     def email_verified(self):
         return not self.__user.groups.filter(name='student_email_not_verified').exists()

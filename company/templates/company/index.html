@@ -85,7 +85,7 @@
                         <tr>
                             <td>{{ x.title }}</td>
                             <td>{{ x.start_date }} - {{ x.start_time }}</td>
-                            <td>{{ x.end_date }} - {{ x.end_time }}</td>
+                            <td>{% if x.end_date %}{{ x.end_date }} - {{ x.end_time }}{% else %}N/A{% endif %}</td>
                             <td>{{ x.address }}, {{ x.city }},<br/> {{ x.state }}, {{ x.zipcode }}</td>
                             <td><a href="{% url 'event:details' pk=x.id%}">Details</a></td>
                         </tr>

@@ -10,7 +10,7 @@ function validate_zipcode() {
     let z = zip_in.val().replace(" ", "").replace("-", "");
     if (z === "") {
         err.addClass('alert alert-danger alert-dismissible');
-        err.html('Zip code cannot be left empty.');
+        err.html('Zip/postal code cannot be left empty.');
         scroll_to(zip_in);
         return false;
     }
@@ -18,7 +18,7 @@ function validate_zipcode() {
         if (country === 'canada') {
             if (z.length > 6) {
                 err.addClass('alert alert-danger alert-dismissible');
-                err.html('Zip Code value invalid. Example A1A 2A2');
+                err.html('Zip/postal Code value invalid. Example A1A 2A2');
                 scroll_to(zip_in);
                 return false;
             }
@@ -26,7 +26,7 @@ function validate_zipcode() {
                 return true;
             else {
                 err.addClass('alert alert-danger alert-dismissible');
-                err.html('Zip Code value invalid. Example A1A 2A2');
+                err.html('Zip/postal Code value invalid. Example A1A 2A2');
                 scroll_to(zip_in);
                 return false;
             }
@@ -34,7 +34,7 @@ function validate_zipcode() {
         if (country === 'united states') {
             if (z.length > 5) {
                 err.addClass('alert alert-danger alert-dismissible');
-                err.html('Zip code value invalid. Example 90210');
+                err.html('Zip/postal code value invalid. Example 90210');
                 scroll_to(zip_in);
                 return false;
             }
@@ -42,7 +42,7 @@ function validate_zipcode() {
                 return true;
             else {
                 err.addClass('alert alert-danger alert-dismissible');
-                err.html('Zip code value invalid. Example 90210');
+                err.html('Zip/postal code value invalid. Example 90210');
                 scroll_to(zip_in);
                 return false;
             }

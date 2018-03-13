@@ -28,6 +28,7 @@
             <form action="{% url 'home:new_activation' %}" method="post">
                 {% csrf_token %}
                 <h1 class="text-center">Your account is not active</h1>
+                <h5 class="text-center">Check your email for an activation link and use it to activate your account.</h5>
                 <h2>Did You:</h2>
                 <p>
                     <strong>- Change your email address?</strong><br/><br/>

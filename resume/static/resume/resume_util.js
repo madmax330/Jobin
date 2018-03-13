@@ -6,10 +6,11 @@ let WALKTHROUGH = false;
 
 
 function send_walkthrough(url, form, info) {
+    form.find('.fa-spinner').removeClass('w3-hide');
     $.post(url, form.serialize(), function (data, status) {
 
         if (status === 'success') {
-            hide(form.find('.fa-spinner'));
+            form.find('.fa-spinner').addClass('w3-hide');
             $('.modal-messages').html('');
             if (info['caller'] === 'resume') {
                 if(data === 'resume complete')
@@ -175,7 +176,6 @@ $(function () {
         event.preventDefault();
 
         if (WALKTHROUGH){
-            show($(this).find('.fa-spinner'));
             send_walkthrough($(this).attr('action'), $(this), {caller: 'resume'});
         }
         else {
@@ -199,7 +199,6 @@ $(function () {
 
     $('.language-save-continue').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#language-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'language', action: 'continue'});
 
@@ -207,7 +206,6 @@ $(function () {
 
     $('.language-save-another').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#language-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'language', action: 'another'});
 
@@ -251,7 +249,6 @@ $(function () {
 
     $('.school-save-continue').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#school-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'school', action: 'continue'});
 
@@ -259,7 +256,6 @@ $(function () {
 
     $('.school-save-another').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#school-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'school', action: 'another'});
 
@@ -333,7 +329,6 @@ $(function () {
 
     $('.experience-save-continue').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#experience-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'experience', action: 'continue'});
 
@@ -341,7 +336,6 @@ $(function () {
 
     $('.experience-save-another').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#experience-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'experience', action: 'another'});
 
@@ -417,7 +411,6 @@ $(function () {
 
     $('.award-save-continue').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#award-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'award', action: 'continue'});
 
@@ -425,7 +418,6 @@ $(function () {
 
     $('.award-save-another').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#award-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'award', action: 'another'});
 
@@ -473,7 +465,6 @@ $(function () {
 
     $('.skill-save-continue').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#skill-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'skill', action: 'continue'});
 
@@ -481,7 +472,6 @@ $(function () {
 
     $('.skill-save-another').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#skill-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'skill', action: 'another'});
 
@@ -528,7 +518,6 @@ $(function () {
 
     $('.reference-save-continue').click(function () {
 
-        show($(this).find('.fa-spinner'));
         WALKTHROUGH = false;
         let form = $('#reference-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'reference', action: 'continue'});
@@ -537,7 +526,6 @@ $(function () {
 
     $('.reference-save-another').click(function () {
 
-        show($(this).find('.fa-spinner'));
         let form = $('#reference-form');
         send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'reference', action: 'another'});
 
@@ -571,16 +559,17 @@ $(function () {
 });
 
 function submit_resume_info(url, form) {
+    form.find('.fa-spinner').removeClass('w3-hide');
     $.post(url, form.serialize(), function(data, status){
 
         if(status === 'success'){
-            hide(form.find('.fa-spinner'));
+            form.find('.fa-spinner').addClass('w3-hide');
             location.reload();
         }
 
     })
         .fail(function(jqXHR){
-            hide(form.find('.fa-spinner'));
+            form.find('.fa-spinner').addClass('w3-hide');
             display_modal_message(jqXHR.responseText, 'danger');
         });
 }

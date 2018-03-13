@@ -33,6 +33,7 @@ class CompanyContainer(BaseContainer):
         info['user'] = user.id
         info['email'] = user.email
         info['points'] = 0
+        info['zipcode'] = info['zipcode'].upper()
         self._form = NewCompanyForm(info)
         if self._form.is_valid():
             self.__company = self._form.save()

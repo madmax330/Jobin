@@ -41,9 +41,9 @@
                 {% endif %}
                 <label>Name:</label><span> {{ company.name }}</span><br/>
                 <label>Email:</label><span> {{ company.email }}</span><br/>
-                <label>Phone:</label><span> {{ company.phone }}</span><br/>
+                <label>Phone:</label><span> {% if company.phone %}{{ company.phone }}{% else %}N/A{% endif %}</span><br/>
                 <label>Address:</label><span> {{ company.address }}, {{ company.city }}, {{ company.state }}, {{ company.zipcode }}</span><br/>
-                <label>Website:</label><span> {{ company.website }}</span><br/>
+                <label>Website:</label><span> {% if company.website %}{{ company.website }}{% else %}N/A{% endif %}</span><br/>
                 <div class="margined">
                     <a href="{% url 'company:edit' %}"
                        class="btn btn-default">Edit Profile</a>
@@ -51,7 +51,7 @@
                        class="btn btn-default">Edit Account</a>
                     {% if company.logo %}
                         <a href="{% url 'company:delete_logo' %}" class="btn btn-default delete-logo">
-                            Remove Logo <i class="fa-spinner fa-spin hidden logo-spinner"></i>
+                            Remove Logo <i class="fa fa-spinner fa-spin hidden logo-spinner"></i>
                         </a>
                     {% else %}
                         <div class="hidden">
@@ -61,7 +61,7 @@
                             </form>
                         </div>
                         <button data-url="{% url 'company:upload_logo' %}" class="btn btn-default upload-logo">
-                            Upload Logo <i class="fa-spinner fa-spin hidden logo-spinner"></i>
+                            Upload Logo <i class="fa fa-spinner fa-spin hidden logo-spinner"></i>
                         </button>
                     {% endif %}
 

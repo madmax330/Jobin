@@ -19,11 +19,11 @@
             <label>Times saved:</label><span>{{ event.times_saved }}</span><br/>
             <label>Date and Time:</label><span> {{ event.start_date }} at {{ event.start_time }}</span><br/>
             {% if event.end_date %}
-                <label>End Date:</label><span> {{ event.end_date }} {% if event.end_time %} at {{ event.end_time }}{% endif %}</span><br/>
+                <label>End Date:</label><span> {% if event.end_date %}{{ event.end_date }} {% if event.end_time %} at {{ event.end_time }}{% endif %}{% else %}N/A{% endif %}</span><br/>
             {% endif %}
             <label>Address:</label>
             <span> {{ event.address }}, {{ event.city }}, {{ event.state }}, {{ event.zipcode }}</span><br/>
-            <label>Website:</label><span> {{ event.website }}</span><br/>
+            <label>Website:</label><span> {% if event.website %}{{ event.website }}{% else %}N/A{% endif %}</span><br/>
             <label>Description:</label>
             <p class="string-to-html">{{ event.description }}</p>
             <div>

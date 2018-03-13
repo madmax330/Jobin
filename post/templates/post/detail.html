@@ -20,7 +20,7 @@
             </div>
             <label>Post Type: </label><span> {{ post.type }}</span><br/>
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
-            <label>End Date: </label><span> {{ post.end_date }}</span><br/>
+            <label>End Date: </label><span> {% if post.end_date %}{{ post.end_date }}{% else %}N/A{% endif %}</span><br/>
             <label>Application Deadline: </label><span> {{ post.deadline }}</span><br/>
             <label>Wage: </label><span> {% if post.wage %}${{ post.wage }}/{{ post.wage_interval }}{% else %}N/A{% endif %}</span><br/>
             <label>Openings: </label><span> {% if post.openings %}{{ post.openings }}{% else %}N/A{% endif %}</span><br/>
@@ -34,7 +34,7 @@
             <p class="string-to-html">{% if post.benefits %}{{ post.benefits }}{% else %}N/A{% endif %}</p>
             {% if post.cover_instructions %}
                 <label>Cover Letter Instructions:</label>
-                <p>{{ post.cover_instructions }}</p>
+                <p class="string-to-html">{{ post.cover_instructions }}</p>
             {% endif %}
             <label>Programs: </label>
             <p>{{ post.programs }}</p>
