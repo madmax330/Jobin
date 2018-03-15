@@ -535,6 +535,9 @@ class CompanyPostContainer(BaseContainer):
         if self.__application.cover_submitted and not self.__application.cover_opened:
             self.__application.cover_opened = True
             edited = True
+        if self.__application.resume_notified:
+            self.__application.resume_notified = False
+            edited = True
         if edited:
             self.__application.save()
 
@@ -545,7 +548,4 @@ class CompanyPostContainer(BaseContainer):
             self.__post.new_apps = False
             self.__post.save()
 
-    def remove_application_resume_notified(self):
-        if self.__application.resume_notified:
-            self.__application.resume_notified = False
-            self.__application.save()
+

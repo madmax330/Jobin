@@ -181,7 +181,6 @@ class CompanyContainer(BaseContainer):
 
     def get_application(self, pk):
         app = self.__post_container.get_application(pk)
-        self.__post_container.remove_application_resume_notified()
         return app
 
     def get_extended_application(self, app):

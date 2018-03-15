@@ -174,7 +174,7 @@ def new_suggestion(request):
                     raise IntegrityError
 
         except IntegrityError:
-            return HttpResponse(str(company.get_errors()), status=400)
+            return HttpResponse(company.get_error_message(), status=400)
 
     raise Http404
 
@@ -187,7 +187,7 @@ def company_not_new(request):
         if company.not_new():
             return HttpResponse('good', status=200)
         else:
-            return HttpResponse(str(company.get_errors()), status=400)
+            return HttpResponse(company.get_error_message(), status=400)
 
     raise Http404
 
@@ -208,7 +208,7 @@ def upload_logo(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            data = {'is_valid': False, 'error': str(company.get_errors())}
+            data = {'is_valid': False, 'error': company.get_error_message()}
             return JsonResponse(data)
 
     raise Http404
@@ -230,7 +230,7 @@ def delete_logo(request):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(company.get_errors())
+            m = company.get_error_message()
             MessageCenter.new_message('company', company.get_company(), 'danger', m)
 
         return redirect('company:profile')
@@ -255,6 +255,6 @@ def comment_suggestion(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            return HttpResponse(str(company.get_errors()), status=400)
+            return HttpResponse(company.get_error_message(), status=400)
 
     raise Http404

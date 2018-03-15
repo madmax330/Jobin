@@ -10,6 +10,12 @@ class BaseContainer:
         self._codes = ['success', 'warning', 'danger']
         self.__form = None
 
+    def get_error_message(self):
+        message = ""
+        for x in self.__errors:
+            message = message + x + "\n "
+        return message
+
     def get_errors(self):  # return list of errors
         return self.__errors
 
@@ -19,7 +25,7 @@ class BaseContainer:
         return {}
 
     def add_error(self, err):  # add a new error to the list
-        msg = '-- ' + self._container_name + ' -- ' + err
+        msg = err
         self.__errors.append(msg)
 
     def add_form_errors(self, form=None):  # add errors from django forms

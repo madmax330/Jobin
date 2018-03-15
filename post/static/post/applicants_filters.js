@@ -22,7 +22,7 @@ $(function(){
     $('select#major-select').on('change', function () {
         let val = $(this).find('option:selected').val();
         if (val) {
-            if (FILTERS.majors.indexOf(val)) {
+            if (FILTERS.majors.indexOf(val) < 0) {
                 FILTERS.majors.push(val);
                 update_filter_input_values();
                 render_filters();
@@ -50,7 +50,7 @@ $(function(){
         if (val && isNaN(val)) {
             show(gpa_error);
         }
-        else if(!(Number(val) > 0 || Number(val) <= 4)) {
+        else if(!(Number(val) > 0 && Number(val) <= 4)) {
             show(gpa_error);
         }
         else {
@@ -78,7 +78,7 @@ $(function(){
 
     $(document.body).on('click', '.school-result', function () {
         let school = $(this).text().toString().trim();
-        if (FILTERS.schools.indexOf(school))
+        if (FILTERS.schools.indexOf(school) < 0)
             FILTERS.schools.push(school);
         hide($('.school-search-results'));
         $('.school-search-in').val('');

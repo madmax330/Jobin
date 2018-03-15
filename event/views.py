@@ -136,7 +136,7 @@ def close_event(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            return HttpResponse(str(company.get_errors()), status=400)
+            return HttpResponse(company.get_error_message(), status=400)
 
         return render(request, 'event/detail.html', context)
 
@@ -227,7 +227,7 @@ def save_event(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -248,7 +248,7 @@ def remove_saved_event(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404

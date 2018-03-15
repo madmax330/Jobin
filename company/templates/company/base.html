@@ -90,17 +90,17 @@
                     {% if x.code == 'danger' %}
                         <div class="alert alert-danger alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ x.message }}
+                            {{ x.message | linebreaksbr }}
                         </div>
                     {% elif x.code == 'warning' %}
                         <div class="alert alert-warning alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ x.message }}
+                            {{ x.message | linebreaksbr }}
                         </div>
                     {% else %}
                         <div class="alert alert-info alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ x.message }}
+                            {{ x.message | linebreaksbr }}
                         </div>
                     {% endif %}
                 {% endfor %}

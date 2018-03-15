@@ -194,7 +194,7 @@ def add_transcript(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            data = {'is_valid': False, 'error': str(student.get_errors())}
+            data = {'is_valid': False, 'error': student.get_error_message()}
             return JsonResponse(data)
 
     raise Http404
@@ -213,7 +213,7 @@ def delete_transcript(request, pk):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=pk)
@@ -236,7 +236,7 @@ def request_school_verification(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors()) + '\n' + str(activation.get_errors())
+            m = student.get_error_message() + '\n' + activation.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('student:profile')
@@ -259,7 +259,7 @@ def request_new_school_verification(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors()) + '\n' + str(activation.get_errors())
+            m = student.get_error_message() + '\n' + activation.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('student:profile')
@@ -281,7 +281,7 @@ def verify_student_school(request, key):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors()) + '\n' + str(activation.get_errors())
+            m = student.get_error_message() + '\n' + activation.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('student:profile')
@@ -302,7 +302,7 @@ def change_school(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('student:profile')
@@ -323,7 +323,7 @@ def request_new_school(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('student:profile')
@@ -338,7 +338,7 @@ def student_not_new(request):
         if student.not_new():
             return HttpResponse('good', status=200)
         else:
-            return HttpResponse(str(student.get_errors()), status=400)
+            return HttpResponse(student.get_error_message(), status=400)
 
     raise Http404
 

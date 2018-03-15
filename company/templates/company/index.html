@@ -37,7 +37,7 @@
                     {% for x in posts %}
                         <tr class="{% if x.new_apps %}new-applications{% elif x.notified %}notified{% endif %}">
                             <td class="post-title">{{ x.title }}</td>
-                            <td>{{ x.openings }}</td>
+                            <td>{% if x.openings %}{{ x.openings }}{% else %}N/A{% endif %}</td>
                             <td>{{ x.start_date }}</td>
                             <td>{{ x.deadline }}</td>
                             <td><a href="{% url 'post:applicants' pk=x.id%}">Applicants ({{ x.app_count }})</a></td>

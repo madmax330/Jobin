@@ -37,7 +37,7 @@ def resume_detail(request, pk):
         msgs = MessageCenter.get_messages('student', student.get_student())
         resume = student.get_display_resume(pk)
         if not resume:
-            MessageCenter.new_message('student', student.get_student(), 'warning', str(student.get_errors()))
+            MessageCenter.new_message('student', student.get_student(), 'warning', student.get_error_message())
             return redirect('resume:index')
         context = {
             'student': student.get_student(),
@@ -79,7 +79,7 @@ def new_resume(request):
                     raise IntegrityError
 
         except IntegrityError:
-            return HttpResponse(str(student.get_errors()), status=400)
+            return HttpResponse(student.get_error_message(), status=400)
 
     raise Http404
 
@@ -98,7 +98,7 @@ def copy_resume(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:index')
@@ -121,7 +121,7 @@ def edit_resume(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return HttpResponse('Invalid resume request.', status=400)
@@ -144,7 +144,7 @@ def change_application_resume(request, pk, ak):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -165,7 +165,7 @@ def change_active_resume(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -185,7 +185,7 @@ def delete_resume(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_errors(), 'danger', m)
 
         return redirect('resume:index')
@@ -208,7 +208,7 @@ def new_language(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -228,7 +228,7 @@ def add_language(request, pk, rk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -251,7 +251,7 @@ def edit_language(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -271,7 +271,7 @@ def delete_language(request, rk, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -296,7 +296,7 @@ def new_experience(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -316,7 +316,7 @@ def add_experience(request, pk, rk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -339,7 +339,7 @@ def edit_experience(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -359,7 +359,7 @@ def delete_experience(request, rk, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -384,7 +384,7 @@ def new_award(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -404,7 +404,7 @@ def add_award(request, pk, rk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -427,7 +427,7 @@ def edit_award(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -447,7 +447,7 @@ def delete_award(request, rk, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -472,7 +472,7 @@ def new_school(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -492,7 +492,7 @@ def add_school(request, pk, rk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -515,7 +515,7 @@ def edit_school(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -535,7 +535,7 @@ def delete_school(request, rk, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -560,7 +560,7 @@ def new_skill(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -580,7 +580,7 @@ def add_skill(request, pk, rk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -602,7 +602,7 @@ def edit_skill(request, pk):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -622,7 +622,7 @@ def delete_skill(request, rk, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -647,7 +647,7 @@ def new_reference(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -667,7 +667,7 @@ def add_reference(request, pk, rk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -690,7 +690,7 @@ def edit_reference(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -709,7 +709,7 @@ def delete_reference(request, rk, pk):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=rk)
@@ -732,7 +732,7 @@ def add_file_resume(request, pk):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            data = {'is_valid': False, 'error': str(student.get_errors())}
+            data = {'is_valid': False, 'error': student.get_error_message()}
             return JsonResponse(data)
 
     raise Http404
@@ -751,7 +751,7 @@ def delete_file_resume(request, pk):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('resume:details', pk=pk)

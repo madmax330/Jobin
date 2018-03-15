@@ -101,25 +101,25 @@
                     <div class="w3-container message-danger w3-display-container">
                                         <span onclick="this.parentElement.style.display='none'"
                                               class="w3-button w3-display-topright">&times;</span>
-                        <p>{{ x.message }}</p>
+                        <p>{{ x.message | linebreaksbr }}</p>
                     </div>
                 {% elif x.code == 'warning' %}
                     <div class="w3-container message-warning w3-display-container">
                                         <span onclick="this.parentElement.style.display='none'"
                                               class="w3-button w3-display-topright">&times;</span>
-                        <p>{{ x.message }}</p>
+                        <p>{{ x.message | linebreaksbr }}</p>
                     </div>
                 {% elif x.code == 'success' %}
                     <div class="w3-container message-success w3-display-container">
                                         <span onclick="this.parentElement.style.display='none'"
                                               class="w3-button w3-display-topright">&times;</span>
-                        <p>{{ x.message }}</p>
+                        <p>{{ x.message | linebreaksbr }}</p>
                     </div>
                 {% else %}
                     <div class="w3-container message-info w3-display-container">
                                         <span onclick="this.parentElement.style.display='none'"
                                               class="w3-button w3-display-topright">&times;</span>
-                        <p>{{ x.message }}</p>
+                        <p>{{ x.message | linebreaksbr }}</p>
                     </div>
                 {% endif %}
             {% endfor %}

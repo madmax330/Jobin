@@ -12,12 +12,12 @@
         {% else %}
             {% if errors %}
                 <div class="alert alert-danger">
-                    {{ errors }}
+                    {{ errors | linebreaksbr }}
                 </div>
             {% endif %}
             {% if msg %}
                 <div class="alert alert-info">
-                    {{ msg }}
+                    {{ msg | linebreaksbr }}
                 </div>
             {% endif %}
             {% if not email %}

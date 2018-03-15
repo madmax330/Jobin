@@ -43,7 +43,7 @@ def login_student(request):
         else:
             errors.append({
                 'code': 'danger',
-                'message': str(user.get_errors())
+                'message': user.get_error_message()
             })
             return render(request, 'home/index.html',
                           {'messages': errors, 'student_email': info['email'], 'panel': 'student'})
@@ -65,7 +65,7 @@ def login_company(request):
         else:
             errors.append({
                 'code': 'danger',
-                'message': str(user.get_errors())
+                'message': user.get_error_message()
             })
             return render(request, 'home/index.html',
                           {'messages': errors, 'company_email': info['email'], 'panel': 'company'})
@@ -103,7 +103,7 @@ def register_company(request):
         except IntegrityError:
             errors.append({
                 'code': 'danger',
-                'message': str(user.get_errors())
+                'message': user.get_error_message()
             })
             context['messages'] = errors
             return render(request, 'home/index.html', context)
@@ -129,7 +129,7 @@ def register_student(request):
         except IntegrityError:
             errors.append({
                 'code': 'danger',
-                'message': str(user.get_errors())
+                'message': user.get_error_message()
             })
             context['messages'] = errors
             return render(request, 'home/index.html', context)
@@ -153,7 +153,7 @@ def activate_company(request, key):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            errs = str(user.get_errors())
+            errs = user.get_error_message()
             return render(request, 'home/utils/email/activate.html', {'errors': errs})
 
     raise Http404
@@ -170,7 +170,7 @@ def activate_student(request, key):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            errs = str(user.get_errors())
+            errs = user.get_error_message()
             return render(request, 'home/utils/email/activate.html', {'errors': errs})
 
     raise Http404
@@ -188,7 +188,7 @@ def new_verification(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            return render(request, 'home/utils/email/verify.html', {'errors': str(user.get_errors()), 'email': info['email']})
+            return render(request, 'home/utils/email/verify.html', {'errors': user.get_error_message(), 'email': info['email']})
 
     raise Http404
 
@@ -264,12 +264,12 @@ class ChangeUserInfo(LoginRequiredMixin, View):
                             raise IntegrityError
 
                 except IntegrityError:
-                    return render(request, self.template_name, {'error': str(user.get_errors())})
+                    return render(request, self.template_name, {'error': user.get_error_message()})
             else:
                 return render(request, self.template_name, {'error': 'Incorrect password.'})
 
         else:
-            return render(request, self.template_name, {'error': str(rq.get_errors())})
+            return render(request, self.template_name, {'error': rq.get_error_message()})
 
 
 def new_password_view(request, ut):

@@ -246,7 +246,7 @@ def submit_cover_letter(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -264,7 +264,7 @@ def apply(request, pk):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -405,7 +405,7 @@ def withdraw_application(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('student:index')
@@ -427,7 +427,7 @@ def activate_application(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             MessageCenter.new_message('student', student.get_student(), 'danger', m)
 
         return redirect('student:index')
@@ -450,7 +450,7 @@ def discard_application(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(company.get_errors())
+            m = company.get_error_message()
             return HttpResponse(m, status=400)
 
         raise Http404
@@ -473,7 +473,7 @@ def save_application(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(company.get_errors())
+            m = company.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -494,7 +494,7 @@ def remove_application_save(request, pk):
                     raise IntegrityError
 
         except IntegrityError:
-            m = str(company.get_errors())
+            m = company.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -508,7 +508,7 @@ def increment_count(request, pk):
         if student.increment_view_count(pk):
             return HttpResponse(status=200)
         else:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
