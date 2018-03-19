@@ -23,8 +23,8 @@ def index_view(request):
             return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())
         a = student.get_applications()
-        apps = Pagination(a if a else [], 15)
-        events = Pagination(student.get_saved_events(), 15)
+        apps = Pagination(a if a else [], 10)
+        events = Pagination(student.get_saved_events(), 10)
         posts = Pagination(student.get_newest_posts(), 5)
         context = {
             'student': student.get_student(),

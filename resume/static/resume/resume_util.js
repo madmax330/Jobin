@@ -2,8 +2,6 @@
  * Created by maxencecoulibaly on 5/7/17.
  */
 
-let WALKTHROUGH = false;
-
 
 function send_walkthrough(url, form, info) {
     form.find('.fa-spinner').removeClass('w3-hide');

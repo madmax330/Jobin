@@ -82,7 +82,14 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <h3 class="w3-center"> No events found.</h3>
+                <div class="w3-display-container mySlides">
+                <div class="w3-card-16">
+                    <h4 class="w3-center">
+                        There are currently no events listed. <br/><br/>
+                        Check back again later.
+                    </h4>
+                </div>
+            </div>
             {% endif %}
             <a class="w3-btn w3-display-left slider-nav-btn" onclick="plusDivs(-1)">❮</a>
             <a class="w3-btn w3-display-right slider-nav-btn" onclick="plusDivs(1)">❯</a>

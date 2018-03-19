@@ -48,8 +48,8 @@
                         Close Post
                     </a>
                 {% elif post.status == 'closed' %}
-                    <a href="{% url 'post:recover' pk=post.id %}" class="btn btn-warning">
-                        <strong>Reactivate Post</strong>
+                    <a href="{% url 'post:recover' pk=post.id %}" class="btn btn-default">
+                        Reactivate Post
                     </a>
                 {% endif %}
             </div>

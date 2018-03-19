@@ -103,7 +103,7 @@
                     <h4 style="text-decoration: underline;">If your school is not in the list:</h4>
                     {% if student.school_requested %}
                         <div>
-                            <p>* You sent a new school request for {{ student.school_requested }}.</p>
+                            <p>* You sent a new school request for <span style="text-transform: capitalize">{{ student.school_requested }}</span>.</p>
                             <a href="{% url 'student:change_school' %}" class="w3-btn btn-default">
                                 Change my school
                             </a>

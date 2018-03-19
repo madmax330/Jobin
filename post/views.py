@@ -48,6 +48,7 @@ class NewPostView(LoginRequiredMixin, View):
             'programs': HomeUtil.get_programs(),
             'company': company.get_company(),
             'tab': 'posts',
+            'new': True
         }
         return render(request, self.template_name, context)
 

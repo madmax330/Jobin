@@ -20,8 +20,8 @@ def index_view(request):
         if company.get_company() is None:
             return redirect('company:new')
         msgs = MessageCenter.get_messages('company', company.get_company())
-        posts = Pagination(company.get_home_posts(), 15)
-        events = Pagination(company.get_events(), 15)
+        posts = Pagination(company.get_home_posts(), 10)
+        events = Pagination(company.get_events(), 10)
         context = {
             'company': company.get_company(),
             'posts': posts.get_page(post_page),

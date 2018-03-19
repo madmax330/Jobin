@@ -16,7 +16,7 @@ def resume_index(request):
         if student.get_student() is None:
             return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())
-        resumes = Pagination(student.get_resumes(), 20)
+        resumes = Pagination(student.get_resumes(), 10)
         context = {
             'student': student.get_student(),
             'resumes': resumes.get_page(page),

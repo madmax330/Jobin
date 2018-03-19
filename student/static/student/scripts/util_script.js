@@ -13,6 +13,7 @@ const MODALS = [
     'welcome-modal'
 ];
 
+let WALKTHROUGH = false;
 let MODAL_OPEN = false;
 let MODAL_BLOCK = false;
 

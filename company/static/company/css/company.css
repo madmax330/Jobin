@@ -247,23 +247,23 @@ margin-left: calc(50% - 50vw);
   width: 100vw;
 }
 .job-navbar div:first-child a {
-    background: url(http://dev.jobin.io/static/home/images/volunteer.jpg) !important;
+    background: url(/static/home/images/volunteer.jpg) !important;
     background-size: cover !important;
 }
 .job-navbar div:nth-child(2) a {
-    background: url(http://dev.jobin.io/static/home/images/internship.jpg) !important;
+    background: url(/static/home/images/internship.jpg) !important;
     background-size: cover !important;
 }
 .job-navbar div:nth-child(3) a {
-    background: url(http://dev.jobin.io/static/home/images/parttime.jpg) !important;
+    background: url(/static/home/images/parttime.jpg) !important;
     background-size: cover !important;
 }
 .job-navbar div:nth-child(4) a {
-    background: url(http://dev.jobin.io/static/home/images/startup.jpg) !important;
+    background: url(/static/home/images/startup.jpg) !important;
     background-size: cover !important;
 }
 .job-navbar div:nth-child(5) a {
-    background: url(http://dev.jobin.io/static/home/images/fulltime.jpg) !important;
+    background: url(/static/home/images/fulltime.jpg) !important;
     background-size: cover !important;
 }
 .job-navbar a {padding-top: 60px !important;
@@ -394,7 +394,7 @@ color: #696969;
 }
 
 .events-header {
-    background: url(http://dev.jobin.io/static/home/images/events.jpg);
+    background: url(/static/home/images/events.jpg);
     padding-top: 60px !important;
     padding-bottom: 60px !important;
 	margin-left: calc(50% - 50vw);
@@ -409,12 +409,12 @@ color: #696969;
 .w3-container.w3-padding.w3-cell-row.w3-text-white.primary-color {
     padding-top: 60px !important;
     padding-bottom: 60px !important;
-    background: url(http://dev.jobin.io/static/home/images/resumes.jpg);
+    background: url(/static/home/images/resumes.jpg);
 }
 header.w3-container.primary-color.w3-text-white {
         padding-top: 60px !important;
     padding-bottom: 60px !important;
-    background: url(http://dev.jobin.io/static/home/images/applicationshistory.jpg);
+    background: url(/static/home/images/applicationshistory.jpg);
 }
 .w3-table, .w3-table-all {
 	    background: #fff;
@@ -896,4 +896,7 @@ span.remove-filter-item {
 }
 
 
+.mce-container.mce-menubar.mce-toolbar, .mce-container.mce-toolbar-grp {
+    display: none;
+}
 
