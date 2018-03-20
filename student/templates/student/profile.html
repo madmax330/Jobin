@@ -76,9 +76,11 @@
                         CHANGE MY SCHOOL
                     </button>
                     {% if not student.verified %}
-                        <a href="{% url 'student:request_new_school_verification' %}" class="w3-btn btn-default">
-                            Get new activation link
-                        </a>
+                        <form method="post" action="{% url 'student:request_new_school_verification' %}">
+                            <input type="hidden" name="email" value="{{ student.school_email }}">
+                            <input type="hidden" name="school" value="{{ student.school }}">
+                            <button type="submit" class="w3-btn btn-default">Get a new activation link</button>
+                        </form>
                     {% endif %}
                 </div>
             {% else %}
