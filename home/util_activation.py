@@ -182,6 +182,26 @@ class ActivationUtil(BaseContainer):
             return False
 
 
+    #
+    #   Contact Email
+    #
+
+    def send_contact_email(self, info):
+        subject = 'Contact message from ' + info['email']
+        template = 'home/utils/email/contact_message.html'
+        html = render_to_string(template, {'info': info})
+        text_val = strip_tags(html)
+
+        from_email = 'jobin@jobin.ca'
+        msg = EmailMultiAlternatives(subject, text_val, from_email, ['baba.kourouma@jobin.ca', 'maxence.coulibaly@jobin.ca'])
+        msg.attach_alternative(html, "text/html")
+        try:
+            msg.send(fail_silently=False)
+            return True
+        except SMTPException as e:
+            self.add_error('Error sending email: ' + str(e))
+            return False
+
 
 
 

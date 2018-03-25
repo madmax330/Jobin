@@ -77,6 +77,7 @@
                     </button>
                     {% if not student.verified %}
                         <form method="post" action="{% url 'student:request_new_school_verification' %}">
+                            {% csrf_token %}
                             <input type="hidden" name="email" value="{{ student.school_email }}">
                             <input type="hidden" name="school" value="{{ student.school }}">
                             <button type="submit" class="w3-btn btn-default">Get a new activation link</button>

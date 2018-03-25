@@ -4,9 +4,11 @@ from django.db import transaction, IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from .util_activation import ActivationUtil
+from .forms import NewContactMessageForm
+
 from .content_gen import ContentGen
 from .utils import MessageCenter
-from .util_home import HomeUtil
 from .util_user import UserUtil
 from .util_request import RequestUtil
 from company.util_company import CompanyContainer
@@ -337,6 +339,31 @@ def terms_and_conditions(request):
 def privacy_policy(request):
     if request.method == 'GET':
         return render(request, 'home/privacy_policy.html')
+
+    raise Http404
+
+
+def send_contact_message(request):
+
+    if request.method == 'POST':
+        activation = ActivationUtil(None)
+        info = request.POST.copy()
+        errors = []
+        form = NewContactMessageForm(info)
+        if form.is_valid():
+            form.save()
+            if activation.send_contact_email(info):
+
+                return render(
+                    request,
+                    'home/index.html',
+                    {'messages': [{'code': 'success', 'message': 'Thank you for contacting Jobin. Your message was sent successfully.'}]}
+                )
+        errors.append({
+            'code': 'danger',
+            'message': 'Error sending your message please try again.\n ' + activation.get_error_message()
+        })
+        return render(request, 'home/index.html', {'messages': errors})
 
     raise Http404
 

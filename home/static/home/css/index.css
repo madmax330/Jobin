@@ -39,7 +39,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
 	min-height: 450px;
 	z-index: 30;
 }
-#student-login input, #company-login input, #student-forgot-password input, #company-forgot-password input {
+#student-login input, #company-login input, #student-forgot-password input, #company-forgot-password input,
+.contact-form input, .contact-form textarea {
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -54,7 +55,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
     box-shadow: none;
 }
 
-#student-login input::placeholder, #student-forgot-password input::placeholder {
+#student-login input::placeholder, #student-forgot-password input::placeholder,
+.contact-form input::placeholder, .contact-form textarea::placeholder {
 	color:#ff8365;
 }
 
@@ -166,7 +168,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
     border-bottom:1px solid black;
 }
 
-.what-we-do-row{
+.what-we-do-row, .contact-section{
     background: #000000 url("/static/home/images/citybg.jpg") no-repeat center;
     padding: 32px 0;
     color: #FFFFFF;
@@ -311,7 +313,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
 }
 .about-title-col {border-bottom:0 !important;}
 
-#student-login .btn.btn-default.login-btn, #company-login .btn.btn-default.login-btn, #student-forgot-password .btn.btn-default, #company-forgot-password .btn.btn-default {
+#student-login .btn.btn-default.login-btn, #company-login .btn.btn-default.login-btn, #student-forgot-password .btn.btn-default,
+#company-forgot-password .btn.btn-default, .contact-form .btn.btn-default {
     font-size: 15px;
     color: #fff;
     background: transparent;
@@ -320,13 +323,20 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
     padding: 8px 37px;
     font-weight: bold;
 }
-#student-login .btn.btn-default.login-btn:hover, #company-login .btn.btn-default.login-btn:hover, #student-forgot-password .btn.btn-default:hover, #company-forgot-password .btn.btn-default:hover {
+#student-login .btn.btn-default.login-btn:hover, #company-login .btn.btn-default.login-btn:hover, #student-forgot-password .btn.btn-default:hover,
+#company-forgot-password .btn.btn-default:hover, .contact-form .btn.btn-default:hover {
     color: #ff7a64;
 	background: #fff;
 }
-#student-login .btn.btn-default.login-btn:focus, #company-login .btn.btn-default.login-btn:focus, #student-forgot-password .btn.btn-default:focus, #company-forgot-password .btn.btn-default:focus {
+#student-login .btn.btn-default.login-btn:focus, #company-login .btn.btn-default.login-btn:focus, #student-forgot-password .btn.btn-default:focus,
+#company-forgot-password .btn.btn-default:focus, .contact-form .btn.btn-default {
     outline:none !important;
 	box-shadow:none !important;
+}
+
+.contact-form textarea {
+	padding: 10px;
+	height: auto !important;
 }
 
 @media screen and (max-width: 992px) {
