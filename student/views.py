@@ -267,22 +267,26 @@ def request_new_school_verification(request):
     raise Http404
 
 
-@login_required(login_url='/')
 def verify_student_school(request, key):
     if request.method == 'GET':
-        student = StudentContainer(request.user)
+        student = None
         activation = ActivationUtil(request.user)
 
         try:
             with transaction.atomic():
-                if activation.verify_student_school(key) and student.school_verified():
-                    m = 'Your school was verified successfully.'
-                    MessageCenter.new_message('student', student.get_student(), 'success', m)
+                if activation.verify_student_school(key):
+                    student = StudentContainer(activation.get_user())
+                    if student.school_verified():
+                        m = 'Your school was verified successfully.'
+                        MessageCenter.new_message('student', student.get_student(), 'success', m)
                 else:
                     raise IntegrityError
         except IntegrityError:
-            m = student.get_error_message() + '\n' + activation.get_error_message()
-            MessageCenter.new_message('student', student.get_student(), 'danger', m)
+            if student:
+                m = student.get_error_message() + '\n' + activation.get_error_message()
+                MessageCenter.new_message('student', student.get_student(), 'danger', m)
+            else:
+                return render(request, 'home/index.html', {'messages': [{'code': 'danger', 'message': 'Unable to verify your school. User not found.'}]})
 
         return redirect('student:profile')
 

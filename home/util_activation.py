@@ -25,6 +25,9 @@ class ActivationUtil(BaseContainer):
         self._container_name = 'Activation Util'
         self.__user = user
 
+    def get_user(self):
+        return self.__user
+
     def send_activation_email(self, student):
         if isinstance(self.__user, AnonymousUser):
             self.add_error('User not authenticated.')
@@ -176,11 +179,11 @@ class ActivationUtil(BaseContainer):
     def verify_student_school(self, key):
         activation = self.__confirm_activation_key(key)
         if activation:
+            self.__user = activation.user
             activation.delete()
             return True
         else:
             return False
-
 
     #
     #   Contact Email

@@ -117,9 +117,13 @@ class StudentContainer(BaseContainer):
         return not self.__user.groups.filter(name='student_email_not_verified').exists()
 
     def school_verified(self):
-        self.__student.verified = True
-        self.__student.save()
-        return True
+        if self.__student:
+            self.__student.verified = True
+            self.__student.save()
+            return True
+        else:
+            self.add_error('Student not found.')
+            return False
 
     def change_school(self):
         self.__student.verified = False
