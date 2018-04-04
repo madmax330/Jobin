@@ -281,26 +281,14 @@ def new_password_view(request, ut):
         errors = []
         if ut == 'student':
             student = StudentContainer(user.get_user(email=info['email']))
-            if student.get_student():
-                if not (student.get_student().dob.strftime('%Y-%m-%d') == info['dob']):
-                    errors.append({
-                        'code': 'danger',
-                        'message': 'Unable to verify user, double check the information you provided.'
-                    })
-            else:
+            if not student.get_student():
                 errors.append({
                     'code': 'danger',
                     'message': 'User not found, double check the information you provided.'
                 })
         elif ut == 'company':
             company = CompanyContainer(user.get_user(email=info['email']))
-            if company.get_company():
-                if not company.get_company().zipcode == info['zipcode']:
-                    errors.append({
-                        'code': 'danger',
-                        'message': 'Unable to verify user, double check the information you provided.'
-                    })
-            else:
+            if not company.get_company():
                 errors.append({
                     'code': 'danger',
                     'message': 'User not found, double check the information you provided.'

@@ -10,9 +10,9 @@ function isFireFox() {
 }
 
 function browser_alert(){
-    if(!(isChrome() || isFireFox())) {
+    if(!isChrome()) {
         if (!check_cookie()) {
-            alert('You are not using Google Chrome or Firefox!!\nFor better results we suggest that you use Google Chrome or Firefox as your browser for better results. \n\nThe Jobin Team.');
+            alert('If you are not using Google Chrome, for better results we suggest that you use Google Chrome as your browser. \n\nThe Jobin Team.');
             set_cookie();
         }
     }
@@ -35,7 +35,7 @@ function check_cookie(){
 
 function set_cookie(){
     let d = new Date();
-    d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
+    d.setTime(d.getTime() + (7 * 24 * 60 * 60 * 1000));
     let expires = "expires="+d.toUTCString();
     document.cookie = 'jobin_browser_alert' + "=" + 'alerted' + ";" + expires + ";path=/";
 }

@@ -382,10 +382,6 @@
                         <div class="form-group">
                             <input type="email" class="form-control" placeholder="Email Address" name="email" required>
                         </div>
-                        <h5>Date of birth:</h5>
-                        <div class="form-group">
-                            <input type="date" class="form-control" name="dob" placeholder="Date Of Birth" required>
-                        </div>
                         <button class="g-recaptcha btn btn-default" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
                                     data-callback='onStudentNewPass' type="submit">GET NEW PASSWORD</button>
                     </form>
@@ -404,9 +400,6 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <input type="email" class="form-control" placeholder="Email Address" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="zipcode" placeholder="Zip/Postal Code" required>
                         </div>
                         <button class="g-recaptcha btn btn-default" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
                                     data-callback='onCompanyNewPass' type="submit">GET NEW PASSWORD</button>
