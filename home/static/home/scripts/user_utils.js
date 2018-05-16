@@ -2,6 +2,18 @@
  * Created by maxencecoulibaly on 5/6/17.
  */
 
+$(function() {
+     $('.string-to-html').each(function() {
+         let str = $(this).html();
+         if(str){
+             let elem = document.createElement('textarea');
+             elem.innerHTML = str.toString().trim();
+             let decoded = elem.value;
+             $(this).html(decoded);
+         }
+
+     });
+});
 
 function clear_form(id){
 
@@ -45,10 +57,11 @@ function send_get(url){
 }
 
 function get_input_date(val){
-
+    if(!isChrome())
+        val = val.replace('.', '');
     let temp = new Date(val);
-    let day = ("0" + temp.getUTCDate()).slice(-2);
-    let month = ("0" + (temp.getMonth() + 1)).slice(-2);
+    let day = ("0" + temp.getUTCDate().toString()).slice(-2);
+    let month = ("0" + (temp.getMonth() + 1).toString()).slice(-2);
     return temp.getFullYear()+"-"+(month)+"-"+(day)
 
 }
@@ -68,7 +81,33 @@ function get_input_time(val){
 
 }
 
+function check_cookie(name){
+    name = name + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 
+function set_cookie(name, value, t){
+    let d = new Date();
+    d.setTime(d.getTime() + (t * 24 * 60 * 60 * 1000));
+    let expires = "expires="+d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function scroll_to(el){
+    $('html, body').animate({
+        scrollTop: el.offset().top
+    }, 2000);
+}
 
 
 

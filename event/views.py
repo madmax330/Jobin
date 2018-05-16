@@ -6,7 +6,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from home.utils import MessageCenter, Pagination
 from home.util_home import HomeUtil
-from home.util_request import RequestUtil
 
 from company.util_company import CompanyContainer
 from student.util_student import StudentContainer
@@ -48,34 +47,31 @@ class NewEventView(LoginRequiredMixin, View):
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
             'tab': 'events',
+            'new': True,
         }
         return render(request, self.template_name, context)
 
     def post(self, request):
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_event_info(request)
         context = {
             'company': company.get_company(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
             'tab': 'events',
+            'new': True,
         }
-        if i:
+        info = request.POST.copy()
 
-            try:
-                with transaction.atomic():
-                    if company.new_event(i):
-                        return redirect('event:company_events')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['event'] = i
-                context['errors'] = company.get_form().errors
+        try:
+            with transaction.atomic():
+                if company.new_event(info):
+                    return redirect('event:company_events')
+                else:
+                    raise IntegrityError
 
-        else:
-            context['event'] = rq.get_info()
-            context['errors'] = rq.get_errors()
+        except IntegrityError:
+            context['event'] = info
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
@@ -98,8 +94,6 @@ class EditEventView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_event_info(request)
         context = {
             'company': company.get_company(),
             'event': company.get_event(pk),
@@ -107,28 +101,25 @@ class EditEventView(LoginRequiredMixin, View):
             'states': HomeUtil.get_states(),
             'tab': 'events',
         }
-        if i:
+        info = request.POST.copy()
+        info['id'] = pk
 
-            try:
-                with transaction.atomic():
-                    if company.edit_event(pk, i):
-                        return redirect('event:company_events')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['event'] = i
-                context['errors'] = company.get_form().errors
+        try:
+            with transaction.atomic():
+                if company.edit_event(pk, info):
+                    return redirect('event:company_events')
+                else:
+                    raise IntegrityError
 
-        else:
-            context['event'] = rq.get_info()
-            context['errors'] = rq.get_errors()
+        except IntegrityError:
+            context['event'] = info
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
 
 @login_required(login_url='/')
 def close_event(request, pk):
-
     if request.method == 'GET':
         company = CompanyContainer(request.user)
         context = {
@@ -136,14 +127,16 @@ def close_event(request, pk):
             'company': company.get_company(),
             'tab': 'events',
         }
+
         try:
             with transaction.atomic():
                 if company.close_event(pk):
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
-            return HttpResponse(str(company.get_errors()), status=400)
+            return HttpResponse(company.get_error_message(), status=400)
 
         return render(request, 'event/detail.html', context)
 
@@ -152,7 +145,6 @@ def close_event(request, pk):
 
 @login_required(login_url='/')
 def detail_view(request, pk):
-
     if request.method == 'GET':
         company = CompanyContainer(request.user)
         context = {
@@ -167,20 +159,17 @@ def detail_view(request, pk):
 
 @login_required(login_url='/')
 def student_index(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
         if student.get_student() is None:
             return redirect('student:new')
         msgs = MessageCenter.get_messages('student', student.get_student())
-        notes = MessageCenter.get_notifications('student', student.get_student())
         events = student.get_events(pk)
         context = {
             'student': student.get_student(),
             'events': events,
             'count': len(events),
             'messages': msgs,
-            'notifications': notes,
             'tab': 'events',
         }
         return render(request, 'event/student_index.html', context)
@@ -204,34 +193,29 @@ class RecoverEventView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_event_info(request)
         context = {
             'company': company.get_company(),
             'tab': 'events',
         }
-        if i:
+        info = request.POST.copy()
+        info['id'] = pk
 
-            try:
-                with transaction.atomic():
-                    if company.recover_event(pk, i):
-                        return redirect('event:company_events')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['event'] = i
-                context['errors'] = company.get_form().errors
+        try:
+            with transaction.atomic():
+                if company.recover_event(pk, info):
+                    return redirect('event:company_events')
+                else:
+                    raise IntegrityError
 
-        else:
-            context['event'] = rq.get_info()
-            context['errors'] = rq.get_errors()
+        except IntegrityError:
+            context['event'] = info
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
 
 @login_required(login_url='/')
 def save_event(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -241,8 +225,9 @@ def save_event(request, pk):
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
@@ -250,7 +235,6 @@ def save_event(request, pk):
 
 @login_required(login_url='/')
 def remove_saved_event(request, pk):
-
     if request.method == 'GET':
         student = StudentContainer(request.user)
 
@@ -262,10 +246,9 @@ def remove_saved_event(request, pk):
                     return HttpResponse('success', status=200)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
-            m = str(student.get_errors())
+            m = student.get_error_message()
             return HttpResponse(m, status=400)
 
     raise Http404
-
-

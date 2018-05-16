@@ -4,6 +4,16 @@ from student.models import Student
 from company.models import Company
 
 
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=200)
+    message = models.TextField()
+    date_sent = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+
+
 class JobinActivation(models.Model):
     key = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey(User, on_delete=None)
@@ -14,6 +24,15 @@ class JobinSchool(models.Model):
     name = models.CharField(max_length=100)
     country = models.CharField(max_length=50)
     email = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class JobinRequestedSchool(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    country = models.CharField(max_length=100)
+    count = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name

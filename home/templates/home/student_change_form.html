@@ -12,19 +12,16 @@
 
 {% block content %}
     <div class="w3-container">
-        <div class="w3-card-8">
-            <div class="w3-container">
-                <p>
-                    Changing the email attached to this account will result in
-                    your account being blocked until you verify the new email
-                    you have entered. Your school will also be changed to match
-                    the new email you provide.
-                </p>
-            </div>
+        <div>
             <div class="w3-container">
             {% if error %}
                 <div class="w3-container w3-padding message-danger w3-display-container">{{ error }}</div>
             {% endif %}
+                <p>
+                    Changing the email attached to this account will result in
+                    your account being blocked until you verify the new email
+                    you have entered.
+                </p>
                 <form method="post" class="w3-form" enctype="multipart/form-data"
                       action="{% url 'home:change_info' ut='student' %}">
                     {% csrf_token %}

@@ -1,19 +1,6 @@
 <div>
-    <div id="view-buttons-walkthrough" class="first-walk"
-         data-walk="view-buttons" data-pos="bottom">
-        <div class="walk-container">
-            <p>
-                Use these buttons to navigate from viewing multiple applicants at a time
-                (Multiple Applicant View) to one at a time (Single Applicant View) or vice versa.
-            </p>
-            <div>
-                <button class="next-walk btn btn-primary" data-next="post-apps"
-                        data-pos="top" type="button">Next</button>
-                <button class="skip-walk btn btn-default" type="button">Skip</button>
-            </div>
-        </div>
-    </div>
-    <div id="post-apps-walkthrough" class="walkthrough-message">
+    <div id="post-apps-walkthrough" class="first-walk"
+         data-walk="post-apps" data-pos="top">
         <div class="walk-container">
             <p>
                 This section will show you all the applicants for this post and help you filter through them all.
@@ -29,6 +16,19 @@
         <div class="walk-container">
             <p>
                 Here you can add filter values to find the applicants that meet the desired criteria.
+            </p>
+            <div>
+                <button class="next-walk btn btn-primary" data-next="filters-div"
+                        data-pos="top" type="button">Next</button>
+                <button class="skip-walk btn btn-default" type="button">Skip</button>
+            </div>
+        </div>
+    </div>
+    <div id="filters-div-walkthrough" class="walkthrough-message">
+        <div class="walk-container">
+            <p>
+                Here you can view all the filters that you have selected.<br/> These are the filters
+                that will be applied when you click on the 'Apply Filter' button.
             </p>
             <div>
                 <button class="next-walk btn btn-primary" data-next="app-list"
@@ -49,8 +49,8 @@
                 mark the application so it can be found easily later.
             </p>
             <div>
-                <button class="next-walk btn btn-default" data-next="view-buttons"
-                        data-pos="bottom" type="button">Restart</button>
+                <button class="next-walk btn btn-default" data-next="post-apps"
+                        data-pos="top" type="button">Restart</button>
                 <button class="skip-walk btn btn-success" type="button">Got It</button>
             </div>
         </div>

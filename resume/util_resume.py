@@ -28,14 +28,10 @@ class ResumeContainer(BaseContainer):
 
     #  DATA CREATION FUNCTIONS (SETTERS)
 
-    def new_resume(self, r_info):
-        info = {
-            'student': self.__student.id,
-            'name': r_info['name'],
-            'gpa': r_info['gpa'],
-            'is_active': False,
-            'last_updated': timezone.now(),
-        }
+    def new_resume(self, info):
+        info['student'] = self.__student.id
+        info['is_active'] = False
+        info['last_updated'] = timezone.now()
         self._form = ResumeForm(info)
         if self._form.is_valid():
             new_resume = self._form.save()
@@ -63,6 +59,7 @@ class ResumeContainer(BaseContainer):
                 self.__resume.save()
                 return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -107,18 +104,16 @@ class ResumeContainer(BaseContainer):
             self.__resume.save()
             return True
 
-    def edit_resume(self, r_info):
-        info = {
-            'student': self.__student.id,
-            'name': r_info['name'],
-            'gpa': r_info['gpa'],
-            'last_updated': timezone.now(),
-        }
+    def edit_resume(self, info):
+        info['student'] = self.__student.id
+        info['is_active'] = self.__resume.is_active
+        info['last_updated'] = timezone.now()
         self._form = ResumeForm(info, instance=self.__resume)
         if self._form.is_valid():
             self.__resume = self._form.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -151,18 +146,10 @@ class ResumeContainer(BaseContainer):
             self.__resume.delete()
             return True
 
-    def new_school(self, i_info):
-        info = {
-            'student': self.__student.id,
-            'name': i_info['name'],
-            'program': i_info['program'],
-            'level': i_info['level'],
-            'start': i_info['start'],
-            'end': i_info['end'],
-            'is_current': i_info['is_current'],
-            'rkey': self.__resume.id,
-            'rname': self.__resume.name,
-        }
+    def new_school(self, info):
+        info['student'] = self.__student.id
+        info['rkey'] = self.__resume.id
+        info['rname'] = self.__resume.name
         self._form = NewSchoolForm(info)
         if self._form.is_valid():
             s = self._form.save()
@@ -172,23 +159,17 @@ class ResumeContainer(BaseContainer):
                 return True
             return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
-    def edit_school(self, s, i_info):
-        info = {
-            'name': i_info['name'],
-            'program': i_info['program'],
-            'level': i_info['level'],
-            'start': i_info['start'],
-            'end': i_info['end'],
-            'is_current': i_info['is_current'],
-        }
+    def edit_school(self, s, info):
         self._form = EditSchoolForm(info, instance=s)
         if self._form.is_valid():
             self._form.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -200,14 +181,10 @@ class ResumeContainer(BaseContainer):
         else:
             return False
 
-    def new_language(self, i_info):
-        info = {
-            'student': self.__student.id,
-            'name': i_info['name'],
-            'level': i_info['level'],
-            'rkey': self.__resume.id,
-            'rname': self.__resume.name,
-        }
+    def new_language(self, info):
+        info['student'] = self.__student.id
+        info['rkey'] = self.__resume.id
+        info['rname'] = self.__resume.name
         self._form = NewLanguageForm(info)
         if self._form.is_valid():
             l = self._form.save()
@@ -217,19 +194,17 @@ class ResumeContainer(BaseContainer):
                 return True
             return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
-    def edit_language(self, l, i_info):
-        info = {
-            'name': i_info['name'],
-            'level': i_info['level'],
-        }
+    def edit_language(self, l, info):
         self._form = EditLanguageForm(info, instance=l)
         if self._form.is_valid():
             self._form.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -241,19 +216,10 @@ class ResumeContainer(BaseContainer):
         else:
             return False
 
-    def new_experience(self, i_info):
-        info = {
-            'student': self.__student.id,
-            'title': i_info['title'],
-            'start': i_info['start'],
-            'end': i_info['end'],
-            'description': i_info['description'],
-            'company': i_info['company'],
-            'experience_type': i_info['experience_type'],
-            'is_current': i_info['is_current'],
-            'rkey': self.__resume.id,
-            'rname': self.__resume.name,
-        }
+    def new_experience(self, info):
+        info['student'] = self.__student.id
+        info['rkey'] = self.__resume.id
+        info['rname'] = self.__resume.name
         self._form = NewExperienceForm(info)
         if self._form.is_valid():
             e = self._form.save()
@@ -261,19 +227,11 @@ class ResumeContainer(BaseContainer):
                 return True
             return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
-    def edit_experience(self, e, i_info):
-        info = {
-            'title': i_info['title'],
-            'start': i_info['start'],
-            'end': i_info['end'],
-            'description': i_info['description'],
-            'company': i_info['company'],
-            'experience_type': i_info['experience_type'],
-            'is_current': i_info['is_current'],
-        }
+    def edit_experience(self, e, info):
         self._form = EditExperienceForm(info, instance=e)
         if self._form.is_valid():
             self._form.save()
@@ -288,16 +246,10 @@ class ResumeContainer(BaseContainer):
         else:
             return False
 
-    def new_award(self, i_info):
-        info = {
-            'student': self.__student.id,
-            'title': i_info['title'],
-            'date': i_info['date'],
-            'description': i_info['description'],
-            'award_type': i_info['award_type'],
-            'rkey': self.__resume.id,
-            'rname': self.__resume.name,
-        }
+    def new_award(self, info):
+        info['student'] = self.__student.id
+        info['rkey'] = self.__resume.id
+        info['rname'] = self.__resume.name
         self._form = NewAwardForm(info)
         if self._form.is_valid():
             a = self._form.save()
@@ -308,13 +260,7 @@ class ResumeContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_award(self, a, i_info):
-        info = {
-            'title': i_info['title'],
-            'date': i_info['date'],
-            'description': i_info['description'],
-            'award_type': i_info['award_type'],
-        }
+    def edit_award(self, a, info):
         self._form = EditAwardForm(info, instance=a)
         if self._form.is_valid():
             self._form.save()
@@ -329,14 +275,10 @@ class ResumeContainer(BaseContainer):
         else:
             return False
 
-    def new_skill(self, i_info):
-        info = {
-            'student': self.__student.id,
-            'name': i_info['name'],
-            'level': i_info['level'],
-            'rkey': self.__resume.id,
-            'rname': self.__resume.name,
-        }
+    def new_skill(self, info):
+        info['student'] = self.__student.id
+        info['rkey'] = self.__resume.id
+        info['rname'] = self.__resume.name
         self._form = NewSkillForm(info)
         if self._form.is_valid():
             s = self._form.save()
@@ -347,11 +289,7 @@ class ResumeContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_skill(self, s, i_info):
-        info = {
-            'name': i_info['name'],
-            'level': i_info['level'],
-        }
+    def edit_skill(self, s, info):
         self._form = EditSkillForm(info, instance=s)
         if self._form.is_valid():
             self._form.save()
@@ -366,13 +304,8 @@ class ResumeContainer(BaseContainer):
         else:
             return False
 
-    def new_reference(self, i_info):
-        info = {
-            'student': self.__student.id,
-            'name': i_info['name'],
-            'email': i_info['email'],
-            'affiliation': i_info['affiliation']
-        }
+    def new_reference(self, info):
+        info['student'] = self.__student.id
         self._form = NewReferenceForm(info)
         if self._form.is_valid():
             r = self._form.save()
@@ -383,12 +316,7 @@ class ResumeContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_reference(self, r, i_info):
-        info = {
-            'name': i_info['name'],
-            'email': i_info['email'],
-            'affiliation': i_info['affiliation']
-        }
+    def edit_reference(self, r, info):
         self._form = EditReferenceForm(info, instance=r)
         if self._form.is_valid():
             self._form.save()
@@ -623,10 +551,12 @@ class ResumeContainer(BaseContainer):
 
     def get_other_schools(self):
         ls = SchoolLink.objects.filter(resume__student=self.__student).exclude(resume=self.__resume)
+        schools = self.get_schools()
         if ls.count() > 0:
             l = []
             for x in ls:
-                l.append(x.school)
+                if x.school not in schools:
+                    l.append(x.school)
             return l
         else:
             self.add_error('No other schools found.')
@@ -657,10 +587,12 @@ class ResumeContainer(BaseContainer):
 
     def get_other_languages(self):
         ls = LanguageLink.objects.filter(resume__student=self.__student).exclude(resume=self.__resume)
+        languages = self.get_languages()
         if ls.count() > 0:
             l = []
             for x in ls:
-                l.append(x.language)
+                if x.language not in languages:
+                    l.append(x.language)
             return l
         else:
             self.add_error('No other languages found.')
@@ -691,10 +623,12 @@ class ResumeContainer(BaseContainer):
 
     def get_other_experience_list(self):
         ls = ExperienceLink.objects.filter(resume__student=self.__student).exclude(resume=self.__resume)
+        experience = self.get_experience_list()
         if ls.count() > 0:
             l = []
             for x in ls:
-                l.append(x.experience)
+                if x.experience not in experience:
+                    l.append(x.experience)
             return l
         else:
             self.add_error('No other experience found.')
@@ -725,10 +659,12 @@ class ResumeContainer(BaseContainer):
 
     def get_other_awards(self):
         ls = AwardLink.objects.filter(resume__student=self.__student).exclude(resume=self.__resume)
+        awards = self.get_awards()
         if ls.count() > 0:
             l = []
             for x in ls:
-                l.append(x.award)
+                if x.award not in awards:
+                    l.append(x.award)
             return l
         else:
             self.add_error('No other awards found.')
@@ -759,10 +695,12 @@ class ResumeContainer(BaseContainer):
 
     def get_other_skills(self):
         ls = SkillLink.objects.filter(resume__student=self.__student).exclude(resume=self.__resume)
+        skills = self.get_skills()
         if ls.count() > 0:
             l = []
             for x in ls:
-                l.append(x.skill)
+                if x.skill not in skills:
+                    l.append(x.skill)
             return l
         else:
             self.add_error('No other skills found.')
@@ -793,10 +731,12 @@ class ResumeContainer(BaseContainer):
 
     def get_other_references(self):
         rs = ReferenceLink.objects.filter(resume__student=self.__student).exclude(resume=self.__resume)
+        references = self.get_references()
         if rs.count() > 0:
             l = []
             for x in rs:
-                l.append(x.reference)
+                if x.reference not in references:
+                    l.append(x.reference)
             return l
         else:
             self.add_error('No other references found.')
@@ -816,6 +756,8 @@ class ResumeContainer(BaseContainer):
     def delete_file_resume(self):
         if self.__resume.file_resume:
             self.__resume.file_resume.delete()
+            self.__resume.file_resume = None
+            self.__resume.save()
         return True
 
     def make_active_resume(self):

@@ -7,11 +7,14 @@
 
 {% block scripts %}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
-    <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/scripts/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'home/scripts/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/jquery-file-upload/jquery.fileupload.js' %}"></script>
     <script type="text/javascript" src="{% static 'resume/resume_util.js' %}"></script>
     <script type="text/javascript" src="{% static 'resume/file_upload.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
 {% endblock %}
 
 {% block page_body_class %}resume-index resume-overview{% endblock %}
@@ -19,9 +22,7 @@
 {% block page_title_div %}
 
     <div class="pagetitle resume-index">
-
         <h1>Resume Overview</h1>
-
     </div>
 
 {% endblock %}
@@ -34,73 +35,47 @@
             <label>Last Updated:</label><span> {{ resume.last_updated }}</span><br/>
             <label>Is Active:</label><span> {{ resume.is_active }}</span><br/>
             <label>Transcript:</label>
-                <a href="{{ resume.transcript.url }}" target="_blank">{{ resume.transcript.name }}</a>
-                <span class="spinner w3-hide"><i class="fa fa-spinner fa-spin"></i></span>
-                <br/>
-                <a href="{% url 'resume:delete_file' pk=resume.id %}"
-                   class="w3-btn btn-default btn-danger delete-file-resume">
+            <span>
+                {% if student.transcript %}
+                    <a href="{{ student.transcript.url }}" target="_blank">View Transcript</a>
+                {% else %}No transcript uploaded.{% endif %}</span><br/>
+            {% if student.transcript %}
+                <a href="{% url 'student:delete_transcript' pk=resume.id %}"
+                   class="w3-btn btn-default delete-transcript">
                     Delete Transcript
+                    <span class="spinner w3-hide file-progress"><i class="fa fa-spinner fa-spin"></i></span>
                 </a>
                 <button class="w3-btn btn-default edit-resume"
                         data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
                     Edit resume info
                 </button>
-                <hr>
-                <label>Transcript:</label>
-                <span> No file uploaded</span>
+            {% else %}
                 <form class="w3-hide">
                     {% csrf_token %}
-                    <input id="resumeupload" type="file" name="file_resume"
-                       data-url="{% url 'resume:add_file' pk=resume.id %}">
+                    <input id="transcriptupload" type="file" name="transcript"
+                           data-url="{% url 'student:add_transcript' %}">
                 </form>
-                <div>
-                    <button class="w3-btn btn-default upload-file-resume" type="button">
-                        Upload Transcript
-                    </button>
-                    <button class="w3-btn btn-default edit-resume"
-                            data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
-                        Edit resume info
-                    </button>
-                </div>
-            {% if resume.file_resume %}
-                <label>Transcript:</label>
-                {% if resume.file_resume %}
-                    <a href="{{ resume.transcript.url }}" target="_blank">{{ resume.transcript.name }}</a>
-                    <span class="spinner w3-hide"><i class="fa fa-spinner fa-spin"></i></span>
-                    <br/>
-                    <a href="{% url 'resume:delete_file' pk=resume.id %}"
-                       class="w3-btn btn-danger delete-file-resume">
-                        Delete File Resume
-                    </a>
-                    <button class="w3-btn btn-default edit-resume"
-                            data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
-                        Edit resume info
-                    </button>
-                {% else %}
-                <label>Transcript:</label>
-                    <span> No file uploaded</span>
-                    <form class="w3-hide">
-                        {% csrf_token %}
-                        <input id="resumeupload" type="file" name="file_resume"
-                           data-url="{% url 'resume:add_file' pk=resume.id %}">
-                    </form>
-                    <div>
-                        <button class="w3-btn btn-default upload-file-resume" type="button">
-                            Upload File Resume
-                        </button>
-                        <button class="w3-btn btn-default edit-resume"
-                                data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
-                            Edit resume info
-                        </button>
-                    </div>
-                {% endif %}
+                <button class="w3-btn btn-default upload-transcript" type="button">
+                    Upload Transcript
+                    <span class="spinner w3-hide file-progress"><i class="fa fa-spinner fa-spin"></i></span>
+                </button>
+                <button class="w3-btn btn-default edit-resume"
+                        data-url="{% url 'resume:edit' pk=resume.id %}" type="button">
+                    Edit resume info
+                </button>
             {% endif %}
-
+            <a href="{% url 'post:student_app_pdf' rk=resume.id %}" target="_blank" class="w3-btn btn-default">Download
+                PDF Resume</a>
+            {% if not student.transcript %}
+                <p><i>* Transcript must be a pdf and less than 512 Kilobytes.</i></p>
+            {% endif %}
         </div>
+        <hr/>
         <div class="panel panel-default panel-primary">
-                <div class="newpostdiv">
-                    <button type="button" class="w3-btn btn-default new-element-button new-experience">New Experience</button>
-                </div>
+            <div class="newpostdiv">
+                <button type="button" class="w3-btn btn-default new-element-button new-experience">New Experience
+                </button>
+            </div>
             <div class="panel-heading">
                 <h4>Experience</h4>
             </div>
@@ -119,11 +94,12 @@
                                 <td class="title">{{ x.title }}</td>
                                 <td class="start">{{ x.start }}</td>
                                 <td class="end">
-                                    {% if x.is_current %}Current Job{% else %}{{ x.end }}{% endif %}
+                                    {% if x.is_current %}current job{% else %}{{ x.end }}{% endif %}
                                 </td>
                                 <td class="company">{{ x.company }}</td>
                                 <td>
-                                    <a href="#" data-url="{% url 'resume:edit_experience' pk=x.id %}" class="edit-experience">
+                                    <a href="#" data-url="{% url 'resume:edit_experience' pk=x.id %}"
+                                       class="edit-experience">
                                         Edit</a> |
                                     <a href="{% url 'resume:delete_experience' rk=resume.id pk=x.id %}">Delete</a>
                                     <div class="w3-hide">
@@ -135,18 +111,19 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="5" class="table-no-results">You have not added any experience to this resume.</td>
+                            <td colspan="5" class="table-no-results">You have not added any experience to this resume.
+                            </td>
                         </tr>
                     {% endif %}
                 </table>
             </div>
         </div>
         <div class="panel panel-default panel-primary">
-                <div class="newpostdiv">
-                        <button type="button" class="w3-btn btn-default new-element-button new-school">New School</button>
-                    </div>
+            <div class="newpostdiv">
+                <button type="button" class="w3-btn btn-default new-element-button new-school">New School</button>
+            </div>
             <div class="panel-heading">
-                    <h4>Education</h4>
+                <h4>Education</h4>
             </div>
             <div class="panel-body">
                 <table class="table">
@@ -166,7 +143,7 @@
                                 {% if x.is_current %}Current School{% else %}{{ x.end }}{% endif %}
                             </td>
                             <td class="level">{{ x.level }}</td>
-                            <td class="program">{{ x.program }}</td>
+                            <td class="program">{% if x.program %}{{ x.program }}{% else %}N/A{% endif %}</td>
                             <td>
                                 <a href="#" data-url="{% url 'resume:edit_school' pk=x.id %}" class="edit-school">
                                     Edit</a>
@@ -178,11 +155,11 @@
             </div>
         </div>
         <div class="panel panel-default panel-primary">
-                <div class="newpostdiv">
-                        <button type="button" class="w3-btn btn-default new-element-button new-award">New Award</button>
-                    </div>
+            <div class="newpostdiv">
+                <button type="button" class="w3-btn btn-default new-element-button new-award">New Award</button>
+            </div>
             <div class="panel-heading">
-                    <h4>Awards/Certifications</h4>
+                <h4>Awards/Certifications</h4>
             </div>
             <div class="panel-body">
                 <table class="table">
@@ -217,11 +194,11 @@
             </div>
         </div>
         <div class="panel panel-default panel-primary">
-                <div class="newpostdiv">
-                        <button type="button" class="w3-btn btn-default new-element-button new-language">New Language</button>
-                    </div>
+            <div class="newpostdiv">
+                <button type="button" class="w3-btn btn-default new-element-button new-language">New Language</button>
+            </div>
             <div class="panel-heading">
-                    <h4>Languages</h4>
+                <h4>Languages</h4>
             </div>
             <div class="panel-body">
                 <table class="table">
@@ -245,17 +222,18 @@
             </div>
         </div>
         <div class="panel panel-default panel-primary">
-                <div class="newpostdiv">
-                        <button type="button" class="w3-btn btn-default new-element-button new-skill">New Skill</button>
-                    </div>
+            <div class="newpostdiv">
+                <button type="button" class="w3-btn btn-default new-element-button new-skill">New Skill</button>
+            </div>
             <div class="panel-heading">
-                    <h4>Skills</h4>
+                <h4>Skills</h4>
             </div>
             <div class="panel-body">
                 <table class="table">
                     <tr>
                         <th>Name</th>
                         <th>Proficiency</th>
+                        <th>Description</th>
                         <th></th>
                     </tr>
                     {% if resume.skills %}
@@ -263,7 +241,8 @@
                             <tr class="jobin-skill">
                                 <td class="name">{{ x.name }}</td>
                                 <td class="level">{{ x.level }}</td>
-                                <td>
+                                <td class="description">{% if x.description %}{{ x.description }}{% endif %}</td>
+                                <td style="min-width: 100px;">
                                     <a href="#" data-url="{% url 'resume:edit_skill' pk=x.id %}" class="edit-skill">
                                         Edit</a>
                                     | <a href="{% url 'resume:delete_skill' rk=resume.id pk=x.id %}">Delete</a>
@@ -279,11 +258,11 @@
             </div>
         </div>
         <div class="panel panel-default panel-primary">
-                <div class="newpostdiv">
-                        <button type="button" class="w3-btn btn-default new-element-button new-reference">New Reference</button>
-                    </div>
+            <div class="newpostdiv">
+                <button type="button" class="w3-btn btn-default new-element-button new-reference">New Reference</button>
+            </div>
             <div class="panel-heading">
-                    <h4>References</h4>
+                <h4>References</h4>
             </div>
             <div class="panel-body">
                 <table class="table">
@@ -300,7 +279,8 @@
                                 <td class="affiliation">{{ x.affiliation }}</td>
                                 <td class="email">{{ x.email }}</td>
                                 <td>
-                                    <a href="#" data-url="{% url 'resume:edit_reference' pk=x.id %}" class="edit-reference">
+                                    <a href="#" data-url="{% url 'resume:edit_reference' pk=x.id %}"
+                                       class="edit-reference">
                                         Edit</a>
                                     | <a href="{% url 'resume:delete_reference' rk=resume.id pk=x.id %}">Delete</a>
                                 </td>
@@ -308,7 +288,8 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="3" class="table-no-results">You have not added any references to this resume.</td>
+                            <td colspan="3" class="table-no-results">You have not added any references to this resume.
+                            </td>
                         </tr>
                     {% endif %}
                 </table>

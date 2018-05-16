@@ -2,13 +2,13 @@
  * Created by maxencecoulibaly on 5/7/17.
  */
 
-let WALKTHROUGH = false;
-
 
 function send_walkthrough(url, form, info) {
+    form.find('.fa-spinner').removeClass('w3-hide');
     $.post(url, form.serialize(), function (data, status) {
 
         if (status === 'success') {
+            form.find('.fa-spinner').addClass('w3-hide');
             $('.modal-messages').html('');
             if (info['caller'] === 'resume') {
                 if(data === 'resume complete')
@@ -113,7 +113,6 @@ $(function () {
         $('.first-message').each(function () {
             show($(this));
         });
-        $('#school_name').val($('.student-school').html().toString().trim());
         $('#school_program').val($('.student-program').html().toString().trim());
         $('#school_level').val('university');
     }
@@ -151,6 +150,8 @@ $(function () {
 
     $('.new-resume').click(function () {
         show($('.other-resumes'));
+        $('#resume-form').attr('action', $(this).data('url'));
+        clear_form('resume-form');
         open_modal('resume-modal');
     });
 
@@ -172,8 +173,9 @@ $(function () {
     $('#resume-form').submit(function (event) {
         event.preventDefault();
 
-        if (WALKTHROUGH)
+        if (WALKTHROUGH){
             send_walkthrough($(this).attr('action'), $(this), {caller: 'resume'});
+        }
         else {
             submit_resume_info($(this).attr('action'), $(this));
         }
@@ -183,6 +185,7 @@ $(function () {
     /* LANGUAGE FUNCTIONS */
 
     $('.new-language').click(function () {
+        clear_form('language-form');
         open_modal('language-modal');
     });
 
@@ -195,18 +198,19 @@ $(function () {
     $('.language-save-continue').click(function () {
 
         let form = $('#language-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'language', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'language', action: 'continue'});
 
     });
 
     $('.language-save-another').click(function () {
 
         let form = $('#language-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'language', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'language', action: 'another'});
 
     });
 
-    $('.edit-language').click(function () {
+    $('.edit-language').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-language');
 
         let name = parent.find('.name').html().toString().trim();
@@ -231,6 +235,7 @@ $(function () {
     /* SCHOOL FUNCTIONS */
 
     $('.new-school').click(function () {
+        clear_form('school-form');
         open_modal('school-modal');
     });
 
@@ -243,18 +248,19 @@ $(function () {
     $('.school-save-continue').click(function () {
 
         let form = $('#school-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'school', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'school', action: 'continue'});
 
     });
 
     $('.school-save-another').click(function () {
 
         let form = $('#school-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'school', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'school', action: 'another'});
 
     });
 
-    $('.edit-school').click(function () {
+    $('.edit-school').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-school');
 
         let name = parent.find('.name').html().toString().trim();
@@ -270,11 +276,16 @@ $(function () {
         if (program)
             $('#school_program').val(program.toString().trim());
 
+        let e = $('#school_end');
         if (end.toLowerCase() === 'current school') {
-
+            e.val('');
+            e.prop('disabled', true);
+            $('#school_current').prop('checked', true);
         }
         else {
-            $('#school_end').val(get_input_date(end));
+            e.prop('disabled', false);
+            e.val(get_input_date(end));
+            $('#school_current').prop('checked', false);
         }
 
         $('#school-form').attr('action', $(this).data('url'));
@@ -304,6 +315,7 @@ $(function () {
     /* EXPERIENCE FUNCTIONS */
 
     $('.new-experience').click(function () {
+        clear_form('experience-form');
         open_modal('experience-modal');
     });
 
@@ -316,18 +328,19 @@ $(function () {
     $('.experience-save-continue').click(function () {
 
         let form = $('#experience-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'experience', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'experience', action: 'continue'});
 
     });
 
     $('.experience-save-another').click(function () {
 
         let form = $('#experience-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'experience', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'experience', action: 'another'});
 
     });
 
-    $('.edit-experience').click(function () {
+    $('.edit-experience').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-experience');
 
         let title = parent.find('.title').html().toString().trim();
@@ -345,11 +358,16 @@ $(function () {
         if (description)
             $('#experience_description').val(description.toString().trim().replace('<br/>', '\n'));
 
+        let e = $('#experience_end');
         if (end.toLowerCase() === 'current job') {
-
+            e.val('');
+            e.prop('disabled',true);
+            $('#experience_current').prop('checked', true);
         }
         else {
-            $('#experience_end').val(get_input_date(end));
+            e.prop('disabled', false);
+            e.val(get_input_date(end));
+            $('#experience_current').prop('checked', false);
         }
 
         $('#experience-form').attr('action', $(this).data('url'));
@@ -379,6 +397,7 @@ $(function () {
     /* AWARD FUNCTIONS */
 
     $('.new-award').click(function () {
+        clear_form('award-form');
         open_modal('award-modal');
     });
 
@@ -391,18 +410,19 @@ $(function () {
     $('.award-save-continue').click(function () {
 
         let form = $('#award-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'award', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'award', action: 'continue'});
 
     });
 
     $('.award-save-another').click(function () {
 
         let form = $('#award-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'award', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'award', action: 'another'});
 
     });
 
-    $('.edit-award').click(function () {
+    $('.edit-award').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-award');
 
         let title = parent.find('.title').html().toString().trim();
@@ -431,6 +451,7 @@ $(function () {
     /* SKILL FUNCTIONS */
 
     $('.new-skill').click(function () {
+        clear_form('skill-form');
         open_modal('skill-modal');
     });
 
@@ -443,25 +464,29 @@ $(function () {
     $('.skill-save-continue').click(function () {
 
         let form = $('#skill-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'skill', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'skill', action: 'continue'});
 
     });
 
     $('.skill-save-another').click(function () {
 
         let form = $('#skill-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'skill', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'skill', action: 'another'});
 
     });
 
-    $('.edit-skill').click(function () {
+    $('.edit-skill').click(function ( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-skill');
 
         let name = parent.find('.name').html().toString().trim();
         let level = parent.find('.level').html().toString().trim();
+        let description = parent.find('.description').html();
 
         $('#skill_name').val(name);
         $('#skill_level').val(level.toLowerCase());
+        if (description)
+            $('#skill_description').val(description.toString().trim());
 
         $('#skill-form').attr('action', $(this).data('url'));
 
@@ -479,6 +504,7 @@ $(function () {
     /* REFERENCES FUNCTIONS */
 
     $('.new-reference').click(function() {
+        clear_form('reference-form');
         open_modal('reference-modal');
     });
 
@@ -492,18 +518,19 @@ $(function () {
 
         WALKTHROUGH = false;
         let form = $('#reference-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'reference', action: 'continue'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'reference', action: 'continue'});
 
     });
 
     $('.reference-save-another').click(function () {
 
         let form = $('#reference-form');
-        send_walkthrough(form.attr('action'), form, {caller: 'reference', action: 'another'});
+        send_walkthrough(form.attr('action') + '?api=true', form, {caller: 'reference', action: 'another'});
 
     });
 
-    $('.edit-reference').click(function() {
+    $('.edit-reference').click(function( event ) {
+        event.preventDefault();
         let parent = $(this).parents('.jobin-reference');
 
         let name = parent.find('.name').html().toString().trim();
@@ -530,14 +557,17 @@ $(function () {
 });
 
 function submit_resume_info(url, form) {
+    form.find('.fa-spinner').removeClass('w3-hide');
     $.post(url, form.serialize(), function(data, status){
 
         if(status === 'success'){
+            form.find('.fa-spinner').addClass('w3-hide');
             location.reload();
         }
 
     })
         .fail(function(jqXHR){
+            form.find('.fa-spinner').addClass('w3-hide');
             display_modal_message(jqXHR.responseText, 'danger');
         });
 }

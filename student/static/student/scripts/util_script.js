@@ -13,6 +13,7 @@ const MODALS = [
     'welcome-modal'
 ];
 
+let WALKTHROUGH = false;
 let MODAL_OPEN = false;
 let MODAL_BLOCK = false;
 
@@ -52,6 +53,14 @@ $(function(){
 function open_modal(id){
     MODAL_OPEN = true;
     document.getElementById(id).style.display = 'block';
+    if(WALKTHROUGH !== undefined){
+        if(!WALKTHROUGH){
+            clear_modal_messages();
+        }
+    }
+    else{
+        clear_modal_messages();
+    }
 }
 
 function close_modal(id){
@@ -78,7 +87,7 @@ function display_modal_message(msg, code){
     let msgs = $('.modal-messages');
 
     let html = `<div class="w3-container w3-padding message-${code} w3-display-container">
-                    <span onclick="this.parentElement.style.display='none'"
+                    <span onclick="clear_modal_messages()"
                         class="w3-button w3-display-topright">&times;</span>
                     <p>${msg}</p>
                 </div>`;
@@ -96,4 +105,7 @@ function show(obj){
         obj.removeClass('w3-hide');
 }
 
+function clear_modal_messages(){
+    $('.modal-messages').html('');
+}
 

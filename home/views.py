@@ -4,61 +4,78 @@ from django.db import transaction, IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from .util_activation import ActivationUtil
+from .forms import NewContactMessageForm
+
 from .content_gen import ContentGen
 from .utils import MessageCenter
-from .util_home import HomeUtil
 from .util_user import UserUtil
 from .util_request import RequestUtil
 from company.util_company import CompanyContainer
 from student.util_student import StudentContainer
 
 
-class IndexView(View):
-    template_name = 'home/index_page/home.html'
-
-    def get(self, request):
+def index_view(request):
+    if request.method == 'GET':
+        user = UserUtil(request.user)
+        if user.is_logged_in():
+            if user.get_user_type() == 'company':
+                return redirect('company:index')
+            elif user.get_user_type() == 'student':
+                return redirect('student:index')
+            else:
+                user.log_user_out(request)
 
         return render(request, 'home/index.html')
-        # user = UserUtil(self.request.user)
-        # context = {}
-        # if user.is_logged_in():
-        #     if user.get_user_type() == 'company':
-        #         company = CompanyContainer(user.get_user())
-        #         if company.get_company():
-        #             context['logged'] = 'company'
-        #             context['user_name'] = company.get_company().name
-        #     elif user.get_user_type() == 'student':
-        #         student = StudentContainer(user.get_user())
-        #         if student.get_student():
-        #             context['logged'] = 'student'
-        #             context['user_name'] = student.get_student().name
-        # return render(request, self.template_name, context)
 
-    def post(self, request):
-        user = UserUtil(self.request.user)
-        rq = RequestUtil()
-        i = rq.get_login_info(self.request)
-        if i:
-            t = user.log_user_in(self.request, i)
-            if t > 0:
-                if user.get_user_type() == 'company':
-                    return redirect('company:index')
-                elif user.get_user_type() == 'student':
-                    if not HomeUtil.open_school(user.get_user().email):
-                        return redirect('home:closed')
-                    return redirect('student:index')
-                else:
-                    return render(request, self.template_name, {'error': 'Invalid user type.'})
-            elif t < 0:
-                return render(request, 'home/utils/email/verify.html', i)
-            else:
-                return render(request, self.template_name, {'error': str(user.get_errors())})
+    raise Http404
+
+
+def login_student(request):
+    if request.method == 'POST':
+        user = UserUtil(request.user)
+        errors = []
+        info = request.POST.copy()
+
+        t = user.log_user_in(request, info)
+        if t > 0:
+            return redirect('student:index')
+        elif t < 0:
+            return render(request, 'home/utils/email/verify.html', {'email': info['email']})
         else:
-            return render(request, self.template_name, {'error': str(rq.get_errors())})
+            errors.append({
+                'code': 'danger',
+                'message': user.get_error_message()
+            })
+            return render(request, 'home/index.html',
+                          {'messages': errors, 'student_email': info['email'], 'panel': 'student'})
+
+    raise Http404
+
+
+def login_company(request):
+    if request.method == 'POST':
+        user = UserUtil(request.user)
+        errors = []
+        info = request.POST.copy()
+
+        t = user.log_user_in(request, info)
+        if t > 0:
+            return redirect('company:index')
+        elif t < 0:
+            return render(request, 'home/utils/email/verify.html', {'email': info['email']})
+        else:
+            errors.append({
+                'code': 'danger',
+                'message': user.get_error_message()
+            })
+            return render(request, 'home/index.html',
+                          {'messages': errors, 'company_email': info['email'], 'panel': 'company'})
+
+    raise Http404
 
 
 def user_logout(request):
-
     if request.method == 'GET':
         user = UserUtil(request.user)
         if user.log_user_out(request):
@@ -68,93 +85,112 @@ def user_logout(request):
     raise Http404
 
 
-class RegisterView(View):
-    template_name = 'home/register.html'
-
-    def get(self, request, ut):
+def register_company(request):
+    if request.method == 'POST':
+        user = UserUtil(request.user)
+        info = request.POST.copy()
+        info['username'] = info['email']
+        errors = []
         context = {
-            'type': ut
+            'panel': 'company',
+            'company_register_email': info['email']
         }
-        return render(request, self.template_name, context)
 
-    def post(self, request, ut):
-        user = UserUtil(self.request.user)
-        rq = RequestUtil()
-        i = rq.get_user_info(self.request)
+        try:
+            with transaction.atomic():
+                if user.new_user(info, False):
+                    return render(request, 'home/utils/email/verify.html', {'new': True})
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            errors.append({
+                'code': 'danger',
+                'message': user.get_error_message()
+            })
+            context['messages'] = errors
+            return render(request, 'home/index.html', context)
+
+
+def register_student(request):
+    if request.method == 'POST':
+        user = UserUtil(request.user)
+        info = request.POST.copy()
+        info['username'] = info['email']
+        errors = []
         context = {
-            'type': ut
+            'panel': 'student',
+            'student_register_email': info['email']
         }
-        if i:
 
-            try:
-                with transaction.atomic():
-                    if user.new_user(i, ut == 'student'):
-                        user.log_user_in(request, {'email': i['email'], 'password': i['password']})
+        try:
+            with transaction.atomic():
+                if user.new_user(info, True):
+                    if user.log_user_in(request, info):
                         return redirect('student:new')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['error'] = str(user.get_errors())
-                return render(request, self.template_name, context)
-
-        else:
-            context['error'] = str(rq.get_errors())
-            return render(request, self.template_name, context)
+                raise IntegrityError
+        except IntegrityError:
+            errors.append({
+                'code': 'danger',
+                'message': user.get_error_message()
+            })
+            context['messages'] = errors
+            return render(request, 'home/index.html', context)
 
 
 def verify(request):
-
     if request.method == 'GET':
         return render(request, 'home/utils/email/verify.html')
 
     raise Http404
 
 
-def activate(request, key):
-
+def activate_company(request, key):
     if request.method == 'GET':
         user = UserUtil(request.user)
 
         try:
             with transaction.atomic():
-                if user.activate_user(key):
+                if user.activate_company(key):
                     return render(request, 'home/utils/email/activate.html')
                 else:
                     raise IntegrityError
         except IntegrityError:
-            errs = str(user.get_errors())
+            errs = user.get_error_message()
+            return render(request, 'home/utils/email/activate.html', {'errors': errs})
+
+    raise Http404
+
+
+def activate_student(request, key):
+    if request.method == 'GET':
+        user = UserUtil(request.user)
+
+        try:
+            with transaction.atomic():
+                if user.activate_student(key):
+                    return render(request, 'home/utils/email/activate.html')
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            errs = user.get_error_message()
             return render(request, 'home/utils/email/activate.html', {'errors': errs})
 
     raise Http404
 
 
 def new_verification(request):
-
     if request.method == 'POST':
         user = UserUtil(request.user)
-        rq = RequestUtil()
-        i = rq.get_login_info(request)
-        if i:
+        info = request.POST.copy()
 
-            try:
-                with transaction.atomic():
-                    if user.new_activation_key(i):
-                        return render(request, 'home/utils/email/verify.html', {'msg': 'New link sent successfully.'})
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                return render(request, 'home/utils/email/verify.html', {'errors': str(user.get_errors())})
-
-        else:
-            return render(request, 'home/utils/email/verify.html', {'errors': str(rq.get_errors())})
-
-    raise Http404
-
-
-def school_closed(request):
-
-    if request.method == 'GET':
-        return render(request, 'home/school_not_open.html')
+        try:
+            with transaction.atomic():
+                if user.new_activation_key(info):
+                    return render(request, 'home/utils/email/verify.html', {'msg': 'New link sent successfully.', 'email': info['email']})
+                else:
+                    raise IntegrityError
+        except IntegrityError:
+            return render(request, 'home/utils/email/verify.html', {'errors': user.get_error_message(), 'email': info['email']})
 
     raise Http404
 
@@ -189,14 +225,16 @@ class ChangeUserInfo(LoginRequiredMixin, View):
                             if ut == 'student':
                                 student = StudentContainer(user.get_user())
                                 if user.change_user_email(i, student=student.get_student()):
-                                    return redirect('home:verify')
+                                    user.log_user_out(request)
+                                    return render(request, 'home/utils/email/verify.html', {'email': i['email']})
                                 else:
                                     raise IntegrityError
                             elif ut == 'company':
                                 company = CompanyContainer(user.get_user())
                                 if user.change_user_email(i, company=company.get_company()):
                                     if user.log_user_out(request):
-                                        return redirect('home:verify')
+                                        user.log_user_out(request)
+                                        return render(request, 'home/utils/email/verify.html', {'email': i['email']})
                                     raise IntegrityError
                                 else:
                                     raise IntegrityError
@@ -217,174 +255,112 @@ class ChangeUserInfo(LoginRequiredMixin, View):
                                             student = StudentContainer(user.get_user())
                                             MessageCenter.new_notification('student', student.get_student(), 100, m)
                                             MessageCenter.new_message('student', student.get_student(), 'success', m)
-                                            return redirect('student:index')
+                                            return redirect('student:profile')
                                         elif ut == 'company':
                                             company = CompanyContainer(user.get_user())
                                             MessageCenter.new_notification('company', company.get_company(), 100, m)
                                             MessageCenter.new_message('company', company.get_company(), 'success', m)
-                                            return redirect('company:index')
+                                            return redirect('company:profile')
                                         else:
                                             return redirect('home:index')
                             raise IntegrityError
 
                 except IntegrityError:
-                    return render(request, self.template_name, {'error': str(user.get_errors())})
+                    return render(request, self.template_name, {'error': user.get_error_message()})
             else:
                 return render(request, self.template_name, {'error': 'Incorrect password.'})
 
         else:
-            return render(request, self.template_name, {'error': str(rq.get_errors())})
+            return render(request, self.template_name, {'error': rq.get_error_message()})
 
 
-class NewPasswordView(View):
-    template_name = 'home/utils/email/change_password.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-    def post(self, request):
+def new_password_view(request, ut):
+    if request.method == 'POST':
         user = UserUtil(request.user)
-        mail = request.POST.get('email')
-        if mail:
-
-            try:
-                with transaction.atomic():
-                    if user.new_password(mail):
-                        return render(request, 'home/index_page/home.html', {'success_msg': 'Password changed successfully.'})
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                return render(request, self.template_name, {'errors': user.get_errors()})
-
+        info = request.POST.copy()
+        errors = []
+        if ut == 'student':
+            student = StudentContainer(user.get_user(email=info['email']))
+            if not student.get_student():
+                errors.append({
+                    'code': 'danger',
+                    'message': 'User not found, double check the information you provided.'
+                })
+        elif ut == 'company':
+            company = CompanyContainer(user.get_user(email=info['email']))
+            if not company.get_company():
+                errors.append({
+                    'code': 'danger',
+                    'message': 'User not found, double check the information you provided.'
+                })
         else:
-            return render(request, self.template_name, {'errors': 'Invalid email.'})
-
-
-@login_required(login_url='/')
-def close_notification(request, pk):
-
-    if request.method == 'GET':
-
-        try:
-            with transaction.atomic():
-                if MessageCenter.close_notification(pk):
-                    return HttpResponse('Notification closed', status=200)
-                else:
-                    raise IntegrityError
-        except IntegrityError:
-            return HttpResponse('Invalid notification code.', status=400)
-
-    raise Http404
-
-
-@login_required(login_url='/')
-def close_notifications(request, u):
-
-    if request.method == 'GET':
-        user = None
-        if u == 'company':
-            user = CompanyContainer(request.user).get_company()
-        elif u == 'student':
-            user = StudentContainer(request.user).get_student()
-
-        if user:
-
+            errors.append({
+                'code': 'danger',
+                'message': 'Invalid user type found.'
+            })
+        if errors:
+            return render(request, 'home/index.html', {'messages': errors})
+        else:
             try:
                 with transaction.atomic():
-                    if MessageCenter.close_all_notifications(u, user):
-                        return HttpResponse('Notifications closed.', status=200)
+                    if user.new_password(info['email']):
+                        return render(
+                            request,
+                            'home/index.html',
+                            {'messages': [{'code': 'success', 'message': 'Password changed successfully.'}]}
+                        )
                     else:
                         raise IntegrityError
             except IntegrityError:
-                return HttpResponse('No notifications found.', status=400)
-
-        return HttpResponse('Invalid user request.', status=400)
-
-    raise Http404
-
-
-def students_about(request):
-
-    if request.method == 'GET':
-        user = UserUtil(request.user)
-        context = {}
-        if user.is_logged_in():
-            if user.get_user_type() == 'company':
-                company = CompanyContainer(user.get_user())
-                context['logged'] = 'company'
-                context['user_name'] = company.get_company().name
-            elif user.get_user_type() == 'student':
-                student = StudentContainer(user.get_user())
-                context['logged'] = 'student'
-                context['user_name'] = student.get_student().name
-        return render(request, 'home/students_about.html', context)
-
-    raise Http404
-
-
-def company_about(request):
-
-    if request.method == 'GET':
-        user = UserUtil(request.user)
-        context = {}
-        if user.is_logged_in():
-            if user.get_user_type() == 'company':
-                company = CompanyContainer(user.get_user())
-                context['logged'] = 'company'
-                context['user_name'] = company.get_company().name
-            elif user.get_user_type() == 'student':
-                student = StudentContainer(user.get_user())
-                context['logged'] = 'student'
-                context['user_name'] = student.get_student().name
-        return render(request, 'home/company_about.html', context)
-
-    raise Http404
+                for x in user.get_errors():
+                    errors.append({'code': 'danger', 'message': x})
+                return render(request, 'home/index.html', {'messages': errors})
 
 
 def terms_and_conditions(request):
-
     if request.method == 'GET':
-        user = UserUtil(request.user)
-        context = {}
-        if user.is_logged_in():
-            if user.get_user_type() == 'company':
-                company = CompanyContainer(user.get_user())
-                context['logged'] = 'company'
-                context['user_name'] = company.get_company().name
-            elif user.get_user_type() == 'student':
-                student = StudentContainer(user.get_user())
-                context['logged'] = 'student'
-                context['user_name'] = student.get_student().name
-        return render(request, 'home/terms_and_conditions.html', context)
+        return render(request, 'home/terms_and_conditions.html')
 
     raise Http404
 
 
 def privacy_policy(request):
-
     if request.method == 'GET':
-        user = UserUtil(request.user)
-        context = {}
-        if user.is_logged_in():
-            if user.get_user_type() == 'company':
-                company = CompanyContainer(user.get_user())
-                context['logged'] = 'company'
-                context['user_name'] = company.get_company().name
-            elif user.get_user_type() == 'student':
-                student = StudentContainer(user.get_user())
-                context['logged'] = 'student'
-                context['user_name'] = student.get_student().name
-        return render(request, 'home/privacy_policy.html', context)
+        return render(request, 'home/privacy_policy.html')
+
+    raise Http404
+
+
+def send_contact_message(request):
+
+    if request.method == 'POST':
+        activation = ActivationUtil(None)
+        info = request.POST.copy()
+        errors = []
+        form = NewContactMessageForm(info)
+        if form.is_valid():
+            form.save()
+            if activation.send_contact_email(info):
+
+                return render(
+                    request,
+                    'home/index.html',
+                    {'messages': [{'code': 'success', 'message': 'Thank you for contacting Jobin. Your message was sent successfully.'}]}
+                )
+        errors.append({
+            'code': 'danger',
+            'message': 'Error sending your message please try again.\n ' + activation.get_error_message()
+        })
+        return render(request, 'home/index.html', {'messages': errors})
 
     raise Http404
 
 
 def create_test_content(request, n):
-
     if request.method == 'GET':
         try:
             with transaction.atomic():
-                ContentGen.gen_test_content(int(n))
+                ContentGen.gen_test_content(int(n), company=False)
                 print('No error')
         except (IntegrityError, TypeError, ValueError) as e:
             print(str(e))
@@ -393,7 +369,6 @@ def create_test_content(request, n):
 
 
 def clear_test_content(request):
-
     if request.method == 'GET':
         try:
             with transaction.atomic():
@@ -403,7 +378,6 @@ def clear_test_content(request):
             print(str(e))
         return redirect('home:index')
     raise Http404
-
 
 #
 #

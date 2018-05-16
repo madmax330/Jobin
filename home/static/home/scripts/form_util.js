@@ -8,10 +8,11 @@ $(function(){
 
     $('.date-input').each(function(){
         let date = $(this).data('date');
-        if(date)
+        if(date) {
             $(this).val(get_input_date(date));
+        }
         if(!isChrome()){
-            $(this).datepicker();
+            $(this).datepicker({changeMonth: true, changeYear: true});
         }
     });
 
@@ -20,8 +21,19 @@ $(function(){
         if(time)
             $(this).val(get_input_time(time));
         if(!isChrome()){
-            $(this).siblings('label').append(' (hh:mm AM/PM)');
+            $(this).siblings('label').append(' (hh:mm)');
         }
+    });
+
+    $('.date-input').click(function ( event ) {
+        if(!isChrome()){
+            event.preventDefault();
+        }
+    });
+
+    $('form').submit(function() {
+        if($('.zip-input').length)
+            return (validate_zipcode() && validate_phone())
     });
 
 });

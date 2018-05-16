@@ -8,6 +8,14 @@
     </div>
 {% endblock %}
 
+{% block messages %}
+    {% if application.cover_submitted %}
+        <div class="w3-container message-success">
+            <p>Your cover letter for this post was successfully submitted.</p>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div>
         {% if application.cover_requested and not application.cover_submitted %}
@@ -24,14 +32,15 @@
                 {% if post.cover_instructions %}
                     <div class=" w3-container">
                         <h5>Cover letter instructions:</h5>
-                        <p>
+                        <p class="string-to-html">
                             {{ post.cover_instructions | linebreaksbr }}
                         </p>
                     </div>
                 {% endif %}
-                <form id="coverForm" action="{% url 'post:submit_cover' pk=application.id %}" method="post" enctype="multipart/form-data">
+                <form id="coverForm" action="{% url 'post:submit_cover' pk=application.id %}" method="post"
+                      enctype="multipart/form-data">
                     {% csrf_token %}
-                    <textarea rows="10" class="w3-input w3-border" name="cover_letter"
+                    <textarea rows="10" class="w3-input w3-border" name="cover"
                               placeholder="Cover Letter Here..."></textarea>
                     <div class="w3-padding-16">
                         <button class="w3-btn btn-success" type="submit">
@@ -39,8 +48,8 @@
                         </button>
                     </div>
                     <script>
-                        $(function(){
-                            $('#coverForm').submit(function( event ) {
+                        $(function () {
+                            $('#coverForm').submit(function (event) {
                                 event.preventDefault();
                                 send_post($(this).attr('action'), $(this));
                             });
@@ -50,9 +59,12 @@
             </div>
         {% endif %}
         {% if application.cover_submitted %}
-            <div class="w3-container message-success">
-                <p>Your cover letter for this post was successfully submitted.</p>
+            <div>
+                <h4>Cover Letter:</h4>
             </div>
+            <p>
+                {{ application.cover | linebreaksbr }}
+            </p>
         {% endif %}
         <div>
             <div class="w3-container">
@@ -65,21 +77,36 @@
                     <span> {{ post.company.address }}, {{ post.company.city }}, {{ post.company.state }}</span><br/>
                     <label><u>Website</u>:</label>
                     <span>
-                    <a target="_blank" href="{{ post.company.website }}">{{ post.company.website }}</a>
-                </span>
+                        {% if post.company.website %}
+                            <a target="_blank" href="http://{{ post.company.website }}">{{ post.company.website }}</a>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
                     <br/>
                 </div>
                 <hr/>
                 <div class="w3-container">
-                    <label><u>Start Date</u>:</label><span> {{ post.start_date }}</span><br/>
-                    <label><u>End Date</u>:</label><span> {{ post.end_date }}</span><br/>
-                    <label><u>Wage</u>:</label><span> {{ post.wage }}$/hr</span><br/>
-                    <label><u>Number of positions</u>:</label><span> {{ post.openings }}</span><br/>
-                    <label><u>Application Deadline</u>:</label><span> {{ post.deadline }}</span><br/>
-                    <label><u>Requirements</u>:</label><br/>
-                    <span>{{ post.requirements | linebreaksbr }}</span><br/>
-                    <label><u>Description</u>:</label><br/>
-                    <span>{{ post.description | linebreaksbr }}</span><br/>
+                    <label>Start Date:</label><span> {{ post.start_date }}</span><br/>
+                    {% if post.end_date %}<label>End Date:</label><span> {{ post.end_date }}</span>
+                        <br/>{% endif %}
+                    <label>Wage:</label><span> {% if post.wage %}{{ post.wage }}$/hr{% else %}
+                    N/A{% endif %}</span><br/>
+                    <label>Number of positions:</label><span> {% if post.openings %}{{ post.openings }}{% else %}
+                    N/A{% endif %}</span><br/>
+                    <label>Application Deadline:</label><span> {{ post.deadline }}</span><br/>
+                    {% if post.why_us %}
+                        <label>Why Us:</label>
+                        <p class="string-to-html">{{ post.why_us }}</p>
+                    {% endif %}
+                    <label>Qualifications:</label>
+                    <p class="string-to-html">{{ post.qualifications }}</p>
+                    <label>Responsibilities:</label>
+                    <p class="string-to-html">{{ post.responsibilities }}</p>
+                    {% if post.benefits %}
+                        <label>Benefits:</label>
+                        <p class="string-to-html">{{ post.benefits }}</p>
+                    {% endif %}
                     <div>
                         <a href="{% url 'student:index' %}" class="w3-btn btn-default">Back</a>
                     </div>

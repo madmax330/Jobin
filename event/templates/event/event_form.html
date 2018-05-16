@@ -6,6 +6,13 @@
 
 {% block scripts %}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!--<script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+    <script>tinymce.init({ selector:'textarea' });</script>-->
+    <script type="text/javascript" src="{% static 'home/scripts/tinymce/js/tinymce/tinymce.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/tinymce/js/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script>
+        $('textarea').tinymce({theme: 'modern'});
+    </script>
     <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_location_script.js' %}"></script>
@@ -15,7 +22,7 @@
 
 {% block page_title_div %}
     <div class="pagetitle company-events edit-event">
-        <h1>Edit Event</h1>
+        <h1>{% if new %}New Event{% else %}Edit Event{% endif %}</h1>
     </div>
 {% endblock %}
 
@@ -25,10 +32,8 @@
             <h4>Event Information Form</h4>
         </div>
         <div class="panel-body">
-            <form id="event-form" method="post"
-                  action="">
+            <form id="event-form" method="post" action="">
                 {% csrf_token %}
-
                 <div class="form-group">
                     <label class="required" for="event_title">Title:</label>
                     {% if errors.title %}
@@ -36,7 +41,7 @@
                             {{ errors.title }}
                         </div>
                     {% endif %}
-                    <input id="event_title" class="form-control" type="text" name="event_title"
+                    <input id="event_title" class="form-control" type="text" name="title"
                            value="{{ event.title }}">
                 </div>
                 <div class="form-group">
@@ -46,7 +51,7 @@
                             {{ errors.start_date }}
                         </div>
                     {% endif %}
-                    <input id="event_start" class="form-control date-input" type="date" name="event_start"
+                    <input id="event_start" class="form-control date-input" type="date" name="start_date"
                             value="" data-date="{{ event.start_date }}">
                 </div>
                 <div class="form-group">
@@ -56,7 +61,7 @@
                             {{ errors.start_time }}
                         </div>
                     {% endif %}
-                    <input id="event_start_time" class="form-control time-input" type="time" name="event_start_time"
+                    <input id="event_start_time" class="form-control time-input" type="time" name="start_time"
                             value="" data-time="{{ event.start_time }}">
                 </div>
                 <div class="form-group">
@@ -66,7 +71,7 @@
                             {{ errors.end_date }}
                         </div>
                     {% endif %}
-                    <input id="event_end" class="form-control date-input" type="date" name="event_end"
+                    <input id="event_end" class="form-control date-input" type="date" name="end_date"
                             value="" data-date="{{ event.end_date }}">
                 </div>
                 <div class="form-group">
@@ -76,7 +81,7 @@
                             {{ errors.end_time }}
                         </div>
                     {% endif %}
-                    <input id="event_end_time" class="form-control time-input" type="time" name="event_end_time"
+                    <input id="event_end_time" class="form-control time-input" type="time" name="end_time"
                             value="" data-time="{{ event.end_time }}">
                 </div>
                 <div class="form-group">
@@ -89,7 +94,7 @@
                     <div class="checkbox">
                         <label><input id="event-address-checkbox" type="checkbox">Use company address</label>
                     </div>
-                    <input id="event_address" class="form-control" type="text" name="event_address"
+                    <input id="event_address" class="form-control" type="text" name="address"
                             value="{{ event.address }}">
                 </div>
                 <div class="form-group">
@@ -99,7 +104,7 @@
                             {{ errors.city }}
                         </div>
                     {% endif %}
-                    <input id="event_city" class="form-control" type="text" name="event_city"
+                    <input id="event_city" class="form-control" type="text" name="city"
                             value="{{ event.city }}">
                 </div>
                 <div class="form-group">
@@ -109,7 +114,7 @@
                             {{ errors.state }}
                         </div>
                     {% endif %}
-                    <select class="form-control state-input" name="event_state" id="event_state">
+                    <select class="form-control state-input" name="state" id="event_state">
                         {% if event.state %}
                             <option value="{{ event.state }}">{{ event.state }}</option>
                         {% endif %}
@@ -123,7 +128,7 @@
                         </div>
                     {% endif %}
                     <div class="form-error"></div>
-                    <input id="event_zipcode" class="form-control zip-input" type="text" name="event_zipcode"
+                    <input id="event_zipcode" class="form-control zip-input" type="text" name="zipcode"
                             value="{{ event.zipcode }}">
                 </div>
                 <div class="form-group">
@@ -133,7 +138,7 @@
                             {{ errors.country }}
                         </div>
                     {% endif %}
-                    <select class="form-control country-input" name="event_country" id="event_country">
+                    <select class="form-control country-input" name="country" id="event_country">
                         {% if event.country %}
                             <option value="{{ event.country }}">{{ event.country }}</option>
                         {% endif %}
@@ -146,7 +151,7 @@
                             {{ errors.website }}
                         </div>
                     {% endif %}
-                    <input id="event_website" class="form-control" type="text" name="event_website"
+                    <input id="event_website" class="form-control" type="text" name="website"
                         value="{% if event.website %}{{ event.website }}{% endif %}">
                 </div>
                 <div class="form-group">
@@ -156,7 +161,7 @@
                             {{ errors.description }}
                         </div>
                     {% endif %}
-                    <textarea id="event_description" name="event_description" class="form-control"
+                    <textarea id="event_description" name="description" class="form-control"
                               rows="5">{{ event.description }}</textarea>
                 </div>
                 <div>

@@ -35,29 +35,33 @@
                     <div class="form-group">
                         <label class="required" for="skill_name">Name:</label>
                         <input id="skill_name" class="w3-input w3-border" type="text"
-                               name="skill_name">
+                               name="name">
                     </div>
                     <div class="form-group">
-                        <label for="skill_level">Level:</label>
-                        <select id="skill_level" name="skill_level" class="w3-input w3-border">
+                        <label for="skill_level" class="required">Level:</label>
+                        <select id="skill_level" name="level" class="w3-input w3-border skip-form-clear">
                             <option value="beginner">Beginner</option>
                             <option value="intermediate">Intermediate</option>
                             <option value="advanced">Advanced</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="skill_description">Description:</label>
+                        <textarea class="w3-input w3-border" name="description" id="skill_description" rows="5"></textarea>
                     </div>
                     <div class="regular-buttons ">
                         <button class="w3-btn btn-default close-modal" type="button"
                                 data-id="skill-modal">
                             Cancel
                         </button>
-                        <button class="w3-btn btn-success" type="submit">Submit</button>
+                        <button class="w3-btn btn-success" type="submit">Submit <i class="fa fa-spinner fa-spin w3-hide"></i></button>
                     </div>
                     <div class="walk-buttons w3-hide ">
                         <button class="w3-btn btn-success skill-save-another" type="button">
-                            Save & Add Another
+                            Save & Add Another <i class="fa fa-spinner fa-spin w3-hide"></i>
                         </button>
                         <button class="w3-btn btn-success skill-save-continue" type="button">
-                            Save & Continue
+                            Save & Continue <i class="fa fa-spinner fa-spin w3-hide"></i>
                         </button>
                         <button class="w3-btn btn-default skill-next" type="button">
                             Next

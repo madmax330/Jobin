@@ -35,12 +35,12 @@
                     <div class="form-group">
                         <label class="required" for="award_title">Title:</label>
                         <input id="award_title" class="w3-input w3-border" type="text"
-                               name="award_title">
+                               name="title">
                     </div>
                     <div class="form-group">
                         <label class="required" for="award_date">Date Received:</label>
-                        <input id="award_date" class="w3-input w3-border" type="date"
-                               name="award_date">
+                        <input id="award_date" class="w3-input w3-border date-input" type="date"
+                               name="date">
                     </div>
                     <div class="form-group">
                         <label class="required" for="award_type">Award Type:</label>
@@ -49,21 +49,21 @@
                     </div>
                     <div class="form-group">
                         <label class="required" for="award_description">Description</label>
-                        <textarea id="award_description" name="award_description" class="w3-input w3-border"
+                        <textarea id="award_description" name="description" class="w3-input w3-border"
                                   rows="5"></textarea>
                     </div>
                     <div class="regular-buttons w3-padding">
                         <button class="w3-btn btn-default close-modal" type="button" data-id="award-modal">
                             Cancel
                         </button>
-                        <button class="w3-btn btn-success" type="submit">Submit</button>
+                        <button class="w3-btn btn-success" type="submit">Submit <i class="fa fa-spinner fa-spin w3-hide"></i></button>
                     </div>
                     <div class="walk-buttons w3-hide">
                         <button class="w3-btn btn-success award-save-another" type="button">
-                            Save & Add Another
+                            Save & Add Another <i class="fa fa-spinner fa-spin w3-hide"></i>
                         </button>
                         <button class="w3-btn btn-success award-save-continue" type="button">
-                            Save & Continue
+                            Save & Continue <i class="fa fa-spinner fa-spin w3-hide"></i>
                         </button>
                         <button class="w3-btn btn-default award-next" type="button">
                             Next

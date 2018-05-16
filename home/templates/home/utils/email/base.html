@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Activation{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.min.css' %}"/>
+    <script type="text/javascript" src="{% static 'home/scripts/jquery-3.1.1.min.js' %}"></script>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Helvetica', sans-serif;
+        }
+        .content-div {
+            position: absolute;
+            min-width: 500px;
+            min-height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            padding: 16px;
+            background: rgb(255, 153, 102);
+            /* Old browsers */
+            background: -moz-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+            /* FF3.6-15 */
+            background: -webkit-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+            /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
+            /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff9966', endColorstr='#ff5e62', GradientType=1);
+        }
+        .content-div a{
+            color: #ffffff;
+        }
+    </style>
+    {% block style %}{% endblock %}
+</head>
+<body>
+<div class="content-div">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

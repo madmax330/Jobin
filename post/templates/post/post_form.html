@@ -6,7 +6,7 @@
 
 {% block page_title_div %}
     <div class="pagetitle posts">
-        <h1>New Post</h1>
+        <h1>{% if new %}New Post{% else %}Edit Post{% endif %}</h1>
     </div>
 {% endblock %}
 
@@ -14,6 +14,18 @@
 
 {% block scripts %}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!--<script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+    <script>tinymce.init({ selector:'textarea' });</script>-->
+    <script type="text/javascript" src="{% static 'home/scripts/tinymce/js/tinymce/tinymce.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'home/scripts/tinymce/js/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script>
+        $('textarea').tinymce({
+            theme: 'modern',
+            plugins: 'lists advlist',
+            invalid_styles: 'color font-size font-family font-weight',
+            invalid_elements: 'h1,h2,h3,h4,h5'
+        });
+    </script>
     <script type="text/javascript" src="{% static 'home/scripts/form_util.js' %}"></script>
     <script type="text/javascript" src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
 {% endblock %}
@@ -24,152 +36,175 @@
             <h4>Post Information Form</h4>
         </div>
         <div class="panel-body">
-            <form id="post-form" method="post"
-                  action="">
+            <form id="post-form" method="post" action="">
                 {% csrf_token %}
 
-                <div class="form-group has-error">
+                <div class="form-group {% if errors.title %}has-error{% endif %}">
                     <label class="required" for="post_title">Title:</label>
                     {% if errors.title %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.title }}
                         </div>
                     {% endif %}
-                    <div class="alert form-error">
-                            Post Title cannot be left blank.
-                        </div>
-                    <input id="post_title" class="form-control" type="text" name="post_title"
+                    <input id="post_title" class="form-control" type="text" name="title"
                            value="{{ post.title }}">
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if errors.programs %}has-error{% endif %}">
                     <label for="post_programs">Programs:</label>
                     {% if errors.programs %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.programs }}
                         </div>
                     {% endif %}
-                    <select id="post_programs" class="form-control program-input" name="post_programs">
+                    <select id="post_programs" class="form-control program-input" name="programs">
                         {% if post.programs %}
                             <option value="{{ post.programs }}">{{ post.programs }}</option>
                         {% endif %}
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if errors.type %}has-error{% endif %}">
                     <label class="required" for="post_type">Type:</label>
                     {% if errors.type %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.type }}
                         </div>
                     {% endif %}
-                    <select id="post_type" class="form-control" name="post_type">
+                    <select id="post_type" class="form-control" name="type">
                         <option value="internship">Internship</option>
                         <option value="full_time">Full Time</option>
                         <option value="part_time">Part Time</option>
                         <option value="volunteer">Volunteer</option>
                     </select>
                 </div>
-                <div class="form-group has-error">
+                <div class="form-group {% if errors.wage %}has-error{% endif %}">
                     <label for="post_wage">Wage:</label>
                     {% if errors.wage %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.wage }}
                         </div>
                     {% endif %}
-                    <div class="alert form-error">
-                            Post Wage cannot be left blank.
-                        </div>
-                    <input id="post_wage" class="form-control" type="text" name="post_wage"
+                    <input id="post_wage" class="form-control" type="text" name="wage"
                            value="{% if post.wage %}{{ post.wage }}{% endif %}">
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if errors.wage_interval %}has-error{% endif %}">
                     <label class="radio-inline">
-                        <input type="radio" name="post_wage_interval"
+                        <input type="radio" name="wage_interval"
                                {% if post.wage_interval == 'hr' or not post %}checked="checked"{% endif %}
                                 value="hr">
                         Hourly
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="post_wage_interval"
+                        <input type="radio" name="wage_interval"
                                {% if post.wage_interval == 'mth' %}checked="checked"{% endif %}
                                 value="mth">
                         Monthly
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="post_wage_interval"
+                        <input type="radio" name="wage_interval"
                                {% if post.wage_interval == 'yr' %}checked="checked"{% endif %}
                                 value="yr">
                         Yearly
                     </label>
                 </div>
-                <div class="form-group">
-                    <label class="required" for="post_openings">Number of positions:</label>
+                <div class="form-group {% if errors.location %}has-error{% endif %}">
+                    <label class="required" for="post_location">Location: (street address, city, state, zip/postal code)</label>
+                    <div class="checkbox">
+                        <label><input id="post-address-checkbox" type="checkbox">Use company address</label>
+                    </div>
+                    <input id="post_location" class="form-control" value="{{ post.location }}" name="location">
+                </div>
+                <div class="form-group {% if errors.openings %}has-error{% endif %}">
+                    <label for="post_openings">Number of positions:</label>
                     {% if errors.openings %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.openings }}
                         </div>
                     {% endif %}
-                    <input id="post_openings" class="form-control" type="number" name="post_openings"
+                    <input id="post_openings" class="form-control" type="number" name="openings"
                            value="{{ post.openings }}">
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if errors.start_date %}has-error{% endif %}">
                     <label class="required" for="post_start">Start Date:</label>
                     {% if errors.start_date %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.start_date }}
                         </div>
                     {% endif %}
                     <input id="post_start" class="form-control date-input" data-date="{{ post.start_date }}"
-                           type="date" name="post_start" value="">
+                           type="date" name="start_date" value="">
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if errors.end_date %}has-error{% endif %}">
                     <label for="post_end">End Date:</label>
                     {% if errors.end_date %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.end_date }}
                         </div>
                     {% endif %}
-                    <input id="post_end" class="form-control date-input" type="date" name="post_end"
+                    <input id="post_end" class="form-control date-input" type="date" name="end_date"
                             value="" data-date="{{ post.end_date }}">
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if errors.deadline %}has-error{% endif %}">
                     <label class="required" for="post_deadline">Application Deadline:</label>
                     {% if errors.deadline %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.deadline }}
                         </div>
                     {% endif %}
                     <input id="post_deadline" class="form-control date-input" type="date"
-                           name="post_deadline" value="" data-date="{{ post.deadline }}">
+                           name="deadline" value="" data-date="{{ post.deadline }}">
                 </div>
-                <div class="form-group">
-                    <label class="required" for="post_description">Description:</label>
-                    {% if errors.description %}
-                        <div class="alert alert-danger">
-                            {{ errors.description }}
+                <div class="form-group {% if errors.why_us %}has-error{% endif %}">
+                    <label for="post_why_us">Why Us:</label>
+                    {% if errors.why_us %}
+                        <div class="alert form-error">
+                            {{ errors.why_us }}
                         </div>
                     {% endif %}
-                    <textarea id="post_description" name="post_description" class="form-control"
-                              rows="5">{{ post.description }}</textarea>
+                    <textarea id="post_why_us" name="why_us" class="form-control" rows="5"
+                              placeholder="Tell applicants why they want to work for you...">{% if post.why_us %}{{ post.why_us }}{% endif %}</textarea>
                 </div>
-                <div class="form-group">
-                    <label class="required" for="post_requirements">Requirements:</label>
-                    {% if errors.requirements %}
-                        <div class="alert alert-danger">
-                            {{ errors.requirements }}
+                <div class="form-group {% if errors.responsibilities %}has-error{% endif %}">
+                    <label class="required" for="post_responsibilities">Responsibilities:</label>
+                    {% if errors.responsibilities %}
+                        <div class="alert form-error">
+                            {{ errors.responsibilities }}
                         </div>
                     {% endif %}
-                    <textarea id="post_requirements" name="post_requirements" class="form-control"
-                              rows="5">{{ post.requirements }}</textarea>
+                    <textarea id="post_responsibilities" name="responsibilities" class="form-control"
+                              rows="5">{{ post.responsibilities }}</textarea>
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if errors.qualifications %}has-error{% endif %}">
+                    <label class="required" for="post_qualifications">Qualifications:</label>
+                    {% if errors.qualifications %}
+                        <div class="alert form-error">
+                            {{ errors.qualifications }}
+                        </div>
+                    {% endif %}
+                    <textarea id="post_qualifications" name="qualifications" class="form-control"
+                              rows="5">{{ post.qualifications }}</textarea>
+                </div>
+                <div class="form-group {% if errors.benefits %}has-error{% endif %}">
+                    <label for="post_benefits">Benefits:</label>
+                    {% if errors.benefits%}
+                        <div class="alert form-error">
+                            {{ errors.benefits}}
+                        </div>
+                    {% endif %}
+                    <textarea id="post_benefits" name="benefits" class="form-control" rows="5"
+                              placeholder="Enter position benefits here...">{% if post.benefits %}{{ post.benefits }}{% endif %}</textarea>
+                </div>
+                <div class="form-group {% if errors.cover_instructions %}has-error{% endif %}">
                     <label for="post_instructions">Cover letter instructions:</label>
                     {% if errors.cover_instructions %}
-                        <div class="alert alert-danger">
+                        <div class="alert form-error">
                             {{ errors.cover_instructions }}
                         </div>
                     {% endif %}
-                    <textarea id="post_instructions" name="post_cover" class="form-control"
+                    <textarea id="post_instructions" name="cover_instructions" class="form-control"
                               rows="5">{% if post.cover_instructions %}{{ post.cover_instructions }}{% endif %}</textarea>
+                </div>
+                <div class="checkbox">
+                    <label><input id="post_transcript" name="transcript" type="checkbox" {% if post.transcript %}checked="checked"{% endif %}>Transcript Required</label>
                 </div>
                 <div>
                     <a href="{% url 'post:company_posts' %}" class="btn btn-default">Cancel</a>
@@ -195,6 +230,21 @@
                     $('#post_wage').val('');
                 }
             });
+
+            $('input#post-address-checkbox').change(function(){
+                if(this.checked){
+                    let address = $('.company_address').html().toString().trim();
+                    let city = $('.company_city').html().toString().trim();
+                    let state = $('.company_state').html().toString().trim();
+                    let zipcode = $('.company_zipcode').html().toString().trim();
+                    let loc = address + ', ' + city + ', ' + state + ', ' + zipcode;
+                    $('#post_location').val(loc);
+                }
+                else{
+                    $('#post_location').val('');
+                }
+            });
+
         });
     </script>
 {% endblock %}
@@ -202,4 +252,10 @@
 {% block hidden_block %}
     {% include 'home/utils/form_values.html' %}
     <div class="post-type">{% if post.type %}{{ post.type }}{% endif %}</div>
+    <div>
+        <span class="company_address">{{ company.address }}</span>
+        <span class="company_city">{{ company.city }}</span>
+        <span class="company_state">{{ company.state }}</span>
+        <span class="company_zipcode">{{ company.zipcode }}</span>
+    </div>
 {% endblock %}

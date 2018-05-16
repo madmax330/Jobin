@@ -20,33 +20,39 @@
             </div>
             <label>Post Type: </label><span> {{ post.type }}</span><br/>
             <label>Start Date: </label><span> {{ post.start_date }}</span><br/>
-            <label>End Date: </label><span> {{ post.end_date }}</span><br/>
+            <label>End Date: </label><span> {% if post.end_date %}{{ post.end_date }}{% else %}N/A{% endif %}</span><br/>
             <label>Application Deadline: </label><span> {{ post.deadline }}</span><br/>
             <label>Wage: </label><span> {% if post.wage %}${{ post.wage }}/{{ post.wage_interval }}{% else %}N/A{% endif %}</span><br/>
-            <label>Openings: </label><span> {{ post.openings }}</span><br/>
-            <label>Description: </label>
-            <p class="formatted-text">{{ post.description | linebreaksbr }}</p>
-            <label>Requirements: </label>
-            <p>{{ post.requirements | linebreaksbr }}</p>
+            <label>Openings: </label><span> {% if post.openings %}{{ post.openings }}{% else %}N/A{% endif %}</span><br/>
+            <label>Why Us:</label>
+            <p class="string-to-html">{% if post.why_us %}{{ post.why_us }}{% else %}N/A{% endif %}</p>
+            <label>Responsibilities: </label>
+            <p class="string-to-html">{{ post.responsibilities }}</p>
+            <label>Qualifications: </label>
+            <p class="string-to-html">{{ post.qualifications }}</p>
+            <label>Benefits:</label>
+            <p class="string-to-html">{% if post.benefits %}{{ post.benefits }}{% else %}N/A{% endif %}</p>
             {% if post.cover_instructions %}
                 <label>Cover Letter Instructions:</label>
-                <p>{{ post.cover_instructions }}</p>
+                <p class="string-to-html">{{ post.cover_instructions }}</p>
             {% endif %}
             <label>Programs: </label>
             <p>{{ post.programs }}</p>
-            {% if post.status == 'open' %}
-                <a href="#" class="btn btn-default" data-name="{{ post.title }}"
-                   data-url="{% url 'post:close' pk=post.id %}" data-id="close-post" data-redirect="{% url 'post:company_posts' %}">
-                    Close Post
-                </a>
-            {% elif post.status == 'closed' %}
-                <a href="#" class="btn btn-warning warning-open" data-name="{{ post.title }}"
-                   data-url="{% url 'post:recover' pk=post.id %}" data-id="open-post" data-redirect="{% url 'post:company_posts' %}">
-                    <strong>Re-Open Post</strong>
-                </a>
-            {% endif %}
-            <a class="btn btn-default" href="{% url 'post:company_posts' %}">Back to list</a>
-            <a class="btn btn-default" href="{% url 'post:edit' pk=post.id %}">Edit</a>
+            <label>Transcript Required:</label><span> {% if post.transcript %}True{% else %}False{% endif %}</span><br/>
+            <div>
+                <a class="btn btn-default" href="{% url 'post:company_posts' %}">Back to list</a>
+                <a class="btn btn-default" href="{% url 'post:edit' pk=post.id %}">Edit</a>
+                {% if post.status == 'open' %}
+                    <a href="#" class="btn btn-default warning-open" data-name="{{ post.title }}"
+                       data-url="{% url 'post:close' pk=post.id %}" data-id="close-post" data-redirect="{% url 'post:company_posts' %}">
+                        Close Post
+                    </a>
+                {% elif post.status == 'closed' %}
+                    <a href="{% url 'post:recover' pk=post.id %}" class="btn btn-default">
+                        Reactivate Post
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

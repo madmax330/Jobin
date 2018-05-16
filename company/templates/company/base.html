@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}Company Home{% endblock %}</title>
     {% load staticfiles %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'home/images/favicon.ico' %}"/>
     <!--<link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.min.css' %}"/>-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
@@ -25,7 +26,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand jobin-nav-link" href="{% url 'home:index' %}">
+            <a class="navbar-brand jobin-nav-link" href="#">
                 <img src="{% static 'home/images/jobinblue.gif' %}">
             </a>
         </div>
@@ -84,46 +85,22 @@
 <div class="container main-container">
     <div class="row content-container">
         <div id="bodyCol" class="container col-sm-12">
-            {% if notifications %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>Notifications</h4>
-                    </div>
-                    <div class="panel-body">
-                        {% for x in notifications %}
-                            <div class="alert alert-info">
-                                <div style="position:relative; top:0; left:0; padding:0;">
-                                    <a href="#" class="close-note"
-                                       data-url="{% url 'home:close_notification' pk=x.id %}">x</a>
-                                </div>
-                                <p>
-                                    {{ x.message }}
-                                </p>
-                            </div>
-                        {% endfor %}
-                        <button class="btn btn-danger btn-block warning-open" data-name="" data-id="close-notifications"
-                                data-url="{% url 'home:close_all_notifications' u='company' %}">
-                            Close all
-                        </button>
-                    </div>
-                </div>
-            {% endif %}
             <div class="messages">
                 {% for x in messages %}
                     {% if x.code == 'danger' %}
                         <div class="alert alert-danger alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ x.message }}
+                            {{ x.message | linebreaksbr }}
                         </div>
                     {% elif x.code == 'warning' %}
                         <div class="alert alert-warning alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ x.message }}
+                            {{ x.message | linebreaksbr }}
                         </div>
                     {% else %}
                         <div class="alert alert-info alert-dismissible">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ x.message }}
+                            {{ x.message | linebreaksbr }}
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -172,7 +149,6 @@
 <script type="text/javascript" src="{% static 'company/scripts/company_util.js' %}"></script>
 <script type="text/javascript" src="{% static 'company/scripts/warning_script.js' %}"></script>
 <script type="text/javascript" src="{% static 'home/scripts/walkthrough.js' %}"></script>
-<script type="text/javascript" src="{% static 'home/scripts/notification_script.js' %}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -26,6 +26,9 @@ class StudentPostContainer(BaseContainer):
     #  DATA CREATION FUNCTIONS (SETTERS)
 
     def new_application(self, post, resume):
+        if post.transcript and not self.__student.transcript:
+            self.add_error('A transcript is required to apply for this post. Upload one to a resume and apply again.')
+            return False
         info = {
             'student': self.__student.id,
             'post': post.id,
@@ -43,6 +46,7 @@ class StudentPostContainer(BaseContainer):
                 post.save()
             return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -81,7 +85,7 @@ class StudentPostContainer(BaseContainer):
         if filters:
             f = Q()
             for x in fls:
-                f |= x
+                f &= x
             op &= f
         op &= ad
         posts = Post.objects.filter(op).order_by('-id')
@@ -172,6 +176,9 @@ class StudentPostContainer(BaseContainer):
         self.add_error('No applications found.')
         return []
 
+    def get_resume_applications(self, resume):
+        return list(Application.objects.filter(resume=resume))
+
     def get_old_applications(self):
         apps = Application.objects.filter(student=self.__student, status='hold', post__status='open')
         if apps.count() > 0:
@@ -199,11 +206,11 @@ class StudentPostContainer(BaseContainer):
         self.__post.save()
         return True
 
-    def submit_cover_letter(self, letter):
-        info = {
-            'cover': letter,
-            'cover_submitted': True,
-        }
+    def submit_cover_letter(self, info):
+        if not info['cover']:
+            self.add_error('Cover letter can\'t be blank.')
+            return False
+        info['cover_submitted'] = True
         self._form = AddCoverLetterForm(info, instance=self.__application)
         if self._form.is_valid():
             self.__application = self._form.save()
@@ -236,6 +243,13 @@ class StudentPostContainer(BaseContainer):
             self.add_form_errors()
             return False
 
+    def notify_resume(self, app=None):
+        if app:
+            self.__application = app
+        if not self.__application.resume_notified:
+            self.__application.resume_notified = True
+            self.__application.save()
+
     def withdraw_application(self):
         self.__application.status = 'closed'
         self.__application.save()
@@ -258,24 +272,11 @@ class CompanyPostContainer(BaseContainer):
 
     #  DATA CREATION FUNCTIONS (SETTERS)
 
-    def new_post(self, post_info):
-        info = {
-            'company': self.__company.id,
-            'is_startup_post': self.__company.is_startup,
-            'location': self.__company.city + ' ' + self.__company.state + ' ' + self.__company.country,
-            'title': post_info['title'],
-            'wage': post_info['wage'] if not post_info['type'] == 'volunteer' else None,
-            'wage_interval': post_info['wage_interval'],
-            'openings': post_info['openings'],
-            'start_date': post_info['start_date'],
-            'end_date': post_info['end_date'],
-            'deadline': post_info['deadline'],
-            'description': post_info['description'],
-            'requirements': post_info['requirements'],
-            'programs': post_info['programs'],
-            'type': post_info['type'],
-            'cover_instructions': post_info['cover_instructions'],
-        }
+    def new_post(self, info):
+        info['company'] = self.__company.id
+        info['is_startup_post'] = self.__company.is_startup
+        if info['type'] == 'volunteer':
+            info['wage'] = None
         self._form = NewPostForm(info)
         if self._form.is_valid():
             self.__post = self._form.save()
@@ -289,21 +290,7 @@ class CompanyPostContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_post(self, post_info):
-        info = {
-            'title': post_info['title'],
-            'wage': post_info['wage'],
-            'wage_interval': post_info['wage_interval'],
-            'openings': post_info['openings'],
-            'start_date': post_info['start_date'],
-            'end_date': post_info['end_date'],
-            'deadline': post_info['deadline'],
-            'description': post_info['description'],
-            'requirements': post_info['requirements'],
-            'programs': post_info['programs'],
-            'type': post_info['type'],
-            'cover_instructions': post_info['cover_instructions'],
-        }
+    def edit_post(self, info):
         self._form = EditPostForm(info, instance=self.__post)
         if self._form.is_valid():
             self.__post = self._form.save()
@@ -326,29 +313,15 @@ class CompanyPostContainer(BaseContainer):
             apps = self.get_applications()
             if apps:
                 for x in apps:
-                    if not self.new_notification(True, x.student, m, 100):
-                        x.status = 'hold'
-                        x.save()
+                    if not (self.new_notification(True, x.student, m, 100) and self.new_message(True, x.student, m, 2)):
                         return False
+                    x.status = 'hold'
+                    x.save()
             return True
         else:
             return False
 
-    def recover_post(self, post_info):
-        info = {
-            'title': post_info['title'],
-            'wage': post_info['wage'],
-            'wage_interval': post_info['wage_interval'],
-            'openings': post_info['openings'],
-            'start_date': post_info['start_date'],
-            'end_date': post_info['end_date'],
-            'deadline': post_info['deadline'],
-            'description': post_info['description'],
-            'requirements': post_info['requirements'],
-            'programs': post_info['programs'],
-            'type': post_info['type'],
-            'cover_instructions': post_info['cover_instructions'],
-        }
+    def recover_post(self, info):
         self._form = EditPostForm(info, instance=self.__post)
         if self._form.is_valid():
             self.__post = self._form.save(commit=False)
@@ -360,7 +333,7 @@ class CompanyPostContainer(BaseContainer):
                 if apps:
                     for x in apps:
                         m = 'The post "' + self.__post.title + '" that you had previously applied to was re-opened.'
-                        if not self.new_notification(True, x.student, m, 100):
+                        if not (self.new_notification(True, x.student, m, 100) and self.new_message(True, x.student, m, 0)):
                             return False
                         x.cover_requested = False
                         x.save()
@@ -368,6 +341,7 @@ class CompanyPostContainer(BaseContainer):
             else:
                 return False
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -547,7 +521,7 @@ class CompanyPostContainer(BaseContainer):
         self.__application.status = 'closed'
         self.__application.save()
         m = 'Your application for the post "' + self.__application.post.title + '" was closed.'
-        if self.new_notification(True, self.__application.student, m, 100):
+        if self.new_notification(True, self.__application.student, m, 100) and self.new_message(True, self.__application.student, m, 2):
             return True
         return False
 
@@ -561,6 +535,9 @@ class CompanyPostContainer(BaseContainer):
         if self.__application.cover_submitted and not self.__application.cover_opened:
             self.__application.cover_opened = True
             edited = True
+        if self.__application.resume_notified:
+            self.__application.resume_notified = False
+            edited = True
         if edited:
             self.__application.save()
 
@@ -570,4 +547,5 @@ class CompanyPostContainer(BaseContainer):
         if self.__post.new_apps:
             self.__post.new_apps = False
             self.__post.save()
+
 

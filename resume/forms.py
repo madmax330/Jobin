@@ -59,8 +59,9 @@ class NewExperienceForm(forms.ModelForm):
         clean_data = super(NewExperienceForm, self).clean()
         end = clean_data.get('end')
         curr = clean_data.get('is_current')
-        if curr == 'False':
-            if not end:
+        print('curr: ' + str(curr))
+        if not (curr or end):
+            if not (curr or end):
                 raise forms.ValidationError({'end': "End date must be specified if this isn't your current position."})
         if end:
             start = clean_data.get('start')
@@ -78,8 +79,9 @@ class EditExperienceForm(forms.ModelForm):
         clean_data = super(EditExperienceForm, self).clean()
         end = clean_data.get('end')
         curr = clean_data.get('is_current')
-        if curr == 'False':
-            if not end:
+        print('curr: ' + str(curr))
+        if not (curr or end):
+            if not (curr or end):
                 raise forms.ValidationError({'end': "End date must be specified if this isn't your current position."})
         if end:
             start = clean_data.get('start')
@@ -125,9 +127,9 @@ class NewSchoolForm(forms.ModelForm):
         clean_data = super(NewSchoolForm, self).clean()
         end = clean_data.get('end')
         curr = clean_data.get('is_current')
-        if curr == 'False':
-            if not end:
-                raise forms.ValidationError({'end': "End date must be specified if this isn't your current position."})
+        if not (curr or end):
+            if not (curr or end):
+                raise forms.ValidationError({'end': "End date must be specified if this isn't your current establishment."})
         if end:
             start = clean_data.get('start')
             if end < start:
@@ -144,9 +146,10 @@ class EditSchoolForm(forms.ModelForm):
         clean_data = super(EditSchoolForm, self).clean()
         end = clean_data.get('end')
         curr = clean_data.get('is_current')
-        if curr == 'False':
-            if not end:
-                raise forms.ValidationError({'end': "End date must be specified if this isn't your current position."})
+        if not (curr or end):
+            if not (curr or end):
+                raise forms.ValidationError(
+                    {'end': "End date must be specified if this isn't your current establishment."})
         if end:
             start = clean_data.get('start')
             if end < start:
@@ -171,7 +174,7 @@ class EditSkillForm(forms.ModelForm):
 
     class Meta:
         model = Skill
-        fields = ('name', 'level',)
+        fields = ('name', 'level', 'description')
 
 
 class NewSkillLinkForm(forms.ModelForm):

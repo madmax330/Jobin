@@ -6,18 +6,21 @@
 {% block scripts %}
     <script type="text/javascript" src="{% static 'event/student_event_util.js' %}"></script>
     <script>
-        $(function(){
+        $(function () {
             hide($('.event-loader-icon'));
             show($('.main-event-container'));
         });
     </script>
 {% endblock %}
 
+{% block page_title_div %}
+    <div class="events-header">
+        <h3 class="w3-center">Events ({{ count }})</h3>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div>
-        <div class="events-header">
-            <h3 class="w3-center">Events ({{ count }})</h3>
-        </div>
         <div class="event-loader-icon">
             <h2 class="w3-center"><i class="fa fa-spinner fa-spin"></i> Loading events...</h2>
         </div>
@@ -38,7 +41,9 @@
                                     {% endif %}
                                     <h5>{{ x.name }}</h5>
                                     <label>Address:</label><span> {{ x.caddr }}</span><br/>
-                                    <label>Website:</label><span> <a href="http://{{ x.cweb }}" target="_blank">{{ x.cweb }}</a></span>
+                                    <label>Website:</label><span> {% if x.cweb %}
+                                    <a href="http://{{ x.cweb }}" target="_blank">{{ x.cweb }}</a>{% else %}
+                                    N/A{% endif %}</span>
                                 </div>
                             </div>
                             <div class="w3-col s8">
@@ -51,12 +56,16 @@
                                     <label>Date:</label><span> {{ x.start_date }}</span><br/>
                                     <label>Time:</label><span> {{ x.start_time }}</span><br/>
                                     <label>Address:</label><span> {{ x.address }}</span><br/>
-                                    <label>Website:</label><span> <a href="http://{{ x.website }}" target="_blank">{{ x.website }}</a></span><br/>
+                                    <label>Website:</label><span> {% if x.website %}
+                                        <a href="http://{{ x.website }}" target="_blank">{{ x.website }}</a>
+                                    {% else %}
+                                        <span>N/A</span>
+                                    {% endif %}</span><br/>
                                     <label>Description:</label><br/>
-                                    <span>{{ x.desc | linebreaksbr }}</span>
+                                    <p class="string-to-html">{{ x.desc }}</p>
                                 </div>
                                 <div class="w3-display-topright w3-medium w3-container">
-                                    {% if not x.interested %}
+                                    {% if not x.saved %}
                                         <button class="w3-btn save-btn save"
                                                 data-url="{% url 'event:save' pk=x.pk %}">
                                             Save Event
@@ -73,7 +82,14 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <h3 class="w3-center"> No events found.</h3>
+                <div class="w3-display-container mySlides">
+                <div class="w3-card-16">
+                    <h4 class="w3-center">
+                        There are currently no events listed. <br/><br/>
+                        Check back again later.
+                    </h4>
+                </div>
+            </div>
             {% endif %}
             <a class="w3-btn w3-display-left slider-nav-btn" onclick="plusDivs(-1)">❮</a>
             <a class="w3-btn w3-display-right slider-nav-btn" onclick="plusDivs(1)">❯</a>

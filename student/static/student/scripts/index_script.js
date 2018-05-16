@@ -9,6 +9,7 @@ $(function(){
     if(stu === 'true'){
         $.get('/student/not/new/', function(data, status){
             if(status === 'success'){
+                open_modal('welcome-modal');
             }
         })
             .fail(function(jqXHR){

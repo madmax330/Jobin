@@ -26,9 +26,9 @@
 <body>
     <div class="center">
         <h4>{{ app.name }}</h4>
-        <h5>{{ app.school }}, {{ app.program }}, {{ app.major }}</h5>
+        <h5>{% if app.school %}{{ app.school }}{% else %}School Not Verified{% endif %}, {{ app.program }}, {{ app.major }}</h5>
         <h5>{{ app.email }}</h5>
-        <h5>{{ app.phone }}</h5>
+        {% if app.phone %}<h5>{{ app.phone }}</h5>{% endif %}
         <h5>{{ app.address }}</h5>
     </div>
     <hr/>
@@ -63,7 +63,7 @@
                     <td>{{ x.start }}</td>
                     <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
                     <td class="capital">{{ x.level }}</td>
-                    <td class="capital">{{ x.program }}</td>
+                    <td class="capital">{% if x.program %}{{ x.program }}{% else %}N/A{% endif %}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -102,11 +102,13 @@
             <tr>
                 <th>Skill</th>
                 <th>Proficiency</th>
+                <th>Description</th>
             </tr>
             {% for x in app.resume.skills %}
                 <tr>
                     <td class="capital">{{ x.name }}</td>
                     <td class="capital">{{ x.level }}</td>
+                    <td>{{ x.description }}</td>
                 </tr>
             {% endfor %}
         </table>

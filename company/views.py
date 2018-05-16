@@ -7,14 +7,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .util_company import CompanyContainer
 
-from home.util_request import RequestUtil
 from home.utils import MessageCenter, Pagination
 from home.util_home import HomeUtil
 
 
 @login_required(login_url='/')
 def index_view(request):
-
     if request.method == 'GET':
         post_page = request.GET.get('pp', 1)
         event_page = request.GET.get('ep', 1)
@@ -22,8 +20,8 @@ def index_view(request):
         if company.get_company() is None:
             return redirect('company:new')
         msgs = MessageCenter.get_messages('company', company.get_company())
-        posts = Pagination(company.get_home_posts(), 15)
-        events = Pagination(company.get_events(), 15)
+        posts = Pagination(company.get_home_posts(), 10)
+        events = Pagination(company.get_events(), 10)
         context = {
             'company': company.get_company(),
             'posts': posts.get_page(post_page),
@@ -47,34 +45,31 @@ class NewCompanyView(LoginRequiredMixin, View):
         context = {
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'new': True,
         }
         return render(request, self.template_name, context)
 
     def post(self, request):
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_company_info(request)
         context = {
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
+            'new': True
         }
-        if i:
 
-            try:
-                with transaction.atomic():
-                    if company.new_company(i, request.user):
-                        m = 'Company profile created successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('company:index')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                context['company'] = i
-                context['errors'] = company.get_form().errors
+        try:
 
-        else:
-            context['company'] = rq.get_info()
-            context['errors'] = rq.get_errors()
+            with transaction.atomic():
+                if company.new_company(request.POST.copy(), request.user):
+                    m = 'Company profile created successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return redirect('company:index')
+                else:
+                    raise IntegrityError
+
+        except IntegrityError:
+            context['company'] = request.POST
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
@@ -92,39 +87,30 @@ class EditCompanyView(LoginRequiredMixin, View):
             'states': HomeUtil.get_states(),
             'tab': 'profile',
         }
-        print(str(company.get_company().is_startup))
         return render(request, self.template_name, context)
 
     def post(self, request):
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_company_info(request)
         context = {
             'company': company.get_company(),
             'countries': HomeUtil.get_countries(),
             'states': HomeUtil.get_states(),
             'tab': 'profile',
         }
-        if i:
 
-            try:
-                with transaction.atomic():
-                    if company.edit_company(i):
-                        m = 'Company profile edited successfully.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return redirect('company:index')
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                i['pk'] = '0'
-                context['company'] = i
-                context['errors'] = company.get_form().errors
+        try:
 
-        else:
-            info = rq.get_info()
-            info['pk'] = '0'
-            context['company'] = info
-            context['errors'] = rq.get_errors()
+            with transaction.atomic():
+                if company.edit_company(request.POST.copy()):
+                    m = 'Company profile edited successfully.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return redirect('company:profile')
+                else:
+                    raise IntegrityError
+
+        except IntegrityError:
+            context['company'] = request.POST
+            context['errors'] = company.get_form_errors()
 
         return render(request, self.template_name, context)
 
@@ -136,11 +122,14 @@ def profile_view(request):
         company = CompanyContainer(request.user)
         if company.get_company() is None:
             return redirect('company:new')
+        msgs = MessageCenter.get_messages('company', company.get_company())
         context = {
             'user': company.get_user(),
             'company': company.get_company(),
             'tab': 'profile',
+            'messages': msgs,
         }
+        MessageCenter.clear_msgs(msgs)
         return render(request, 'company/profile.html', context)
 
     raise Http404
@@ -173,23 +162,19 @@ def new_suggestion(request):
 
     if request.method == 'POST':
         company = CompanyContainer(request.user)
-        rq = RequestUtil()
-        i = rq.get_suggestion_info(request)
-        if i:
 
-            try:
-                with transaction.atomic():
-                    if company.new_suggestion(i):
-                        m = 'Suggestion successfully submitted.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return HttpResponse(status=200)
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                return HttpResponse(str(company.get_errors()), status=400)
+        try:
 
-        else:
-            return HttpResponse(str(rq.get_errors()), status=400)
+            with transaction.atomic():
+                if company.new_suggestion(request.POST.copy()):
+                    m = 'Suggestion successfully submitted.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return HttpResponse(status=200)
+                else:
+                    raise IntegrityError
+
+        except IntegrityError:
+            return HttpResponse(company.get_error_message(), status=400)
 
     raise Http404
 
@@ -202,7 +187,7 @@ def company_not_new(request):
         if company.not_new():
             return HttpResponse('good', status=200)
         else:
-            return HttpResponse(str(company.get_errors()), status=400)
+            return HttpResponse(company.get_error_message(), status=400)
 
     raise Http404
 
@@ -223,7 +208,7 @@ def upload_logo(request):
                 else:
                     raise IntegrityError
         except IntegrityError:
-            data = {'is_valid': False, 'error': str(company.get_errors())}
+            data = {'is_valid': False, 'error': company.get_error_message()}
             return JsonResponse(data)
 
     raise Http404
@@ -236,17 +221,19 @@ def delete_logo(request):
         company = CompanyContainer(request.user)
 
         try:
+
             with transaction.atomic():
                 if company.delete_logo():
                     m = 'Logo delete successfully.'
                     MessageCenter.new_message('company', company.get_company(), 'success', m)
                 else:
                     raise IntegrityError
+
         except IntegrityError:
-            m = str(company.get_errors())
+            m = company.get_error_message()
             MessageCenter.new_message('company', company.get_company(), 'danger', m)
 
-        return redirect('company:index')
+        return redirect('company:profile')
 
     raise Http404
 
@@ -256,21 +243,18 @@ def comment_suggestion(request, pk):
 
     if request.method == 'POST':
         company = CompanyContainer(request.user)
-        comment = request.POST.get('suggestion_comment')
-        if comment:
 
-            try:
-                with transaction.atomic():
-                    if company.comment_suggestion(pk, comment):
-                        m = 'Comment successfully added.'
-                        MessageCenter.new_message('company', company.get_company(), 'success', m)
-                        return HttpResponse(status=200)
-                    else:
-                        raise IntegrityError
-            except IntegrityError:
-                return HttpResponse(str(company.get_errors()), status=400)
+        try:
 
-        else:
-            return HttpResponse('Comment field cannot be empty', status=400)
+            with transaction.atomic():
+                if company.comment_suggestion(pk, request.POST.copy()):
+                    m = 'Comment successfully added.'
+                    MessageCenter.new_message('company', company.get_company(), 'success', m)
+                    return HttpResponse(status=200)
+                else:
+                    raise IntegrityError
 
+        except IntegrityError:
+            return HttpResponse(company.get_error_message(), status=400)
 
+    raise Http404

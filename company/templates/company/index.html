@@ -35,30 +35,14 @@
                         <th></th>
                     </tr>
                     {% for x in posts %}
-                        <tr {% if x.notified %}style="background-color: #c2f9ce"
-                            {% elif x.new_apps %}style="background-color: #c9f3fc;"
-                            {% endif %}>
+                        <tr class="{% if x.new_apps %}new-applications{% elif x.notified %}notified{% endif %}">
                             <td class="post-title">{{ x.title }}</td>
-                            <td>{{ x.openings }}</td>
+                            <td>{% if x.openings %}{{ x.openings }}{% else %}N/A{% endif %}</td>
                             <td>{{ x.start_date }}</td>
                             <td>{{ x.deadline }}</td>
                             <td><a href="{% url 'post:applicants' pk=x.id%}">Applicants ({{ x.app_count }})</a></td>
                         </tr>
                     {% endfor %}
-                    <tr class="notified">
-                        <td class="post-title">Notified Post</td>
-                        <td>3</td>
-                        <td>23/06/2012</td>
-                        <td>23/06/2012</td>
-                        <td><a href="#">Applicants (25)</a></td>
-                    </tr>
-                    <tr class="new-applications">
-                        <td class="post-title">New Apps Post</td>
-                        <td>3</td>
-                        <td>23/06/2012</td>
-                        <td>23/06/2012</td>
-                        <td><a href="#">Applicants (10)</a></td>
-                    </tr>
                     <tr>
                         <td colspan="5">
                             <span>Page: </span>
@@ -101,7 +85,7 @@
                         <tr>
                             <td>{{ x.title }}</td>
                             <td>{{ x.start_date }} - {{ x.start_time }}</td>
-                            <td>{{ x.end_date }} - {{ x.end_time }}</td>
+                            <td>{% if x.end_date %}{{ x.end_date }} - {{ x.end_time }}{% else %}N/A{% endif %}</td>
                             <td>{{ x.address }}, {{ x.city }},<br/> {{ x.state }}, {{ x.zipcode }}</td>
                             <td><a href="{% url 'event:details' pk=x.id%}">Details</a></td>
                         </tr>
@@ -157,7 +141,7 @@
 {% endblock %}
 
 {% block hidden_block %}
-    <div class="new-company">true</div>
+    <div class="new-company">{% if company.is_new %}true{% else %}false{% endif %}</div>
 {% endblock %}
 
 

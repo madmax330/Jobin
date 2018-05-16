@@ -38,16 +38,14 @@
 						<th></th>
                     </tr>
                     {% for p in posts %}
-                        <tr {% if p.notified %}style="background-color: #c2f9ce"
-                            {% elif p.new_apps %}style="background-color: #c9f3fc;"
-                            {% endif %}>
+                        <tr class="{% if p.new_apps %}new-applications{% elif p.notified %}notified{% endif %}">
                             <td>
-                                <a href="{% url 'post:company_post' p.pk %}">
+                                <a href="{% url 'post:company_post' p.pk %}" class="post-title">
                                     {{ p.title }}
                                 </a>
                             </td>
                             <td>{% if p.wage %}${{ p.wage }}/{{ p.wage_interval }}{% else %}N/A{% endif %}</td>
-                            <td>{{ p.openings }}</td>
+                            <td>{% if p.openings %}{{ p.openings }}{% else %}N/A{% endif %}</td>
                             <td>{{ p.start_date }}</td>
                             <td>{{ p.deadline }}</td>
                             <td>{{ p.views }}</td>
@@ -101,21 +99,19 @@
                         <th></th>
                     </tr>
                     {% for p in expired_posts %}
-                        <tr {% if p.notified %}style="background-color: #c2f9ce"
-                            {% elif p.new_apps %}style="background-color: #c9f3fc;"
-                            {% endif %}>
+                        <tr  class="{% if p.new_apps %}new-applications{% elif p.notified %}notified{% endif %}">
                             <td>
-                                <a href="{% url 'post:company_post' p.pk %}">
+                                <a href="{% url 'post:company_post' p.pk %}" class="post-title">
                                     {{ p.title }}
                                 </a>
                             </td>
                             <td>
-                                {{ p.wage }}{% if not p.wage_interval == 'single' %}/{{ p.wage_interval }}{% endif %}
+                                {% if p.wage %}{{ p.wage }}{% if not p.wage_interval == 'single' %}/{{ p.wage_interval }}{% endif %}{% endif %}
                             </td>
-                            <td>{{ p.openings }}</td>
+                            <td>{% if p.openings %}{{ p.openings }}{% else %}N/A{% endif %}</td>
                             <td>{{ p.start_date }}</td>
                             <td>{{ p.deadline }}</td>
-                            <td><a href="{% url 'post:recover' p.pk %}">Reactivate</a></td>
+                            <td><a href="{% url 'post:applicants' pk=p.pk %}">Applicants</a> | <a href="{% url 'post:recover' p.pk %}">Reactivate</a></td>
                         </tr>
                     {% endfor %}
                     <tr>

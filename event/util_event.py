@@ -35,12 +35,9 @@ class StudentEventContainer(BaseContainer):
             self._form.save()
             event.times_saved += 1
             event.save()
-            m = 'Event ' + event.title + ' successfully added to saved events.'
-            if self.new_message(True, self.__student, m, 0):
-                return True
-            else:
-                return False
+            return True
         else:
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -90,7 +87,7 @@ class StudentEventContainer(BaseContainer):
         return []
 
     def already_saved(self):
-        return SavedEvent.objects.filter(event=self.__event, student=self.__student).count() > 0
+        return SavedEvent.objects.filter(event=self.__event, student=self.__student, active=True).count() > 0
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
 
@@ -119,22 +116,8 @@ class CompanyEventContainer(BaseContainer):
 
     #  DATA CREATION FUNCTIONS (SETTERS)
 
-    def new_event(self, event_info):
-        info = {
-            'company': self.__company.id,
-            'title': event_info['title'],
-            'start_date': event_info['start_date'],
-            'start_time': event_info['start_time'],
-            'end_date': event_info['end_date'],
-            'end_time': event_info['end_time'],
-            'website': event_info['website'],
-            'address': event_info['address'],
-            'city': event_info['city'],
-            'state': event_info['state'],
-            'zipcode': event_info['zipcode'],
-            'country': event_info['country'],
-            'description': event_info['description'],
-        }
+    def new_event(self, info):
+        info['company'] = self.__company.id
         self._form = EventForm(info)
         if self._form.is_valid():
             self.__event = self._form.save()
@@ -148,22 +131,8 @@ class CompanyEventContainer(BaseContainer):
             self.add_form_errors()
             return False
 
-    def edit_event(self, event_info):
-        info = {
-            'company': self.__company.id,
-            'title': event_info['title'],
-            'start_date': event_info['start_date'],
-            'start_time': event_info['start_time'],
-            'end_date': event_info['end_date'],
-            'end_time': event_info['end_time'],
-            'website': event_info['website'],
-            'address': event_info['address'],
-            'city': event_info['city'],
-            'state': event_info['state'],
-            'zipcode': event_info['zipcode'],
-            'country': event_info['country'],
-            'description': event_info['description'],
-        }
+    def edit_event(self, info):
+        info['company'] = self.__company.id
         self._form = EventForm(info, instance=self.__event)
         if self._form.is_valid():
             self.__event = self._form.save()
@@ -180,28 +149,20 @@ class CompanyEventContainer(BaseContainer):
     def close_event(self):
         self.__event.active = False
         self.__event.save()
-        m = 'Event "' + self.__event.title + '" closed on ' + str(timezone.now().date()) + '.'
+        temp = self.get_saved_events()
+        m = 'Event "' + self.__event.title + '" cancelled on ' + str(timezone.now().date()) + '.'
         if self.new_message(False, self.__company, m, 2) and self.new_notification(False, self.__company, m, 100):
+            for x in temp:
+                if not (self.new_message(True, x.student, m, 2)):
+                    return False
+                x.active = False
+                x.save()
             return True
         else:
             return False
 
-    def recover_event(self, event_info):
-        info = {
-            'company': self.__company.id,
-            'title': event_info['title'],
-            'start_date': event_info['start_date'],
-            'start_time': event_info['start_time'],
-            'end_date': event_info['end_date'],
-            'end_time': event_info['end_time'],
-            'website': event_info['website'],
-            'address': event_info['address'],
-            'city': event_info['city'],
-            'state': event_info['state'],
-            'zipcode': event_info['zipcode'],
-            'country': event_info['country'],
-            'description': event_info['description'],
-        }
+    def recover_event(self, info):
+        info['company'] = self.__company.id
         self._form = EventForm(info, instance=self.__event)
         if self._form.is_valid():
             self.__event = self._form.save(commit=False)
@@ -211,8 +172,12 @@ class CompanyEventContainer(BaseContainer):
             if self.new_message(False, self.__company, m, 0):
                 return True
             else:
+                print('no message')
                 return False
         else:
+            print('form invalid')
+            print(str(self._form.errors))
+            self.save_form()
             self.add_form_errors()
             return False
 
@@ -255,6 +220,9 @@ class CompanyEventContainer(BaseContainer):
         else:
             self.add_error('No expired events found.')
             return []
+
+    def get_saved_events(self):
+        return list(SavedEvent.objects.filter(event=self.__event))
 
     #  DATA MODIFY FUNCTIONS (UPDATERS)
 

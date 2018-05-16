@@ -5,6 +5,7 @@
     <title>{% block title %}Jobin Home{% endblock %}</title>
     {% load staticfiles %}
     <!-- Slider Revolution CSS Files -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'home/images/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'home/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'home/fonts/font-awesome/css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'home/css/index.css' %}">
@@ -30,7 +31,7 @@
 
     </script>
     <!-- Core jQuery Script -->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
 
     <!-- Slider Revolution core JavaScript files -->
     <script type="text/javascript" src="{% static 'home/revolution/js/jquery.themepunch.tools.min.js' %}"></script>
@@ -55,8 +56,36 @@
             src="{% static 'home/revolution/js/extensions/revolution.extension.slideanims.min.js' %}"></script>
     <script type="text/javascript"
             src="{% static 'home/revolution/js/extensions/revolution.extension.video.min.js' %}"></script>
-    <script src="{% static 'home/scripts/browser_scripts.js' %}"></script>
-    {% block scripts %}{% endblock %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function onContactSubmit(token) {
+            document.getElementById("contact-form").submit();
+        }
+
+        function onStudentRegister(token) {
+            document.getElementById("student-registration-form").submit();
+        }
+
+        function onCompanyRegister(token) {
+            document.getElementById("company-registration-form").submit();
+        }
+
+        function onStudentLogin(token) {
+            document.getElementById("student-login-form").submit();
+        }
+
+        function onCompanyLogin(token) {
+            document.getElementById("company-login-form").submit();
+        }
+
+        function onStudentNewPass(token) {
+            document.getElementById("student-new-password-form").submit();
+        }
+
+        function onCompanyNewPass(token) {
+            document.getElementById("company-new-password-form").submit();
+        }
+    </script>
 </head>
 <body style="margin:0;">
 
@@ -138,7 +167,8 @@
                      data-height="['auto']">
 
                     <!-- SECOND SLIDE CONTENT -->
-                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Actuarial Analyst</span></h1>
+                    <h1 class="job-title">Find a job today as an <span class="slider-job-title">Actuarial Analyst</span>
+                    </h1>
 
                 </div>
 
@@ -164,7 +194,8 @@
                      data-height="['auto']">
 
                     <!-- SECOND SLIDE CONTENT -->
-                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Investment Banker</span></h1>
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Investment Banker</span>
+                    </h1>
 
                 </div>
 
@@ -190,13 +221,14 @@
                      data-height="['auto']">
 
                     <!-- SECOND SLIDE CONTENT -->
-                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Research Assistant</span></h1>
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Research Assistant</span>
+                    </h1>
 
                 </div>
 
             </li>
-			
-			<li data-transition="slideleft">
+
+            <li data-transition="slideleft">
 
                 <img src="{% static 'home/images/financialanalyst.jpg' %}" alt="City Two" class="rev-slidebg">
 
@@ -216,7 +248,8 @@
                      data-height="['auto']">
 
                     <!-- SECOND SLIDE CONTENT -->
-                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Financial Analyst</span></h1>
+                    <h1 class="job-title">Find a job today as a <span class="slider-job-title">Financial Analyst</span>
+                    </h1>
 
                 </div>
 
@@ -230,102 +263,147 @@
 
             <!-- LOGIN/REGISTER FORMS -->
             <div id="company-login" class="animated-block fadeIn hidden">
-                <span class="close-block" onclick="close_login('company')">&times;</span>
+                <span class="close-block" onclick="close_block('company-login')">&times;</span>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-6">
                         <h3 class="text-center">COMPANY REGISTER</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The passwords do not match.</p>
+                        <form id="company-registration-form" action="{% url 'home:register_company' %}" method="post" class="registration-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email"
+                                       value="{{ company_register_email }}" required>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Company Name" name="name">
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password" name="password">
+                                <input type="password" class="form-control" placeholder="Password" name="password" required>
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Confirm Password"
-                                       name="confirm_password">
+                                       name="confirm_password" required>
+                            </div>
+                            <div class="form-group checkbox  register-terms">
+                                <label>
+                                    <input type="checkbox" class="terms-and-policy" style="height: auto">
+                                    I agree to the
+                                    <a href="{% url 'home:terms' %}" target="_blank">Terms and Conditions</a> and
+                                    <a href="{% url 'home:policy' %}" target="_blank">Privacy Policy</a>
+                                </label>
                             </div>
                             <div>
-                                <button class="btn btn-default login-btn">REGISTER</button>
+                                <button class="g-recaptcha btn btn-default login-btn" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
+                                    data-callback='onCompanyRegister' type="submit">REGISTER</button>
                             </div>
                         </form>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-6">
                         <h3 class="text-center">COMPANY LOGIN</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The username or password is incorrect.</p>
+                        <form id="company-login-form" action="{% url 'home:company_login' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email"
+                                       value="{{ company_email }}" required>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password" name="password">
+                                <input type="password" class="form-control" placeholder="Password" name="password" required>
                             </div>
                             <div>
-                                <button class="btn btn-default login-btn">LOG IN</button>
+                                <button class="g-recaptcha btn btn-default login-btn" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
+                                    data-callback='onCompanyLogin' type="submit">LOG IN</button>
                             </div>
-							<a href="#">Forgot password?</a>
+                            <a href="#" onclick="close_block('company-login');open_block('company-forgot-password')">Forgot
+                                password?</a>
                         </form>
                     </div>
                 </div>
             </div>
             <div id="student-login" class="animated-block fadeIn hidden">
-                <span class="close-block" onclick="close_login('student')">&times;</span>
+                <span class="close-block" onclick="close_block('student-login')">&times;</span>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-6">
                         <h3 class="text-center">STUDENT REGISTER</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The passwords do not match.</p>
+                        <form id="student-registration-form" action="{% url 'home:register_student' %}" method="post" class="registration-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email"
+                                       value="{{ student_register_email }}" required>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password" name="password">
+                                <input type="password" class="form-control" placeholder="Password" name="password" required>
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Confirm Password"
-                                       name="confirm_password">
+                                       name="confirm_password" required>
+                            </div>
+                            <div class="form-group checkbox register-terms">
+                                <label>
+                                    <input type="checkbox" class="terms-and-policy" style="height: auto">
+                                    I agree to the
+                                    <a href="{% url 'home:terms' %}" target="_blank">Terms and Conditions</a> and
+                                    <a href="{% url 'home:policy' %}" target="_blank">Privacy Policy</a>
+                                </label>
                             </div>
                             <div>
-                                <button class="btn btn-default login-btn">REGISTER</button>
+                                <button class="g-recaptcha btn btn-default login-btn" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
+                                    data-callback='onStudentRegister' type="submit">REGISTER</button>
                             </div>
                         </form>
-                        <div class="social-media-login">
-                            <span>Or register using:</span>
-                            <div class="social-media-icons">
-                                <div class="social-icon"><i class="fa fa-facebook"></i></div>
-                                <div class="social-icon"><i class="fa fa-google-plus"></i></div>
-                                <div class="social-icon"><i class="fa fa-linkedin"></i></div>
-                            </div>
-                        </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-12 col-md-6">
                         <h3 class="text-center">STUDENT LOGIN</h3>
-                        <form>
-                            <div class="login-error">
-                                <p>The username or password is incorrect.</p>
+                        <form id="student-login-form" action="{% url 'home:student_login' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Email" name="email"
+                                       value="{{ student_email }}" required>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password" name="password">
+                                <input type="password" class="form-control" placeholder="Password" name="password" required>
                             </div>
                             <div>
-                                <button class="btn btn-default login-btn">LOG IN</button>
+                                <button class="g-recaptcha btn btn-default login-btn" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
+                                    data-callback='onStudentLogin' type="submit">LOG IN</button>
                             </div>
-                            <a href="#">Forgot password?</a>
+                            <a href="#" onclick="close_block('student-login');open_block('student-forgot-password')">Forgot
+                                password?</a>
                         </form>
                     </div>
+                </div>
+            </div>
+            <div id="student-forgot-password" class="animated-block fadeIn hidden">
+                <span class="close-block" onclick="close_block('student-forgot-password')">&times;</span>
+                <div>
+                    <h3>Forgot your password?</h3>
+                    {% if error %}
+                        <div class="login-error">
+                            <p>{{ error }}</p>
+                        </div>
+                    {% endif %}
+                    <form id="student-new-password-form" action="{% url 'home:new_password' ut='student' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Email Address" name="email" required>
+                        </div>
+                        <button class="g-recaptcha btn btn-default" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
+                                    data-callback='onStudentNewPass' type="submit">GET NEW PASSWORD</button>
+                    </form>
+                </div>
+            </div>
+            <div id="company-forgot-password" class="animated-block fadeIn hidden">
+                <span class="close-block" onclick="close_block('company-forgot-password')">&times;</span>
+                <div>
+                    <h3>Forgot your password?</h3>
+                    {% if error %}
+                        <div class="login-error">
+                            <p>{{ error }}</p>
+                        </div>
+                    {% endif %}
+                    <form id="company-new-password-form" action="{% url 'home:new_password' ut='company' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Email Address" name="email" required>
+                        </div>
+                        <button class="g-recaptcha btn btn-default" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
+                                    data-callback='onCompanyNewPass' type="submit">GET NEW PASSWORD</button>
+                    </form>
                 </div>
             </div>
 
@@ -351,7 +429,7 @@
                  data-paddingleft="[0,0,0,0]">
 
                 <!-- JOBIN LOGO LAYER CONTENT -->
-                <img src="{% static 'home/images/jobinbluesmall.gif' %}" alt="App Store" width="400" height="215">
+                <img src="{% static 'home/images/jobinbluesmall.png' %}" alt="App Store" width="400" height="215">
             </div>
 
             <div class="tp-static-layer tp-caption tp-resizeme"
@@ -389,25 +467,28 @@
                  data-x="center"
                  data-y="center"
                  data-hoffset="0"
-                 data-voffset="0"
+                 data-voffset="25"
                  data-width="['auto']"
                  data-height="['auto']">
 
                 <!-- REST OF CENTER LAYER CONTENT -->
                 <div class="row center-row">
                     <div class="col-sm-6">
-                        <button class="btn btn-danger right" onclick="open_login('student')">STUDENT LOGIN/REGISTER
+                        <button class="btn btn-danger right" onclick="open_block('student-login')">STUDENT
+                            LOGIN/REGISTER
                         </button>
                     </div>
                     <div class="col-sm-6">
-                        <button class="btn btn-primary" onclick="open_login('company')">COMPANY LOGIN/REGISTER</button>
+                        <button class="btn btn-primary left" style="float:left;" onclick="open_block('company-login')">
+                            COMPANY LOGIN/REGISTER
+                        </button>
                     </div>
                 </div>
+                <h4 class="home-static-text" style="margin:0; padding-top: 10px;">
+                    At Jobin, we bring the jobs to you! Our mission is to make it easier for you to find a job.
+                    Start applying now!
+                </h4>
 
-                <p class="text-center">
-                    At Jobin, we bring the jobs to you! We give you access to the many jobs that are
-                    posted and all you have to do is decide whether you want to apply or not.
-                </p>
 
             </div>
 
@@ -426,7 +507,7 @@
                  data-height="['auto']">
 
                 <!-- BOTTOM LAYER CONTENT -->
-                <h5 class="text-center">
+                <h5 class="text-center" style="cursor: pointer;" onclick="scroll_to('post-slider-content');">
                     LEARN MORE <span class="glyphicon glyphicon-triangle-bottom"></span>
                 </h5>
 
@@ -507,9 +588,9 @@
                     </div>
                     <p>
                         As the Jobin platform expands, support for more and more schools will be added in order
-                        to give every student the Jobin experience.
-                        As schools are added, any student pre-registered for that school will be notified that the
-                        service has been opened for his/her establishment.
+                        to give every student access to the Jobin experience.
+                        As schools are added, students will be able to verify their accounts by providing their school
+                        email address.
                     </p>
                 </div>
                 <div class="col-sm-4">
@@ -519,18 +600,15 @@
                     <p>
                         The Jobin Team is working hard to translate the Jobin platform into your language so that it
                         can be used world-wide and in order to give every student the Jobin experience. Stay tuned for
-                        more updates by subscribing to our newsletter.
+                        more by following us on social media.
                     </p>
                 </div>
             </div>
         </div>
         <div class="video-row">
-            <img src="{% static 'home/images/videopic.png' %}">
-            <!--
-            <video style="width:100%; height:auto; display:block!important;" controls controlsList="nodownload" class="hidden" id="intro-video">
-                <source src="{% static 'home/promovid.mp4' %}" type="video/mp4">
-                Video cannot be viewed.
-            </video>-->
+            <iframe style="margin: 25px auto; display: block;" width="560" height="315"
+                    src="https://www.youtube.com/embed/VIFT9Osh9gw?rel=0" frameborder="0" allow="autoplay; encrypted-media"
+                    allowfullscreen></iframe>
         </div>
 
         <div class="jobin-students-row">
@@ -600,13 +678,13 @@
                         <h2>So what do we do?</h2>
 
                         <p>
-                            We give you access to a centralized platform where students can go to find a job easily and
-                            rapidly
+                            We give you access to a centralized platform where students find a job easily
                             and employers can hire great individuals conveniently.
                         </p>
 
                         <div>
-                            <button class="btn btn-danger">SIGN UP NOW</button>
+                            <button class="btn btn-danger" onclick="scroll_to('fullscreen-container')">SIGN UP NOW
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -651,7 +729,7 @@
                             By providing a simple to use platform that efficiently improves the job recruitment process.
                             We provide features like:
                             <br/><br/>
-                            - A free service with standardized resumes<br/>
+                            - Standardized resumes<br/>
                             - Application management tools<br/>
                             - Option to download a pdf version of standardized resumes<br/>
                             - Filter applications based on certain criteria<br/>
@@ -664,8 +742,71 @@
                 </div>
             </div>
 
+            <div class="title-row">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 about-title-col">
+                        <h1 class="text-center">About Us</h1>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="text-center">
+                            At Jobin, our mission is to help people find jobs in a way that reflects the fast paced
+                            society that we live in. We believe in changing the future of hiring.
+                            Being university students, we were frustrated with how hard it was to apply for a job.
+                            We did not understand why it was such a painful experience. We came to the conclusion
+                            that it shouldn’t be. That’s how Jobin was born.<br/>
+                            The founders of Jobin believe in simplicity and efficiency, this platform
+                            represents just that!
+                            We hope you enjoy using this platform just as much as we enjoyed bringing
+                            it to life for you.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+    </div>
+    <div class="contact-section">
+        <div class="title-row">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <h1 class="text-center" style="padding-bottom: 15px;">Contact Us</h1>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="row">
+                <div class="col-sm-1 col-md-3"></div>
+                <div class="col-sm-10 col-md-6 contact-form">
+                    <form id="contact-form" class="form" method="post" action="{% url 'home:send_contact_message' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="name" placeholder="Name ... " required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" name="email" placeholder="Email ... " required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" rows="6" class="form-control" placeholder="Message ... " required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="g-recaptcha btn btn-default" data-sitekey="6Lf30U4UAAAAAOSqGzLcEByhfrs07x1utNsMQy0n"
+                                    data-callback='onContactSubmit' type="submit">SEND MESSAGE</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-1 col-md-3"></div>
+            </div>
+        </div>
     </div>
 
     <footer class="page-footer">
@@ -673,11 +814,8 @@
             <img src="{% static 'home/images/jobinbluesmall.gif' %}" class="page-footer-img">
         </div>
         <p class="text-center">
-            <span><a href="#">about us</a></span> |
-            <span><a href="#">terms and conditions</a></span> |
-            <span><a href="#">privacy policy</a></span> |
-            <span><a href="#">investor information</a></span> |
-            <span><a href="#">contact us</a></span>
+            <span><a href="{% url 'home:terms' %}">terms and conditions</a></span> |
+            <span><a href="{% url 'home:policy' %}">privacy policy</a></span>
         </p>
         <p class="text-center">
             2016-2018 &copy; Jobin Solutions Inc. | All Rights Reserved
@@ -688,24 +826,79 @@
 
 <script type="text/javascript">
 
-    function open_login(val) {
-        let block = $('#' + val + '-login');
+    function open_block(val) {
+        let block = $('#' + val);
         if (block.hasClass('hidden'))
             block.removeClass('hidden');
     }
 
-    function close_login(val) {
-        let block = $('#' + val + '-login');
+    function close_block(val) {
+        let block = $('#' + val);
         if (!block.hasClass('hidden'))
             block.addClass('hidden');
     }
 
+    function scroll_to(name) {
+
+        $('html, body').animate({
+            scrollTop: $("." + name).offset().top
+        }, 500);
+    }
+
+    function show_messages() {
+        setTimeout(
+            function () {
+                $('.jobin-message').each(function () {
+                    let msg = $(this).text().trim();
+                    if (msg)
+                        new_notification({
+                            code: $(this).data('code'),
+                            message: msg
+                        });
+                });
+            }, 1000);
+    }
 </script>
 
+<script src="{% static 'home/scripts/browser_scripts.js' %}"></script>
+<script src="{% static 'home/scripts/bootstrap-notify.js' %}"></script>
+<script src="{% static 'home/scripts/notify.js' %}"></script>
+
 <div class="hidden">
+    <div id="active-panel">{{ panel }}</div>
+    <div>
+        {% for x in messages %}
+            <div class="jobin-message" data-code="{{ x.code }}">{{ x.message | linebreaksbr }}</div>
+        {% endfor %}
+    </div>
     <script>
         $(function () {
             browser_alert();
+            show_messages();
+
+            let panel = $('#active-panel').html();
+            if (panel) {
+                panel = panel.toString().trim();
+                if (panel === 'student')
+                    open_block('student-login');
+                if (panel === 'company')
+                    open_block('company-login');
+            }
+
+            $('.registration-form').submit(function () {
+                let check = $(this).find('.terms-and-policy');
+                if (!check.prop('checked')) {
+                    new_notification({
+                        code: 'danger',
+                        message: 'You must agree to the Terms and Conditions and Privacy Policy to register.'
+                    });
+                    return false
+                }
+                else {
+                    return true;
+                }
+            });
+
         });
     </script>
 </div>

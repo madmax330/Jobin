@@ -8,6 +8,10 @@ from .util_activation import ActivationUtil
 from .models import JobinSchool, JobinBlockedEmail, JobinRequestedEmail
 from .forms import NewUserForm, ChangeEmailForm, ChangePasswordForm
 
+from website.settings import TIME_ZONE
+import datetime, pytz
+from django.utils import timezone
+
 
 class UserUtil(BaseContainer):
 
@@ -21,23 +25,21 @@ class UserUtil(BaseContainer):
     #
 
     def log_user_in(self, request, info):
+        u = self.get_user(email=info['email'])
+        if not u:
+            self.add_error('Invalid login credentials.')
+            return 0
         self.__user = authenticate(username=info['email'], password=info['password'])
         if self.__user is not None:
-            if self.__user.is_active:
-                login(request, self.__user)
-                return 1
-            else:
-                login(request, self.__user)
-                self.add_error('User not active.')
-                return -1
+            if self.check_student_verification():
+                if self.__user.is_active:
+                    login(request, self.__user)
+                    return 1
+            self.add_error('User account email not verified.')
+            return -1
         else:
-            try:
-                u = User.objects.get(email=info['email'])
-                if u.check_password(info['password']):
-                    return -1
-            except ObjectDoesNotExist:
-                self.add_error('Invalid login credentials.')
-                return 0
+            if u.check_password(info['password']):
+                return -1
             self.add_error('Invalid login credentials.')
             return 0
 
@@ -53,24 +55,47 @@ class UserUtil(BaseContainer):
     #
 
     def new_user(self, info, student):
+        if not info['password'] == info['confirm_password']:
+            self.add_error('Passwords do not match.')
+            return False
+        if student:
+            flag = self.__new_student_user(info)
+        else:
+            flag = self.__new_company_user(info)
+        if flag:
+            activation = ActivationUtil(self.__user)
+            if activation.send_activation_email(student):
+                return True
+            self.add_error_list(activation.get_errors())
+            return False
+        return False
+
+    def __new_student_user(self, info):
+        if self.__create_user(info, True):
+            g = Group.objects.get(name='student_user')
+            g.user_set.add(self.__user)
+            g = Group.objects.get(name='student_email_not_verified')
+            g.user_set.add(self.__user)
+            return True
+        else:
+            return False
+
+    def __new_company_user(self, info):
+        if self.__create_user(info, False):
+            g = Group.objects.get(name='company_user')
+            g.user_set.add(self.__user)
+            return True
+        else:
+            return False
+
+    def __create_user(self, info, active):
         self._form = NewUserForm(info)
         if self._form.is_valid():
             self.__user = self._form.save(commit=False)
+            self.__user.is_active = active
             self.__user.set_password(self._form.cleaned_data['password'])
             self.__user.save()
-
-            if student:
-                g = Group.objects.get(name='student_user')
-                g.user_set.add(self.__user)
-            else:
-                g = Group.objects.get(name='company_user')
-                g.user_set.add(self.__user)
-            activation = ActivationUtil(self.__user)
-            if activation.send_activation_email():
-                return True
-            else:
-                self.add_error_list(activation.get_errors())
-                return False
+            return True
         else:
             self.add_form_errors()
             return False
@@ -79,10 +104,17 @@ class UserUtil(BaseContainer):
         self._form = ChangeEmailForm({'username': info['email'], 'email': info['email']}, instance=self.__user)
         if self._form.is_valid():
             if student:
-                self.__user = self._form.save(commit=False)
-                self.__user.is_active = False
-                self.__user.save()
-                return True
+                student.email = info['email']
+                student.save()
+                self.__user = self._form.save()
+                group = Group.objects.get(name='student_email_not_verified')
+                group.user_set.add(self.__user)
+                activation = ActivationUtil(self.__user)
+                if activation.send_activation_email(True):
+                    return True
+                else:
+                    self.add_error_list(activation.get_errors())
+                    return False
             elif company:
                 company.email = info['email']
                 company.save()
@@ -90,7 +122,7 @@ class UserUtil(BaseContainer):
                 self.__user.is_active = False
                 self.__user.save()
                 activation = ActivationUtil(self.__user)
-                if activation.send_activation_email():
+                if activation.send_activation_email(False):
                     return True
                 else:
                     self.add_error_list(activation.get_errors())
@@ -117,7 +149,14 @@ class UserUtil(BaseContainer):
     #   USER GETTER FUNCTIONS
     #
 
-    def get_user(self):
+    def get_user(self, email=None):
+        if email:
+            try:
+                self.__user = User.objects.get(email=email)
+                return self.__user
+            except ObjectDoesNotExist:
+                self.add_error('User not found.')
+                return None
         return self.__user
 
     def get_user_type(self):
@@ -129,48 +168,70 @@ class UserUtil(BaseContainer):
             self.add_error('No user type found.')
             return ''
 
+    def check_student_verification(self):
+
+        zone = pytz.timezone(TIME_ZONE)
+        d = datetime.datetime.strftime(
+            self.__user.date_joined + datetime.timedelta(days=7),
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        if zone.localize(datetime.datetime.strptime(d, "%Y-%m-%d %H:%M:%S")) < timezone.now() and \
+                self.__user.groups.filter(name='student_email_not_verified').exists():
+            return False
+        return True
+
     #
     #   USER CHANGE FUNCTIONS
     #
 
-    def activate_user(self, key):
+    def activate_company(self, key):
         activation = ActivationUtil(self.__user)
-        if activation.activate_user(key):
+        if activation.activate_company(key):
+            return True
+        self.add_error_list(activation.get_errors())
+        return False
+
+    def activate_student(self, key):
+        activation = ActivationUtil(self.__user)
+        if activation.activate_student(key):
             return True
         self.add_error_list(activation.get_errors())
         return False
 
     def new_activation_key(self, info):
-        try:
-            self.__user = User.objects.get(email=info['email'])
-        except ObjectDoesNotExist:
-            self.add_error('Invalid email.')
-            return False
-        if self.__user.is_active:
-            self.add_error('User already activated.')
-            return False
-        else:
+        if self.get_user(email=info['email']):
+            temp = self.get_user_type()
+            if temp == 'student':
+                if not self.__user.groups.filter(name='student_email_not_verified').exists():
+                    self.add_error('User already activated.')
+                    return False
+            elif temp == 'company':
+                if self.__user.is_active:
+                    self.add_error('User already activated.')
+            if not temp:
+                self.add_error('User not found.')
+                return False
+
             activation = ActivationUtil(self.__user)
             activation.clear_codes()
-            if activation.send_activation_email():
+            if activation.send_activation_email(temp == 'student'):
+                return True
+            self.add_error_list(activation.get_errors())
+        return False
+
+    def new_password(self, mail):
+        if self.get_user(email=mail):
+            activation = ActivationUtil(self.__user)
+            password = activation.get_password()
+            self.__user.set_password(password)
+            self.__user.save()
+            if activation.send_new_password(password):
                 return True
             self.add_error_list(activation.get_errors())
             return False
-
-    def new_password(self, mail):
-        try:
-            self.__user = User.objects.get(email=mail)
-        except ObjectDoesNotExist:
-            self.add_error('Invalid email.')
+        else:
             return False
-        activation = ActivationUtil(self.__user)
-        password = activation.get_password()
-        self.__user.set_password(password)
-        self.__user.save()
-        if activation.send_new_password(password):
-            return True
-        self.add_error_list(activation.get_errors())
-        return False
 
 
 

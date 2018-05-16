@@ -10,6 +10,17 @@
 
 let slideIndex = 1;
 
+document.onkeydown = function(e) {
+    switch (e.keyCode) {
+        case 37:
+            plusDivs(1);
+            break;
+        case 39:
+            plusDivs(-1);
+            break;
+    }
+};
+
 function plusDivs(n) {
     increment_post_count($('.viewed-post').find('.increment-url').html().toString().trim());
     showDivs(slideIndex += n);
@@ -59,6 +70,18 @@ $(function () {
     });
 
     $('.apply').click(function () {
+        if(check_cookie('apply'))
+            apply($(this).data('url'), $('.viewed-post'));
+        else{
+            $('#apply-warning').data('url', $(this).data('url'));
+            $('.post-warning-name').html($('.viewed-post').find('.display-post-title').html().toString().trim());
+            open_modal('apply-modal');
+        }
+    });
+
+    $('#apply-warning').click(function () {
+        if($('#apply-warning-check').is(':checked'))
+            set_cookie('apply', 'no warning', 365);
         apply($(this).data('url'), $('.viewed-post'));
     });
 
@@ -77,6 +100,9 @@ $(function () {
 
 
 function apply(url, post) {
+
+    close_modal('apply-modal');
+    $('.post-warning-name').html('');
 
     $.get(url, function(data, status){
 

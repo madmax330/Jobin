@@ -18,7 +18,7 @@
 {% block content %}
     <div class="row">
         <div class="col-sm-12 col-md-3">
-		<div>
+            <div>
                 <button data-url="{% url 'post:applicants' pk=post.id %}"
                         class="btn btn-default btn-block to-multiple-view">
                     Multiple Applicants View
@@ -26,7 +26,7 @@
             </div>
             <div class="panel panel-default secondary-panel">
                 <div class="panel-heading">
-                    <h4 class="text-center">Student</h3>
+                    <h4 class="text-center">Student</h4>
                 </div>
                 <div class="panel-body" style="word-wrap: break-word;">
                     <h2> {{ app.name }}</h2><br/>
@@ -34,7 +34,8 @@
                     <label>Phone:</label><span> {{ app.phone }}</span><br/>
                     <label>Address:</label><span> {{ app.address }}</span><br/>
                     <label>School:</label>{% if app.school %}<span> {{ app.school }}</span>{% else %}
-                    <span class="app-school-not-verified"><i class="fa fa-exclamation-circle"></i> Not Verified</span>{% endif %}<br/>
+                    <span class="app-school-not-verified"><i
+                            class="fa fa-exclamation-circle"></i> Not Verified</span>{% endif %}<br/>
                     <label>Program:</label><span> {{ app.program }}</span><br/>
                     <label>Major:</label><span> {{ app.major }}</span><br/>
                     <label>GPA:</label><span> {{ app.gpa }}</span>
@@ -137,190 +138,190 @@
                         </div>
                     </div>
                 {% endif %}
-                
-            
-                        {% if app.resume.file_resume %}
-                            <h3>File Resume</h3>
-                            <div>
-                                <a href="{{ app.resume.file_resume.url }}" target="_blank">Click Here</a> to
-                                view the file resume uploaded by {{ app.name }}.
-                            </div>
-                        {% endif %}
-                        {% if app.resume.experience %}
-                        <div class="panel panel-default primary-panel">
-                            <div class="panel-heading">
-                                <h4>Experience</h4>
-                            </div>
-                            <div class="panel-body">
-                                {% for x in app.resume.experience %}
+                {% if app.transcript %}
+                    <h3>Student Transcript</h3>
+                    <div>
+                        <a href="{{ app.transcript.url }}" target="_blank">Click Here</a> to
+                        view {{ app.name }}'s transcript.
+                    </div>
+                {% endif %}
+                {% if app.resume.experience %}
+                    <div class="panel panel-default primary-panel">
+                        <div class="panel-heading">
+                            <h4>Experience</h4>
+                        </div>
+                        <div class="panel-body">
+                            {% for x in app.resume.experience %}
+                                <div>
                                     <div>
-                                        <div>
-                                            <label>Title:</label>
-                                            <span class="label-information capital">{{ x.title }}</span>
-                                            <br/>
-                                            <label>Duration:</label>
-                                            <span class="label-information">
+                                        <label>Title:</label>
+                                        <span class="label-information capital">{{ x.title }}</span>
+                                        <br/>
+                                        <label>Duration:</label>
+                                        <span class="label-information">
                                         {{ x.start }} to {% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}
                                     </span>
-                                            <br/>
-                                            <label>Type:</label>
-                                            <span class="label-information capital">{{ x.experience_type }}</span>
-                                        </div>
-                                        <label>Description:</label>
-                                        <p>{{ x.description | linebreaksbr }}</p>
-                                        <hr/>
+                                        <br/>
+                                        <label>Type:</label>
+                                        <span class="label-information capital">{{ x.experience_type }}</span>
                                     </div>
-                                {% endfor %}
-                            </div>
+                                    <label>Description:</label>
+                                    <p>{{ x.description | linebreaksbr }}</p>
+                                    <hr/>
+                                </div>
+                            {% endfor %}
                         </div>
-                        {% endif %}
-                        {% if app.resume.schools %}
-                        <div class="panel panel-default primary-panel">
-                            <div class="panel-heading">
-                                <h4>Education:</h4>
-                            </div>
-                            <div class="panel-body">
-                                <table class="table">
+                    </div>
+                {% endif %}
+                {% if app.resume.schools %}
+                    <div class="panel panel-default primary-panel">
+                        <div class="panel-heading">
+                            <h4>Education:</h4>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <th>School Name</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Level</th>
+                                    <th>Program</th>
+                                </tr>
+                                {% for x in app.resume.schools %}
                                     <tr>
-                                        <th>School Name</th>
-                                        <th>Start</th>
-                                        <th>End</th>
-                                        <th>Level</th>
-                                        <th>Program</th>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td>{{ x.start }}</td>
+                                        <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
+                                        <td class="capital">{{ x.level }}</td>
+                                        <td class="capital">{% if x.program %}{{ x.program }}{% else %}N/A{% endif %}</td>
                                     </tr>
-                                    {% for x in app.resume.schools %}
-                                        <tr>
-                                            <td class="capital">{{ x.name }}</td>
-                                            <td>{{ x.start }}</td>
-                                            <td>{% if x.is_current %}Current{% else %}{{ x.end }}{% endif %}</td>
-                                            <td class="capital">{{ x.level }}</td>
-                                            <td class="capital">{{ x.program }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
+                                {% endfor %}
+                            </table>
                         </div>
-                        {% endif %}
-                        {% if app.resume.awards %}
-                        <div class="panel panel-default primary-panel">
-                            <div class="panel-heading">
-                                <h4>Awards:</h4>
-                            </div>
-                            <div class="panel-body">
-                                {% for x in app.resume.awards %}
+                    </div>
+                {% endif %}
+                {% if app.resume.awards %}
+                    <div class="panel panel-default primary-panel">
+                        <div class="panel-heading">
+                            <h4>Awards:</h4>
+                        </div>
+                        <div class="panel-body">
+                            {% for x in app.resume.awards %}
+                                <div>
                                     <div>
-                                        <div>
-                                            <label>Title:</label><span
-                                                class="label-information capital"> {{ x.title }}</span><br/>
-                                            <label>Date Received:</label><span
-                                                class="label-information"> {{ x.date }}</span><br/>
-                                            <label>Type:</label><span
-                                                class="label-information capital"> {{ x.award_type }}</span>
-                                        </div>
-                                        <label>Description:</label>
-                                        <p>{{ x.description | linebreaksbr }}</p>
-                                        <hr/>
+                                        <label>Title:</label><span
+                                            class="label-information capital"> {{ x.title }}</span><br/>
+                                        <label>Date Received:</label><span
+                                            class="label-information"> {{ x.date }}</span><br/>
+                                        <label>Type:</label><span
+                                            class="label-information capital"> {{ x.award_type }}</span>
                                     </div>
+                                    <label>Description:</label>
+                                    <p>{{ x.description | linebreaksbr }}</p>
+                                    <hr/>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if app.resume.languages %}
+                    <div class="panel panel-default primary-panel">
+                        <div class="panel-heading">
+                            <h4>Languages:</h4>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <th>Language</th>
+                                    <th>Proficiency</th>
+                                </tr>
+                                {% for x in app.resume.languages %}
+                                    <tr>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td class="capital">{{ x.level }}</td>
+                                    </tr>
                                 {% endfor %}
-                            </div>
+                            </table>
                         </div>
-                        {% endif %}
-                        {% if app.resume.languages %}
-                        <div class="panel panel-default primary-panel">
-                            <div class="panel-heading">
-                                <h4>Languages:</h4>
-                            </div>
-                            <div class="panel-body">
-                                <table class="table">
+                    </div>
+                {% endif %}
+                {% if app.resume.skills %}
+                    <div class="panel panel-default primary-panel">
+                        <div class="panel-heading">
+                            <h4>Skills:</h4>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <th>Skill</th>
+                                    <th>Proficiency</th>
+                                    <th>Description</th>
+                                </tr>
+                                {% for x in app.resume.skills %}
                                     <tr>
-                                        <th>Language</th>
-                                        <th>Proficiency</th>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td class="capital">{{ x.level }}</td>
+                                        <td>{{ x.description }}</td>
                                     </tr>
-                                    {% for x in app.resume.languages %}
-                                        <tr>
-                                            <td class="capital">{{ x.name }}</td>
-                                            <td class="capital">{{ x.level }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
+                                {% endfor %}
+                            </table>
                         </div>
-                        {% endif %}
-                        {% if app.resume.skills %}
-                        <div class="panel panel-default primary-panel">
-                            <div class="panel-heading">
-                                <h4>Skills:</h4>
-                            </div>
-                            <div class="panel-body">
-                                <table class="table">
+                    </div>
+                {% endif %}
+                {% if app.resume.references %}
+                    <div class="panel panel-default primary-panel">
+                        <div class="panel-heading">
+                            <h4>References:</h4>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Affiliation</th>
+                                    <th>Email</th>
+                                </tr>
+                                {% for x in app.resume.references %}
                                     <tr>
-                                        <th>Skill</th>
-                                        <th>Proficiency</th>
+                                        <td class="capital">{{ x.name }}</td>
+                                        <td class="capital">{{ x.affiliation }}</td>
+                                        <td>{{ x.email }}</td>
                                     </tr>
-                                    {% for x in app.resume.skills %}
-                                        <tr>
-                                            <td class="capital">{{ x.name }}</td>
-                                            <td class="capital">{{ x.level }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
+                                {% endfor %}
+                            </table>
                         </div>
-                        {% endif %}
-                        {% if app.resume.references %}
-                        <div class="panel panel-default primary-panel">
-                            <div class="panel-heading">
-                                <h4>References:</h4>
-                            </div>
-                            <div class="panel-body">
-                                <table class="table">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Affiliation</th>
-                                        <th>Email</th>
-                                    </tr>
-                                    {% for x in app.resume.references %}
-                                        <tr>
-                                            <td class="capital">{{ x.name }}</td>
-                                            <td class="capital">{{ x.affiliation }}</td>
-                                            <td>{{ x.email }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
-                        </div>
-                        {% endif %}
-                        <hr/>
-                        <div>
-                            {% if app.saved %}
-                                <button class="btn btn-warning remove-save"
-                                        data-url="{% url 'post:remove_save' pk=app.id %}">
-                                    Remove from saved
-                                </button>
-                            {% else %}
-                                <button class="btn btn-info save-btn" data-url="{% url 'post:save' pk=app.id %}">
-                                    Save Application
-                                </button>
-                            {% endif %}
-                            {% if app.cover_requested %}
-                                <button disabled class="btn btn-default-info">
-                                    Cover already requested
-                                </button>
-                            {% else %}
-                                <button type="button" class="btn btn-info request-cover"
-                                        data-url="{% url 'post:request_cover' pk=app.id %}">
-                                    Request Cover Letter
-                                </button>
-                            {% endif %}
-                            <a href="{% url 'post:app_pdf' ak=app.id %}" class="btn btn-default">
-                                Download PDF Resume
-                            </a>
-                            <button type="button" class="discard-single-applicant btn btn-danger"
-                                    data-name="{{ app.name }}" data-url="{% url 'post:discard' pk=app.id %}">
-                                Discard Applicant
-                            </button>
-                        </div>
-                
+                    </div>
+                {% endif %}
+                <hr/>
+                <div>
+                    {% if app.saved %}
+                        <button class="btn btn-warning remove-save"
+                                data-url="{% url 'post:remove_save' pk=app.id %}">
+                            Remove from saved
+                        </button>
+                    {% else %}
+                        <button class="btn btn-info save-btn" data-url="{% url 'post:save' pk=app.id %}">
+                            Save Application
+                        </button>
+                    {% endif %}
+                    {% if app.cover_requested %}
+                        <button disabled class="btn btn-default-info">
+                            Cover already requested
+                        </button>
+                    {% else %}
+                        <button type="button" class="btn btn-info request-cover"
+                                data-url="{% url 'post:request_cover' pk=app.id %}">
+                            Request Cover Letter
+                        </button>
+                    {% endif %}
+                    <a href="{% url 'post:app_pdf' ak=app.id %}" class="btn btn-default">
+                        Download PDF Resume
+                    </a>
+                    <button type="button" class="discard-single-applicant btn btn-danger"
+                            data-name="{{ app.name }}" data-url="{% url 'post:discard' pk=app.id %}">
+                        Discard Applicant
+                    </button>
+                </div>
+
 
                 <div id="discard-modal" class="modal fade" role="dialog">
                     <div class="modal-dialog">

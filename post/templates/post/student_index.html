@@ -4,72 +4,60 @@
 
 {% load staticfiles %}
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'home/scripts/jquery.touchSwipe.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'post/student_post_util.js' %}"></script>
     <script>
         $(function () {
             hide($('.post-loader-icon'));
             show($('.main-post-container'));
-            open_modal('apply-modal');
+
+            $('#main-post-container').swipe({
+                swipeLeft: function ( event, direction, duration, fingerCount ) {
+                    plusDivs(1);
+                },
+
+                swipeRight: function ( event, direction, duration, fingerCount ) {
+                    plusDivs(-1);
+                }
+            });
+
         });
     </script>
 {% endblock %}
 
-{% block content %}
-    {% if not student.verified %}
-        <div>
-            <div class="w3-container message-warning w3-display-container hidden">
-                <p>
-                    You have not yet verified your account. <a href="#">Click Here</a> to verify your account now.
-                    It is important to verify your account to increase your credibility as an applicant and let
-                    recruiters
-                    know what school you attend.
-                </p>
-            </div>
-        </div>
-    {% endif %}
-    {% if not resumes %}
-        <div>
-            <div class="w3-container message-warning w3-display-container">
-                <p>
-                    You have not yet created a resume and won't be able to apply. <a href="{% url 'resume:index' %}">Click
-                    Here</a>
-                    to go to the "Resumes" section and create a new resume to get started.
-                </p>
-            </div>
-        </div>
-    {% endif %}
-    <div class="job-nav">
+{% block page_title_div %}
+    <div class="job-nav student-posts">
         <div class="w3-container">
             <h3 class="w3-center">({{ count }}) {{ d_category }} Job Posts</h3>
         </div>
-        <div class="w3-cell-row job-navbar">
+        <div class="w3-cell-row job-navbar student-posts">
             <div class="w3-cell volunteer-cell">
                 <a href="{% url 'post:student_posts' cat='volunteer' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'volunteer' %}active{% endif %}">
                     ({{ volunteer_count }}) Volunteer
                 </a>
             </div>
             <div class="w3-cell internship-cell">
                 <a href="{% url 'post:student_posts' cat='internship' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'internship' %}active{% endif %}">
                     ({{ internship_count }}) Internships
                 </a>
             </div>
             <div class="w3-cell part-time-cell">
                 <a href="{% url 'post:student_posts' cat='part_time' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'part_time' %}active{% endif %}">
                     ({{ part_time_count }}) Part-Time
                 </a>
             </div>
             <div class="w3-cell start-up-cell">
                 <a href="{% url 'post:student_posts' cat='startup' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'startup' %}active{% endif %}">
                     ({{ startup_count }}) Start Up
                 </a>
             </div>
             <div class="w3-cell full-time-cell">
                 <a href="{% url 'post:student_posts' cat='full_time' pk=0 %}"
-                   class="w3-btn w3-block page-link">
+                   class="w3-btn w3-block page-link {% if category == 'full_time' %}active{% endif %}">
                     ({{ full_time_count }}) Full Time
                 </a>
             </div>
@@ -93,110 +81,148 @@
                 </div>
             </div>
         </form>
-        <div class="post-loader-icon">
-            <h2 class="w3-center"><i class="fa fa-spinner fa-spin"></i> Loading job posts...</h2>
+{% endblock %}
+
+{% block messages %}
+    {% if not student.verified %}
+        <div>
+            <div class="w3-container message-warning w3-display-container">
+                <p>
+                    You have not yet verified your school. <a href="{% url 'student:profile' %}">Click Here</a> to
+                    verify your account now.
+                    It is important to verify your account to increase your credibility as an applicant and let
+                    recruiters know what school you attend.
+                </p>
+            </div>
         </div>
-        <div class="w3-content w3-container main-post-container w3-hide">
-            {% if posts %}
-                {% for x in posts %}
-                    <div class="w3-display-container mySlides w3-animate-right">
-                        <div class="row">
-                            <div class="w3-col s4">
-                                <div class="w3-container">
-                                    <h4>Company</h4>
-                                </div>
-                                <div class="w3-container">
-                                    {% if x.logo %}
-                                        <div class="logo-container">
-                                            <img src="{{ x.logo.url }}">
-                                        </div>
-                                    {% endif %}
-                                    <h5>{{ x.name }}</h5>
-                                    <label>Address:</label><span> {{ x.address }}</span><br/>
-                                    <label>Website:</label><a target="_blank"
-                                                              href="http://{{ x.website }}"> {{ x.website }}</a>
-                                </div>
-                                <div class="w3-container resumes-section">
-                                    <h5>Resumes</h5>
-                                </div>
-                                <table class="w3-table">
-                                    {% for y in resumes %}
-                                        <tr>
-                                            {% if y.is_active %}
-                                                <td>
-                                                    <strong>{{ y.name }}</strong>
-                                                </td>
-                                            {% else %}
-                                                <td>
-                                                    <a href="#" class="change-resume"
-                                                       data-url="{% url 'resume:activate' pk=y.id %}">
-                                                        {{ y.name }}
-                                                    </a>
-                                                </td>
-                                            {% endif %}
-                                        </tr>
-                                    {% endfor %}
-                                </table>
+    {% endif %}
+    {% if not resumes %}
+        <div>
+            <div class="w3-container message-warning w3-display-container">
+                <p>
+                    You have not yet created a resume and won't be able to apply. <a href="{% url 'resume:index' %}">Click
+                    Here</a>
+                    to go to the "Resumes" section and create a new resume to get started.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="post-loader-icon">
+        <h2 class="w3-center"><i class="fa fa-spinner fa-spin"></i> Loading job posts...</h2>
+    </div>
+    <div id="main-post-container" class="w3-content w3-container main-post-container w3-hide">
+        {% if posts %}
+            {% for x in posts %}
+                <div class="w3-display-container mySlides w3-animate-right">
+                    <div class="row">
+                        <div class="w3-col s4">
+                            <div class="w3-container">
+                                <h4>Company</h4>
                             </div>
-                            <div class="w3-col s8">
-                                <div class="w3-container">
-                                    <h4>Post Information</h4>
-                                </div>
-                                <div class="slide-container w3-container scrollable">
-                                    <h5>{{ x.title }}</h5>
-                                    <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
-                                    <label>End Date:</label><span> {{ x.end_date }}</span><br/>
-                                    <label>Wage:</label>
-                                    {% if x.wage and x.wage > 0 %}
-                                        <span> {{ x.wage }}$/{{ x.wage_interval }}</span>
-                                    {% else %}
-                                        <span> N/A</span>
-                                    {% endif %}
-                                    <br/>
-                                    <label>Number of positions:</label><span> {{ x.openings }}</span><br/>
-                                    <label>
-                                        <strong>Application Deadline:</strong>
-                                    </label><span> {{ x.deadline }}</span><br/>
-                                    <label><strong>Requirements:</strong></label><br/>
-                                    <span>{{ x.requirements | linebreaksbr }}</span><br/>
-                                    <label><strong>Description:</strong></label><br/>
-                                    <span>{{ x.description | linebreaksbr }}</span>
-                                    <div class="w3-hide increment-url">{% url 'post:increment' pk=x.id %}</div>
-                                    <div class="w3-hide post-url">{% url 'post:student_posts' cat=category pk=x.id %}</div>
-                                </div>
+                            <div class="w3-container">
+                                {% if x.logo %}
+                                    <div class="logo-container">
+                                        <img src="{{ x.logo.url }}">
+                                    </div>
+                                {% endif %}
+                                <h5>{{ x.name }}</h5>
+                                <label>Address:</label><span> {{ x.address }}</span><br/>
+                                <label>Website:</label>{% if x.website %}<a target="_blank"
+                                                          href="http://{{ x.website }}"> {{ x.website }}</a>{% else %} N/A{% endif %}
                             </div>
+                            <div class="w3-container resumes-section">
+                                <h5>Resumes</h5>
+                            </div>
+                            <table class="w3-table">
+                                {% for y in resumes %}
+                                    <tr>
+                                        {% if y.is_active %}
+                                            <td>
+                                                <strong>{{ y.name }}</strong>
+                                            </td>
+                                        {% else %}
+                                            <td>
+                                                <a href="#" class="change-resume"
+                                                   data-url="{% url 'resume:activate' pk=y.id %}">
+                                                    {{ y.name }}
+                                                </a>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
                         </div>
-                        <div class="w3-display-topright w3-container apply-btn">
-                            {% if not x.applied %}
-                                <button class="w3-btn apply-btn apply"
-                                        data-url="{% url 'post:apply' pk=x.id %}">
-                                    Apply for this post
-                                </button>
-                            {% else %}
-                                <button class="w3-btn apply-btn" disabled>
-                                    Already applied.
-                                </button>
-                            {% endif %}
+                        <div class="w3-col s8">
+                            <div class="w3-container">
+                                <h4>Post Information</h4>
+                            </div>
+                            <div class="slide-container w3-container scrollable">
+                                <h5 class="display-post-title" style="max-width: 400px;height: auto;">{{ x.title }}</h5>
+                                <label>Location:</label><span> {{ x.location }}</span><br/>
+                                <label>Wage:</label>
+                                {% if x.wage and x.wage > 0 %}
+                                    <span> {{ x.wage }}$/{{ x.wage_interval }}</span>
+                                {% else %}
+                                    <span> N/A</span>
+                                {% endif %}
+                                <br/>
+                                <label>Start Date:</label><span> {{ x.start_date }}</span><br/>
+                                {% if x.end_date %}<label>End Date:</label><span> {{ x.end_date }}</span>
+                                    <br/>{% endif %}
+                                <label>Number of positions:</label>
+                                <span> {% if x.openings %}{{ x.openings }}{% else %}N/A{% endif %}</span><br/>
+                                <label>
+                                    <strong>Application Deadline:</strong>
+                                </label><span> {{ x.deadline }}</span><br/>
+                                {% if x.why_us %}
+                                    <label>Why {{ x.name }}:</label><br/>
+                                    <p class="string-to-html">{{ x.why_us }}</p><br/>
+                                {% endif %}
+                                <label><strong>Qualifications:</strong></label><br/>
+                                <p class="string-to-html">{{ x.qualifications }}</p><br/>
+                                <label><strong>Responsibilities:</strong></label><br/>
+                                <p class="string-to-html">{{ x.responsibilities }}</p><br/>
+                                {% if x.benefits %}
+                                    <label>Benefits:</label><br/>
+                                    <p class="string-to-html">{{ x.benefits }}</p><br/>
+                                {% endif %}
+                                <div class="w3-hide increment-url">{% url 'post:increment' pk=x.id %}</div>
+                                <div class="w3-hide post-url">{% url 'post:student_posts' cat=category pk=x.id %}</div>
+                            </div>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="w3-display-container mySlides" >
-                    <div class="w3-card-16">
-                        <h4 class="w3-center">
-                            There are currently no {{ d_category }} opportunities listed.
-                        </h4>
-                        <h4 class="w3-center">
-                            Check back again later.
-                        </h4>
+                    <div class="w3-display-topright w3-container">
+                        {% if not x.applied %}
+                            <button class="w3-btn apply-btn apply"
+                                    data-url="{% url 'post:apply' pk=x.id %}">
+                                Apply for this post
+                            </button>
+                        {% else %}
+                            <button class="w3-btn apply-btn" disabled>
+                                Already applied.
+                            </button>
+                        {% endif %}
                     </div>
                 </div>
-            {% endif %}
-            <a class="w3-btn w3-display-left left-arrow slider-nav-btn"
-               onclick="plusDivs(-1)">❮</a>
-            <a class="w3-btn w3-display-right right-arrow slider-nav-btn"
-               onclick="plusDivs(1)">❯</a>
-        </div>
+            {% endfor %}
+        {% else %}
+            <div class="w3-display-container mySlides">
+                <div class="w3-card-16">
+                    <h4 class="w3-center">
+                        There are currently no {{ d_category }} opportunities listed. <br/><br/>
+                        Check back again later.
+                    </h4>
+                </div>
+            </div>
+        {% endif %}
+        <a class="w3-btn w3-display-left left-arrow slider-nav-btn"
+           onclick="plusDivs(-1)">❮</a>
+        <a class="w3-btn w3-display-right right-arrow slider-nav-btn"
+           onclick="plusDivs(1)">❯</a>
+    </div>
     </div>
     <div>
         <div id="apply-modal" class="w3-modal">
@@ -206,14 +232,14 @@
                 </header>
                 <div class="w3-container w3-padding-16">
                     <p>
-                        Are you sure you want to apply to the post "Summer Intern"?
+                        Are you sure you want to apply to the post "<span class="post-warning-name"></span>"?
                     </p>
                     <div class="checkbox">
-                        <label><input type="checkbox" value=""> Don't show this message again.</label>
+                        <label><input id="apply-warning-check" type="checkbox"> Don't show this message again.</label>
                     </div>
                     <div>
-                        <button class="w3-btn btn-default">Cancel</button>
-                        <button class="w3-btn btn-success">Apply</button>
+                        <button class="w3-btn btn-default close-modal" data-id="apply-modal">Cancel</button>
+                        <button class="w3-btn btn-success" id="apply-warning">Apply</button>
                     </div>
                 </div>
             </div>

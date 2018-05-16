@@ -80,6 +80,7 @@ class Skill(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     level = models.CharField(max_length=50)
+    description = models.TextField(null=True, blank=True)
     rkey = models.CharField(max_length=20)
     rname = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)

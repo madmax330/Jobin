@@ -1,5 +1,14 @@
 {% extends 'company/base.html' %}
 
+{% load staticfiles %}
+
+{% block scripts %}
+    <script src="{% static 'home/scripts/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+    <script src="{% static 'home/scripts/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+    <script src="{% static 'home/scripts/jquery-file-upload/jquery.fileupload.js' %}"></script>
+    <script type="text/javascript" src="{% static 'company/scripts/logo_upload.js' %}"></script>
+{% endblock %}
+
 {% block page_body_class %}company-profile{% endblock %}
 
 {% block page_title_div %}
@@ -32,14 +41,30 @@
                 {% endif %}
                 <label>Name:</label><span> {{ company.name }}</span><br/>
                 <label>Email:</label><span> {{ company.email }}</span><br/>
-                <label>Phone:</label><span> {{ company.phone }}</span><br/>
+                <label>Phone:</label><span> {% if company.phone %}{{ company.phone }}{% else %}N/A{% endif %}</span><br/>
                 <label>Address:</label><span> {{ company.address }}, {{ company.city }}, {{ company.state }}, {{ company.zipcode }}</span><br/>
-                <label>Website:</label><span> {{ company.website }}</span><br/>
+                <label>Website:</label><span> {% if company.website %}{{ company.website }}{% else %}N/A{% endif %}</span><br/>
                 <div class="margined">
                     <a href="{% url 'company:edit' %}"
                        class="btn btn-default">Edit Profile</a>
-                    <a href="{% url 'home:change_info' ut='company'%}"
+                    <a href="{% url 'home:change_info' ut='company' %}"
                        class="btn btn-default">Edit Account</a>
+                    {% if company.logo %}
+                        <a href="{% url 'company:delete_logo' %}" class="btn btn-default delete-logo">
+                            Remove Logo <i class="fa fa-spinner fa-spin hidden logo-spinner"></i>
+                        </a>
+                    {% else %}
+                        <div class="hidden">
+                            <form class="form">
+                                {% csrf_token %}
+                                <input type="file" name="logo" id="logo-upload">
+                            </form>
+                        </div>
+                        <button data-url="{% url 'company:upload_logo' %}" class="btn btn-default upload-logo">
+                            Upload Logo <i class="fa fa-spinner fa-spin hidden logo-spinner"></i>
+                        </button>
+                    {% endif %}
+
                 </div>
             </div>
         </div>

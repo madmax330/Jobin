@@ -15,9 +15,12 @@ class ExtendedPost:
         self.wage = post.wage
         self.wage_interval = post.wage_interval
         self.openings = post.openings
-        self.requirements = post.requirements
-        self.description = post.description
+        self.qualifications = post.qualifications
+        self.responsibilities = post.responsibilities
         self.applied = applied
+        self.location = post.location
+        self.benefits = post.benefits
+        self.why_us = post.why_us
 
 
 class HomePagePost:
@@ -41,9 +44,10 @@ class ExtendedApplication:
         self.email = stu.email
         self.phone = stu.phone
         self.address = stu.address + ' ' + stu.city + ' ' + stu.state + ' ' + stu.zipcode
-        self.school = stu.school
+        self.school = stu.school if stu.school else 'School Not Verified'
         self.program = stu.program
         self.major = stu.major
+        self.transcript = stu.transcript
         self.resume = resume
         self.gpa = app.resume.gpa
         self.post = app.post

@@ -4,18 +4,20 @@
 
 {% block page_title_div %}
     <div class="pagetitle company-profile">
-        <h1>Edit Profile</h1>
+        <h1>{% if new %}New Company{% else %}Edit Profile{% endif %}</h1>
     </div>
 {% endblock %}
 
 {% load staticfiles %}
 {% block scripts %}
+    <script src="{% static 'home/scripts/form_util.js' %}"></script>
     <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
     <script src="{% static 'home/scripts/form_location_script.js' %}"></script>
+    <script src="{% static 'home/scripts/phone_validation.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    {% if not company %}
+    {% if new %}
         <div class="alert info-message">
             <h4>Welcome to Jobin!</h4>
             <hr/>
@@ -39,8 +41,7 @@
             <h4>Company Information Form</h4>
         </div>
         <div class="panel-body">
-            <form action="{% if company.pk %}{% url 'company:edit' %}{% else %}{% url 'company:new' %}{% endif %}"
-                  method="post" enctype="multipart/form-data">
+            <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
                     <label class="required" for="company_name">Company Name:</label>
@@ -49,7 +50,7 @@
                             {{ errors.name }}
                         </div>
                     {% endif %}
-                    <input class="form-control" id="company_name" type="text" name="company_name" value="{{ company.name }}"/>
+                    <input class="form-control" id="company_name" type="text" name="name" value="{{ company.name }}"/>
                 </div>
                 <div class="form-group">
                     <label class="required" for="company_industry">
@@ -60,7 +61,7 @@
                             {{ errors.industry }}
                         </div>
                     {% endif %}
-                    <input id="company_industry" type="text" class="form-control" name="company_industry" value="{{ company.industry }}">
+                    <input id="company_industry" type="text" class="form-control" name="industry" value="{{ company.industry }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="company_address">Address:</label>
@@ -69,7 +70,7 @@
                             {{ errors.address }}
                         </div>
                     {% endif %}
-                    <input class="form-control" id="company_address" type="text" name="company_address" value="{{ company.address }}"/>
+                    <input class="form-control" id="company_address" type="text" name="address" value="{{ company.address }}"/>
                 </div>
                 <div class="form-group">
                     <label class="required" for="company_city">City:</label>
@@ -78,7 +79,7 @@
                             {{ errors.city }}
                         </div>
                     {% endif %}
-                    <input class="form-control" id="company_city" type="text" name="company_city" value="{{ company.city }}"/>
+                    <input class="form-control" id="company_city" type="text" name="city" value="{{ company.city }}"/>
                 </div>
                 <div class="form-group">
                     <label class="required" for="company_state">State:</label>
@@ -87,7 +88,7 @@
                             {{ errors.state }}
                         </div>
                     {% endif %}
-                    <select class="form-control state-input" name="company_state" id="company_state">
+                    <select class="form-control state-input" name="state" id="company_state">
                         {% if company.state %}
                             <option value="{{ company.state }}">{{ company.state }}</option>
                         {% endif %}
@@ -101,7 +102,7 @@
                         </div>
                     {% endif %}
                     <div class="form-error"></div>
-                    <input class="form-control zip-input" id="company_zipcode" type="text" name="company_zipcode"
+                    <input class="form-control zip-input" id="company_zipcode" type="text" name="zipcode"
                            value="{{ company.zipcode }}"/>
                 </div>
                 <div class="form-group">
@@ -111,7 +112,7 @@
                             {{ errors.country }}
                         </div>
                     {% endif %}
-                    <select class="form-control country-input" name="company_country" id="company_country">
+                    <select class="form-control country-input" name="country" id="company_country">
                         {% if company.country %}
                             <option value="{{ company.country }}">{{ company.country }}</option>
                         {% endif %}
@@ -124,7 +125,8 @@
                             {{ errors.phone }}
                         </div>
                     {% endif %}
-                    <input class="form-control" id="company_phone" type="text" name="company_phone" value="{{ company.phone }}"/>
+                    <div class="form-error"></div>
+                    <input class="form-control phone-input" id="company_phone" type="text" name="phone" value="{% if company.phone %}{{ company.phone }}{% endif %}"/>
                 </div>
                 <div class="form-group">
                     <label for="company_website">Website:</label>
@@ -133,7 +135,7 @@
                             {{ errors.website }}
                         </div>
                     {% endif %}
-                    <input class="form-control" id="company_website" type="text" name="company_website" value="{% if company.website %}{{ company.website }}{% endif %}"/>
+                    <input class="form-control" id="company_website" type="text" name="website" value="{% if company.website %}{{ company.website }}{% endif %}"/>
                 </div>
                 <div class="form-group">
                     <label>Are you a startup?</label><br/>
@@ -143,20 +145,20 @@
                         </div>
                     {% endif %}
                     <label class="radio-inline">
-                        <input type="radio" name="company_is_startup" value="True"
-                        {% if company.is_startup %}checked="checked"{% endif %}/>
+                        <input type="radio" name="is_startup" value="True"
+                        {% if company.is_startup and not company.is_startup == 'False' %}checked="checked"{% endif %}/>
                         Yes
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="company_is_startup" value="False"
-                        {% if not company.is_startup %}checked="checked"{% endif %}/>
+                        <input type="radio" name="is_startup" value="False"
+                        {% if not company.is_startup or company.is_startup == 'False' %}checked="checked"{% endif %}/>
                         No
                     </label>
                 </div>
-                {% if company.pk %}
-                    <a href="{% url 'company:profile' %}" class="btn btn-default">Cancel</a>
+                {% if new %}
                     <button class="btn btn-success" type="submit">Submit</button>
                 {% else %}
+                    <a href="{% url 'company:profile' %}" class="btn btn-default">Cancel</a>
                     <button class="btn btn-success" type="submit">Submit</button>
                 {% endif %}
             </form>

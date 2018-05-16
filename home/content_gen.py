@@ -105,7 +105,9 @@ class ContentGen:
         s.zipcode = 'J1M1Z7'
         s.phone = '555 444 2222'
         s.email = u.email
+        s.school_email = u.email
         s.school = sch
+        s.verified = True
         p = ContentGen.programs[randint(0, ContentGen.programs.count() - 1)]
         while p.name == 'All Programs':
             p = ContentGen.programs[randint(0, ContentGen.programs.count() - 1)]
@@ -128,6 +130,7 @@ class ContentGen:
                 r.is_active = False
             r.is_complete = True
             r.name = 'Resume' + str(i)
+            r.last_updated = datetime.datetime.now()
             r.save()
             ContentGen.create_resume_schools(r, i)
             ContentGen.create_resume_languages(r, i)
@@ -280,28 +283,30 @@ class ContentGen:
         sl.save()
 
     @staticmethod
-    def gen_test_content(val):
+    def gen_test_content(val, student=True, company=True):
 
-        # Create company users and companies and student users and students
-        for i in range(0, val):
-            # Companies
-            cuname = 'user' + str(i) + '@gmail.com'
-            cu = User.objects.create_user(username=cuname, email=cuname, password=ContentGen.pw)
-            ContentGen.create_company(cu, i)
+        if company:
+            # Create company users and companies and student users and students
+            for i in range(0, val):
+                # Companies
+                cuname = 'user' + str(i) + '@gmail.com'
+                cu = User.objects.create_user(username=cuname, email=cuname, password=ContentGen.pw)
+                ContentGen.create_company(cu, i)
 
-        for i in range(0, val):
-            # Students
-            sch = ContentGen.schools[randint(0, ContentGen.schools.count() - 1)]
-            suname = 'student00' + str(i) + '@' + sch.email
-            su = User.objects.create_user(username=suname, email=suname, password=ContentGen.pw)
-            ContentGen.create_student(su, i, sch)
+        if student:
+            for i in range(0, val):
+                # Students
+                sch = ContentGen.schools[randint(0, ContentGen.schools.count() - 1)]
+                suname = 'student00' + str(i) + '@' + sch.email
+                su = User.objects.create_user(username=suname, email=suname, password=ContentGen.pw)
+                ContentGen.create_student(su, i, sch)
 
-        ContentGen.create_event_interests()
-        ContentGen.create_post_applications()
+            ContentGen.create_event_interests()
+            ContentGen.create_post_applications()
 
     @staticmethod
     def create_event_interests():
-        students = Student.objects.all()
+        students = Student.objects.filter(firstname__contains='Student')
         events = Event.objects.all()
         for x in students:
             for i in range(0, 5):
@@ -309,7 +314,10 @@ class ContentGen:
                 ei = SavedEvent()
                 ei.student = x
                 ei.event = event
-                ei.date = event.date
+                ei.start_date = event.start_date
+                ei.start_time = event.start_time
+                ei.end_date = event.end_date
+                ei.end_time = event.end_time
                 ei.event_name = event.title
                 ei.save()
 

@@ -5,7 +5,7 @@
 
  */
 
-#company-login{
+#company-login, #company-forgot-password{
 	background: rgb(125,190,224); /* Old browsers */
 background: -moz-linear-gradient(45deg, rgba(125,190,224,1) 0%, rgba(131,159,225,1) 100%); /* FF3.6-15 */
 background: -webkit-linear-gradient(45deg, rgba(125,190,224,1) 0%,rgba(131,159,225,1) 100%); /* Chrome10-25,Safari5.1-6 */
@@ -13,7 +13,7 @@ background: linear-gradient(45deg, rgba(125,190,224,1) 0%,rgba(131,159,225,1) 10
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', endColorstr='#839fe1',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
-#student-login{
+#student-login, #student-forgot-password{
 	background: rgb(255, 153, 102);
 	/* Old browsers */
 	background: -moz-linear-gradient(45deg, rgba(255, 153, 102, 1) 0%, rgba(255, 94, 98, 1) 100%);
@@ -25,7 +25,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff9966', endColorstr='#ff5e62', GradientType=1);
 }
 
-#student-login, #company-login{
+#student-login, #company-login, #student-forgot-password, #company-forgot-password{
 	animation-duration: 0.6s;
 	-webkit-animation-duration: 0.6s;
 	-moz-animation-duration: 0.6s;
@@ -39,10 +39,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
 	min-height: 450px;
 	z-index: 30;
 }
-#student-login input, #company-login input {
+#student-login input, #company-login input, #student-forgot-password input, #company-forgot-password input,
+.contact-form input, .contact-form textarea {
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     border-radius: 0;
     border: 0;
-    padding: 24px 15px;
+	height: 48px;
+    padding: 0 15px;
     font-size: 21px;
     font-family: 'Helvetica', sans-serif;
     color: #2b2929;
@@ -50,11 +55,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
     box-shadow: none;
 }
 
-#student-login input::placeholder {
+#student-login input::placeholder, #student-forgot-password input::placeholder,
+.contact-form input::placeholder, .contact-form textarea::placeholder {
 	color:#ff8365;
 }
 
-#company-login input::placeholder {
+#company-login input::placeholder, #company-forgot-password input::placeholder {
 	color:#82adde;
 }
 .social-media-login span {color:#fff;}
@@ -162,7 +168,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
     border-bottom:1px solid black;
 }
 
-.what-we-do-row{
+.what-we-do-row, .contact-section{
     background: #000000 url("/static/home/images/citybg.jpg") no-repeat center;
     padding: 32px 0;
     color: #FFFFFF;
@@ -307,7 +313,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
 }
 .about-title-col {border-bottom:0 !important;}
 
-#student-login .btn.btn-default.login-btn, #company-login .btn.btn-default.login-btn {
+#student-login .btn.btn-default.login-btn, #company-login .btn.btn-default.login-btn, #student-forgot-password .btn.btn-default,
+#company-forgot-password .btn.btn-default, .contact-form .btn.btn-default {
     font-size: 15px;
     color: #fff;
     background: transparent;
@@ -316,12 +323,36 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7dbee0', end
     padding: 8px 37px;
     font-weight: bold;
 }
-#student-login .btn.btn-default.login-btn:hover, #company-login .btn.btn-default.login-btn:hover {
+#student-login .btn.btn-default.login-btn:hover, #company-login .btn.btn-default.login-btn:hover, #student-forgot-password .btn.btn-default:hover,
+#company-forgot-password .btn.btn-default:hover, .contact-form .btn.btn-default:hover {
     color: #ff7a64;
 	background: #fff;
 }
-#student-login .btn.btn-default.login-btn:focus, #company-login .btn.btn-default.login-btn:focus {
+#student-login .btn.btn-default.login-btn:focus, #company-login .btn.btn-default.login-btn:focus, #student-forgot-password .btn.btn-default:focus,
+#company-forgot-password .btn.btn-default:focus, .contact-form .btn.btn-default {
     outline:none !important;
 	box-shadow:none !important;
 }
 
+.contact-form textarea {
+	padding: 10px;
+	height: auto !important;
+}
+
+@media screen and (max-width: 992px) {
+	.home-static-text {
+		width: 600px !important;
+		white-space: normal;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.home-static-text {
+		max-width: 500px !important;
+		white-space: normal;
+	}
+}
+
+.register-terms {
+	padding: 16px 0;
+}

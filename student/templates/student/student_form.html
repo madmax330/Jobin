@@ -10,13 +10,14 @@
     <script src="{% static 'home/scripts/zipcode_validation.js' %}"></script>
     <script src="{% static 'home/scripts/form_location_script.js' %}"></script>
     <script src="{% static 'home/scripts/form_programs_majors_script.js' %}"></script>
+    <script src="{% static 'home/scripts/phone_validation.js' %}"></script>
 {% endblock %}
 
 {% block page_body_class %}student-profile edit-profile{% endblock %}
 
 {% block page_title_div %}
     <div class="pagetitle student-profile">
-        <h1>Edit Profile</h1>
+        <h1>{% if new %}New Student{% else %}Edit Profile{% endif %}</h1>
     </div>
 {% endblock %}
 
@@ -24,8 +25,7 @@
     <div>
         <div>
         <div class="w3-container">
-            <form id="student-form"
-                  action="{% if student %}{% url 'student:edit' %}{% else %}{% url 'student:new' %}{% endif %}" method="post">
+            <form id="student-form" action="" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label class="required" for="student_first_name">First Name:</label>
@@ -35,7 +35,7 @@
                         </div>
                     {% endif %}
                     <input id="student_first_name" class="w3-input w3-border" type="text"
-                           name="student_first_name" value="{{ student.firstname }}">
+                           name="firstname" value="{{ student.firstname }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_last_name">Last Name:</label>
@@ -45,17 +45,7 @@
                         </div>
                     {% endif %}
                     <input id="student_last_name" class="w3-input w3-border" type="text"
-                           name="student_last_name" value="{{ student.lastname }}">
-                </div>
-                <div class="form-group">
-                    <label for="student_email">Contact Email:</label>
-                    {% if errors.email %}
-                        <div class="alert alert-danger">
-                            {{ errors.email }}
-                        </div>
-                    {% endif %}
-                    <input id="student_email" class="w3-input w3-border" type="text"
-                           name="student_email" value="{{ student.email }}">
+                           name="lastname" value="{{ student.lastname }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_dob">Date of Birth:</label>
@@ -65,7 +55,7 @@
                         </div>
                     {% endif %}
                     <input id="student_dob" class="w3-input w3-border date-input" type="date"
-                           name="student_dob" data-date="{{ student.dob }}">
+                           name="dob" data-date="{{ student.dob }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_program">Program:</label>
@@ -74,7 +64,7 @@
                             {{ errors.program }}
                         </div>
                     {% endif %}
-                    <select id="student_program" class="w3-input w3-border program-input" name="student_program">
+                    <select id="student_program" class="w3-input w3-border program-input" name="program">
                         {% if student.program %}
                             <option value="{{ student.program }}">{{ student.program }}</option>
                         {% endif %}
@@ -87,7 +77,7 @@
                             {{ errors.major }}
                         </div>
                     {% endif %}
-                    <select id="student_major" class="w3-input w3-border major-input" name="student_major">
+                    <select id="student_major" class="w3-input w3-border major-input" name="major">
                         {% if student.major %}
                             <option value="{{ student.major }}">{{ student.major }}</option>
                         {% endif %}
@@ -100,8 +90,9 @@
                             {{ errors.phone }}
                         </div>
                     {% endif %}
-                    <input id="student_phone" class="w3-input w3-border" type="text"
-                           name="student_phone" value="{{ student.phone }}">
+                    <div class="form-error"></div>
+                    <input id="student_phone" class="w3-input w3-border phone-input" type="text"
+                           name="phone" value="{% if student.phone %}{{ student.phone }}{% endif %}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_address">Address:</label>
@@ -111,7 +102,7 @@
                         </div>
                     {% endif %}
                     <input id="student_address" class="w3-input w3-border" type="text"
-                           name="student_address" value="{{ student.address }}">
+                           name="address" value="{{ student.address }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_city">City:</label>
@@ -121,7 +112,7 @@
                         </div>
                     {% endif %}
                     <input id="student_city" class="w3-input w3-border" type="text"
-                           name="student_city" value="{{ student.city }}">
+                           name="city" value="{{ student.city }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_state">State:</label>
@@ -130,7 +121,7 @@
                             {{ errors.state }}
                         </div>
                     {% endif %}
-                    <select id="student_state" class="w3-input w3-border state-input" name="student_state">
+                    <select id="student_state" class="w3-input w3-border state-input" name="state">
                         {% if student.state %}
                             <option value="{{ student.state }}">{{ student.state }}</option>
                         {% endif %}
@@ -145,7 +136,7 @@
                     {% endif %}
                     <div class="form-error"></div>
                     <input id="student_zipcode" class="w3-input w3-border zip-input" type="text"
-                           name="student_zipcode" value="{{ student.zipcode }}">
+                           name="zipcode" value="{{ student.zipcode }}">
                 </div>
                 <div class="form-group">
                     <label class="required" for="student_country">Country:</label>
@@ -154,7 +145,7 @@
                             {{ errors.country }}
                         </div>
                     {% endif %}
-                    <select id="student_country" class="w3-input w3-border country-input" name="student_country">
+                    <select id="student_country" class="w3-input w3-border country-input" name="country">
                         {% if student.country %}
                             <option value="{{ student.country }}">{{ student.country }}</option>
                         {% endif %}
@@ -168,13 +159,13 @@
                         </div>
                     {% endif %}
                     <p>
-                        <input id="is-grad" class="w3-radio" type="radio" name="student_graduate" value="True"
-                               {% if student.graduate or not student %}checked="checked"{% endif %}>
+                        <input id="is-grad" class="w3-radio" type="radio" name="graduate" value="True"
+                               {% if not student.graduate or not student.graduate == 'False' %}checked="checked"{% endif %}>
                         <label for="is-grad">Yes</label>
                     </p>
                     <p>
-                        <input id="not-grad" class="w3-radio" type="radio" name="student_graduate" value="False"
-                                {% if student and not student.graduate %}checked="checked"{% endif %}>
+                        <input id="not-grad" class="w3-radio" type="radio" name="graduate" value="False"
+                                {% if student.graduate and student.graduate == 'False' %}checked="checked"{% endif %}>
                         <label for="not-grad">No</label>
                     </p>
                 </div>
@@ -185,25 +176,26 @@
                             {{ errors.linkedin }}
                         </div>
                     {% endif %}
-                    <input id="student_linkedin" class="w3-input w3-border" type="text" name="student_linkedin">
+                    <input id="student_linkedin" class="w3-input w3-border" type="text"
+                           name="linkedin" value="{% if student.linkedin %}{{ student.linkedin }}{% endif %}">
                 </div>
                 <div class="form-group">
                     <label for="student_work">
                         Are you eligible to work in <span class="nsf-country">Canada</span>?
                     </label>
                     <p>
-                        <input id="can-work" class="w3-radio" type="radio" name="student_work" value="True"
-                               {% if student.work_eligible or not student %}checked="checked"{% endif %}>
+                        <input id="can-work" class="w3-radio" type="radio" name="work_eligible" value="True"
+                               {% if not student.work_eligible or not student.work_eligible == 'False' %}checked="checked"{% endif %}>
                         <label for="can-work">Yes</label>
                     </p>
                     <p>
-                        <input id="cant-work" class="w3-radio" type="radio" name="student_work" value="False"
-                                {% if student and not student.work_eligible %}checked="checked"{% endif %}>
+                        <input id="cant-work" class="w3-radio" type="radio" name="work_eligible" value="False"
+                                {% if student.work_eligible and student.work_eligible == 'False' %}checked="checked"{% endif %}>
                         <label for="cant-work">No</label>
                     </p>
                 </div>
                 <div>
-                    {% if student %}<a href="{% url 'student:profile' %}" class="w3-btn btn-default">Cancel</a>{% endif %}
+                    {% if not new %}<a href="{% url 'student:profile' %}" class="w3-btn btn-default">Cancel</a>{% endif %}
                     <button class="w3-btn btn-success" type="submit">Submit</button>
                 </div>
             </form>
