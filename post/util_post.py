@@ -85,7 +85,7 @@ class StudentPostContainer(BaseContainer):
         if filters:
             f = Q()
             for x in fls:
-                f |= x
+                f &= x
             op &= f
         op &= ad
         posts = Post.objects.filter(op).order_by('-id')
