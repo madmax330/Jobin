@@ -555,7 +555,7 @@ class ResumeContainer(BaseContainer):
         if ls.count() > 0:
             l = []
             for x in ls:
-                if x.school not in schools:
+                if (x.school not in schools) and (x.school not in l):
                     l.append(x.school)
             return l
         else:
@@ -591,7 +591,7 @@ class ResumeContainer(BaseContainer):
         if ls.count() > 0:
             l = []
             for x in ls:
-                if x.language not in languages:
+                if (x.language not in languages) and (x.language not in l):
                     l.append(x.language)
             return l
         else:
@@ -627,9 +627,9 @@ class ResumeContainer(BaseContainer):
         if ls.count() > 0:
             l = []
             for x in ls:
-                if x.experience not in experience:
+                if (x.experience not in experience) and (x.experience not in l):
                     l.append(x.experience)
-            return l
+            return list(set(l))
         else:
             self.add_error('No other experience found.')
             return []
@@ -663,7 +663,7 @@ class ResumeContainer(BaseContainer):
         if ls.count() > 0:
             l = []
             for x in ls:
-                if x.award not in awards:
+                if (x.award not in awards) and (x.award not in l):
                     l.append(x.award)
             return l
         else:
@@ -699,7 +699,7 @@ class ResumeContainer(BaseContainer):
         if ls.count() > 0:
             l = []
             for x in ls:
-                if x.skill not in skills:
+                if (x.skill not in skills) and (x.skill not in l):
                     l.append(x.skill)
             return l
         else:
@@ -735,7 +735,7 @@ class ResumeContainer(BaseContainer):
         if rs.count() > 0:
             l = []
             for x in rs:
-                if x.reference not in references:
+                if (x.reference not in references) and (x.reference not in l):
                     l.append(x.reference)
             return l
         else:
